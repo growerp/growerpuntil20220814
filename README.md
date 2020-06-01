@@ -1,5 +1,5 @@
 # growerp
-GrowERP frontend component for Android, IOS and Web using Flutter.
+GrowERP Flutter frontend component for Android, IOS and Web using Flutter.
 
 Under development.
 
