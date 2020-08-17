@@ -1,0 +1,4 @@
+#Thu Aug 13 12:30:58 ICT 2020
+base.0=/home/hans/mobile/flutter/ecommerce/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
