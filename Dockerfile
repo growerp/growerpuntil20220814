@@ -21,7 +21,7 @@ RUN flutter channel master && \
 # Copy files to container and build
 # RUN mkdir /usr/local/
 RUN git clone https://github.com/growerp/growerp.git /usr/local/growerp && \
-    cd /usr/local/growerp && git fetch && git checkout ecommerce
+    cd /usr/local/growerp && git fetch && git checkout master
 WORKDIR /usr/local/growerp
 RUN /usr/local/flutter/bin/flutter build web --release
 
