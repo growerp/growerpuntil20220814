@@ -23,5 +23,5 @@ class CurrencyList {
   Map<String, dynamic> toJson() => {
         "currencyList": List<dynamic>.from(currencyList.map((x) => x)),
       };
-  String toString() => 'Curencies length ${this.currencyList.length}';
+  String toString() => 'Curencies length ${this.currencyList?.length}';
 }

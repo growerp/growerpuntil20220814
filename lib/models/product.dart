@@ -1,22 +1,29 @@
 // To parse this JSON data, do
 //
-//     final product = productFromJson(jsonString);
+//      product = productFromJson(jsonString);
 
 import 'dart:convert';
-import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'dart:typed_data';
 
-Product productFromJson(String str) => Product.fromJson(json.decode(str));
+Product productFromJson(String str) =>
+    Product.fromJson(json.decode(str)["product"]);
+String productToJson(Product data) =>
+    '{"product":' + json.encode(data.toJson()) + "}";
 
-String productToJson(Product data) => json.encode(data.toJson());
+List<Product> productsFromJson(String str) => List<Product>.from(
+    json.decode(str)["products"].map((x) => Product.fromJson(x)));
+String productsToJson(List<Product> data) =>
+    '{"products":' +
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
+    "}";
 
-class Product extends Equatable {
-  final String productId;
-  final String name;
-  final String description;
-  final double price;
-  final String productCategoryId;
-  final MemoryImage image;
+class Product {
+  String productId;
+  String name;
+  String description;
+  double price;
+  String productCategoryId;
+  Uint8List image;
 
   Product({
     this.productId,
@@ -28,27 +35,23 @@ class Product extends Equatable {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
-      productId: json["productId"],
-      name: json["name"],
-      description: json["description"],
-      price: double.parse(json["price"]),
-      productCategoryId: json["productCategoryId"],
-      image: json["image"] != null && json["image"].indexOf('data:image') == 0
-          ? MemoryImage(base64.decode(json["image"].substring(22)))
-          : MemoryImage(base64.decode("R0lGODlhAQABAAAAACwAAAAAAQABAAA=")));
+        productId: json["productId"],
+        name: json["name"],
+        description: json["description"],
+        price: double.parse(json["price"]),
+        productCategoryId: json["productCategoryId"],
+        image: json["image"] != null ? base64.decode(json["image"]) : null,
+      );
 
   Map<String, dynamic> toJson() => {
         "productId": productId,
         "name": name,
         "description": description,
-        "price": price,
+        "price": price.toString(),
         "productCategoryId": productCategoryId,
-        "image": image.toString(),
+        "image": image != null ? base64.encode(image) : null,
       };
 
-  @override
-  List get props =>
-      [productId, name, description, price, productCategoryId, image];
   @override
   String toString() => 'Product name: $name';
 }

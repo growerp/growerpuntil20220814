@@ -43,7 +43,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       } else {
         yield RegisterError(authenticate);
       }
-    } else if (event is CreateShopButtonPressed) {
+    } else if (event is RegisterCompanyAdmin) {
       yield RegisterSending();
       final authenticate = await repos.register(
           companyName: event.companyName,
@@ -103,14 +103,14 @@ class RegisterButtonPressed extends RegisterEvent {
       ' email: $email }';
 }
 
-class CreateShopButtonPressed extends RegisterEvent {
+class RegisterCompanyAdmin extends RegisterEvent {
   final String companyName;
   final String currency;
   final String firstName;
   final String lastName;
   final String email;
 
-  const CreateShopButtonPressed({
+  const RegisterCompanyAdmin({
     @required this.companyName,
     @required this.currency,
     @required this.firstName,
@@ -123,7 +123,7 @@ class CreateShopButtonPressed extends RegisterEvent {
 
   @override
   String toString() =>
-      'Create shop ButtonPressed { company name: $companyName, email: $email }';
+      'Register CompanyAdmin  { company name: $companyName, email: $email }';
 }
 
 // -------------------------------state ------------------------------

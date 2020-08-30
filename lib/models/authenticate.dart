@@ -28,13 +28,16 @@ class Authenticate {
         apiKey: json["apiKey"],
         moquiSessionToken: json["moquiSessionToken"],
         company: Company.fromJson(json["company"]),
-        user: User.fromJson(json["user"]),
+        user: json["user"] != null ? User.fromJson(json["user"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
         "apiKey": apiKey,
         "moquiSessionToken": moquiSessionToken,
-        "company": company.toJson(),
-        "user": user.toJson(),
+        "company": company?.toJson(),
+        "user": user?.toJson(),
       };
+  @override
+  String toString() => 'Company: ${company?.name} [${company?.partyId}]'
+      'User: ${user?.firstName} ${user?.lastName}[${user?.partyId}]';
 }

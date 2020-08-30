@@ -9,7 +9,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case HomeRoute:
       return MaterialPageRoute(
-          builder: (context) => HomeForm(message: settings.arguments));
+          builder: (context) => MasterHome(message: settings.arguments));
+    case UserRoute:
+      return MaterialPageRoute(
+          builder: (context) => UserForm(settings.arguments));
     case LoginRoute:
       return MaterialPageRoute(
           builder: (context) => LoginForm(settings.arguments));

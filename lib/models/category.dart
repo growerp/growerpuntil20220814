@@ -1,21 +1,27 @@
 // To parse this JSON data, do
 //
-//     final category = categoryFromJson(jsonString);
+//      category = categoryFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 Category categoryFromJson(String str) => Category.fromJson(json.decode(str));
-
 String categoryToJson(Category data) => json.encode(data.toJson());
 
-class Category extends Equatable {
-  final String productCategoryId;
-  final String categoryName;
-  final String preparationAreaId;
-  final String description;
-  final MemoryImage image;
+List<Category> categoriesFromJson(String str) => List<Category>.from(
+    json.decode(str)["categories"].map((x) => Category.fromJson(x)));
+String categoriesToJson(List<Category> data) =>
+    '{"categories":' +
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
+    "}";
+
+class Category {
+  String productCategoryId;
+  String categoryName;
+  String preparationAreaId;
+  String description;
+  Uint8List image;
 
   Category({
     this.productCategoryId,
@@ -26,23 +32,20 @@ class Category extends Equatable {
   });
 
   factory Category.fromJson(Map<String, dynamic> json) => Category(
-      productCategoryId: json["productCategoryId"],
-      categoryName: json["categoryName"],
-      preparationAreaId: json["preparationAreaId"],
-      description: json["description"],
-      image: json["image"] != null && json["image"].indexOf('data:image') == 0
-          ? MemoryImage(base64.decode(json["image"].substring(22)))
-          : MemoryImage(base64.decode("R0lGODlhAQABAAAAACw=")));
+        productCategoryId: json["productCategoryId"],
+        categoryName: json["categoryName"],
+        preparationAreaId: json["preparationAreaId"],
+        description: json["description"],
+        image: json["image"] != null ? base64.decode(json["image"]) : null,
+      );
 
   Map<String, dynamic> toJson() => {
         "productCategoryId": productCategoryId,
         "categoryName": categoryName,
         "preparationAreaId": preparationAreaId,
         "description": description,
-        "image": image.toString(),
+        // image upload separate
       };
 
-  @override
-  List get props =>
-      [productCategoryId, categoryName, preparationAreaId, description, image];
+  String toString() => 'Category name: $categoryName';
 }

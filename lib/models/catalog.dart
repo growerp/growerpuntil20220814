@@ -5,9 +5,11 @@
 import '@models.dart';
 import 'dart:convert';
 
-Catalog catalogFromJson(String str) => Catalog.fromJson(json.decode(str));
+Catalog catalogFromJson(String str) =>
+    Catalog.fromJson(json.decode(str)["catalog"]);
 
-String catalogToJson(Catalog data) => json.encode(data.toJson());
+String catalogToJson(Catalog data) =>
+    '{"catalog":' + json.encode(data.toJson()) + "}";
 
 class Catalog {
   List<Category> categories;

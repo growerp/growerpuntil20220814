@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
-import '../blocs/@bloc.dart';
+import '../blocs/@blocs.dart';
 import '../models/@models.dart';
 import '../services/repos.dart';
 import '../helper_functions.dart';
@@ -58,7 +58,7 @@ class _RegisterHeaderState extends State<RegisterHeader> {
   final _formKey = GlobalKey<FormState>();
   String _currencySelected = kReleaseMode ? '' : 'Thailand Baht [THB]';
   final _companyController = TextEditingController()
-    ..text = kReleaseMode ? '' : 'My Little Ecommerce Shop';
+    ..text = kReleaseMode ? '' : 'Master template app';
   final _firstNameController = TextEditingController()
     ..text = kReleaseMode ? '' : 'John';
   final _lastNameController = TextEditingController()
@@ -67,6 +67,15 @@ class _RegisterHeaderState extends State<RegisterHeader> {
     ..text = kReleaseMode ? '' : 'admin@growerp.com';
 
   _RegisterHeaderState(this.message);
+
+  @override
+  void initState() {
+    Future<Null>.delayed(Duration(milliseconds: 0), () {
+      if (message != null)
+        HelperFunctions.showMessage(context, '$message', Colors.green);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +94,8 @@ class _RegisterHeaderState extends State<RegisterHeader> {
         if (state is RegisterSuccess) {
           BlocProvider.of<AuthBloc>(context)
               .add(UpdateAuth(state.authenticate));
+          print(
+              "====regsiter successs company: ${authenticate?.company?.partyId}");
           if (authenticate?.company?.partyId != null) {
             Navigator.pop(
                 context,
@@ -93,8 +104,9 @@ class _RegisterHeaderState extends State<RegisterHeader> {
           } else {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRoute, ModalRoute.withName(HomeRoute),
-                arguments: "Register Company and admin successfull\n" +
-                    "you can now login with your email password.");
+                arguments: "Register Company and admin successfull\n"
+                    "you can now login at the top right corner\n"
+                    "with your email password.");
           }
         }
       },
@@ -251,7 +263,7 @@ class _RegisterHeaderState extends State<RegisterHeader> {
                                         state is! RegisterSending)
                                       BlocProvider.of<RegisterBloc>(context)
                                           .add(
-                                        CreateShopButtonPressed(
+                                        RegisterCompanyAdmin(
                                           companyName: _companyController.text,
                                           currency: _currencyAbr,
                                           firstName: _firstNameController.text,

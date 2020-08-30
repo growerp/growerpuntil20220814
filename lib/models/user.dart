@@ -1,12 +1,19 @@
 // To parse this JSON data, do
 //
-//     final user = userFromJson(jsonString);
+//      user = userFromJson(jsonString);
 
 import 'dart:convert';
+import 'dart:typed_data';
 
-User userFromJson(String str) => User.fromJson(json.decode(str));
+User userFromJson(String str) => User.fromJson(json.decode(str)["user"]);
+String userToJson(User data) => '{"user":' + json.encode(data.toJson()) + "}";
 
-String userToJson(User data) => json.encode(data.toJson());
+List<User> usersFromJson(String str) =>
+    List<User>.from(json.decode(str)["users"].map((x) => User.fromJson(x)));
+String usersToJson(List<User> data) =>
+    '{"users":' +
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
+    "}";
 
 class User {
   String partyId;
@@ -16,11 +23,10 @@ class User {
   String name;
   String email;
   String groupDescription;
-  List<String> roles;
   String userGroupId;
   dynamic locale;
-  dynamic externalId;
-  String image;
+  String externalId; // when customer register they give their telno
+  Uint8List image;
 
   User({
     this.partyId,
@@ -30,7 +36,6 @@ class User {
     this.name,
     this.email,
     this.groupDescription,
-    this.roles,
     this.userGroupId,
     this.locale,
     this.externalId,
@@ -45,11 +50,10 @@ class User {
         name: json["name"],
         email: json["email"],
         groupDescription: json["groupDescription"],
-        roles: List<String>.from(json["roles"].map((x) => x)),
         userGroupId: json["userGroupId"],
         locale: json["locale"],
         externalId: json["externalId"],
-        image: json["image"],
+        image: json["image"] != null ? base64.decode(json["image"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -60,10 +64,30 @@ class User {
         "name": name,
         "email": email,
         "groupDescription": groupDescription,
-        "roles": List<dynamic>.from(roles.map((x) => x)),
         "userGroupId": userGroupId,
         "locale": locale,
         "externalId": externalId,
-        "image": image,
+        "image": image != null ? base64.encode(image) : null,
       };
+
+  @override
+  List<Object> get props => [
+        partyId,
+        userId,
+        firstName,
+        lastName,
+        name,
+        email,
+        groupDescription,
+        userGroupId,
+        locale,
+        externalId,
+        image,
+      ];
+
+  @override
+  String toString() {
+    return 'User $firstName $lastName [$partyId] img size: '
+        '${image != null ? image.length : 0}';
+  }
 }

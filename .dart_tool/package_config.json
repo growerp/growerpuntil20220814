@@ -20,6 +20,12 @@
       "languageVersion": "2.6"
     },
     {
+      "name": "animations",
+      "rootUri": "file:///home/hans/flutter/.pub-cache/hosted/pub.dartlang.org/animations-1.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.2"
+    },
+    {
       "name": "archive",
       "rootUri": "file:///home/hans/flutter/.pub-cache/hosted/pub.dartlang.org/archive-2.0.13",
       "packageUri": "lib/",
@@ -222,6 +228,12 @@
       "rootUri": "file:///home/hans/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker-0.6.7+4",
       "packageUri": "lib/",
       "languageVersion": "2.1"
+    },
+    {
+      "name": "image_picker_for_web",
+      "rootUri": "file:///home/hans/flutter/.pub-cache/hosted/pub.dartlang.org/image_picker_for_web-0.1.0+1",
+      "packageUri": "lib/",
+      "languageVersion": "2.5"
     },
     {
       "name": "image_picker_platform_interface",
@@ -626,7 +638,7 @@
       "languageVersion": "2.6"
     }
   ],
-  "generated": "2020-08-17T08:29:39.091820Z",
+  "generated": "2020-08-30T05:53:04.131452Z",
   "generator": "pub",
-  "generatorVersion": "2.10.0-4.0.dev.flutter-0341576448"
+  "generatorVersion": "2.10.0-45.0.dev"
 }

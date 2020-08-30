@@ -2,10 +2,8 @@
 export 'authenticate.dart';
 export 'user.dart';
 export 'company.dart';
-export 'companies.dart';
 export 'product.dart';
 export 'category.dart';
 export 'catalog.dart';
 export 'order.dart';
-export 'orders.dart';
 export 'currencyList.dart';

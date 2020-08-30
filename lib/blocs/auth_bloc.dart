@@ -26,18 +26,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield AuthConnectionProblem(connected);
       } else {
         Authenticate authenticate = await repos.getAuthenticate();
-        if (authenticate == null) {
+        if (authenticate == null || authenticate?.company == null) {
           dynamic companies = await repos.getCompanies();
-          if (companies is List && companies.length > 0) {
-            authenticate =
-                Authenticate(company: companies[0], user: User(roles: []));
+          if (companies is String)
+            yield AuthConnectionProblem(companies);
+          else if (companies != null && companies.length > 0) {
+            authenticate = Authenticate(company: companies[0], user: null);
             await repos.persistAuthenticate(authenticate);
-          }
-        }
-        if (authenticate?.apiKey != null) {
-          yield AuthAuthenticated(authenticate);
+            yield AuthUnauthenticated(authenticate);
+          } else
+            yield AuthUnauthenticated(null);
         } else {
-          yield AuthUnauthenticated(authenticate);
+          if (authenticate.apiKey != null) {
+            dynamic result = await repos.checkApikey(authenticate.apiKey);
+            if (result is bool && result == true)
+              yield AuthAuthenticated(authenticate);
+            else {
+              authenticate.apiKey = null; // revoked
+              await repos.persistAuthenticate(authenticate);
+              yield AuthUnauthenticated(authenticate);
+            }
+          } else
+            yield AuthUnauthenticated(authenticate);
         }
       }
     } else if (event is LoggedIn) {

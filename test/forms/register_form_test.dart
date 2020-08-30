@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:master/blocs/@bloc.dart';
+import 'package:master/blocs/@blocs.dart';
 import 'package:master/services/repos.dart';
 import 'package:master/forms/@forms.dart';
 import 'package:master/router.dart' as router;
@@ -92,7 +92,7 @@ void main() {
           registerBloc,
           Stream.fromIterable(<RegisterEvent>[
             LoadRegister(),
-            CreateShopButtonPressed(
+            RegisterCompanyAdmin(
                 companyName: companyName,
                 currency: currencyId,
                 firstName: firstName,

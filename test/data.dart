@@ -3,6 +3,69 @@ import 'dart:math';
 
 final String randomString4 = Random().nextInt(9999).toString();
 
+User user = userFromJson('''
+  {"user": {"firstName": "dummyFirstName",
+            "lastName": "dummyLastName",
+            "email": "dummy@example.com",
+            "name": "dummyUsername",
+            "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+            "userGroupId":"GROWERP_M_ADMIN"
+            }
+  }
+''');
+List<User> users = usersFromJson('''
+  {"users": [
+      { "partyId": "12345",
+        "firstName": "dummyFirstName",
+        "lastName": "dummyLastName",
+        "email": "dummy@example.com",
+        "name": "dummyUsername",
+        "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+        "userGroupId":"GROWERP_M_ADMIN"
+        },
+      { "partyId": "12346",
+        "firstName": "dummyFirstName",
+        "lastName": "dummyLastName",
+        "email": "dummy@example.com",
+        "name": "dummyUsername",
+        "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+        "userGroupId":"GROWERP_M_ADMIN"
+        }
+  ]}
+''');
+
+Company company = companyFromJson('''
+    {  "company": {"name": "Dummy Company Name 2",
+                  "partyId": "100001",
+                  "currency": "dummyCurrency",
+                  "classificationId": "AppEcommerceShop",
+                  "classificationDescr": "App for Ecommerce and shop",
+                  "email": "dummy@example.com",
+      "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+      }
+    }
+''');
+List<Company> companies = companiesFromJson('''
+  {"companies": [
+      {"name": "Dummy Company Name",
+        "partyId": "100001",
+        "currency": "dummyCurrency",
+        "classificationId": "AppEcommerceShop",
+        "classificationDescr": "App for Ecommerce and shop",
+        "email": "dummy@example.com",
+        "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+      },
+      {  "name": "Dummy Company Name 2",
+          "partyId": "100002",
+          "currency": "dummyCurrency",
+          "classificationId": "AppEcommerceShop",
+          "classificationDescr": "App for Ecommerce and shop",
+          "email": "dummy@example.com",
+      "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+      }
+  ]}
+''');
+
 Authenticate authenticateNoKey = authenticateFromJson('''
            {  "company": {"name": "Dummy Company Name",
                           "partyId": "100001",
@@ -10,27 +73,33 @@ Authenticate authenticateNoKey = authenticateFromJson('''
                           "classificationId": "AppEcommerceShop",
                           "classificationDescr": "App for Ecommerce and shop",
                           "email": "dummy@example.com",
-                          "image": "~/assets/images/addImage.png"},
+      "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+                          },
               "user": {"firstName": "dummyFirstName",
                        "lastName": "dummyLastName",
                        "email": "dummy@example.com",
                        "name": "dummyUsername",
-                       "image": "~/assets/images/addImage.png",
+                       "image": null,
                        "groupDescription": "Admin",
-                       "userGroupId":"GROWERP_M_ADMIN",
-                       "roles":["Employee"]},
-              "apiKey": null}
+                       "userGroupId":"GROWERP_M_ADMIN"
+                       },
+              "apiKey": null
+            }
       ''');
 Authenticate authenticate = authenticateFromJson('''
            {  "company": {"name": "Dummy Company Name",
                           "partyId": "100001",
-                          "currency": "dummyCurrency"},
+                          "currency": "dummyCurrency"
+                          },
               "user": {"firstName": "dummyFirstName",
                        "lastName": "dummyLastName",
                        "email": "dummy@example.com",
                        "name": "dummyUsername",
-                       "roles":["Employee"]},
-              "apiKey": "dummyKey"}
+        "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+                       "userGroupId":"GROWERP_M_ADMIN"
+                       },
+              "apiKey": "dummyKey"
+            }
       ''');
 
 final String errorMessage = 'Dummy error message';
@@ -59,45 +128,48 @@ Map register = {
 };
 
 final Catalog emptyCatalog = Catalog(categories: [], products: []);
-final List<Company> companies = [
-  Company(
-      name: "Dummy first Company Name", partyId: '100001', currencyId: "USD"),
-  Company(
-      name: "Dummy second first Company Name",
-      partyId: '100003',
-      currencyId: "THB")
-];
+final Catalog catalog = Catalog(categories: categories, products: products);
 
-final Catalog catalog = catalogFromJson('''
+final Category category = categoryFromJson('''
+  { "category":
+      {"productCategoryId": "dummyFirstCategory", "categoryName": "1stCat",
+      "description": "this is the long description of category first", 
+      "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA="}
+  }''');
+
+final List<Category> categories = categoriesFromJson('''
     {
       "categories": [ 
       {"productCategoryId": "dummyFirstCategory", "categoryName": "1stCat",
       "description": "this is the long description of category first", 
-      "image": "data:image/png;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA="},
+      "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA="},
       {"productCategoryId": "secondCategory", "categoryName": "This is the second category",
       "description": "this is the long description of category second",
-      "image": "data:image/png;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA="}],
-      "products": [
+      "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA="}]
+}''');
+final List<Product> products = productsFromJson('''
+{     "products": [
       {"productId": "dummyFirstProduct", "name": "This is the first product",
-      "image": "data:image/png;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
+      "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
       "price": "23.99", "productCategoryId": "dummyFirstCategory",
       "description": "This is a dummy description of first product"},
       {"productId": "secondProduct", "name": "This is the second product",
-       "image": "data:image/png;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
+       "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
        "price": "17.13", "productCategoryId": "dummyFirstCategory",
        "description": "This is a dummy description of second product"},
       {"productId": "thirdProduct", "name": "This is the third product",
-       "image": "data:image/png;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
+       "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
        "price": "12.33", "productCategoryId": "secondCategory",
        "description": "This is a dummy description of third product"}]
-    }
+}
     ''');
 final Product product = productFromJson('''
+{ "product":
       {"productId": "secondProduct", "name": "This is the second product",
-       "image": "data:image/png;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
+       "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
        "price": "17.13", "productCategoryId": "dummyFirstCategory",
-       "description": "This is a dummy description"},
-    ''');
+       "description": "This is a dummy description"}
+}    ''');
 final CurrencyList currencyList = currencyListFromJson('''
   { "currencyList" : ["Thailand Baht [THB]", "Euro [EUR]",
     "United States Dollar [USD]"] } ''');
