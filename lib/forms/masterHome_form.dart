@@ -28,20 +28,20 @@ class MasterHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: HomeBody(message: message),
+      body: MasterHomeBody(message: message),
     );
   }
 }
 
-class HomeBody extends StatefulWidget {
+class MasterHomeBody extends StatefulWidget {
   final String message;
 
-  const HomeBody({Key key, this.message}) : super(key: key);
+  const MasterHomeBody({Key key, this.message}) : super(key: key);
   @override
-  State<HomeBody> createState() => _HomeState(message);
+  State<MasterHomeBody> createState() => _HomeState(message);
 }
 
-class _HomeState extends State<HomeBody> {
+class _HomeState extends State<MasterHomeBody> {
   final String message;
   Authenticate authenticate;
   Company company;
