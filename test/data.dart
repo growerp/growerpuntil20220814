@@ -181,7 +181,7 @@ final currencies = [
 ];
 
 final Order order = orderFromJson('''
-  { "orderId": null, "orderStatusId": "OrderOpen", "currencyUomId": "THB",
+  { "order": { "orderId": null, "orderStatusId": "OrderOpen", "currencyUomId": "THB",
     "placedDate": null, "placedTime": null, "partyId": null,
     "firstName": "dummyFirstName", "lastName": "dummylastName", "statusId": "Open", 
     "grandTotal": "44.53", "table": null, "accommodationAreaId": null,
@@ -191,7 +191,7 @@ final Order order = orderFromJson('''
     "quantity": "5", "price": "1.5"},
   { "orderItemSeqId": "02", "productId": null, "description": "Macaroni",
     "quantity": "3", "price": "4.5"}
-   ]}
+   ]}}
 ''');
 final Order emptyOrder = Order(currencyId: 'THB', orderItems: []);
 final OrderItem orderItem1 = OrderItem(
