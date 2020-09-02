@@ -38,11 +38,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             yield AuthUnauthenticated(null);
         } else {
           if (authenticate.apiKey != null) {
-            dynamic result = await repos.checkApikey(authenticate.apiKey);
+            repos.setApikey(authenticate.apiKey);
+            dynamic result = await repos.checkApikey();
             if (result is bool && result == true)
               yield AuthAuthenticated(authenticate);
             else {
               authenticate.apiKey = null; // revoked
+              repos.setApikey(null);
               await repos.persistAuthenticate(authenticate);
               yield AuthUnauthenticated(authenticate);
             }

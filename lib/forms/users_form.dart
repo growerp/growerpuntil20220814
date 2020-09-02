@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 import '../models/@models.dart';
 import '../blocs/@blocs.dart';
 import '../services/repos.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
+import '../widgets/@widgets.dart';
 import '@forms.dart';
 
 class UsersForm extends StatefulWidget {
@@ -27,6 +29,17 @@ class _UsersFormState extends State<UsersForm> {
             ..add(LoadUser()),
           child: Scaffold(
               appBar: AppBar(title: const Text('User List')),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () async {
+                  dynamic user = await Navigator.pushNamed(context, UserRoute);
+                  setState(() {
+                    users.add(user);
+                  });
+                },
+                tooltip: 'Add new user',
+                child: Icon(Icons.add),
+              ), // This trailing comma makes auto-formatting nicer for build methods.
+
               body: BlocListener<UsersBloc, UsersState>(listener:
                   (context, state) {
                 if (state is UsersError) {
@@ -38,7 +51,8 @@ class _UsersFormState extends State<UsersForm> {
                       context, 'Update success', Colors.green);
                 }
                 if (state is UserDeleteSuccess) {
-                  Navigator.pop(context, 'Delete successfull,');
+                  HelperFunctions.showMessage(
+                      context, 'Delete success', Colors.green);
                 }
               }, child:
                   BlocBuilder<UsersBloc, UsersState>(builder: (context, state) {
@@ -61,10 +75,17 @@ class _UsersFormState extends State<UsersForm> {
             ),
             title: Row(
               children: <Widget>[
-                Expanded(child: Text("First Name")),
-                Expanded(child: Text("Last Name")),
-                Expanded(child: Text("Email")),
-                Expanded(child: Text("Group")),
+                Expanded(child: Text("Name", textAlign: TextAlign.center)),
+                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
+                  Expanded(
+                      child: Text("login name", textAlign: TextAlign.center)),
+                Expanded(child: Text("Email", textAlign: TextAlign.center)),
+                Expanded(child: Text("Group", textAlign: TextAlign.center)),
+                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
+                  Expanded(
+                      child: Text("Language", textAlign: TextAlign.center)),
+                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
+                  Expanded(child: Text("Country", textAlign: TextAlign.center)),
               ],
             ),
           ),
@@ -80,6 +101,19 @@ class _UsersFormState extends State<UsersForm> {
                     users.replaceRange(index, index + 1, [user]);
                   });
                 },
+                onLongPress: () async {
+                  bool result = await confirmDialog(
+                      context,
+                      "${users[index].firstName} ${users[index].lastName}",
+                      "Delete this user?");
+                  if (result) {
+                    BlocProvider.of<UsersBloc>(context)
+                        .add(DeleteUser(users[index].partyId));
+                    setState(() {
+                      users.removeAt(index);
+                    });
+                  }
+                },
                 child: ListTile(
                   //return  ListTile(
                   leading: CircleAvatar(
@@ -90,11 +124,28 @@ class _UsersFormState extends State<UsersForm> {
                   ),
                   title: Row(
                     children: <Widget>[
-                      Expanded(child: Text(users[index].firstName ?? '')),
-                      Expanded(child: Text(users[index].lastName ?? '')),
-                      Expanded(child: Text(users[index].email ?? '')),
                       Expanded(
-                          child: Text(users[index].groupDescription ?? '')),
+                          child: Text("${users[index].lastName}, "
+                              "${users[index].firstName} "
+                              "[${users[index].partyId}]")),
+                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
+                        Expanded(
+                            child: Text("${users[index].name}",
+                                textAlign: TextAlign.center)),
+                      Expanded(
+                          child: Text("${users[index].email}",
+                              textAlign: TextAlign.center)),
+                      Expanded(
+                          child: Text("${users[index].groupDescription}",
+                              textAlign: TextAlign.center)),
+                      if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
+                        Expanded(
+                            child: Text("${users[index].language}",
+                                textAlign: TextAlign.center)),
+                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
+                        Expanded(
+                            child: Text("${users[index].country}",
+                                textAlign: TextAlign.center)),
                     ],
                   ),
                 ),

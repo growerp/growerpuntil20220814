@@ -50,7 +50,7 @@ class UserForm extends StatelessWidget {
                     }
                     if (state is UserUpdateSuccess) {
                       HelperFunctions.showMessage(
-                          context, 'user updated', Colors.green);
+                          context, 'user added/updated', Colors.green);
                     }
                   }, child: BlocBuilder<UsersBloc, UsersState>(
                           builder: (context, state) {
@@ -58,7 +58,6 @@ class UserForm extends StatelessWidget {
                       return Center(child: CircularProgressIndicator());
                     if (state is UserLoaded) user = state?.user;
                     if (state is UserUpdateSuccess) user = state?.user;
-//                return UserDetail(user);
                     return MyHomePage(user);
                   })))));
     });
@@ -71,14 +70,23 @@ class MyHomePage extends StatefulWidget {
   final User user;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState(user);
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final User user;
+  final _formKey = GlobalKey<FormState>();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  UserGroup _selectedUserGroup;
   PickedFile _imageFile;
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
+
+  _MyHomePageState(this.user);
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -123,9 +131,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       textAlign: TextAlign.center,
                     );
                   }
-                  return _previewImage();
+                  return _showForm();
                 })
-            : _previewImage(),
+            : _showForm(),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -162,16 +170,16 @@ class _MyHomePageState extends State<MyHomePage> {
     return null;
   }
 
-  Widget _previewImage() {
-    final user = widget.user;
+  Widget _showForm() {
+    _firstNameController..text = widget.user?.firstName;
+    _lastNameController..text = user?.lastName;
+    _nameController..text = user?.name;
+    _emailController..text = user?.email;
     User updatedUser;
-    final _formKey = GlobalKey<FormState>();
-    final _firstNameController = TextEditingController()
-      ..text = widget.user?.firstName;
-    final _lastNameController = TextEditingController()
-      ..text = widget.user?.lastName;
-    final _emailController = TextEditingController()..text = user?.email;
     final Text retrieveError = _getRetrieveErrorWidget();
+    if (_selectedUserGroup == null && user?.userGroupId != null)
+      _selectedUserGroup =
+          userGroups.firstWhere((a) => a.userGroupId == user?.userGroupId);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -236,6 +244,17 @@ class _MyHomePageState extends State<MyHomePage> {
                           return null;
                         },
                       ),
+                      SizedBox(height: 20),
+                      TextFormField(
+                        key: Key('name'),
+                        decoration: InputDecoration(labelText: 'Login Name'),
+                        controller: _nameController,
+                        validator: (value) {
+                          if (value.isEmpty)
+                            return 'Please enter a login name?';
+                          return null;
+                        },
+                      ),
                       SizedBox(height: 10),
                       TextFormField(
                         key: Key('email'),
@@ -252,21 +271,59 @@ class _MyHomePageState extends State<MyHomePage> {
                           return null;
                         },
                       ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: 400,
+                        height: 60,
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25.0),
+                          border: Border.all(
+                              color: Colors.grey,
+                              style: BorderStyle.solid,
+                              width: 0.80),
+                        ),
+                        child: DropdownButton<UserGroup>(
+                          key: Key('dropDown'),
+                          underline: SizedBox(), // remove underline
+                          hint: Text('User Group'),
+                          value: _selectedUserGroup,
+                          items: userGroups?.map((item) {
+                            return DropdownMenuItem<UserGroup>(
+                                child: Text(item.description), value: item);
+                          })?.toList(),
+                          onChanged: (UserGroup newValue) {
+                            setState(() {
+                              _selectedUserGroup = newValue;
+                            });
+                          },
+                          isExpanded: true,
+                        ),
+                      ),
                       SizedBox(height: 20),
                       RaisedButton(
                           key: Key('update'),
-                          child: Text('Update'),
+                          child:
+                              Text(user?.partyId == null ? 'Create' : 'Update'),
                           onPressed: () {
                             if (_formKey.currentState.validate())
-                              //  && state is! UsersLoading)
+                              //&& state is! UsersLoading)
                               updatedUser = User(
                                 image: _imageFile != null
                                     ? File(_imageFile.path).readAsBytesSync()
                                     : null,
-                                partyId: user.partyId,
+                                partyId: user?.partyId,
                                 firstName: _firstNameController.text,
                                 lastName: _lastNameController.text,
                                 email: _emailController.text,
+                                name: _nameController.text,
+                                userGroupId: _selectedUserGroup.userGroupId,
+                                language: Localizations.localeOf(context)
+                                    .languageCode
+                                    .toString(),
+                                country: Localizations.localeOf(context)
+                                    .languageCode
+                                    .toString(),
                               );
                             BlocProvider.of<UsersBloc>(context).add(UpdateUser(
                               updatedUser,

@@ -24,7 +24,8 @@ class User {
   String email;
   String groupDescription;
   String userGroupId;
-  dynamic locale;
+  String language;
+  String country;
   String externalId; // when customer register they give their telno
   Uint8List image;
 
@@ -37,7 +38,8 @@ class User {
     this.email,
     this.groupDescription,
     this.userGroupId,
-    this.locale,
+    this.language,
+    this.country,
     this.externalId,
     this.image,
   });
@@ -51,13 +53,14 @@ class User {
         email: json["email"],
         groupDescription: json["groupDescription"],
         userGroupId: json["userGroupId"],
-        locale: json["locale"],
+        language: json["language"],
+        country: json["country"],
         externalId: json["externalId"],
         image: json["image"] != null ? base64.decode(json["image"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
-        "partyId": partyId,
+        "partyId": partyId ?? null,
         "userId": userId,
         "firstName": firstName,
         "lastName": lastName,
@@ -65,7 +68,8 @@ class User {
         "email": email,
         "groupDescription": groupDescription,
         "userGroupId": userGroupId,
-        "locale": locale,
+        "language": language,
+        "country": country,
         "externalId": externalId,
         "image": image != null ? base64.encode(image) : null,
       };
@@ -80,7 +84,8 @@ class User {
         email,
         groupDescription,
         userGroupId,
-        locale,
+        language,
+        country,
         externalId,
         image,
       ];

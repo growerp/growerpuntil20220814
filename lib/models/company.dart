@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'user.dart';
 
 Company companyFromJson(String str) =>
     Company.fromJson(json.decode(str)["company"]);
@@ -25,16 +26,17 @@ class Company {
   String email;
   dynamic currencyId;
   Uint8List image;
+  List<User> employees;
 
-  Company({
-    this.partyId,
-    this.name,
-    this.classificationId,
-    this.classificationDescr,
-    this.email,
-    this.currencyId,
-    this.image,
-  });
+  Company(
+      {this.partyId,
+      this.name,
+      this.classificationId,
+      this.classificationDescr,
+      this.email,
+      this.currencyId,
+      this.image,
+      this.employees});
 
   factory Company.fromJson(Map<String, dynamic> json) => Company(
         partyId: json["partyId"],
@@ -44,6 +46,9 @@ class Company {
         email: json["email"],
         currencyId: json["currencyId"],
         image: json["image"] != null ? base64.decode(json["image"]) : null,
+        employees: json["employees"] != null
+            ? List<User>.from(json["employees"].map((x) => User.fromJson(x)))
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -54,5 +59,8 @@ class Company {
         "email": email,
         "currencyId": currencyId,
         "image": image != null ? base64.encode(image) : null,
+        "employees": employees != null
+            ? List<dynamic>.from(employees.map((x) => x.toJson()))
+            : null,
       };
 }

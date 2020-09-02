@@ -94,8 +94,6 @@ class _RegisterHeaderState extends State<RegisterHeader> {
         if (state is RegisterSuccess) {
           BlocProvider.of<AuthBloc>(context)
               .add(UpdateAuth(state.authenticate));
-          print(
-              "====regsiter successs company: ${authenticate?.company?.partyId}");
           if (authenticate?.company?.partyId != null) {
             Navigator.pop(
                 context,

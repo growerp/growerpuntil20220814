@@ -15,7 +15,6 @@ class Repos {
   final Dio client;
 
   String sessionToken;
-  String apiKey;
 
   Repos({@required this.client}) {
     if (kReleaseMode) {
@@ -80,28 +79,20 @@ class Repos {
           errorDescription = 'Send timeout in connection with API server';
           break;
       }
-      if (e.response != null && e.response.statusCode != 200) {
-        errorDescription = 'Error! code:${e.response.statusCode}, '
-            '${e.response.statusMessage}';
-      }
-/*      if (e.response is Response &&
-          e.response?.data != null &&
-          (e.response?.data['errorCode'] == '400' ||
-              e.response?.data['errorCode'] == '403')) {
-        print('''Moqui data... errorCode: ${e.response.data['errorCode']}
-            errors: ${e.response.data['errors']}''');
-        errorDescription = e.response.data['errors'];
-      }
-*/ //    if (e.response != null) {
-      // print('dio error data: ${e.response.data}');
-      // print('dio error headers: ${e.response.headers}');
-      // print('dio error request: ${e.response.request}');
-//    } else {
-      // Something happened in setting up or sending the request that triggered an Error
-      // print('dio no response, request: ${e.request}');
-      // print('dio no response, message: ${e.message}');
-//    }
+      print("====dio error: $errorDescription");
     }
+    if (e.response != null && e.response.data != null) {
+      errorDescription = e.response.data["errors"];
+    }
+//    if (e.response != null) {
+    // print('dio error data: ${e.response.data}');
+    // print('dio error headers: ${e.response.headers}');
+    // print('dio error request: ${e.response.request}');
+//    } else {
+    // Something happened in setting up or sending the request that triggered an Error
+    // print('dio no response, request: ${e.request}');
+    // print('dio no response, message: ${e.message}');
+//    }
     print('==repos.dart: returning error message: $errorDescription');
     return errorDescription;
   }
@@ -117,9 +108,12 @@ class Repos {
     }
   }
 
-  Future<dynamic> checkApikey(String apiKey) async {
+  void setApikey(String apiKey) {
+    client.options.headers['api_key'] = apiKey;
+  }
+
+  Future<dynamic> checkApikey() async {
     try {
-      client.options.headers['api_key'] = apiKey;
       Response response = await client.get('rest/s1/growerp/100/CheckApiKey');
       return response.data["ok"] == 'ok'; // return true if session token ok
     } catch (e) {
@@ -154,26 +148,26 @@ class Repos {
       String companyPartyId, // if empty will create new company too!
       @required String firstName,
       @required String lastName,
-      String currency,
+      @required String currency,
       @required String email,
       List data}) async {
     try {
-      // create some category and product when company empty
       var locale;
       // if (!kIsWeb) locale = await Devicelocale.currentLocale;
       Response response =
-          await client.post('rest/s1/growerp/100/UserAndCompany', data: {
-        'username': email, 'emailAddress': email,
-        'newPassword': 'qqqqqq9!', 'firstName': firstName,
-        'lastName': lastName, 'locale': locale,
-        'companyPartyId': companyPartyId, // for existing companies
-        'companyName': companyName, 'currencyUomId': currency,
-        'companyEmail': email,
-        'partyClassificationId': 'AppEcommerceShop',
-        'groupDescription': 'Admin',
-        'environment': kReleaseMode,
-        'moquiSessionToken': sessionToken
-      });
+          await client.post('rest/s1/growerp/100/UserAndCompany',
+              data: {
+                'username': email, 'emailAddress': email,
+                'newPassword': 'qqqqqq9!', 'firstName': firstName,
+                'lastName': lastName, 'locale': locale,
+                'companyPartyId': companyPartyId, // for existing companies
+                'companyName': companyName, 'currencyUomId': currency,
+                'companyEmail': email,
+                'partyClassificationId': 'AppMaster',
+                'environment': kReleaseMode,
+                'moquiSessionToken': sessionToken
+              },
+              options: Options(headers: {'api_key': null}));
       return authenticateFromJson(response.toString());
     } catch (e) {
       return responseMessage(e);
@@ -193,8 +187,8 @@ class Repos {
       });
       dynamic result = jsonDecode(response.toString());
       if (result['passwordChange'] == 'true') return 'passwordChange';
-      this.apiKey = result['apiKey'];
       this.sessionToken = result['moquiSessionToken'];
+      client.options.headers['api_key'] = result["apiKey"];
       return authenticateFromJson(response.toString());
     } catch (e) {
       return (responseMessage(e));
@@ -229,8 +223,6 @@ class Repos {
   }
 
   Future<dynamic> logout() async {
-    this.apiKey = null;
-    client.options.headers['api_key'] = this.apiKey;
     try {
       await client.post('rest/logout');
       Authenticate authenticate = await getAuthenticate();
@@ -249,6 +241,7 @@ class Repos {
     } else {
       await prefs.setString('authenticate', null);
     }
+    client.options.headers['api_key'] = authenticate?.apiKey;
   }
 
   Future<Authenticate> getAuthenticate() async {
@@ -260,8 +253,6 @@ class Repos {
 
   Future<dynamic> getUser(String partyId) async {
     try {
-      Authenticate authenticate = await getAuthenticate();
-      client.options.headers['api_key'] = authenticate?.apiKey;
       Response response = await client.get('rest/s1/growerp/100/User',
           queryParameters: {'partyId': partyId});
       if (partyId == null)
@@ -275,20 +266,20 @@ class Repos {
   }
 
   Future<dynamic> updateUser(User user) async {
+    // no partyId is add
     try {
-      Authenticate authenticate = await getAuthenticate();
-      client.options.headers['api_key'] = authenticate?.apiKey;
       Response response;
       if (user.partyId != null) {
         response = await client.patch('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
           'moquiSessionToken': sessionToken
         });
-      } else
+      } else {
         response = await client.put('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
           'moquiSessionToken': sessionToken
         });
+      }
       return User.fromJson(response.data["user"]);
     } catch (e) {
       return responseMessage(e);
@@ -297,11 +288,9 @@ class Repos {
 
   Future<dynamic> deleteUser(String partyId) async {
     try {
-      Authenticate authenticate = await getAuthenticate();
-      client.options.headers['api_key'] = authenticate?.apiKey;
       Response response = await client.delete('rest/s1/growerp/100/User',
-          queryParameters: {'partyid': partyId});
-      return User.fromJson(response.data["user"]);
+          queryParameters: {'partyId': partyId});
+      return response.data["partyId"];
     } catch (e) {
       return responseMessage(e);
     }
@@ -314,71 +303,18 @@ class Repos {
   }) async {
     try {
       String justName = fileName.split('/').last;
-      print("===========id; $id type: $type filename: $justName");
       FormData formData = FormData.fromMap({
         "type": type,
         "id": id,
         "file": await MultipartFile.fromFile(fileName, filename: justName),
         "moquiSessionToken": this.sessionToken
       });
-      Authenticate authenticate = await getAuthenticate();
-      client.options.headers['api_key'] = authenticate?.apiKey;
+//      Authenticate authenticate = await getAuthenticate();
+//      client.options.headers['api_key'] = authenticate?.apiKey;
       await client.post("growerp/uploadImage", data: formData);
       return null;
     } catch (e) {
       return responseMessage(e);
     }
   }
-
-/*  Future<dynamic> addImage({
-    String type, // product, user, company.....
-    String id, // id of the type
-    String size, // small medium large
-    String fileName,
-  }) async {
-    File imageFile = File(fileName);
-    var stream =
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-    // get file length
-    var length = await imageFile.length(); //imageFile is your image file
-    Authenticate authenticate = await getAuthenticate();
-
-    Map<String, String> headers = {
-      "Accept": "application/json",
-      "api_key": authenticate?.apiKey
-    }; // ignore this headers if there is no authentication
-
-    // string to uri
-    var uri = Uri.parse('http://localhost:8080/growerp/uploadImage');
-
-    // create multipart request
-    var request = new http.MultipartRequest("POST", uri);
-
-    // multipart that takes file
-    var multipartFileSign = new http.MultipartFile(
-        'profile_pic', stream, length,
-        filename: basename(imageFile.path));
-
-    // add file to multipart
-    request.files.add(multipartFileSign);
-
-    //add headers
-    request.headers.addAll(headers);
-
-    //adding params
-    //request.fields['loginId'] = '12';
-    //request.fields['firstName'] = 'abc';
-    // request.fields['lastName'] = 'efg';
-
-    // send
-    var response = await request.send();
-
-    print(response.statusCode);
-
-    // listen for response
-    response.stream.transform(utf8.decoder).listen((value) {
-      print(value);
-    });
-  }
-*/
 }

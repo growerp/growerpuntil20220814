@@ -15,6 +15,22 @@ String ordersToJson(List<Order> data) =>
     "}";
 
 class Order {
+  String orderId;
+  String orderStatusId;
+  String currencyId;
+  String placedDate;
+  String placedTime;
+  String companyPartyId;
+  String partyId;
+  String firstName;
+  String lastName;
+  String statusId;
+  double grandTotal;
+  String table;
+  String accommodationAreaId;
+  String accommodationSpotId;
+  List<OrderItem> orderItems;
+
   Order({
     this.orderId,
     this.orderStatusId, // 'OrderOpen','OrderPlaced','OrderApproved', 'OrderCompleted', 'OrderCancelled'
@@ -32,22 +48,6 @@ class Order {
     this.accommodationSpotId,
     this.orderItems,
   });
-
-  String orderId;
-  String orderStatusId;
-  String currencyId;
-  String placedDate;
-  String placedTime;
-  String companyPartyId;
-  String partyId;
-  String firstName;
-  String lastName;
-  String statusId;
-  double grandTotal;
-  String table;
-  String accommodationAreaId;
-  String accommodationSpotId;
-  List<OrderItem> orderItems;
 
   factory Order.fromJson(Map<String, dynamic> json) => Order(
         orderId: json["orderId"],

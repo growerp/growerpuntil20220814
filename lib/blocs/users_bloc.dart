@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import '../models/@models.dart';
 import '../services/repos.dart';
@@ -31,17 +29,19 @@ class UsersBloc extends Bloc<UsersEvent, UsersState> {
       if (event.imageFilename != null)
         result = await repos.uploadImage(
             type: 'user',
-            id: event.user.partyId,
+            id: event.user?.partyId,
             fileName: event.imageFilename);
       if (result != null) yield UsersError(result);
       result = await repos.updateUser(event.user);
       if (result is User) {
         yield UserUpdateSuccess(result);
-      } else
+      } else {
+        yield UserLoaded(event.user);
         yield UsersError(result);
+      }
     } else if (event is DeleteUser) {
       dynamic result = await repos.deleteUser(event.partyId);
-      if (result is User)
+      if (result == event.partyId)
         yield UserDeleteSuccess();
       else
         yield UsersError(result);
@@ -68,7 +68,8 @@ abstract class UsersEvent extends Equatable {
 class LoadUser extends UsersEvent {
   final String partyId; // null for list, present for single party
   LoadUser([this.partyId]); // true for list otherwise detail
-  String toString() => "Loaduser: loading user(s)";
+  String toString() => "Loaduser: loading user(s) : "
+      "${partyId == null ? 'party list' : 'party: $partyId'}";
 }
 
 class UpdateUser extends UsersEvent {
@@ -76,8 +77,9 @@ class UpdateUser extends UsersEvent {
   final String imageFilename;
   final User user;
   UpdateUser(this.user, [this.imageFilename]);
-  String toString() => "Update user: ${this.user.firstName} "
-      "${this.user.lastName}[${this.user.partyId}]";
+  String toString() => "Update user: ${this.user?.firstName} "
+      "${this.user?.lastName}[${this.user?.partyId}]"
+      "image: ${imageFilename != null ? imageFilename.length : ''}";
 }
 
 class UploadImage extends UsersEvent {

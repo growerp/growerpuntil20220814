@@ -57,8 +57,7 @@ void main() {
         when(mockReposRepository.getConnected()).thenAnswer((_) async => true);
         when(mockReposRepository.getAuthenticate())
             .thenAnswer((_) async => authenticate);
-        when(mockReposRepository.checkApikey(authenticate.apiKey))
-            .thenAnswer((_) async => true);
+        when(mockReposRepository.checkApikey()).thenAnswer((_) async => true);
         bloc.add(LoadAuth());
       },
       expect: <AuthState>[
