@@ -60,7 +60,7 @@ class _HomeState extends State<MasterHomeBody> {
 
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthConnectionProblem) {
+      if (state is AuthProblem) {
         return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -137,6 +137,34 @@ class _HomeState extends State<MasterHomeBody> {
                         openContainer: openContainer,
                         image: 'assets/about.png',
                         subtitle: 'About',
+                      );
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: _OpenContainerWrapper(
+                    targetForm: CompanyForm(),
+                    transitionType: _transitionType,
+                    closedBuilder:
+                        (BuildContext _, VoidCallback openContainer) {
+                      return MenuCard(
+                        openContainer: openContainer,
+                        image: 'assets/company.png',
+                        subtitle: 'Company',
+                      );
+                    },
+                  ),
+                ),
+                Expanded(
+                  child: _OpenContainerWrapper(
+                    targetForm: CurrUserForm(),
+                    transitionType: _transitionType,
+                    closedBuilder:
+                        (BuildContext _, VoidCallback openContainer) {
+                      return MenuCard(
+                        openContainer: openContainer,
+                        image: 'assets/personInfo.png',
+                        subtitle: 'My Info',
                       );
                     },
                   ),
@@ -241,11 +269,13 @@ class TopCard extends StatelessWidget {
                   width: MediaQuery.of(context).size.width,
                   child: Center(
                       child: Text(
-                    '\n\n\nHome Page for a Dashboard\n\n\n\n\n'
-                    'Page Selection below\n\n\n\n\n'
-                    'This app is the basis and contains\n'
+                    '\n\nThis app is the basis and contains\n'
                     'the functions which are used\n'
-                    'in most other apps.\n\n\n\n\n',
+                    'in most other apps.\n\n'
+                    '\n\nMulticompany App\n'
+                    'Create a new company at setup (top right) to test&try'
+                    '\n\n\nHome Page for a Dashboard\n\n\n\n\n'
+                    'Page Selection below\n\n\n\n\n',
                     textAlign: TextAlign.center,
                   )))
             ])));

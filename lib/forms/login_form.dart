@@ -83,7 +83,7 @@ class _LoginHeaderState extends State<LoginHeader> {
               cubit: context.bloc<AuthBloc>(),
               listener: (context, state) {
                 if (state is AuthAuthenticated) Navigator.pop(context, true);
-                if (state is AuthConnectionProblem) {
+                if (state is AuthProblem) {
                   Scaffold.of(context).showSnackBar(SnackBar(
                     content: Text('${state.errorMessage}'),
                     backgroundColor: Colors.red,

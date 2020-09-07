@@ -5,76 +5,50 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/@models.dart';
 import '../blocs/@blocs.dart';
-import '../services/repos.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
 import '@forms.dart';
 
-class UserForm extends StatelessWidget {
-  final String partyId;
-  const UserForm(this.partyId);
-
+class CurrUserForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    User user;
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is! AuthAuthenticated) return NoAccessForm('Userlist');
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return BlocProvider(
-          create: (_) => UsersBloc(
-              repos: context.repository<Repos>(),
-              companyPartyId: authenticate?.company?.partyId)
-            ..add(LoadUser(this.partyId)),
-          child: WillPopScope(
-              onWillPop: () async {
-                Navigator.pop(context, user);
-                return;
-              },
-              child: Scaffold(
-                  appBar: AppBar(
-                    title: const Text('User page'),
-                    actions: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.home),
-                          onPressed: () =>
-                              Navigator.pushNamed(context, HomeRoute)),
-                    ],
-                  ),
-                  body: BlocListener<UsersBloc, UsersState>(
-                      listener: (context, state) {
-                    if (state is UserLoaded) user = state?.user;
-                    if (state is UsersError) {
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                    }
-                    if (state is UserUpdateSuccess) {
-                      HelperFunctions.showMessage(
-                          context, 'user added/updated', Colors.green);
-                    }
-                  }, child: BlocBuilder<UsersBloc, UsersState>(
-                          builder: (context, state) {
-                    if (state is UsersLoading)
-                      return Center(child: CircularProgressIndicator());
-                    if (state is UserLoaded) user = state?.user;
-                    if (state is UserUpdateSuccess) user = state?.user;
-                    return MyUserPage(user);
-                  })))));
-    });
+    return Scaffold(
+        appBar: AppBar(title: const Text('CurrUser page'), actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.home),
+              onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+        ]),
+        body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+          if (state is AuthUserUpdateSuccess) {
+            HelperFunctions.showMessage(context,
+                'CurrUser ${authenticate.user.name} updated', Colors.green);
+          }
+          if (state is AuthProblem) {
+            HelperFunctions.showMessage(
+                context, '${state.errorMessage}', Colors.red);
+          }
+        }, builder: (context, state) {
+          if (state is AuthUnauthenticated) return NoAccessForm('CurrUserlist');
+          if (state is AuthAuthenticated) authenticate = state.authenticate;
+          if (state is AuthLoading)
+            return Center(child: CircularProgressIndicator());
+          return CurrUserPage(authenticate);
+        }));
   }
 }
 
-class MyUserPage extends StatefulWidget {
-  MyUserPage(this.user);
+class CurrUserPage extends StatefulWidget {
+  CurrUserPage(this.authenticate);
 
-  final User user;
+  final Authenticate authenticate;
 
   @override
-  _MyUserState createState() => _MyUserState(user);
+  _CurrUserState createState() => _CurrUserState(authenticate);
 }
 
-class _MyUserState extends State<MyUserPage> {
-  final User user;
+class _CurrUserState extends State<CurrUserPage> {
+  final Authenticate authenticate;
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -86,7 +60,7 @@ class _MyUserState extends State<MyUserPage> {
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
 
-  _MyUserState(this.user);
+  _CurrUserState(this.authenticate);
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -171,15 +145,17 @@ class _MyUserState extends State<MyUserPage> {
   }
 
   Widget _showForm() {
-    _firstNameController..text = widget.user?.firstName;
-    _lastNameController..text = user?.lastName;
-    _nameController..text = user?.name;
-    _emailController..text = user?.email;
-    User updatedUser;
+    User user = authenticate.user;
+    _firstNameController..text = authenticate.user?.firstName;
+    _lastNameController..text = authenticate.user?.lastName;
+    _nameController..text = authenticate.user?.name;
+    _emailController..text = authenticate.user?.email;
+    User updatedCurrUser;
+
+    if (_selectedUserGroup == null && authenticate.user?.userGroupId != null)
+      _selectedUserGroup = userGroups
+          .firstWhere((a) => a.userGroupId == authenticate.user?.userGroupId);
     final Text retrieveError = _getRetrieveErrorWidget();
-    if (_selectedUserGroup == null && user?.userGroupId != null)
-      _selectedUserGroup =
-          userGroups.firstWhere((a) => a.userGroupId == user?.userGroupId);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -191,7 +167,7 @@ class _MyUserState extends State<MyUserPage> {
     }
     return WillPopScope(
         onWillPop: () async {
-          Navigator.pop(context, updatedUser);
+          Navigator.pop(context, updatedCurrUser);
           return false;
         },
         child: Center(
@@ -215,9 +191,9 @@ class _MyUserState extends State<MyUserPage> {
                                 ? kIsWeb
                                     ? Image.network(_imageFile.path)
                                     : Image.file(File(_imageFile.path))
-                                : user?.image != null
-                                    ? Image.memory(user?.image)
-                                    : Text(user?.firstName ?? '',
+                                : user.image != null
+                                    ? Image.memory(user.image)
+                                    : Text(user.name.substring(0, 1) ?? '',
                                         style: TextStyle(
                                             fontSize: 30,
                                             color: Colors.black))),
@@ -272,61 +248,60 @@ class _MyUserState extends State<MyUserPage> {
                         },
                       ),
                       SizedBox(height: 10),
-                      Container(
-                        width: 400,
-                        height: 60,
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25.0),
-                          border: Border.all(
-                              color: Colors.grey,
-                              style: BorderStyle.solid,
-                              width: 0.80),
-                        ),
-                        child: DropdownButton<UserGroup>(
-                          key: Key('dropDown'),
-                          underline: SizedBox(), // remove underline
-                          hint: Text('User Group'),
-                          value: _selectedUserGroup,
-                          items: userGroups?.map((item) {
-                            return DropdownMenuItem<UserGroup>(
-                                child: Text(item.description), value: item);
-                          })?.toList(),
-                          onChanged: (UserGroup newValue) {
-                            setState(() {
-                              _selectedUserGroup = newValue;
-                            });
-                          },
-                          isExpanded: true,
-                        ),
-                      ),
-                      SizedBox(height: 20),
+                      Visibility(
+                          visible: authenticate.user.userGroupId ==
+                              'GROWERP_M_ADMIN',
+                          child: Container(
+                            width: 400,
+                            height: 60,
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              border: Border.all(
+                                  color: Colors.grey,
+                                  style: BorderStyle.solid,
+                                  width: 0.80),
+                            ),
+                            child: DropdownButton<UserGroup>(
+                              key: Key('dropDown'),
+                              underline: SizedBox(), // remove underline
+                              hint: Text('User Group'),
+                              value: _selectedUserGroup,
+                              disabledHint: Text('Access by admin only'),
+                              items: userGroups?.map((item) {
+                                return DropdownMenuItem<UserGroup>(
+                                    child: Text(item.description), value: item);
+                              })?.toList(),
+                              onChanged: (UserGroup newValue) {
+                                setState(() {
+                                  _selectedUserGroup = newValue;
+                                });
+                              },
+                              isExpanded: true,
+                            ),
+                          )),
                       RaisedButton(
                           key: Key('update'),
                           child:
-                              Text(user?.partyId == null ? 'Create' : 'Update'),
+                              Text(user.partyId == null ? 'Create' : 'Update'),
                           onPressed: () {
                             if (_formKey.currentState.validate())
                               //&& state is! UsersLoading)
-                              updatedUser = User(
+                              updatedCurrUser = User(
                                 image: _imageFile != null
                                     ? File(_imageFile.path).readAsBytesSync()
                                     : null,
-                                partyId: user?.partyId,
+                                partyId: user.partyId,
                                 firstName: _firstNameController.text,
                                 lastName: _lastNameController.text,
-                                email: _emailController.text,
                                 name: _nameController.text,
+                                email: _emailController.text,
                                 userGroupId: _selectedUserGroup.userGroupId,
-                                language: Localizations.localeOf(context)
-                                    .languageCode
-                                    .toString(),
-                                country: Localizations.localeOf(context)
-                                    .languageCode
-                                    .toString(),
                               );
-                            BlocProvider.of<UsersBloc>(context).add(UpdateUser(
-                              updatedUser,
+                            authenticate.user = updatedCurrUser;
+                            BlocProvider.of<AuthBloc>(context)
+                                .add(UpdateUserAuth(
+                              authenticate,
                               _imageFile?.path,
                             ));
                           })

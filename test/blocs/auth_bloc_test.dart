@@ -46,7 +46,7 @@ void main() {
       },
       expect: <AuthState>[
         AuthLoading(),
-        AuthConnectionProblem(errorMessage),
+        AuthProblem(errorMessage),
       ],
     );
 

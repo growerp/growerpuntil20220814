@@ -23,13 +23,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthLoading();
       final dynamic connected = await repos.getConnected();
       if (connected is String) {
-        yield AuthConnectionProblem(connected);
+        yield AuthProblem(connected);
       } else {
         Authenticate authenticate = await repos.getAuthenticate();
         if (authenticate == null || authenticate?.company == null) {
           dynamic companies = await repos.getCompanies();
           if (companies is String)
-            yield AuthConnectionProblem(companies);
+            yield AuthProblem(companies);
           else if (companies != null && companies.length > 0) {
             authenticate = Authenticate(company: companies[0], user: null);
             await repos.persistAuthenticate(authenticate);
@@ -63,9 +63,48 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (event is UpdateAuth) {
       await repos.persistAuthenticate(event.authenticate);
       yield AuthUnauthenticated(event.authenticate);
+    } else if (event is UpdateCompanyAuth) {
+      yield AuthLoading();
+      dynamic result;
+      if (event.imageFilename != null) {
+        result = await repos.uploadImage(
+            type: 'company',
+            id: event.authenticate.company.partyId,
+            fileName: event.imageFilename);
+        if (result != null) yield AuthProblem(result);
+      } else {
+        result = await repos.updateCompany(event.authenticate.company);
+        if (result is Company) {
+          event.authenticate.company = result;
+          yield AuthCompanyUpdateSuccess(event.authenticate);
+        } else {
+          yield AuthProblem(result);
+        }
+      }
+    } else if (event is UpdateUserAuth) {
+      yield AuthLoading();
+      dynamic result;
+      if (event.imageFilename != null) {
+        result = await repos.uploadImage(
+            type: 'user',
+            id: event.authenticate.user.partyId,
+            fileName: event.imageFilename);
+        if (result != null) yield AuthProblem(result);
+      } else {
+        result = await repos.updateUser(event.authenticate.user);
+        if (result is User) {
+          event.authenticate.user = result;
+          yield AuthUserUpdateSuccess(event.authenticate);
+        } else {
+          yield AuthProblem(result);
+        }
+      }
     } else {
       final Authenticate authenticate = await repos.getAuthenticate();
-      yield AuthUnauthenticated(authenticate);
+      if (authenticate.apiKey != null)
+        yield AuthAuthenticated(authenticate);
+      else
+        yield AuthUnauthenticated(authenticate);
     }
   }
 }
@@ -77,8 +116,6 @@ abstract class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class ConnectionProblem extends AuthEvent {}
-
 class LoadAuth extends AuthEvent {
   @override
   String toString() => 'Load AuthBoc with backend status.';
@@ -88,13 +125,34 @@ class Logout extends AuthEvent {}
 
 class UpdateAuth extends AuthEvent {
   final Authenticate authenticate;
-
   UpdateAuth(this.authenticate);
   @override
   List<Object> get props => [authenticate];
-
   @override
   String toString() => 'Update Authenticate in AuthBloc';
+}
+
+class UpdateCompanyAuth extends AuthEvent {
+  final Authenticate authenticate;
+  final String imageFilename;
+  UpdateCompanyAuth(this.authenticate, this.imageFilename);
+  @override
+  List<Object> get props => [authenticate];
+  @override
+  String toString() => 'Update Company ${authenticate.company.name}'
+      '[${authenticate.company.partyId}] via AuthBloc';
+}
+
+class UpdateUserAuth extends AuthEvent {
+  final Authenticate authenticate;
+  final String imageFilename;
+  UpdateUserAuth(this.authenticate, this.imageFilename);
+  @override
+  List<Object> get props => [authenticate];
+  @override
+  String toString() => 'Update User ${authenticate.user.firstName} '
+      '${authenticate.user.lastName}'
+      '[${authenticate.company.partyId}] via AuthBloc';
 }
 
 class LoggedIn extends AuthEvent {
@@ -134,13 +192,13 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class AuthConnectionProblem extends AuthState {
+class AuthProblem extends AuthState {
   final String errorMessage;
-  AuthConnectionProblem(this.errorMessage);
+  AuthProblem(this.errorMessage);
   @override
   List<Object> get props => [errorMessage];
   @override
-  String toString() => 'AuthConnectionProblem: errorMessage: $errorMessage';
+  String toString() => 'AuthProblem: errorMessage: $errorMessage';
 }
 
 class AuthAuthenticated extends AuthState {
@@ -152,6 +210,14 @@ class AuthAuthenticated extends AuthState {
   String toString() =>
       'AuthAuthenticated, company: ${authenticate?.company?.name}' +
       '[${authenticate?.company?.partyId}] username: ${authenticate?.user?.name}';
+}
+
+class AuthUserUpdateSuccess extends AuthAuthenticated {
+  AuthUserUpdateSuccess(Authenticate authenticate) : super(authenticate);
+}
+
+class AuthCompanyUpdateSuccess extends AuthAuthenticated {
+  AuthCompanyUpdateSuccess(Authenticate authenticate) : super(authenticate);
 }
 
 class AuthUnauthenticated extends AuthState {

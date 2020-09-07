@@ -39,7 +39,7 @@ void main() {
       expect(response, equals(expected));
     });
 
-    test('Get currencies', () async {
+/*    test('Get currencies', () async {
       final responsepayload =
           currencyListToJson(CurrencyList(currencyList: currencies));
       final httpResponse = ResponseBody.fromString(
@@ -58,7 +58,7 @@ void main() {
 
       expect(response, equals(expected));
     });
-
+*/
     test('Get companies', () async {
       final responsepayload = companiesToJson(companies);
       final httpResponse = ResponseBody.fromString(
