@@ -147,7 +147,7 @@ class Repos {
       String companyPartyId, // if empty will create new company too!
       @required String firstName,
       @required String lastName,
-      @required String currency,
+      String currency,
       @required String email,
       List data}) async {
     try {

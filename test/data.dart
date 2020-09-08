@@ -73,7 +73,14 @@ Authenticate authenticateNoKey = authenticateFromJson('''
                           "classificationId": "AppEcommerceShop",
                           "classificationDescr": "App for Ecommerce and shop",
                           "email": "dummy@example.com",
-      "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
+      "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+                          "employees": [{"firstName": "dummyFirstName",
+                       "lastName": "dummyLastName",
+                       "email": "dummy@example.com",
+                       "name": "dummyUsername",
+                       "image": null,
+                       "groupDescription": "Admin",
+                       "userGroupId":"GROWERP_M_ADMIN"}]
                           },
               "user": {"firstName": "dummyFirstName",
                        "lastName": "dummyLastName",

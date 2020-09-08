@@ -49,11 +49,14 @@ void main() {
       Authenticate result = authenticateFromJson(response.toString());
       authenticateNoKey.company.partyId = result.company.partyId;
       authenticateNoKey.company.image = result.company.image;
+      authenticateNoKey.company.employees = result.company.employees;
       authenticateNoKey.user.partyId = result.user?.partyId;
       authenticateNoKey.user.userId = result.user?.userId;
       authenticateNoKey.user.email = result.user?.email;
       authenticateNoKey.user.name = result.user?.name;
       authenticateNoKey.user.image = result.user?.image;
+      authenticateNoKey.user.language = result.user?.language;
+      authenticateNoKey.user.country = result.user?.country;
       authenticateNoKey.company.email = result.company.email;
       authenticateNoKey.apiKey = result.apiKey;
       apiKey = result.apiKey;
