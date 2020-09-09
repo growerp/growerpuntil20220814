@@ -80,7 +80,7 @@ class Repos {
       }
       print("====dio error: $errorDescription");
     }
-    if (e.response != null && e.response.data != null) {
+    if (e?.response != null && e?.response?.data != null) {
       errorDescription = e.response.data["errors"];
     }
 //    if (e.response != null) {
@@ -174,12 +174,9 @@ class Repos {
   }
 
   Future<dynamic> login(
-      {@required String companyPartyId,
-      @required String username,
-      @required String password}) async {
+      {@required String username, @required String password}) async {
     try {
       Response response = await client.post('rest/s1/growerp/100/Login', data: {
-        'companyPartyId': companyPartyId,
         'username': username,
         'password': password,
         'moquiSessionToken': this.sessionToken

@@ -103,9 +103,7 @@ void main() {
           loginBloc,
           Stream.fromIterable(<LoginEvent>[
             LoginButtonPressed(
-                companyPartyId: companyPartyId,
-                username: username,
-                password: password)
+                company: company, username: username, password: password)
           ]));
     });
     testWidgets('goto register screen: register new customer',

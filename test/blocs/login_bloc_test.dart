@@ -1,5 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:master/models/company.dart';
 import 'package:mockito/mockito.dart';
 import 'package:master/blocs/@blocs.dart';
 import 'package:master/services/repos.dart';
@@ -32,15 +33,10 @@ void main() {
     blocTest('Login success',
         build: () => LoginBloc(repos: mockReposRepository),
         act: (bloc) async {
-          when(mockReposRepository.login(
-                  companyPartyId: companyPartyId,
-                  username: email,
-                  password: password))
+          when(mockReposRepository.login(username: email, password: password))
               .thenAnswer((_) async => authenticate);
           bloc.add(LoginButtonPressed(
-              companyPartyId: companyPartyId,
-              username: email,
-              password: password));
+              company: company, username: email, password: password));
           whenListen(
               authBloc,
               Stream.fromIterable(
@@ -52,15 +48,10 @@ void main() {
       'Login failure',
       build: () => LoginBloc(repos: mockReposRepository),
       act: (bloc) async {
-        when(mockReposRepository.login(
-                companyPartyId: companyPartyId,
-                username: username,
-                password: password))
+        when(mockReposRepository.login(username: username, password: password))
             .thenAnswer((_) async => errorMessage);
         bloc.add(LoginButtonPressed(
-            companyPartyId: companyPartyId,
-            username: username,
-            password: password));
+            company: company, username: username, password: password));
       },
       expect: <LoginState>[LogginInProgress(), LoginError(errorMessage)],
     );
@@ -69,15 +60,10 @@ void main() {
       'Login succes and change password',
       build: () => LoginBloc(repos: mockReposRepository),
       act: (bloc) async {
-        when(mockReposRepository.login(
-                companyPartyId: companyPartyId,
-                username: username,
-                password: password))
+        when(mockReposRepository.login(username: username, password: password))
             .thenAnswer((_) async => "passwordChange");
         bloc.add(LoginButtonPressed(
-            companyPartyId: companyPartyId,
-            username: username,
-            password: password));
+            company: company, username: username, password: password));
         whenListen(
             authBloc,
             Stream.fromIterable(

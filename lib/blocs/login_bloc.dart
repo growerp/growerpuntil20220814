@@ -32,11 +32,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (event is LoginButtonPressed) {
       yield LogginInProgress();
       final result = await repos.login(
-        companyPartyId: event.companyPartyId,
         username: event.username,
         password: event.password,
       );
       if (result is Authenticate) {
+        if (result.company == null) result.company = event.company;
         yield LoginOk(result);
       } else if (result == "passwordChange") {
         yield LoginChangePw(event.username, event.password);
@@ -69,12 +69,12 @@ class LoadLogin extends LoginEvent {
 }
 
 class LoginButtonPressed extends LoginEvent {
-  final String companyPartyId;
+  final Company company;
   final String username;
   final String password;
 
   const LoginButtonPressed({
-    @required this.companyPartyId,
+    @required this.company,
     @required this.username,
     @required this.password,
   });

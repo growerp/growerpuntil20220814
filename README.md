@@ -1,4 +1,5 @@
-# growerp
+# GrowERP master App
+
 GrowERP Flutter frontend component for Android, IOS and Web using Flutter.
 
 Under development.
@@ -15,13 +16,12 @@ functions:
 6. change pasword
 7. communication with the server.
 8. tests of all functions.
-9. switch to new company.
+9. switch to new another company.
 10. 'About' form describing the App.
 11. routing
 12. state management
 13. master of ALL models
+14. Fully multicompany.
 
-
-For the backend you need the Moqui ERP system (moqui.org) 
+For the backend you need the Moqui or OFBiz ERP system (moqui.org) 
 with an extra component: https://github.com/growerp/growerp-backend-mobile
-

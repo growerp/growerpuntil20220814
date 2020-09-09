@@ -240,7 +240,7 @@ class _LoginHeaderState extends State<LoginHeader> {
                             state is! LogginInProgress)
                           BlocProvider.of<LoginBloc>(context).add(
                               LoginButtonPressed(
-                                  companyPartyId: _companySelected.partyId,
+                                  company: _companySelected,
                                   username: _usernameController.text,
                                   password: _passwordController.text));
                       }),

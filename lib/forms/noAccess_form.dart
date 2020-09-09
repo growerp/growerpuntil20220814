@@ -9,7 +9,10 @@ class NoAccessForm extends StatelessWidget {
   Widget build(BuildContext context) {
     String message;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthUnauthenticated) message = "You need to login first";
+      if (state is AuthUnauthenticated) {
+        message =
+            "You are not logged in to company: ${state.authenticate.company.name}";
+      }
       return Scaffold(
         body: Center(
           child: Text(message != null ? message : 'No access to $name form'),

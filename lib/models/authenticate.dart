@@ -27,7 +27,8 @@ class Authenticate {
   factory Authenticate.fromJson(Map<String, dynamic> json) => Authenticate(
         apiKey: json["apiKey"],
         moquiSessionToken: json["moquiSessionToken"],
-        company: Company.fromJson(json["company"]),
+        company:
+            json["company"] != null ? Company.fromJson(json["company"]) : null,
         user: json["user"] != null ? User.fromJson(json["user"]) : null,
       );
 

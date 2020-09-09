@@ -108,10 +108,8 @@ void main() {
       when(dioAdapterMock.fetch(any, any, any))
           .thenAnswer((_) async => httpResponse);
 
-      final response = await repos.login(
-          companyPartyId: companyPartyId,
-          username: username,
-          password: password);
+      final response =
+          await repos.login(username: username, password: password);
       final expected = authenticate;
 
       expect(
