@@ -23,29 +23,77 @@ import '@forms.dart';
 
 class MasterHome extends StatelessWidget {
   final String message;
-  const MasterHome({Key key, this.message}) : super(key: key);
+  MasterHome(this.message);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MasterHomeBody(message: message),
-    );
+    Authenticate authenticate;
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) authenticate = state.authenticate;
+      if (state is AuthUnauthenticated) authenticate = state.authenticate;
+      return Scaffold(
+          appBar: AppBar(
+              title: Text("${authenticate?.company?.name ?? 'Company??'} " +
+                  "${authenticate?.apiKey != null ? "- username: " + authenticate?.user?.name : ''}"),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.settings),
+                    tooltip: 'Settings',
+                    onPressed: () async {
+                      await _settingsDialog(context, authenticate);
+                    }),
+                if (authenticate?.apiKey == null)
+                  IconButton(
+                      icon: Icon(Icons.exit_to_app),
+                      tooltip: 'Login',
+                      onPressed: () async {
+                        if (await Navigator.pushNamed(context, LoginRoute) ==
+                            true) {
+                          Navigator.popAndPushNamed(context, HomeRoute,
+                              arguments: 'Login Successful');
+                        } else {
+                          HelperFunctions.showMessage(
+                              context, 'Not logged in', Colors.green);
+                        }
+                      }),
+                if (authenticate?.apiKey != null)
+                  IconButton(
+                      icon: Icon(Icons.do_not_disturb),
+                      tooltip: 'Logout',
+                      onPressed: () => {
+                            BlocProvider.of<AuthBloc>(context).add(Logout()),
+                            Future<Null>.delayed(Duration(milliseconds: 300),
+                                () {
+                              Navigator.popAndPushNamed(context, HomeRoute,
+                                  arguments: 'Logout successful');
+                            })
+                          })
+              ]),
+          body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthProblem) {
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+                }
+              },
+              child: MasterHomeBody(authenticate, message)));
+    });
   }
 }
 
 class MasterHomeBody extends StatefulWidget {
+  final Authenticate authenticate;
   final String message;
-
-  const MasterHomeBody({Key key, this.message}) : super(key: key);
+  MasterHomeBody(this.authenticate, this.message);
   @override
-  State<MasterHomeBody> createState() => _HomeState(message);
+  State<MasterHomeBody> createState() => _HomeState(authenticate, message);
 }
 
 class _HomeState extends State<MasterHomeBody> {
+  final Authenticate authenticate;
   final String message;
-  Authenticate authenticate;
   ContainerTransitionType _transitionType = ContainerTransitionType.fadeThrough;
-  _HomeState(this.message);
+  _HomeState(this.authenticate, this.message);
 
   @override
   void initState() {
@@ -58,172 +106,75 @@ class _HomeState extends State<MasterHomeBody> {
   }
 
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthProblem) {
-        return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(
-                child: RaisedButton(
-                    child: Text("${state.errorMessage} \nRetry?"),
-                    onPressed: () {
-                      BlocProvider.of<AuthBloc>(context).add(LoadAuth());
-                    }),
-              )
-            ]);
-      }
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      if (state is AuthUnauthenticated) authenticate = state.authenticate;
-      return Scaffold(
-        appBar: AppBar(
-            title: Text("${authenticate.company?.name ?? 'Company??'} " +
-                "${authenticate?.apiKey != null ? "- username: " + authenticate?.user?.name : ''}"),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.settings),
-                  tooltip: 'Settings',
-                  onPressed: () async {
-                    await _settingsDialog(context, authenticate);
-                  }),
-              if (authenticate?.apiKey == null)
-                IconButton(
-                    icon: Icon(Icons.exit_to_app),
-                    tooltip: 'Login',
-                    onPressed: () async {
-                      if (await Navigator.pushNamed(context, LoginRoute) ==
-                          true) {
-                        Navigator.popAndPushNamed(context, HomeRoute,
-                            arguments: 'Login Successful');
-                      } else {
-                        HelperFunctions.showMessage(
-                            context, 'Not logged in', Colors.green);
-                      }
-                    }),
-              if (authenticate?.apiKey != null)
-                IconButton(
-                    icon: Icon(Icons.do_not_disturb),
-                    tooltip: 'Logout',
-                    onPressed: () => {
-                          BlocProvider.of<AuthBloc>(context).add(Logout()),
-                          Future<Null>.delayed(Duration(milliseconds: 300), () {
-                            Navigator.popAndPushNamed(context, HomeRoute,
-                                arguments: 'Logout successful');
-                          })
-                        })
-            ]),
-        body: ListView(
-          padding: const EdgeInsets.all(8.0),
+    return ListView(
+      padding: const EdgeInsets.all(8.0),
+      children: <Widget>[
+        _OpenContainerWrapper(
+          targetForm: DetailForm(),
+          transitionType: _transitionType,
+          closedBuilder: (BuildContext _, VoidCallback openContainer) {
+            return TopCard(openContainer: openContainer);
+          },
+        ),
+        const SizedBox(height: 16.0),
+        Row(
           children: <Widget>[
-            _OpenContainerWrapper(
-              targetForm: DetailForm(),
-              transitionType: _transitionType,
-              closedBuilder: (BuildContext _, VoidCallback openContainer) {
-                return TopCard(openContainer: openContainer);
-              },
+            Expanded(
+              child: _OpenContainerWrapper(
+                targetForm: AboutForm(),
+                transitionType: _transitionType,
+                closedBuilder: (BuildContext _, VoidCallback openContainer) {
+                  return MenuCard(
+                    openContainer: openContainer,
+                    image: 'assets/about.png',
+                    subtitle: 'About',
+                  );
+                },
+              ),
             ),
-            const SizedBox(height: 16.0),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: _OpenContainerWrapper(
-                    targetForm: AboutForm(),
-                    transitionType: _transitionType,
-                    closedBuilder:
-                        (BuildContext _, VoidCallback openContainer) {
-                      return MenuCard(
-                        openContainer: openContainer,
-                        image: 'assets/about.png',
-                        subtitle: 'About',
-                      );
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: _OpenContainerWrapper(
-                    targetForm: CompanyForm(),
-                    transitionType: _transitionType,
-                    closedBuilder:
-                        (BuildContext _, VoidCallback openContainer) {
-                      return MenuCard(
-                        openContainer: openContainer,
-                        image: 'assets/company.png',
-                        subtitle: 'Company',
-                      );
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: _OpenContainerWrapper(
-                    targetForm: UserForm(authenticate.user),
-                    transitionType: _transitionType,
-                    closedBuilder:
-                        (BuildContext _, VoidCallback openContainer) {
-                      return MenuCard(
-                        openContainer: openContainer,
-                        image: 'assets/personInfo.png',
-                        subtitle: 'My Info',
-                      );
-                    },
-                  ),
-                ),
-                Expanded(
-                  child: _OpenContainerWrapper(
-                    targetForm: UsersForm(),
-                    transitionType: _transitionType,
-                    closedBuilder:
-                        (BuildContext _, VoidCallback openContainer) {
-                      return MenuCard(
-                        openContainer: openContainer,
-                        image: 'assets/users.png',
-                        subtitle: 'Users',
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-              ],
+            Expanded(
+              child: _OpenContainerWrapper(
+                targetForm: CompanyForm(),
+                transitionType: _transitionType,
+                closedBuilder: (BuildContext _, VoidCallback openContainer) {
+                  return MenuCard(
+                    openContainer: openContainer,
+                    image: 'assets/company.png',
+                    subtitle: 'Company',
+                  );
+                },
+              ),
             ),
+            Expanded(
+              child: _OpenContainerWrapper(
+                targetForm: UserForm(widget.authenticate?.user),
+                transitionType: _transitionType,
+                closedBuilder: (BuildContext _, VoidCallback openContainer) {
+                  return MenuCard(
+                    openContainer: openContainer,
+                    image: 'assets/personInfo.png',
+                    subtitle: 'My Info',
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              child: _OpenContainerWrapper(
+                targetForm: UsersForm(),
+                transitionType: _transitionType,
+                closedBuilder: (BuildContext _, VoidCallback openContainer) {
+                  return MenuCard(
+                    openContainer: openContainer,
+                    image: 'assets/users.png',
+                    subtitle: 'Users',
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 8.0),
           ],
         ),
-      );
-    });
-  }
-
-  _settingsDialog(BuildContext context, Authenticate authenticate) async {
-    return showDialog<String>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            title: Text('Settings', textAlign: TextAlign.center),
-            content: Container(
-              height: 200,
-              child: Column(children: <Widget>[
-                RaisedButton(
-                  child: Text('Select an another company'),
-                  onPressed: () async {
-                    authenticate.company.partyId = null;
-                    BlocProvider.of<AuthBloc>(context)
-                        .add(UpdateAuth(authenticate));
-                    Navigator.popAndPushNamed(context, LoginRoute);
-                  },
-                ),
-                SizedBox(height: 20),
-                RaisedButton(
-                  child: Text('Create a new company and admin'),
-                  onPressed: () {
-                    authenticate.company.partyId = null;
-                    BlocProvider.of<AuthBloc>(context)
-                        .add(UpdateAuth(authenticate));
-                    Navigator.popAndPushNamed(context, RegisterRoute);
-                  },
-                ),
-              ]),
-            ));
-      },
+      ],
     );
   }
 }
@@ -330,4 +281,41 @@ class _InkWellOverlay extends StatelessWidget {
       ),
     );
   }
+}
+
+_settingsDialog(BuildContext context, Authenticate authenticate) async {
+  return showDialog<String>(
+    context: context,
+    barrierDismissible: true,
+    builder: (BuildContext context) {
+      return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          title: Text('Settings', textAlign: TextAlign.center),
+          content: Container(
+            height: 200,
+            child: Column(children: <Widget>[
+              RaisedButton(
+                child: Text('Select an another company'),
+                onPressed: () async {
+                  authenticate.company.partyId = null;
+                  BlocProvider.of<AuthBloc>(context)
+                      .add(UpdateAuth(authenticate));
+                  Navigator.popAndPushNamed(context, LoginRoute);
+                },
+              ),
+              SizedBox(height: 20),
+              RaisedButton(
+                child: Text('Create a new company and admin'),
+                onPressed: () {
+                  authenticate.company.partyId = null;
+                  BlocProvider.of<AuthBloc>(context)
+                      .add(UpdateAuth(authenticate));
+                  Navigator.popAndPushNamed(context, RegisterRoute);
+                },
+              ),
+            ]),
+          ));
+    },
+  );
 }

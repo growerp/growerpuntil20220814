@@ -98,7 +98,7 @@ class _UsersFormState extends State<UsersForm> {
                   dynamic user = await Navigator.pushNamed(context, UserRoute,
                       arguments: users[index]);
                   setState(() {
-                    users.replaceRange(index, index + 1, [user]);
+                    if (user != null) users.replaceRange(index, index + 1, [user]);
                   });
                 },
                 onLongPress: () async {
