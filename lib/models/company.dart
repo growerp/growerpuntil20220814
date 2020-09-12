@@ -63,4 +63,7 @@ class Company {
             ? List<dynamic>.from(employees.map((x) => x.toJson()))
             : null,
       };
+
+  String toString() => 'Company name: $name[$partyId] empl: ${employees?.length}';
+
 }

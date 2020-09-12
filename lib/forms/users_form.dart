@@ -1,9 +1,22 @@
+/*
+ * This software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import '../models/@models.dart';
 import '../blocs/@blocs.dart';
-import '../services/repos.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
@@ -15,56 +28,43 @@ class UsersForm extends StatefulWidget {
 }
 
 class _UsersFormState extends State<UsersForm> {
-  List<User> users;
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is! AuthAuthenticated) return NoAccessForm('Userlist');
+    return Scaffold(
+      appBar: AppBar(title: const Text('User List')),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          dynamic user = await Navigator.pushNamed(context, UserRoute);
+          setState(() {
+            authenticate.company.employees.add(user);
+          });
+        },
+        tooltip: 'Add new user',
+        child: Icon(Icons.add),
+      ), 
+      body:BlocConsumer<AuthBloc, AuthState>(listener:(context, state) {
+        if (state is AuthProblem) {
+          HelperFunctions.showMessage(
+              context, '${state.errorMessage}', Colors.red);
+        }
+        if (state is AuthUserUpdateSuccess) {
+          HelperFunctions.showMessage(
+              context, 'Update success', Colors.green);
+        }
+        if (state is AuthUserDeleteSuccess) {
+          HelperFunctions.showMessage(
+              context, 'Delete success', Colors.green);
+        }
+      }, builder: (context, state) {
+      if (state is AuthUnauthenticated) return NoAccessForm('Users');
       if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return BlocProvider(
-          create: (_) => UsersBloc(
-              repos: context.repository<Repos>(),
-              companyPartyId: authenticate?.company?.partyId)
-            ..add(LoadUser()),
-          child: Scaffold(
-              appBar: AppBar(title: const Text('User List')),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () async {
-                  dynamic user = await Navigator.pushNamed(context, UserRoute);
-                  setState(() {
-                    users.add(user);
-                  });
-                },
-                tooltip: 'Add new user',
-                child: Icon(Icons.add),
-              ), // This trailing comma makes auto-formatting nicer for build methods.
-
-              body: BlocListener<UsersBloc, UsersState>(listener:
-                  (context, state) {
-                if (state is UsersError) {
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-                }
-                if (state is UserUpdateSuccess) {
-                  HelperFunctions.showMessage(
-                      context, 'Update success', Colors.green);
-                }
-                if (state is UserDeleteSuccess) {
-                  HelperFunctions.showMessage(
-                      context, 'Delete success', Colors.green);
-                }
-              }, child:
-                  BlocBuilder<UsersBloc, UsersState>(builder: (context, state) {
-                if (state is UsersLoading)
-                  return Center(child: CircularProgressIndicator());
-                if (state is UsersLoaded) users = state?.users;
-                return userList(context, users);
-              }))));
-    });
+      return userList(context, authenticate);
+      }));
   }
 
-  Widget userList(context, List<User> users) {
+  Widget userList(context, Authenticate authenticate) {
+    List<User> users = authenticate.company.employees;
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(
@@ -96,7 +96,7 @@ class _UsersFormState extends State<UsersForm> {
               return InkWell(
                 onTap: () async {
                   dynamic user = await Navigator.pushNamed(context, UserRoute,
-                      arguments: users[index].partyId);
+                      arguments: users[index]);
                   setState(() {
                     users.replaceRange(index, index + 1, [user]);
                   });
@@ -107,8 +107,8 @@ class _UsersFormState extends State<UsersForm> {
                       "${users[index].firstName} ${users[index].lastName}",
                       "Delete this user?");
                   if (result) {
-                    BlocProvider.of<UsersBloc>(context)
-                        .add(DeleteUser(users[index].partyId));
+                    BlocProvider.of<AuthBloc>(context)
+                        .add(DeleteUser(authenticate, users[index].partyId));
                     setState(() {
                       users.removeAt(index);
                     });
@@ -120,7 +120,7 @@ class _UsersFormState extends State<UsersForm> {
                     backgroundColor: Colors.green,
                     child: users[index]?.image != null
                         ? Image.memory(users[index]?.image)
-                        : Text(users[index].firstName[0]),
+                        : Text(users[index]?.firstName[0]),
                   ),
                   title: Row(
                     children: <Widget>[

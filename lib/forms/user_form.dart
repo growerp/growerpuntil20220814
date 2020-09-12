@@ -5,28 +5,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/@models.dart';
 import '../blocs/@blocs.dart';
-import '../services/repos.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
 import '@forms.dart';
 
 class UserForm extends StatelessWidget {
-  final String partyId;
-  const UserForm(this.partyId);
+  final User user;
+  UserForm(this.user);
 
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    User user;
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is! AuthAuthenticated) return NoAccessForm('Userlist');
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return BlocProvider(
-          create: (_) => UsersBloc(
-              repos: context.repository<Repos>(),
-              companyPartyId: authenticate?.company?.partyId)
-            ..add(LoadUser(this.partyId)),
-          child: WillPopScope(
+    User user = this.user;
+    return  WillPopScope(
               onWillPop: () async {
                 Navigator.pop(context, user);
                 return;
@@ -41,39 +32,37 @@ class UserForm extends StatelessWidget {
                               Navigator.pushNamed(context, HomeRoute)),
                     ],
                   ),
-                  body: BlocListener<UsersBloc, UsersState>(
-                      listener: (context, state) {
-                    if (state is UserLoaded) user = state?.user;
-                    if (state is UsersError) {
+                  body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+                    if (state is AuthProblem) {
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                     }
-                    if (state is UserUpdateSuccess) {
+                    if (state is AuthUserUpdateSuccess) {
                       HelperFunctions.showMessage(
                           context, 'user added/updated', Colors.green);
                     }
-                  }, child: BlocBuilder<UsersBloc, UsersState>(
-                          builder: (context, state) {
-                    if (state is UsersLoading)
+                  }, builder: (context, state) {
+                    if (state is AuthUnauthenticated) return NoAccessForm('Userlist');
+                    if (state is AuthAuthenticated) authenticate = state.authenticate;
+                    if (state is AuthLoading)
                       return Center(child: CircularProgressIndicator());
-                    if (state is UserLoaded) user = state?.user;
-                    if (state is UserUpdateSuccess) user = state?.user;
-                    return MyUserPage(user);
-                  })))));
-    });
+                    if (state is AuthUserUpdateSuccess) user = state?.authenticate?.user;
+                  
+                    return MyUserPage(authenticate, user);
+    })));
   }
 }
 
 class MyUserPage extends StatefulWidget {
-  MyUserPage(this.user);
-
+  final Authenticate authenticate;
   final User user;
-
+  MyUserPage(this.authenticate, this.user);
   @override
-  _MyUserState createState() => _MyUserState(user);
+  _MyUserState createState() => _MyUserState(authenticate,user);
 }
 
 class _MyUserState extends State<MyUserPage> {
+  final Authenticate authenticate;
   final User user;
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
@@ -86,7 +75,7 @@ class _MyUserState extends State<MyUserPage> {
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
 
-  _MyUserState(this.user);
+  _MyUserState(this.authenticate,this.user);
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -171,7 +160,7 @@ class _MyUserState extends State<MyUserPage> {
   }
 
   Widget _showForm() {
-    _firstNameController..text = widget.user?.firstName;
+    _firstNameController..text = user?.firstName;
     _lastNameController..text = user?.lastName;
     _nameController..text = user?.name;
     _emailController..text = user?.email;
@@ -205,7 +194,7 @@ class _MyUserState extends State<MyUserPage> {
                         onTap: () async {
                           PickedFile pickedFile = await _picker.getImage(
                               source: ImageSource.gallery);
-                          BlocProvider.of<UsersBloc>(context)
+                          BlocProvider.of<AuthBloc>(context)
                               .add(UploadImage(user.partyId, pickedFile.path));
                         },
                         child: CircleAvatar(
@@ -217,7 +206,7 @@ class _MyUserState extends State<MyUserPage> {
                                     : Image.file(File(_imageFile.path))
                                 : user?.image != null
                                     ? Image.memory(user?.image)
-                                    : Text(user?.firstName ?? '',
+                                    : Text(user?.firstName?.substring(0,1) ?? '',
                                         style: TextStyle(
                                             fontSize: 30,
                                             color: Colors.black))),
@@ -325,7 +314,8 @@ class _MyUserState extends State<MyUserPage> {
                                     .languageCode
                                     .toString(),
                               );
-                            BlocProvider.of<UsersBloc>(context).add(UpdateUser(
+                            BlocProvider.of<AuthBloc>(context).add(UpdateUser(
+                              widget.authenticate,
                               updatedUser,
                               _imageFile?.path,
                             ));

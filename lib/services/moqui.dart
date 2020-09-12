@@ -120,6 +120,16 @@ class Repos {
     }
   }
 
+  Future<dynamic> checkCompany(String partyId) async {
+    try {
+      Response response = await client.get('rest/s1/growerp/100/CheckCompany',
+        queryParameters: {'partyId': partyId});
+      return response.data["ok"] == 'ok'; // return true if session token ok
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
   Future<dynamic> getCurrencies() async {
     try {
       Response response = await client.get('rest/s1/growerp/100/CurrencyList');

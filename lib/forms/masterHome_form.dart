@@ -44,7 +44,6 @@ class MasterHomeBody extends StatefulWidget {
 class _HomeState extends State<MasterHomeBody> {
   final String message;
   Authenticate authenticate;
-  Company company;
   ContainerTransitionType _transitionType = ContainerTransitionType.fadeThrough;
   _HomeState(this.message);
 
@@ -76,10 +75,9 @@ class _HomeState extends State<MasterHomeBody> {
       }
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       if (state is AuthUnauthenticated) authenticate = state.authenticate;
-      company = authenticate?.company;
       return Scaffold(
         appBar: AppBar(
-            title: Text("${company?.name ?? 'Company??'} " +
+            title: Text("${authenticate.company?.name ?? 'Company??'} " +
                 "${authenticate?.apiKey != null ? "- username: " + authenticate?.user?.name : ''}"),
             actions: <Widget>[
               IconButton(
@@ -157,7 +155,7 @@ class _HomeState extends State<MasterHomeBody> {
                 ),
                 Expanded(
                   child: _OpenContainerWrapper(
-                    targetForm: CurrUserForm(),
+                    targetForm: UserForm(authenticate.user),
                     transitionType: _transitionType,
                     closedBuilder:
                         (BuildContext _, VoidCallback openContainer) {

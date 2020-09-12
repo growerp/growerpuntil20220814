@@ -33,7 +33,7 @@ class RegisterForm extends StatelessWidget {
           ],
         ),
         body: BlocProvider(
-          create: (BuildContext context) =>
+          create: (context) =>
               RegisterBloc(repos: context.repository<Repos>())
                 ..add(LoadRegister(
                     companyPartyId: authenticate?.company?.partyId,
