@@ -163,7 +163,7 @@ class _CompanyState extends State<CompanyPage> {
     Company updatedCompany;
 
     final Text retrieveError = _getRetrieveErrorWidget();
-    if (_selectedCurrency == null && company.currencyId != null)
+    if (_selectedCurrency == null && company?.currencyId != null && currencies != null)
       _selectedCurrency =
           currencies.firstWhere((a) => a.currencyId == company.currencyId);
     if (retrieveError != null) {

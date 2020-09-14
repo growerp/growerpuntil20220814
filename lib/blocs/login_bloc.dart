@@ -17,16 +17,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
     if (event is LoadLogin) {
       yield LoginLoading();
-      if (event.companyPartyId == null) {
+      if (event.authenticate?.company?.partyId == null) {
+        // no company selected yet so select one
         dynamic companies = await repos.getCompanies();
         if (companies is List) {
-          yield LoginLoaded(companies: companies);
+          yield LoginLoaded(event.authenticate, companies);
         } else {
           yield LoginError(companies);
         }
       } else {
         // create new customer existing company
-        yield LoginLoaded();
+        yield LoginLoaded(event.authenticate);
       }
     }
     if (event is LoginButtonPressed) {
@@ -36,7 +37,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: event.password,
       );
       if (result is Authenticate) {
-        if (result.company == null) result.company = event.company;
         yield LoginOk(result);
       } else if (result == "passwordChange") {
         yield LoginChangePw(event.username, event.password);
@@ -55,17 +55,12 @@ abstract class LoginEvent extends Equatable {
 }
 
 class LoadLogin extends LoginEvent {
-  final String companyPartyId;
-  final String companyName;
-  final String username;
-
-  LoadLogin([this.companyPartyId, this.companyName, this.username]);
-  @override
-  List<Object> get props => [companyPartyId, companyName, username];
+  final Authenticate authenticate;
+  LoadLogin([this.authenticate]);
 
   @override
   String toString() =>
-      'Login Load event: company: $companyName[$companyPartyId] username: $username';
+      'Login Load event: company: ${authenticate?.company?.toString()}';
 }
 
 class LoginButtonPressed extends LoginEvent {
@@ -95,8 +90,9 @@ class LoginInitial extends LoginState {}
 class LoginLoading extends LoginState {}
 
 class LoginLoaded extends LoginState {
+  final Authenticate authenticate;
   final List<Company> companies;
-  LoginLoaded({this.companies});
+  LoginLoaded(this.authenticate,[this.companies]);
   @override
   List<Object> get props => [companies];
   String toString() => 'Login loaded, companies size: ${companies?.length}';

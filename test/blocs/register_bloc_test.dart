@@ -31,35 +31,17 @@ void main() {
 
     blocTest(
       'Register load success',
-      build: () => RegisterBloc(repos: mockReposRepository),
-      act: (bloc) async {
-        when(mockReposRepository.getCurrencies())
-            .thenAnswer((_) async => currencies);
-        bloc.add(LoadRegister());
-      },
+      build: () => RegisterBloc(repos: mockReposRepository)..add(LoadRegister()),
       expect: <RegisterState>[
         RegisterLoading(),
-        RegisterLoaded(currencies: currencies)
+        RegisterLoaded()
       ],
-    );
-
-    blocTest(
-      'Register load error',
-      build: () => RegisterBloc(repos: mockReposRepository),
-      act: (bloc) async {
-        when(mockReposRepository.getCurrencies())
-            .thenAnswer((_) async => errorMessage);
-        bloc.add(LoadRegister());
-      },
-      expect: <RegisterState>[RegisterLoading(), RegisterError(errorMessage)],
     );
 
     blocTest(
       'Register existing shop success',
       build: () => RegisterBloc(repos: mockReposRepository),
       act: (bloc) async {
-        when(mockReposRepository.getCurrencies())
-            .thenAnswer((_) async => currencies);
         when(mockReposRepository.register(
                 companyPartyId: companyPartyId,
                 firstName: firstName,
@@ -75,7 +57,7 @@ void main() {
       },
       expect: <RegisterState>[
         RegisterLoading(),
-        RegisterLoaded(currencies: currencies),
+        RegisterLoaded(),
         RegisterSending(),
         RegisterSuccess(authenticate)
       ],
@@ -84,8 +66,6 @@ void main() {
       'Register new shop success',
       build: () => RegisterBloc(repos: mockReposRepository),
       act: (bloc) async {
-        when(mockReposRepository.getCurrencies())
-            .thenAnswer((_) async => currencies);
         when(mockReposRepository.register(
                 companyName: companyName,
                 currency: currencyId,
@@ -103,7 +83,7 @@ void main() {
       },
       expect: <RegisterState>[
         RegisterLoading(),
-        RegisterLoaded(currencies: currencies),
+        RegisterLoaded(),
         RegisterSending(),
         RegisterSuccess(authenticateNoKey)
       ],
@@ -112,8 +92,6 @@ void main() {
       'Register Failure',
       build: () => RegisterBloc(repos: mockReposRepository),
       act: (bloc) async {
-        when(mockReposRepository.getCurrencies())
-            .thenAnswer((_) async => currencies);
         when(mockReposRepository.register(
                 companyPartyId: companyPartyId,
                 firstName: firstName,
@@ -129,7 +107,7 @@ void main() {
       },
       expect: <RegisterState>[
         RegisterLoading(),
-        RegisterLoaded(currencies: currencies),
+        RegisterLoaded(),
         RegisterSending(),
         RegisterError(errorMessage)
       ],

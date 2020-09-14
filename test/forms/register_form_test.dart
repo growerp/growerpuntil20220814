@@ -37,7 +37,7 @@ void main() {
         (WidgetTester tester) async {
       when(authBloc.state).thenReturn(AuthUnauthenticated(null));
       when(registerBloc.state)
-          .thenReturn(RegisterLoaded(currencies: currencies));
+          .thenReturn(RegisterLoaded());
       await tester.pumpWidget(RepositoryProvider(
         create: (context) => repos,
         child: BlocProvider<AuthBloc>.value(
@@ -67,7 +67,7 @@ void main() {
         (WidgetTester tester) async {
       when(authBloc.state).thenReturn(AuthUnauthenticated(null));
       when(registerBloc.state)
-          .thenReturn(RegisterLoaded(currencies: currencies));
+          .thenReturn(RegisterLoaded());
       await tester.pumpWidget(RepositoryProvider(
         create: (context) => repos,
         child: BlocProvider<AuthBloc>.value(

@@ -28,13 +28,6 @@ void main() {
       sessionToken = response.data;
       expect(response.data.length, 20);
     });
-
-    test('CurrencyList', () async {
-      Response response = await client.get('s1/growerp/100/CurrencyList');
-      dynamic result = currencyListFromJson(response.toString()).currencyList;
-      expect(result.length,
-          170); // TODO: if wrong is detected but test will not fail
-    });
   });
 
   group('Register first company', () {

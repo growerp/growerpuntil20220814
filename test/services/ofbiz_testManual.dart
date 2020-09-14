@@ -27,7 +27,7 @@ void main() {
   client.options.connectTimeout = 10000; //10s
   client.options.receiveTimeout = 20000;
   client.options.headers = {'Content-Type': 'application/json'};
-  print("need a local trunk version of OFBiz with REST plugin");
+  print("need a local trunk version of OFBiz with REST and Growerp plugin");
   print("=========================================================");
 
 /*  client.interceptors

@@ -34,7 +34,7 @@ class MasterHome extends StatelessWidget {
       return Scaffold(
           appBar: AppBar(
               title: Text("${authenticate?.company?.name ?? 'Company??'} " +
-                  "${authenticate?.apiKey != null ? "- username: " + authenticate?.user?.name : ''}"),
+                  "${authenticate?.user != null ? ", user: ${authenticate?.user?.firstName} ${authenticate?.user?.lastName}" : ''}"),
               actions: <Widget>[
                 IconButton(
                     icon: Icon(Icons.settings),
@@ -217,15 +217,18 @@ class TopCard extends StatelessWidget {
               SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: Center(
-                      child: Text(
-                    '\n\nThis app is the basis and contains\n'
-                    'the functions which are used\n'
-                    'in most other apps.\n\n'
-                    '\n\nMulticompany App\n'
-                    'Create a new company at setup (top right) to test&try'
-                    '\n\n\nHome Page for a Dashboard\n\n\n\n\n'
-                    'Page Selection below\n\n\n\n\n',
-                    textAlign: TextAlign.center,
+                      child: InkWell(
+                    child: Text(
+                        '\n\nThis app is the basis and contains\n'
+                        'the functions which are used\n'
+                        'in most other apps.\n'
+                        'Click for a function list at the Readme\n\n'
+                        '\n\nMulticompany App\n'
+                        'Create a new company at setup (top right) to test&try'
+                        '\n\n\nHome Page for a Dashboard\n\n\n\n\n'
+                        'Page Selection below\n\n\n\n\n',
+                        textAlign: TextAlign.center),
+                    onTap: () => Navigator.pushNamed(context, AboutRoute),
                   )))
             ])));
   }

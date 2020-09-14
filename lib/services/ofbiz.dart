@@ -113,18 +113,10 @@ class Repos {
   }
 
   Future<dynamic> checkApikey() async {
+    print("=====${client.options.headers['api_key']}");
     try {
       Response response = await client.get('rest/s1/growerp/100/CheckApiKey');
       return response.data["ok"] == 'ok'; // return true if session token ok
-    } catch (e) {
-      return responseMessage(e);
-    }
-  }
-
-  Future<dynamic> getCurrencies() async {
-    try {
-      Response response = await client.get('rest/s1/growerp/100/CurrencyList');
-      return currencyListFromJson(response.toString()).currencyList;
     } catch (e) {
       return responseMessage(e);
     }
@@ -300,7 +292,6 @@ class Repos {
     try {
       Response response = await client.patch('rest/s1/growerp/100/Company',
           data: {
-            'company': companyToJson(company),
             'moquiSessionToken': sessionToken
           });
       return companyFromJson(response.toString());

@@ -33,47 +33,64 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   @override
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
+    Authenticate authenticate;
+
+    Future<void> findDefaultCompany() async {
+      print("===15====");
+      dynamic companies = await repos.getCompanies();
+      if (companies is List<Company> && companies.length > 0) {
+        print("===16====");
+        authenticate =
+            Authenticate(company: companies[0], user: authenticate?.user);
+        await repos.persistAuthenticate(authenticate);
+      } else {
+        authenticate = Authenticate(company: null, user: authenticate?.user);
+      }
+    }
+
+    Future<AuthState> checkApikey() async {
+      print("===10==== apiKey: ${authenticate.apiKey}");
+      repos.setApikey(authenticate.apiKey);
+      dynamic result = await repos.checkApikey();
+      if (result is bool && result) {
+        print("===11====");
+        return AuthAuthenticated(authenticate);
+      } else {
+        print("===12====");
+        authenticate.apiKey = null; // revoked
+        repos.setApikey(null);
+        await repos.persistAuthenticate(authenticate);
+        return AuthUnauthenticated(authenticate);
+      }
+    }
+
     if (event is LoadAuth) {
       yield AuthLoading();
-      final dynamic connected = await repos.getConnected();
+      dynamic connected = await repos.getConnected();
       if (connected is String) {
         yield AuthProblem(connected);
       } else {
-        Authenticate authenticate = await repos.getAuthenticate();
+        authenticate = await repos.getAuthenticate();
+        print("===authenticate: ${authenticate.toString()}");
         if (authenticate?.company?.partyId != null) {
-          // check if company still exist
-          dynamic result = await repos.checkCompany(authenticate.company.partyId);
-          if (result == false) {
-            // when not get default company
-            authenticate.company = null;
-          }
-        }
-        if (authenticate?.company == null) {
-          // no preferred company yet, find one
-          dynamic companies = await repos.getCompanies();
-          if (companies is String)
-            yield AuthProblem(companies);
-          else if (companies != null && companies.length > 0) {
-            authenticate = Authenticate(company: companies[0], user: null);
-            await repos.persistAuthenticate(authenticate);
-            yield AuthUnauthenticated(authenticate);
-          } else
-            yield AuthUnauthenticated(null);
-        } else {
-          // check if apiKey still valid
+          print("===1====");
+          // check company
+          dynamic result =
+              await repos.checkCompany(authenticate.company.partyId);
+          if (result == false) await findDefaultCompany();
+          print("===2====");
           if (authenticate.apiKey != null) {
-            repos.setApikey(authenticate.apiKey);
-            dynamic result = await repos.checkApikey();
-            if (result is bool && result == true)
-              yield AuthAuthenticated(authenticate);
-            else {
-              authenticate.apiKey = null; // revoked
-              repos.setApikey(null);
-              await repos.persistAuthenticate(authenticate);
-              yield AuthUnauthenticated(authenticate);
-            }
-          } else
+            // now check user apiKey
+            print("===3====");
+            yield await checkApikey();
+          } else {
             yield AuthUnauthenticated(authenticate);
+          }
+        } else {
+          await findDefaultCompany();
+          if (authenticate.apiKey != null) {
+          yield await checkApikey();
+          }
         }
       }
     } else if (event is LoggedIn) {
@@ -251,6 +268,24 @@ class AuthProblem extends AuthState {
   String toString() => 'AuthProblem: errorMessage: $errorMessage';
 }
 
+class AuthAuthenticated extends AuthState {
+  final Authenticate authenticate;
+  AuthAuthenticated(this.authenticate);
+  @override
+  List<Object> get props => [authenticate];
+  @override
+  String toString() => 'Authenticated: ${authenticate.toString()}';
+}
+
+class AuthUnauthenticated extends AuthState {
+  final Authenticate authenticate;
+  AuthUnauthenticated(this.authenticate);
+  @override
+  List<Object> get props => [authenticate];
+  @override
+  String toString() => 'Unauthenticated: ${authenticate.toString()}';
+}
+
 class AuthUserUpdateSuccess extends AuthAuthenticated {
   AuthUserUpdateSuccess(Authenticate authenticate) : super(authenticate);
 }
@@ -261,22 +296,4 @@ class AuthUserDeleteSuccess extends AuthAuthenticated {
 
 class AuthCompanyUpdateSuccess extends AuthAuthenticated {
   AuthCompanyUpdateSuccess(Authenticate authenticate) : super(authenticate);
-}
-
-class AuthAuthenticated extends AuthState {
-  final Authenticate authenticate;
-  AuthAuthenticated(this.authenticate);
-  @override
-  List<Object> get props => [authenticate];
-  @override
-  String toString() => authenticate.toString();
-}
-
-class AuthUnauthenticated extends AuthState {
-  final Authenticate authenticate;
-  AuthUnauthenticated(this.authenticate);
-  @override
-  List<Object> get props => [authenticate];
-  @override
-  String toString() => authenticate.toString();
 }

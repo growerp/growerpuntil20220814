@@ -114,10 +114,6 @@ class _RegisterHeaderState extends State<RegisterHeader> {
             builder: (context, state) {
           if (state is RegisterLoading || state is RegisterSending)
             return Center(child: CircularProgressIndicator());
-          if (state is RegisterLoaded) {
-            currencies = state?.currencies;
-            _currencySelected = _currencySelected ?? currencies[0];
-          }
           return Center(
               child: Container(
                   width: 400,

@@ -6,6 +6,5 @@ export 'product.dart';
 export 'category.dart';
 export 'catalog.dart';
 export 'order.dart';
-export 'currencyList.dart';
 export 'userGroup.dart';
 export 'currency.dart';

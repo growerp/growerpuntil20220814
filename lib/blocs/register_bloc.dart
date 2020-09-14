@@ -20,12 +20,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       yield RegisterLoading();
       if (event.companyPartyId == null) {
         // create new company and admin user
-        dynamic currencies = await repos.getCurrencies();
-        if (currencies is List) {
-          yield RegisterLoaded(currencies: currencies);
-        } else {
-          yield RegisterError(currencies);
-        }
+          yield RegisterLoaded();
       } else {
         // create new customer existing company
         yield RegisterLoaded();
@@ -138,14 +133,7 @@ class RegisterInitial extends RegisterState {}
 
 class RegisterLoading extends RegisterState {}
 
-class RegisterLoaded extends RegisterState {
-  final List<String> currencies;
-  RegisterLoaded({this.currencies});
-  @override
-  List<Object> get props => [currencies];
-  @override
-  String toString() => "Register Loaded: currencies: ${currencies?.length}";
-}
+class RegisterLoaded extends RegisterState {}
 
 class RegisterSending extends RegisterState {}
 

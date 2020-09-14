@@ -177,9 +177,6 @@ final Product product = productFromJson('''
        "price": "17.13", "productCategoryId": "dummyFirstCategory",
        "description": "This is a dummy description"}
 }    ''');
-final CurrencyList currencyList = currencyListFromJson('''
-  { "currencyList" : ["Thailand Baht [THB]", "Euro [EUR]",
-    "United States Dollar [USD]"] } ''');
 final String currencyId = 'USD';
 final currencies = [
   "Thailand Baht [THB]",

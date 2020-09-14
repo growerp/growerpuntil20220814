@@ -36,7 +36,7 @@ void main() {
     testWidgets('check text fields with company selection',
         (WidgetTester tester) async {
       when(authBloc.state).thenReturn(AuthUnauthenticated(null));
-      when(loginBloc.state).thenReturn(LoginLoaded(companies: companies));
+      when(loginBloc.state).thenReturn(LoginLoaded(null, companies));
       await tester.pumpWidget(RepositoryProvider(
         create: (context) => repos,
         child: BlocProvider<AuthBloc>.value(
@@ -58,7 +58,7 @@ void main() {
         (WidgetTester tester) async {
       when(authBloc.state).thenReturn(AuthUnauthenticated(
           Authenticate(company: Company(partyId: '100000', name: 'dummy'))));
-      when(loginBloc.state).thenReturn(LoginLoaded(companies: companies));
+      when(loginBloc.state).thenReturn(LoginLoaded(authenticate, companies));
       await tester.pumpWidget(RepositoryProvider(
         create: (context) => repos,
         child: BlocProvider<AuthBloc>.value(
@@ -80,7 +80,7 @@ void main() {
 //      when(loginBloc.state).thenReturn(LoginLoaded(companies));
       when(authBloc.state).thenReturn(AuthUnauthenticated(
           Authenticate(company: Company(partyId: '100000', name: 'dummy'))));
-      when(loginBloc.state).thenReturn(LoginLoaded(companies: companies));
+      when(loginBloc.state).thenReturn(LoginLoaded(authenticate, companies));
       await tester.pumpWidget(RepositoryProvider(
         create: (context) => repos,
         child: BlocProvider<AuthBloc>.value(
@@ -130,7 +130,7 @@ void main() {
     testWidgets('forgot password', (WidgetTester tester) async {
       when(authBloc.state).thenReturn(AuthUnauthenticated(
           Authenticate(company: Company(partyId: '100000', name: 'dummy'))));
-      when(loginBloc.state).thenReturn(LoginLoaded(companies: companies));
+      when(loginBloc.state).thenReturn(LoginLoaded(authenticate, companies));
       await tester.pumpWidget(RepositoryProvider(
         create: (context) => repos,
         child: BlocProvider<AuthBloc>.value(

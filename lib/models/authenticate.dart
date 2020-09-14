@@ -41,5 +41,5 @@ class Authenticate {
   @override
   String toString() => 'Company: ${company?.name} [${company?.partyId}] '
       'empl: ${company?.employees?.length} '
-      'User: ${user?.firstName} ${user?.lastName}[${user?.partyId}]';
+      'User: ${user?.firstName} ${user?.lastName}[${user?.partyId}] apiKey: $apiKey';
 }

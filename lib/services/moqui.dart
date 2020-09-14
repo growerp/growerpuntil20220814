@@ -6,11 +6,6 @@ import '../models/@models.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-//import 'package:http/http.dart' as http;
-//import 'dart:io';
-//import 'package:path/path.dart';
-//import 'package:async/async.dart';
-
 class Repos {
   final Dio client;
 
@@ -114,7 +109,7 @@ class Repos {
   Future<dynamic> checkApikey() async {
     try {
       Response response = await client.get('rest/s1/growerp/100/CheckApiKey');
-      return response.data["ok"] == 'ok'; // return true if session token ok
+      return response.data["ok"] == "ok"; // return true if session token ok
     } catch (e) {
       return responseMessage(e);
     }
@@ -125,15 +120,6 @@ class Repos {
       Response response = await client.get('rest/s1/growerp/100/CheckCompany',
         queryParameters: {'partyId': partyId});
       return response.data["ok"] == 'ok'; // return true if session token ok
-    } catch (e) {
-      return responseMessage(e);
-    }
-  }
-
-  Future<dynamic> getCurrencies() async {
-    try {
-      Response response = await client.get('rest/s1/growerp/100/CurrencyList');
-      return currencyListFromJson(response.toString()).currencyList;
     } catch (e) {
       return responseMessage(e);
     }
@@ -303,8 +289,9 @@ class Repos {
   }
 
   Future<dynamic> updateCompany(Company company) async {
+    print("===updComp==apikey: ${client.options.headers['api_key']}");
     try {
-      Response response = await client.patch('rest/s1/growerp/100/Company',
+      Response response = await client.post('rest/s1/growerp/100/Company',
           data: {
             'company': companyToJson(company),
             'moquiSessionToken': sessionToken
