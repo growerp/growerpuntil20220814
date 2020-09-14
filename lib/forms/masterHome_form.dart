@@ -31,52 +31,66 @@ class MasterHome extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       if (state is AuthUnauthenticated) authenticate = state.authenticate;
-      return Scaffold(
-          appBar: AppBar(
-              title: Text("${authenticate?.company?.name ?? 'Company??'} " +
-                  "${authenticate?.user != null ? ", user: ${authenticate?.user?.firstName} ${authenticate?.user?.lastName}" : ''}"),
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.settings),
-                    tooltip: 'Settings',
-                    onPressed: () async {
-                      await _settingsDialog(context, authenticate);
+      if (state is AuthProblem) {
+        return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Center(
+                child: RaisedButton(
+                    child: Text("${state.errorMessage} \nRetry?"),
+                    onPressed: () {
+                      BlocProvider.of<AuthBloc>(context).add(LoadAuth());
                     }),
-                if (authenticate?.apiKey == null)
+              )
+            ]);
+      } else
+        return Scaffold(
+            appBar: AppBar(
+                title: Text("${authenticate?.company?.name ?? 'Company??'} " +
+                    "${authenticate?.user != null ? ", user: ${authenticate?.user?.firstName} ${authenticate?.user?.lastName}" : ''}"),
+                actions: <Widget>[
                   IconButton(
-                      icon: Icon(Icons.exit_to_app),
-                      tooltip: 'Login',
+                      icon: Icon(Icons.settings),
+                      tooltip: 'Settings',
                       onPressed: () async {
-                        if (await Navigator.pushNamed(context, LoginRoute) ==
-                            true) {
-                          Navigator.popAndPushNamed(context, HomeRoute,
-                              arguments: 'Login Successful');
-                        } else {
-                          HelperFunctions.showMessage(
-                              context, 'Not logged in', Colors.green);
-                        }
+                        await _settingsDialog(context, authenticate);
                       }),
-                if (authenticate?.apiKey != null)
-                  IconButton(
-                      icon: Icon(Icons.do_not_disturb),
-                      tooltip: 'Logout',
-                      onPressed: () => {
-                            BlocProvider.of<AuthBloc>(context).add(Logout()),
-                            Future<Null>.delayed(Duration(milliseconds: 300),
-                                () {
-                              Navigator.popAndPushNamed(context, HomeRoute,
-                                  arguments: 'Logout successful');
+                  if (authenticate?.apiKey == null)
+                    IconButton(
+                        icon: Icon(Icons.exit_to_app),
+                        tooltip: 'Login',
+                        onPressed: () async {
+                          if (await Navigator.pushNamed(context, LoginRoute) ==
+                              true) {
+                            Navigator.popAndPushNamed(context, HomeRoute,
+                                arguments: 'Login Successful');
+                          } else {
+                            HelperFunctions.showMessage(
+                                context, 'Not logged in', Colors.green);
+                          }
+                        }),
+                  if (authenticate?.apiKey != null)
+                    IconButton(
+                        icon: Icon(Icons.do_not_disturb),
+                        tooltip: 'Logout',
+                        onPressed: () => {
+                              BlocProvider.of<AuthBloc>(context).add(Logout()),
+                              Future<Null>.delayed(Duration(milliseconds: 300),
+                                  () {
+                                Navigator.popAndPushNamed(context, HomeRoute,
+                                    arguments: 'Logout successful');
+                              })
                             })
-                          })
-              ]),
-          body: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthProblem) {
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-                }
-              },
-              child: MasterHomeBody(authenticate, message)));
+                ]),
+            body: BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthProblem) {
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                  }
+                },
+                child: MasterHomeBody(authenticate, message)));
     });
   }
 }

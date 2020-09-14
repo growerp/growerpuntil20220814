@@ -11,9 +11,9 @@ dependencies:
   dio: ^3.0.9
   flutter_bloc: ^6.0.1
   meta: ^1.1.6
-  shared_preferences: ^0.5.6
-  image_picker: ^0.6.2+3
-  image_picker_for_web: ^0.1.0
+  shared_preferences: ^0.5.10
+  image_picker: ^0.6.7+7
+  image_picker_for_web: ^0.1.0+2
   about: ^1.1.2
   animations: ^1.0.0+5
   responsive_framework: ^0.0.8
