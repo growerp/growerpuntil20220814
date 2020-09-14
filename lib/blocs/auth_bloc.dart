@@ -50,17 +50,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     Future<AuthState> checkApikey() async {
       print("===10==== apiKey: ${authenticate.apiKey}");
-      repos.setApikey(authenticate.apiKey);
-      dynamic result = await repos.checkApikey();
-      if (result is bool && result) {
-        print("===11====");
-        return AuthAuthenticated(authenticate);
-      } else {
-        print("===12====");
-        authenticate.apiKey = null; // revoked
-        repos.setApikey(null);
-        await repos.persistAuthenticate(authenticate);
+      if (authenticate.apiKey == null) {
         return AuthUnauthenticated(authenticate);
+      } else {
+        repos.setApikey(authenticate.apiKey);
+        dynamic result = await repos.checkApikey();
+        if (result is bool && result) {
+          print("===11====");
+          return AuthAuthenticated(authenticate);
+        } else {
+          print("===12====");
+          authenticate.apiKey = null; // revoked
+          repos.setApikey(null);
+          await repos.persistAuthenticate(authenticate);
+          return AuthUnauthenticated(authenticate);
+        }
       }
     }
 
@@ -79,18 +83,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               await repos.checkCompany(authenticate.company.partyId);
           if (result == false) await findDefaultCompany();
           print("===2====");
-          if (authenticate.apiKey != null) {
-            // now check user apiKey
-            print("===3====");
-            yield await checkApikey();
-          } else {
-            yield AuthUnauthenticated(authenticate);
-          }
-        } else {
-          await findDefaultCompany();
-          if (authenticate.apiKey != null) {
+          // now check user apiKey
           yield await checkApikey();
-          }
+        } else {
+          print("===3====");
+          await findDefaultCompany();
+          yield await checkApikey();
         }
       }
     } else if (event is LoggedIn) {
