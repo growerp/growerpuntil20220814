@@ -36,7 +36,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Authenticate authenticate;
 
     Future<void> findDefaultCompany() async {
-      print("===15====");
+      print("===15==1==");
       dynamic companies = await repos.getCompanies();
       if (companies is List<Company> && companies.length > 0) {
         print("===16====");

@@ -33,11 +33,8 @@ class RegisterForm extends StatelessWidget {
           ],
         ),
         body: BlocProvider(
-          create: (context) =>
-              RegisterBloc(repos: context.repository<Repos>())
-                ..add(LoadRegister(
-                    companyPartyId: authenticate?.company?.partyId,
-                    companyName: authenticate?.company?.name)),
+          create: (context) => RegisterBloc(repos: context.repository<Repos>())
+            ..add(LoadRegister()),
           child: RegisterHeader(message),
         ),
       );
@@ -56,7 +53,7 @@ class RegisterHeader extends StatefulWidget {
 class _RegisterHeaderState extends State<RegisterHeader> {
   final String message;
   final _formKey = GlobalKey<FormState>();
-  String _currencySelected = kReleaseMode ? '' : 'Thailand Baht [THB]';
+  Currency _currencySelected = kReleaseMode ? '' : currencies[0];
   final _companyController = TextEditingController()
     ..text = kReleaseMode ? '' : 'Master template app';
   final _firstNameController = TextEditingController()
@@ -80,7 +77,6 @@ class _RegisterHeaderState extends State<RegisterHeader> {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    List<String> currencies;
     return BlocListener<RegisterBloc, RegisterState>(
       listener: (context, state) {
         if (state is RegisterError)
@@ -173,11 +169,6 @@ class _RegisterHeaderState extends State<RegisterHeader> {
                                   key: Key('newCustomer'),
                                   child: Text('Register as a customer'),
                                   onPressed: () {
-                                    String _currencyAbr =
-                                        _currencySelected.substring(
-                                            _currencySelected.indexOf('[') + 1);
-                                    _currencyAbr = _currencyAbr.substring(
-                                        0, _currencyAbr.indexOf(']'));
                                     if (_formKey.currentState.validate() &&
                                         state is! RegisterSending)
                                       BlocProvider.of<RegisterBloc>(context)
@@ -226,15 +217,14 @@ class _RegisterHeaderState extends State<RegisterHeader> {
                                   underline: SizedBox(), // remove underline
                                   hint: Text('Currency'),
                                   value: _currencySelected,
-                                  items: currencies == null
-                                      ? null
-                                      : currencies
-                                          .map((value) => DropdownMenuItem(
-                                                child: Text(value),
-                                                value: value,
-                                              ))
-                                          .toList(),
-                                  onChanged: (String newValue) {
+                                  items: currencies?.map((item) {
+                                    return DropdownMenuItem<Currency>(
+                                      child: Text(
+                                          item.description ?? 'Currency??'),
+                                      value: item,
+                                    );
+                                  })?.toList(),
+                                  onChanged: (Currency newValue) {
                                     setState(() {
                                       _currencySelected = newValue;
                                     });
@@ -248,18 +238,14 @@ class _RegisterHeaderState extends State<RegisterHeader> {
                                   child: Text(
                                       'Register AND create a new Ecommerce shop'),
                                   onPressed: () {
-                                    String _currencyAbr =
-                                        _currencySelected.substring(
-                                            _currencySelected.indexOf('[') + 1);
-                                    _currencyAbr = _currencyAbr.substring(
-                                        0, _currencyAbr.indexOf(']'));
                                     if (_formKey.currentState.validate() &&
                                         state is! RegisterSending)
                                       BlocProvider.of<RegisterBloc>(context)
                                           .add(
                                         RegisterCompanyAdmin(
                                           companyName: _companyController.text,
-                                          currency: _currencyAbr,
+                                          currency:
+                                              _currencySelected.currencyId,
                                           firstName: _firstNameController.text,
                                           lastName: _lastNameController.text,
                                           email: _emailController.text,

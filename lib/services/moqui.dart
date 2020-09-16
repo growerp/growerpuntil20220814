@@ -128,9 +128,7 @@ class Repos {
   Future<dynamic> getCompanies() async {
     try {
       Response response = await client.get('rest/s1/growerp/100/Companies');
-      List companies = List<Company>.from(
-          response.data["companies"].map((x) => Company.fromJson(x)));
-      return companies;
+      return companiesFromJson(response.toString());
     } catch (e) {
       return responseMessage(e);
     }
