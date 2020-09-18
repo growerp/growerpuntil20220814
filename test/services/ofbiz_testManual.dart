@@ -72,11 +72,20 @@ void main() {
 //    print("===1===$jsonData");
     expect(jsonData["statusCode"], 200);
   });
+/*
   test('ensure partyRole', () async {
     Response response = await client.post('services/ensureNaPartyRole' +
         '?' +
         Uri.encodeComponent('inParams={"partyId": "admin"}'));
     print("====33===$response");
+  });
+*/
+  test('get companies', () async {
+    String message = "just testing";
+    Response response = await client.get('services/getCompanies?inParams=' +
+        Uri.encodeComponent('{"input":"$message"}'));
+    Map jsonData = json.decode(response.toString()) as Map;
+    expect(message, jsonData["data"]["companies"]);
   });
 
 /*  test('get product', () async {
