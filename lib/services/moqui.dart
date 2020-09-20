@@ -255,9 +255,19 @@ class Repos {
     }
   }
 
-  Future<dynamic> updateUser(User user) async {
+  Future<dynamic> updateUser(User user, String imagePath) async {
     // no partyId is add
     try {
+      if (imagePath != null) {
+        String justName = imagePath.split('/').last;
+        FormData formData = FormData.fromMap({
+          "type": 'user',
+          "id": user.partyId,
+          "file": await MultipartFile.fromFile(imagePath, filename: justName),
+          "moquiSessionToken": this.sessionToken
+        });
+        await client.post("growerp/uploadImage", data: formData);
+      }
       Response response;
       if (user.partyId != null) {
         response = await client.patch('rest/s1/growerp/100/User', data: {
@@ -265,7 +275,7 @@ class Repos {
           'moquiSessionToken': sessionToken
         });
       } else {
-        response = await client.put('rest/s1/growerp/100/User', data: {
+        await client.put('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
           'moquiSessionToken': sessionToken
         });
@@ -286,9 +296,18 @@ class Repos {
     }
   }
 
-  Future<dynamic> updateCompany(Company company) async {
-    print("===updComp==apikey: ${client.options.headers['api_key']}");
+  Future<dynamic> updateCompany(Company company, String imagePath) async {
     try {
+      if (imagePath != null) {
+        String justName = imagePath.split('/').last;
+        FormData formData = FormData.fromMap({
+          "type": 'company',
+          "id": company.partyId,
+          "file": await MultipartFile.fromFile(imagePath, filename: justName),
+          "moquiSessionToken": this.sessionToken
+        });
+        await client.post("growerp/uploadImage", data: formData);
+      }
       Response response = await client.post('rest/s1/growerp/100/Company',
           data: {
             'company': companyToJson(company),
@@ -297,28 +316,6 @@ class Repos {
       return companyFromJson(response.toString());
     } catch (e) {
       print("===catch: $e");
-      return responseMessage(e);
-    }
-  }
-
-  Future<dynamic> uploadImage({
-    String type, // product, user, company.....
-    String id, // id of the type
-    String fileName,
-  }) async {
-    try {
-      String justName = fileName.split('/').last;
-      FormData formData = FormData.fromMap({
-        "type": type,
-        "id": id,
-        "file": await MultipartFile.fromFile(fileName, filename: justName),
-        "moquiSessionToken": this.sessionToken
-      });
-//      Authenticate authenticate = await getAuthenticate();
-//      client.options.headers['api_key'] = authenticate?.apiKey;
-      await client.post("growerp/uploadImage", data: formData);
-      return null;
-    } catch (e) {
       return responseMessage(e);
     }
   }

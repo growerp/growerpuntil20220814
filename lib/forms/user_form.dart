@@ -17,39 +17,40 @@ class UserForm extends StatelessWidget {
   Widget build(BuildContext context) {
     Authenticate authenticate;
     User user = this.user;
-    return  WillPopScope(
-              onWillPop: () async {
-                Navigator.pop(context, user);
-                return;
-              },
-              child: Scaffold(
-                  appBar: AppBar(
-                    title: const Text('User page'),
-                    actions: <Widget>[
-                      IconButton(
-                          icon: Icon(Icons.home),
-                          onPressed: () =>
-                              Navigator.pushNamed(context, HomeRoute)),
-                    ],
-                  ),
-                  body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-                    if (state is AuthProblem) {
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                    }
-                    if (state is AuthUserUpdateSuccess) {
-                      HelperFunctions.showMessage(
-                          context, 'user added/updated', Colors.green);
-                    }
-                  }, builder: (context, state) {
-                    if (state is AuthUnauthenticated) return NoAccessForm('Userlist');
-                    if (state is AuthAuthenticated) authenticate = state.authenticate;
-                    if (state is AuthLoading)
-                      return Center(child: CircularProgressIndicator());
-                    if (state is AuthUserUpdateSuccess) user = state?.authenticate?.user;
-                  
-                    return MyUserPage(authenticate, user);
-    })));
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.pop(context, user);
+          return;
+        },
+        child: Scaffold(
+            appBar: AppBar(
+              title: const Text('User page'),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.home),
+                    onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+              ],
+            ),
+            body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+              if (state is AuthProblem) {
+                HelperFunctions.showMessage(
+                    context, '${state.errorMessage}', Colors.red);
+              }
+              if (state is AuthUserUpdateSuccess) {
+                authenticate = state.authenticate;
+                HelperFunctions.showMessage(
+                    context, 'user added/updated', Colors.green);
+              }
+            }, builder: (context, state) {
+              if (state is AuthUnauthenticated) return NoAccessForm('Userlist');
+              if (state is AuthAuthenticated) authenticate = state.authenticate;
+              if (state is AuthLoading)
+                return Center(child: CircularProgressIndicator());
+              if (state is AuthUserUpdateSuccess)
+                user = state?.authenticate?.user;
+
+              return MyUserPage(authenticate, user);
+            })));
   }
 }
 
@@ -58,7 +59,7 @@ class MyUserPage extends StatefulWidget {
   final User user;
   MyUserPage(this.authenticate, this.user);
   @override
-  _MyUserState createState() => _MyUserState(authenticate,user);
+  _MyUserState createState() => _MyUserState(authenticate, user);
 }
 
 class _MyUserState extends State<MyUserPage> {
@@ -75,7 +76,7 @@ class _MyUserState extends State<MyUserPage> {
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
 
-  _MyUserState(this.authenticate,this.user);
+  _MyUserState(this.authenticate, this.user);
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -206,7 +207,8 @@ class _MyUserState extends State<MyUserPage> {
                                     : Image.file(File(_imageFile.path))
                                 : user?.image != null
                                     ? Image.memory(user?.image)
-                                    : Text(user?.firstName?.substring(0,1) ?? '',
+                                    : Text(
+                                        user?.firstName?.substring(0, 1) ?? '',
                                         style: TextStyle(
                                             fontSize: 30,
                                             color: Colors.black))),

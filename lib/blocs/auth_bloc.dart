@@ -104,55 +104,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthUnauthenticated(event.authenticate);
     } else if (event is UpdateCompany) {
       yield AuthLoading();
-      dynamic result;
-      if (event.imageFilename != null) {
-        result = await repos.uploadImage(
-            type: 'company',
-            id: event.authenticate.company.partyId,
-            fileName: event.imageFilename);
-        if (result != null) yield AuthProblem(result);
+      dynamic result =
+          await repos.updateCompany(event.company, event.imageFilename);
+      if (result is Company) {
+        event.authenticate.company = result;
+        yield AuthCompanyUpdateSuccess(event.authenticate);
       } else {
-        result = await repos.updateCompany(event.authenticate.company);
-        if (result is Company) {
-          event.authenticate.company = result;
-          yield AuthCompanyUpdateSuccess(event.authenticate);
-        } else {
-          yield AuthProblem(result);
-        }
+        yield AuthProblem(result);
       }
     } else if (event is UpdateUser) {
       yield AuthLoading();
-      dynamic result;
-      if (event.imageFilename != null) {
-        result = await repos.uploadImage(
-            type: 'user',
-            id: event.authenticate.user.partyId,
-            fileName: event.imageFilename);
-        if (result != null) yield AuthProblem(result);
+      dynamic result = await repos.updateUser(event.user, event.imageFilename);
+      if (result is User) {
+        event.authenticate.user = result;
+        yield AuthUserUpdateSuccess(event.authenticate);
       } else {
-        result = await repos.updateUser(event.user);
-        if (result is User) {
-          event.authenticate.user = result;
-          await repos.persistAuthenticate(event.authenticate);
-          yield AuthUserUpdateSuccess(event.authenticate);
-        } else {
-          yield AuthProblem(result);
-        }
-      }
-    } else if (event is UploadImage) {
-      yield AuthLoading();
-      dynamic result = await repos.uploadImage(
-          type: 'user', id: event.partyId, fileName: event.fileName);
-      if (result == null)
-        yield AuthImageUpdated();
-      else
         yield AuthProblem(result);
-    } else {
-      final Authenticate authenticate = await repos.getAuthenticate();
-      if (authenticate.apiKey != null)
-        yield AuthAuthenticated(authenticate);
-      else
-        yield AuthUnauthenticated(authenticate);
+      }
     }
   }
 }
@@ -182,8 +150,9 @@ class UpdateAuth extends AuthEvent {
 
 class UpdateCompany extends AuthEvent {
   final Authenticate authenticate;
+  final Company company;
   final String imageFilename;
-  UpdateCompany(this.authenticate, this.imageFilename);
+  UpdateCompany(this.authenticate, this.company, this.imageFilename);
   @override
   List<Object> get props => [authenticate];
   @override
