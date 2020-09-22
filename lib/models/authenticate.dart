@@ -39,7 +39,6 @@ class Authenticate {
         "user": user?.toJson(),
       };
   @override
-  String toString() => 'Company: ${company?.name} [${company?.partyId}] '
-      'empl: ${company?.employees?.length} '
-      'User: ${user?.firstName} ${user?.lastName}[${user?.partyId}] apiKey: $apiKey';
+  String toString() => 'Company: ${company?.toString()} '
+      'User: ${user?.toString()} apiKey: $apiKey';
 }
