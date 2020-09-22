@@ -127,7 +127,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Register as a customer'), findsOneWidget);
     });
-    testWidgets('forgot password', (WidgetTester tester) async {
+    testWidgets('forgot/change password?', (WidgetTester tester) async {
       when(authBloc.state).thenReturn(AuthUnauthenticated(
           Authenticate(company: Company(partyId: '100000', name: 'dummy'))));
       when(loginBloc.state).thenReturn(LoginLoaded(authenticate, companies));
@@ -144,16 +144,16 @@ void main() {
         ),
       ));
       await tester.pumpAndSettle();
-      expect(find.text('forgot password?'), findsOneWidget);
+      expect(find.text('forgot/change password?'), findsOneWidget);
       await tester
-          .tap(find.widgetWithText(GestureDetector, 'forgot password?'));
+          .tap(find.widgetWithText(GestureDetector, 'forgot/change password?'));
       await tester.pumpAndSettle();
       expect(
           find.text(
               'Email you registered with?\nWe will send you a reset password'),
           findsOneWidget);
       await tester.press(find.widgetWithText(FlatButton, 'Ok'));
-      expect(find.text('forgot password?'), findsOneWidget);
+      expect(find.text('forgot/change password?'), findsOneWidget);
     });
   });
 }

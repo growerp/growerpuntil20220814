@@ -36,10 +36,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Authenticate authenticate;
 
     Future<void> findDefaultCompany() async {
-      print("===15==1==");
+      //print("===15==1==");
       dynamic companies = await repos.getCompanies();
       if (companies is List<Company> && companies.length > 0) {
-        print("===16====");
+        //print("===16====");
         authenticate =
             Authenticate(company: companies[0], user: authenticate?.user);
         await repos.persistAuthenticate(authenticate);
@@ -49,17 +49,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
 
     Future<AuthState> checkApikey() async {
-      print("===10==== apiKey: ${authenticate.apiKey}");
+      //print("===10==== apiKey: ${authenticate.apiKey}");
       if (authenticate.apiKey == null) {
         return AuthUnauthenticated(authenticate);
       } else {
         repos.setApikey(authenticate.apiKey);
         dynamic result = await repos.checkApikey();
         if (result is bool && result) {
-          print("===11====");
+          //print("===11====");
           return AuthAuthenticated(authenticate);
         } else {
-          print("===12====");
+          //print("===12====");
           authenticate.apiKey = null; // revoked
           repos.setApikey(null);
           await repos.persistAuthenticate(authenticate);
@@ -75,18 +75,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         yield AuthProblem(connected);
       } else {
         authenticate = await repos.getAuthenticate();
-        print("===authenticate: ${authenticate.toString()}");
         if (authenticate?.company?.partyId != null) {
-          print("===1====");
+          //print("===1====");
           // check company
           dynamic result =
               await repos.checkCompany(authenticate.company.partyId);
           if (result == false) await findDefaultCompany();
-          print("===2====");
+          //print("===2====");
           // now check user apiKey
           yield await checkApikey();
         } else {
-          print("===3====");
+          //print("===3====");
           await findDefaultCompany();
           yield await checkApikey();
         }

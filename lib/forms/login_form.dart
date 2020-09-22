@@ -63,8 +63,7 @@ class _LoginHeaderState extends State<LoginHeader> {
   @override
   void initState() {
     Future<Null>.delayed(Duration(milliseconds: 0), () {
-      print("===== $message");
-      if (message != null && message != 'null')
+      if (message != null)
         HelperFunctions.showMessage(context, '$message', Colors.green);
     });
     super.initState();
@@ -253,7 +252,7 @@ class _LoginHeaderState extends State<LoginHeader> {
                   ),
                   SizedBox(height: 30),
                   GestureDetector(
-                      child: Text('forgot password?'),
+                      child: Text('forgot/change password?'),
                       onTap: () async {
                         final String username = await _sendResetPasswordDialog(
                             context,
