@@ -21,28 +21,23 @@ class LoginForm extends StatelessWidget {
     Authenticate authenticate;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthUnauthenticated) authenticate = state.authenticate;
-      return WillPopScope(
-          onWillPop: () async {
-            Navigator.pop(context, false);
-            return false;
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text(authenticate?.company?.partyId == null
-                  ? 'Select company'
-                  : 'Login to: ${authenticate?.company?.name}'),
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.home),
-                    onPressed: () => Navigator.pushNamed(context, HomeRoute)),
-              ],
-            ),
-            body: BlocProvider(
-              create: (context) => LoginBloc(repos: context.repository<Repos>())
-                ..add(LoadLogin(authenticate)),
-              child: LoginHeader(message),
-            ),
-          ));
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(authenticate?.company?.partyId == null
+              ? 'Select company'
+              : 'Login to: ${authenticate?.company?.name}'),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.home),
+                onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+          ],
+        ),
+        body: BlocProvider(
+          create: (context) => LoginBloc(repos: context.repository<Repos>())
+            ..add(LoadLogin(authenticate)),
+          child: LoginHeader(message),
+        ),
+      );
     });
   }
 }
@@ -68,7 +63,8 @@ class _LoginHeaderState extends State<LoginHeader> {
   @override
   void initState() {
     Future<Null>.delayed(Duration(milliseconds: 0), () {
-      if (message != null)
+      print("===== $message");
+      if (message != null && message != 'null')
         HelperFunctions.showMessage(context, '$message', Colors.green);
     });
     super.initState();
@@ -187,7 +183,9 @@ class _LoginHeaderState extends State<LoginHeader> {
     final _usernameController = TextEditingController()
       ..text = authenticate?.user?.name != null
           ? authenticate.user.name
-          : kReleaseMode ? '' : 'admin@growerp.com';
+          : kReleaseMode
+              ? ''
+              : 'admin@growerp.com';
     final _passwordController = TextEditingController()
       ..text = kReleaseMode ? '' : 'qqqqqq9!';
     return Center(

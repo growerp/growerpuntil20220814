@@ -61,14 +61,7 @@ class MasterHome extends StatelessWidget {
                         icon: Icon(Icons.exit_to_app),
                         tooltip: 'Login',
                         onPressed: () async {
-                          if (await Navigator.pushNamed(context, LoginRoute) ==
-                              true) {
-                            Navigator.popAndPushNamed(context, HomeRoute,
-                                arguments: 'Login Successful');
-                          } else {
-                            HelperFunctions.showMessage(
-                                context, 'Not logged in', Colors.green);
-                          }
+                          await Navigator.pushNamed(context, LoginRoute);
                         }),
                   if (authenticate?.apiKey != null)
                     IconButton(
