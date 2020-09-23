@@ -20,7 +20,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       yield RegisterLoading();
       if (event.companyPartyId == null) {
         // create new company and admin user
-          yield RegisterLoaded();
+        yield RegisterLoaded();
       } else {
         // create new customer existing company
         yield RegisterLoaded();
@@ -94,7 +94,8 @@ class RegisterButtonPressed extends RegisterEvent {
 
   @override
   String toString() =>
-      'RegisterButtonPressed { first/Last name: $firstName/$lastName,' +
+      'RegisterButtonPressed { companyPartyId: $companyPartyId '
+          'first Last name: $firstName $lastName,' +
       ' email: $email }';
 }
 

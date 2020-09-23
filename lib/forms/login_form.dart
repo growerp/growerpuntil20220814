@@ -155,7 +155,7 @@ class _LoginHeaderState extends State<LoginHeader> {
                       key: ValueKey('drop_down'),
                       underline: SizedBox(), // remove underline
                       hint: Text('Company'),
-//                                value: _companySelected,
+                      value: _companySelected,
                       items: companies?.map((item) {
                         return DropdownMenuItem<Company>(
                           child: Text(item?.name ?? 'Company??'),
@@ -236,7 +236,7 @@ class _LoginHeaderState extends State<LoginHeader> {
                             state is! LogginInProgress)
                           BlocProvider.of<LoginBloc>(context).add(
                               LoginButtonPressed(
-                                  company: _companySelected,
+                                  company: authenticate.company,
                                   username: _usernameController.text,
                                   password: _passwordController.text));
                       }),

@@ -21,12 +21,12 @@ import '../models/@models.dart';
 import '../blocs/@blocs.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
-import '@forms.dart';
 
 class CompanyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
+    bool isAdmin = false;
     return Scaffold(
         appBar: AppBar(title: const Text('Company page'), actions: <Widget>[
           IconButton(
@@ -43,20 +43,22 @@ class CompanyForm extends StatelessWidget {
                 context, '${state.errorMessage}', Colors.red);
           }
         }, builder: (context, state) {
-          if (state is AuthUnauthenticated) return NoAccessForm('Companylist');
-          if (state is AuthAuthenticated) authenticate = state.authenticate;
-          if (state is AuthLoading)
-            return Center(child: CircularProgressIndicator());
-          return CompanyPage(authenticate);
+          if (state is AuthUnauthenticated) {
+            authenticate = state.authenticate;
+          }
+          if (state is AuthAuthenticated) {
+            authenticate = state.authenticate;
+            isAdmin = authenticate?.user?.userGroupId == 'GROWERP_M_ADMIN';
+          }
+          return CompanyPage(authenticate, isAdmin);
         }));
   }
 }
 
 class CompanyPage extends StatefulWidget {
-  CompanyPage(this.authenticate);
-
   final Authenticate authenticate;
-
+  final bool isAdmin;
+  CompanyPage(this.authenticate, this.isAdmin);
   @override
   _CompanyState createState() => _CompanyState(authenticate);
 }
@@ -117,31 +119,35 @@ class _CompanyState extends State<CompanyPage> {
                       textAlign: TextAlign.center,
                     );
                   }
-                  return _showForm();
+                  return _showForm(widget.isAdmin);
                 })
-            : _showForm(),
+            : _showForm(widget.isAdmin),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           SizedBox(height: 60),
-          FloatingActionButton(
-            onPressed: () {
-              _onImageButtonPressed(ImageSource.gallery, context: context);
-            },
-            heroTag: 'image0',
-            tooltip: 'Pick Image from gallery',
-            child: const Icon(Icons.photo_library),
-          ),
+          Visibility(
+              visible: widget.isAdmin,
+              child: FloatingActionButton(
+                onPressed: () {
+                  _onImageButtonPressed(ImageSource.gallery, context: context);
+                },
+                heroTag: 'image0',
+                tooltip: 'Pick Image from gallery',
+                child: const Icon(Icons.photo_library),
+              )),
           SizedBox(height: 20),
-          FloatingActionButton(
-            onPressed: () {
-              _onImageButtonPressed(ImageSource.camera, context: context);
-            },
-            heroTag: 'image1',
-            tooltip: 'Take a Photo',
-            child: const Icon(Icons.camera_alt),
-          ),
+          Visibility(
+              visible: widget.isAdmin,
+              child: FloatingActionButton(
+                onPressed: () {
+                  _onImageButtonPressed(ImageSource.camera, context: context);
+                },
+                heroTag: 'image1',
+                tooltip: 'Take a Photo',
+                child: const Icon(Icons.camera_alt),
+              )),
         ],
       ),
     );
@@ -156,7 +162,7 @@ class _CompanyState extends State<CompanyPage> {
     return null;
   }
 
-  Widget _showForm() {
+  Widget _showForm(isAdmin) {
     Company company = authenticate.company;
     _nameController..text = company.name;
     _emailController..text = company.email;
@@ -212,6 +218,7 @@ class _CompanyState extends State<CompanyPage> {
                       ),
                       SizedBox(height: 20),
                       TextFormField(
+                        readOnly: !isAdmin,
                         key: Key('companyName'),
                         decoration: InputDecoration(labelText: 'Company Name'),
                         controller: _nameController,
@@ -223,6 +230,7 @@ class _CompanyState extends State<CompanyPage> {
                       ),
                       SizedBox(height: 10),
                       TextFormField(
+                        readOnly: !isAdmin,
                         key: Key('email'),
                         decoration:
                             InputDecoration(labelText: 'Company Email address'),
@@ -239,59 +247,65 @@ class _CompanyState extends State<CompanyPage> {
                         },
                       ),
                       SizedBox(height: 10),
-                      Container(
-                        width: 400,
-                        height: 60,
-                        padding: EdgeInsets.symmetric(horizontal: 10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25.0),
-                          border: Border.all(
-                              color: Colors.grey,
-                              style: BorderStyle.solid,
-                              width: 0.80),
-                        ),
-                        child: DropdownButton<Currency>(
-                          key: Key('dropDown'),
-                          underline: SizedBox(), // remove underline
-                          hint: Text('Currency'),
-                          value: _selectedCurrency,
-                          items: currencies?.map((item) {
-                            return DropdownMenuItem<Currency>(
-                                child: Text(item.description), value: item);
-                          })?.toList(),
-                          onChanged: (Currency newValue) {
-                            setState(() {
-                              _selectedCurrency = newValue;
-                            });
-                          },
-                          isExpanded: true,
-                        ),
-                      ),
+                      IgnorePointer(
+                          ignoring: !isAdmin,
+                          child: Container(
+                            width: 400,
+                            height: 60,
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              border: Border.all(
+                                  color: Colors.grey,
+                                  style: BorderStyle.solid,
+                                  width: 0.80),
+                            ),
+                            child: DropdownButton<Currency>(
+                              key: Key('dropDown'),
+                              underline: SizedBox(), // remove underline
+                              hint: Text('Currency'),
+                              value: _selectedCurrency,
+                              items: currencies?.map((item) {
+                                return DropdownMenuItem<Currency>(
+                                    child: Text(item.description), value: item);
+                              })?.toList(),
+                              onChanged: (Currency newValue) {
+                                setState(() {
+                                  _selectedCurrency = newValue;
+                                });
+                              },
+                              isExpanded: true,
+                            ),
+                          )),
                       SizedBox(height: 20),
-                      RaisedButton(
-                          key: Key('update'),
-                          child: Text(
-                              company.partyId == null ? 'Create' : 'Update'),
-                          onPressed: () {
-                            if (_formKey.currentState.validate())
-                              //&& state is! UsersLoading)
-                              updatedCompany = Company(
-                                image: _imageFile != null
-                                    ? File(_imageFile.path).readAsBytesSync()
-                                    : null,
-                                partyId: company.partyId,
-                                email: _emailController.text,
-                                name: _nameController.text,
-                                currencyId: _selectedCurrency.currencyId,
-                              );
-                            authenticate.company = updatedCompany;
-                            BlocProvider.of<AuthBloc>(context)
-                                .add(UpdateCompany(
-                              authenticate,
-                              updatedCompany,
-                              _imageFile?.path,
-                            ));
-                          })
+                      Visibility(
+                          visible: isAdmin,
+                          child: RaisedButton(
+                              key: Key('update'),
+                              child: Text(company.partyId == null
+                                  ? 'Create'
+                                  : 'Update'),
+                              onPressed: () {
+                                if (_formKey.currentState.validate())
+                                  //&& state is! UsersLoading)
+                                  updatedCompany = Company(
+                                    image: _imageFile != null
+                                        ? File(_imageFile.path)
+                                            .readAsBytesSync()
+                                        : null,
+                                    partyId: company.partyId,
+                                    email: _emailController.text,
+                                    name: _nameController.text,
+                                    currencyId: _selectedCurrency.currencyId,
+                                  );
+                                authenticate.company = updatedCompany;
+                                BlocProvider.of<AuthBloc>(context)
+                                    .add(UpdateCompany(
+                                  authenticate,
+                                  updatedCompany,
+                                  _imageFile?.path,
+                                ));
+                              }))
                     ])))));
   }
 }

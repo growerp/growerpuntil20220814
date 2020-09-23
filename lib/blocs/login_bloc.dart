@@ -37,9 +37,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: event.password,
       );
       if (result is Authenticate) {
+        if (result.company == null) result.company = event.company;
         yield LoginOk(result);
       } else if (result == "passwordChange") {
-        yield LoginChangePw(event.username, event.password);
+        yield LoginChangePw(event.company, event.username, event.password);
       } else {
         yield LoginError(result);
       }
@@ -92,16 +93,17 @@ class LoginLoading extends LoginState {}
 class LoginLoaded extends LoginState {
   final Authenticate authenticate;
   final List<Company> companies;
-  LoginLoaded(this.authenticate,[this.companies]);
+  LoginLoaded(this.authenticate, [this.companies]);
   @override
   List<Object> get props => [companies];
   String toString() => 'Login loaded, companies size: ${companies?.length}';
 }
 
 class LoginChangePw extends LoginState {
+  final Company company;
   final String username;
   final String password;
-  LoginChangePw(this.username, this.password);
+  LoginChangePw(this.company, this.username, this.password);
   @override
   List<Object> get props => [username];
   @override

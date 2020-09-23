@@ -32,35 +32,52 @@ class _UsersFormState extends State<UsersForm> {
   Widget build(BuildContext context) {
     Authenticate authenticate;
     return Scaffold(
-      appBar: AppBar(title: const Text('User List')),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          dynamic user = await Navigator.pushNamed(context, UserRoute);
-          setState(() {
-            authenticate.company.employees.add(user);
-          });
-        },
-        tooltip: 'Add new user',
-        child: Icon(Icons.add),
-      ), 
-      body:BlocConsumer<AuthBloc, AuthState>(listener:(context, state) {
-        if (state is AuthProblem) {
-          HelperFunctions.showMessage(
-              context, '${state.errorMessage}', Colors.red);
-        }
-        if (state is AuthUserUpdateSuccess) {
-          HelperFunctions.showMessage(
-              context, 'Update success', Colors.green);
-        }
-        if (state is AuthUserDeleteSuccess) {
-          HelperFunctions.showMessage(
-              context, 'Delete success', Colors.green);
-        }
-      }, builder: (context, state) {
-      if (state is AuthUnauthenticated) return NoAccessForm('Users');
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return userList(context, authenticate);
-      }));
+        appBar: AppBar(title: const Text('User List')),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            dynamic user = await Navigator.pushNamed(context, UserRoute);
+            setState(() {
+              authenticate.company.employees.add(user);
+            });
+          },
+          tooltip: 'Add new user',
+          child: Icon(Icons.add),
+        ),
+        body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+          if (state is AuthProblem) {
+            HelperFunctions.showMessage(
+                context, '${state.errorMessage}', Colors.red);
+          }
+          if (state is AuthUserUpdateSuccess) {
+            HelperFunctions.showMessage(
+                context, 'Update success', Colors.green);
+          }
+          if (state is AuthUserDeleteSuccess) {
+            HelperFunctions.showMessage(
+                context, 'Delete success', Colors.green);
+          }
+        }, builder: (context, state) {
+          if (state is AuthUnauthenticated) {
+            return Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Center(
+                    child: RaisedButton(
+                        child: Text("Press to login first!"),
+                        onPressed: () async {
+                          final dynamic result =
+                              await Navigator.pushNamed(context, LoginRoute);
+                          HelperFunctions.showMessage(
+                              context, '$result', Colors.green);
+                        }),
+                  )
+                ]);
+          }
+
+          if (state is AuthAuthenticated) authenticate = state.authenticate;
+          return userList(context, authenticate);
+        }));
   }
 
   Widget userList(context, Authenticate authenticate) {
@@ -98,7 +115,8 @@ class _UsersFormState extends State<UsersForm> {
                   dynamic user = await Navigator.pushNamed(context, UserRoute,
                       arguments: users[index]);
                   setState(() {
-                    if (user != null) users.replaceRange(index, index + 1, [user]);
+                    if (user != null)
+                      users.replaceRange(index, index + 1, [user]);
                   });
                 },
                 onLongPress: () async {

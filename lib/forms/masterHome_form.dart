@@ -28,8 +28,14 @@ class MasterHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
+    bool loggedIn = false;
+    bool isAdmin = false;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
+      if (state is AuthAuthenticated) {
+        loggedIn = true;
+        authenticate = state.authenticate;
+        isAdmin = authenticate.user.userGroupId == 'GROWERP_M_ADMIN';
+      }
       if (state is AuthUnauthenticated) authenticate = state.authenticate;
       if (state is AuthProblem) {
         return Column(
@@ -83,7 +89,8 @@ class MasterHome extends StatelessWidget {
                         context, '${state.errorMessage}', Colors.red);
                   }
                 },
-                child: MasterHomeBody(authenticate, message)));
+                child:
+                    MasterHomeBody(authenticate, message, loggedIn, isAdmin)));
     });
   }
 }
@@ -91,7 +98,9 @@ class MasterHome extends StatelessWidget {
 class MasterHomeBody extends StatefulWidget {
   final Authenticate authenticate;
   final String message;
-  MasterHomeBody(this.authenticate, this.message);
+  final bool loggedIn;
+  final bool isAdmin;
+  MasterHomeBody(this.authenticate, this.message, this.loggedIn, this.isAdmin);
   @override
   State<MasterHomeBody> createState() => _HomeState(authenticate, message);
 }
@@ -165,19 +174,22 @@ class _HomeState extends State<MasterHomeBody> {
                 },
               ),
             ),
-            Expanded(
-              child: _OpenContainerWrapper(
-                targetForm: UsersForm(),
-                transitionType: _transitionType,
-                closedBuilder: (BuildContext _, VoidCallback openContainer) {
-                  return MenuCard(
-                    openContainer: openContainer,
-                    image: 'assets/users.png',
-                    subtitle: 'Users',
-                  );
-                },
-              ),
-            ),
+            Visibility(
+                visible: !widget.loggedIn || widget.isAdmin,
+                child: Expanded(
+                  child: _OpenContainerWrapper(
+                    targetForm: UsersForm(),
+                    transitionType: _transitionType,
+                    closedBuilder:
+                        (BuildContext _, VoidCallback openContainer) {
+                      return MenuCard(
+                        openContainer: openContainer,
+                        image: 'assets/users.png',
+                        subtitle: 'Users',
+                      );
+                    },
+                  ),
+                )),
             const SizedBox(width: 8.0),
           ],
         ),

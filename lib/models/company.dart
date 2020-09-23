@@ -65,6 +65,6 @@ class Company {
       };
 
   String toString() => 'Company name: $name[$partyId] '
-      'empl: ${employees?.length} '
+      'empl: ${employees != null ? employees.length : 0} '
       'imgSize: ${image != null ? image.length : 0}';
 }

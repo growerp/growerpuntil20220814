@@ -92,7 +92,7 @@ class User {
 
   @override
   String toString() {
-    return 'User $firstName $lastName [$partyId] img size: '
+    return 'User $firstName $lastName [$partyId] sec: $userGroupId img size: '
         '${image != null ? image.length : 0}';
   }
 }
