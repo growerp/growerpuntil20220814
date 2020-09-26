@@ -42,7 +42,22 @@ class UserForm extends StatelessWidget {
                     context, 'user added/updated', Colors.green);
               }
             }, builder: (context, state) {
-              if (state is AuthUnauthenticated) return NoAccessForm('Userlist');
+              if (state is AuthUnauthenticated)
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: RaisedButton(
+                            child: Text("Press to login first!"),
+                            onPressed: () async {
+                              final dynamic result = await Navigator.pushNamed(
+                                  context, LoginRoute);
+                              HelperFunctions.showMessage(
+                                  context, '$result', Colors.green);
+                            }),
+                      )
+                    ]);
               if (state is AuthAuthenticated) authenticate = state.authenticate;
               if (state is AuthLoading)
                 return Center(child: CircularProgressIndicator());
