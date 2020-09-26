@@ -1,16 +1,11 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-<<<<<<< HEAD
 import 'package:master/blocs/@blocs.dart';
-import 'package:master/services/repos.dart';
-=======
-import 'package:ecommerce/blocs/@blocs.dart';
-import 'package:ecommerce/services/@services.dart';
->>>>>>> 839327b... added central configuration file
+import 'package:master/services/@services.dart';
 import '../data.dart';
 
-class MockReposRepository extends Mock implements Repos {}
+class MockReposRepository extends Mock implements Moqui {}
 
 class MockAuthBloc extends MockBloc<AuthState> implements AuthBloc {}
 
@@ -36,11 +31,9 @@ void main() {
 
     blocTest(
       'Register load success',
-      build: () => RegisterBloc(repos: mockReposRepository)..add(LoadRegister()),
-      expect: <RegisterState>[
-        RegisterLoading(),
-        RegisterLoaded()
-      ],
+      build: () =>
+          RegisterBloc(repos: mockReposRepository)..add(LoadRegister()),
+      expect: <RegisterState>[RegisterLoading(), RegisterLoaded()],
     );
 
     blocTest(

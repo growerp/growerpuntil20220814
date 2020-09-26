@@ -2,16 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-<<<<<<< HEAD
 import 'package:master/blocs/@blocs.dart';
-import 'package:master/services/repos.dart';
-=======
-import 'package:ecommerce/blocs/@blocs.dart';
-import 'package:ecommerce/services/@services.dart';
->>>>>>> 839327b... added central configuration file
+import 'package:master/services/@services.dart';
 import '../data.dart';
 
-class MockReposRepository extends Mock implements Repos {}
+class MockReposRepository extends Mock implements Moqui {}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
