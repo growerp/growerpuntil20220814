@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import '../models/@models.dart';
 import '../blocs/@blocs.dart';
-import '../services/repos.dart';
 import '../routing_constants.dart';
 import 'changePw_form.dart';
 import '../helper_functions.dart';
@@ -33,7 +32,7 @@ class LoginForm extends StatelessWidget {
           ],
         ),
         body: BlocProvider(
-          create: (context) => LoginBloc(repos: context.repository<Repos>())
+          create: (context) => LoginBloc(repos: context.repository<Object>())
             ..add(LoadLogin(authenticate)),
           child: LoginHeader(message),
         ),

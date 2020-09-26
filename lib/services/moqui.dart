@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 import 'dart:async';
@@ -6,12 +7,14 @@ import '../models/@models.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Repos {
+class Moqui {
   final Dio client;
 
   String sessionToken;
+  String partyClassificationId =
+      GlobalConfiguration().getValue("partyClassificationId");
 
-  Repos({@required this.client}) {
+  Moqui({@required this.client}) {
     if (kReleaseMode) {
       //platform not supported on the web
       // is Release Mode ??

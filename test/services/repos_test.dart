@@ -1,8 +1,13 @@
 import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
+<<<<<<< HEAD
 import 'package:master/models/@models.dart';
 import 'package:master/services/repos.dart';
+=======
+import 'package:ecommerce/models/@models.dart';
+import 'package:ecommerce/services/@services.dart';
+>>>>>>> 839327b... added central configuration file
 import 'package:mockito/mockito.dart';
 import '../data.dart';
 

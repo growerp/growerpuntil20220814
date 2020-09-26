@@ -2,10 +2,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import '../services/repos.dart';
 
 class ChangePwBloc extends Bloc<ChangePwEvent, ChangePwState> {
-  final Repos repos;
+  final repos;
 
   ChangePwBloc({@required this.repos})
       : assert(repos != null),

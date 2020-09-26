@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import '../blocs/@blocs.dart';
 import '../models/@models.dart';
-import '../services/repos.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
 
@@ -33,7 +32,7 @@ class RegisterForm extends StatelessWidget {
           ],
         ),
         body: BlocProvider(
-          create: (context) => RegisterBloc(repos: context.repository<Repos>())
+          create: (context) => RegisterBloc(repos: context.repository<Object>())
             ..add(LoadRegister()),
           child: RegisterHeader(message),
         ),

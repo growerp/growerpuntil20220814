@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'blocs/@blocs.dart';
-import 'services/repos.dart';
+import 'services/ofbiz.dart';
+import 'services/moqui.dart';
 import 'styles/themes.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GlobalConfiguration().loadFromAsset("app_settings");
   Bloc.observer = SimpleBlocObserver();
-  final repos = Repos(client: Dio());
+  final Object repos = GlobalConfiguration().getValue("backend") == 'moqui'
+      ? Moqui(client: Dio())
+      : Ofbiz(client: Dio());
   runApp(RepositoryProvider(
     create: (context) => repos,
     child: MultiBlocProvider(

@@ -11,12 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 //import 'package:path/path.dart';
 //import 'package:async/async.dart';
 
-class Repos {
+class Ofbiz {
   final Dio client;
 
   String sessionToken;
 
-  Repos({@required this.client}) {
+  Ofbiz({@required this.client}) {
     if (kReleaseMode) {
       //platform not supported on the web
       // is Release Mode ??
@@ -291,9 +291,7 @@ class Repos {
   Future<dynamic> updateCompany(Company company) async {
     try {
       Response response = await client.patch('rest/s1/growerp/100/Company',
-          data: {
-            'moquiSessionToken': sessionToken
-          });
+          data: {'moquiSessionToken': sessionToken});
       return companyFromJson(response.toString());
     } catch (e) {
       print("===catch: $e");

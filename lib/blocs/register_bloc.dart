@@ -3,11 +3,10 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import '../services/repos.dart';
 import '../models/@models.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  final Repos repos;
+  final repos;
 
   RegisterBloc({
     @required this.repos,

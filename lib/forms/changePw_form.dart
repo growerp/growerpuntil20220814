@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
 import '../blocs/@blocs.dart';
-import '../services/repos.dart';
 
 class ChangePwArgs {
   final String username;
@@ -30,7 +29,7 @@ class ChangePwForm extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) {
-          return ChangePwBloc(repos: context.repository<Repos>());
+          return ChangePwBloc(repos: context.repository<Object>());
         },
         child: ChangePwEntry(
           username: changePwArgs.username,

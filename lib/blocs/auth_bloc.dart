@@ -16,8 +16,6 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
-import '../services/repos.dart';
 import '../models/@models.dart';
 
 /// Authbloc controls the connection to the backend
@@ -25,7 +23,7 @@ import '../models/@models.dart';
 /// It contains company and user information and signals connection errrors,
 /// keeps the token and apiKey in the [Authenticate] class.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final Repos repos;
+  final repos;
 
   AuthBloc({@required this.repos})
       : assert(repos != null),
