@@ -119,6 +119,7 @@ final String username = 'dummyUsername';
 final String password = 'dummyPassword9!';
 final String newPassword = 'dummyNewPassword9!';
 final String email = 'dummy@example.com';
+final String classificationId = 'AppEcommerceShop';
 
 Map register = {
   'username': username,
@@ -129,7 +130,7 @@ Map register = {
   'companyName': companyName,
   'currencyId': currencyId,
   'companyEmail': email,
-  'partyClassificationId': 'AppEcommerceShop',
+  'classificationId': classificationId,
   'environment': true, // true for production, false for debug
   'moquiSessionToken': null // need to be set when used!
 };

@@ -51,14 +51,6 @@ void main() {
     return e; //continue
   }));
 */
-  test('get companies no auth', () async {
-    String message = "just testing";
-    Response response = await client.get('services/getCompanies?inParams=' +
-        Uri.encodeComponent('{"input":"$message"}'));
-    Map jsonData = json.decode(response.toString()) as Map;
-    expect(message, jsonData["data"]["companies"]);
-  });
-
   test(' get token', () async {
     String username = 'admin';
     String password = 'ofbiz';
@@ -73,41 +65,39 @@ void main() {
     expect(jsonData["statusCode"], 200);
   });
 
-  test('get companies with auth', () async {
-    String message = "just testing";
-    Response response = await client.get('services/getCompanies?inParams=' +
-        Uri.encodeComponent('{"input":"$message"}'));
+  test('create company with auth', () async {
+    Response response = await client.post('services/createCompany',
+        data: companyToJson(company));
     Map jsonData = json.decode(response.toString()) as Map;
-    expect(message, jsonData["data"]["companies"]);
+    dynamic result = companyFromJson(json.encode(jsonData["data"]));
+    company.partyId = result.partyId;
+    result.image = company.image;
+    expect(companyToJson(result), companyToJson(company));
   });
 
-/*  test('get product', () async {
-    Response response = await client.get('services/findProductById' +
-        '?' +
-        Uri.encodeComponent('inParams={"idToFind": "GZ-1001"}'));
-    Map jsonData = json.decode(response.toString()) as Map;
-    print("===1===$jsonData");
-    expect(jsonData["statusCode"], 200);
-  });
-  test('get product', () async {
-    Response response = await client.get('services/findProductById' +
-        '?' +
-        Uri.encodeComponent('inParams={"idToFind": "GZ-1001"}'));
-    Map jsonData = json.decode(response.toString()) as Map;
-    print("===1===$jsonData");
-    expect(jsonData["statusCode"], 200);
-  });
-*/
-}
 /*
-    test('CurrencyList', () async {
-      Response response = await client.get('s1/growerp/100/CurrencyList');
-      dynamic result = currencyListFromJson(response.toString()).currencyList;
-      expect(result.length,
-          170); // TODO: if wrong is detected but test will not fail
-    });
-  });
 
+curl -G -XÂ  GET https://localhost:8443/rest/services/demoMapService --data-urlencode 'inParams={"input":{"test":"just testing"}}' -H "Accept: ap
+
+plication/json" -H "Authorization: Bearer $token" --insecure
+
+
+
+curl -X POST https://localhost:8443/rest/services/demoMapService -d '{"input":{"test":"just testing"}}' -H "Content-Type: application/json" -H "
+
+Accept: application/json" -H "Authorization: Bearer $token" --insecure
+*/
+  test('get companies no auth', () async {
+    Response response = await client.get('services/getCompanies?inParams=' +
+        Uri.encodeComponent('{"classificationId":"$classificationId"}'));
+    Map jsonData = json.decode(response.toString()) as Map;
+    dynamic result = companiesFromJson(json.encode(jsonData["data"]));
+    print("==qq==== result: ${result.toString()}");
+    //expect(companies, companiesFromJson(result));
+  });
+}
+
+/*
   group('Register first company', () {
     test('register', () async {
       register['moquiSessionToken'] = sessionToken;

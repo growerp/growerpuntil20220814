@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
 import 'dart:async';
@@ -14,13 +15,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Ofbiz {
   final Dio client;
 
-  String sessionToken;
+  String partyClassificationId =
+      GlobalConfiguration().getValue("partyClassificationId");
 
   Ofbiz({@required this.client}) {
     if (kReleaseMode) {
       //platform not supported on the web
       // is Release Mode ??
-      client.options.baseUrl = 'https://test.growerp.com/';
+      client.options.baseUrl = 'https://???.growerp.com/';
     } else if (kIsWeb || Platform.isIOS || Platform.isLinux) {
       client.options.baseUrl = 'http://localhost:8080/';
     } else if (Platform.isAndroid) {
@@ -100,9 +102,7 @@ class Ofbiz {
 // -----------------------------general ------------------------
   Future<dynamic> getConnected() async {
     try {
-      Response response = await client.get('rest/moquiSessionToken');
-      this.sessionToken = response.toString();
-      return sessionToken != null; // return true if session token ok
+      return true; // just return true for ofbiz
     } catch (e) {
       return responseMessage(e);
     }
@@ -157,7 +157,6 @@ class Ofbiz {
                 'companyEmail': email,
                 'partyClassificationId': 'AppMaster',
                 'environment': kReleaseMode,
-                'moquiSessionToken': sessionToken
               },
               options: Options(headers: {'api_key': null}));
       return authenticateFromJson(response.toString());
@@ -175,11 +174,9 @@ class Ofbiz {
         'companyPartyId': companyPartyId,
         'username': username,
         'password': password,
-        'moquiSessionToken': this.sessionToken
       });
       dynamic result = jsonDecode(response.toString());
       if (result['passwordChange'] == 'true') return 'passwordChange';
-      this.sessionToken = result['moquiSessionToken'];
       client.options.headers['api_key'] = result["apiKey"];
       return authenticateFromJson(response.toString());
     } catch (e) {
@@ -190,7 +187,7 @@ class Ofbiz {
   Future<dynamic> resetPassword({@required String username}) async {
     try {
       Response result = await client.post('rest/s1/growerp/100/ResetPassword',
-          data: {'username': username, 'moquiSessionToken': this.sessionToken});
+          data: {'username': username});
       return json.decode(result.toString());
     } catch (e) {
       return responseMessage(e);
@@ -206,7 +203,6 @@ class Ofbiz {
         'username': username,
         'oldPassword': oldPassword,
         'newPassword': newPassword,
-        'moquiSessionToken': this.sessionToken
       });
       return getAuthenticate();
     } catch (e) {
@@ -264,12 +260,10 @@ class Ofbiz {
       if (user.partyId != null) {
         response = await client.patch('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
-          'moquiSessionToken': sessionToken
         });
       } else {
         response = await client.put('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
-          'moquiSessionToken': sessionToken
         });
       }
       return userFromJson(response.toString());
@@ -290,8 +284,7 @@ class Ofbiz {
 
   Future<dynamic> updateCompany(Company company) async {
     try {
-      Response response = await client.patch('rest/s1/growerp/100/Company',
-          data: {'moquiSessionToken': sessionToken});
+      Response response = await client.patch('rest/s1/growerp/100/Company');
       return companyFromJson(response.toString());
     } catch (e) {
       print("===catch: $e");
@@ -310,7 +303,6 @@ class Ofbiz {
         "type": type,
         "id": id,
         "file": await MultipartFile.fromFile(fileName, filename: justName),
-        "moquiSessionToken": this.sessionToken
       });
 //      Authenticate authenticate = await getAuthenticate();
 //      client.options.headers['api_key'] = authenticate?.apiKey;
