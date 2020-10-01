@@ -69,7 +69,7 @@ List<Company> companies = companiesFromJson('''
 Authenticate authenticateNoKey = authenticateFromJson('''
            {  "company": {"name": "Dummy Company Name",
                           "partyId": "100001",
-                          "currency": "dummyCurrency",
+                          "currencyId": "USD",
                           "classificationId": "AppEcommerceShop",
                           "classificationDescr": "App for Ecommerce and shop",
                           "email": "dummy@example.com",

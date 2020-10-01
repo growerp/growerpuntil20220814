@@ -19,6 +19,8 @@ class MyHttpOverrides extends HttpOverrides {
 void main() {
   HttpOverrides.global = new MyHttpOverrides();
   Dio client;
+  String apiKey;
+  Map login = Map<dynamic, dynamic>();
   Authenticate authenticate;
 
   client = Dio();
@@ -35,6 +37,7 @@ void main() {
     print('===Outgoing dio request path: ${options.path}');
     print('===Outgoing dio request headers: ${options.headers}');
     print('===Outgoing dio request data: ${options.data}');
+    print('===Outgoing dio request method: ${options.method}');
     // Do something before request is sent
     return options; //continue
     // If you want to resolve the request with some custom data，
@@ -51,73 +54,35 @@ void main() {
     return e; //continue
   }));
 */
-  test(' get token', () async {
-    String username = 'admin';
-    String password = 'ofbiz';
-    String basicAuth =
-        'Basic ' + base64Encode(utf8.encode('$username:$password'));
+  String getResponseData(Response input) {
+    Map jsonData = json.decode(input.toString()) as Map;
+    return json.encode(jsonData["data"]);
+  }
 
-    client.options.headers["Authorization"] = basicAuth;
-    Response response = await client.post('auth/token');
-    Map jsonData = json.decode(response.toString()) as Map;
-    String token = jsonData["data"]["access_token"];
-    client.options.headers["Authorization"] = 'Bearer ' + token;
-    expect(jsonData["statusCode"], 200);
-  });
-
-  test('create company with auth', () async {
-    Response response = await client.post('services/createCompany',
-        data: companyToJson(company));
-    Map jsonData = json.decode(response.toString()) as Map;
-    dynamic result = companyFromJson(json.encode(jsonData["data"]));
-    company.partyId = result.partyId;
-    result.image = company.image;
-    expect(companyToJson(result), companyToJson(company));
-  });
-
-/*
-
-curl -G -XÂ  GET https://localhost:8443/rest/services/demoMapService --data-urlencode 'inParams={"input":{"test":"just testing"}}' -H "Accept: ap
-
-plication/json" -H "Authorization: Bearer $token" --insecure
-
-
-
-curl -X POST https://localhost:8443/rest/services/demoMapService -d '{"input":{"test":"just testing"}}' -H "Content-Type: application/json" -H "
-
-Accept: application/json" -H "Authorization: Bearer $token" --insecure
-*/
-  test('get companies no auth', () async {
-    Response response = await client.get('services/getCompanies?inParams=' +
-        Uri.encodeComponent('{"classificationId":"$classificationId"}'));
-    Map jsonData = json.decode(response.toString()) as Map;
-    dynamic result = companiesFromJson(json.encode(jsonData["data"]));
-    print("==qq==== result: ${result.toString()}");
-    //expect(companies, companiesFromJson(result));
-  });
-}
-
-/*
   group('Register first company', () {
     test('register', () async {
-      register['moquiSessionToken'] = sessionToken;
-      register['emailAddress'] = randomString4 + register['emailAddress'];
-      register['companyEmail'] = register['emailAddress'];
-      register['username'] = register['emailAddress'];
-      authenticateNoKey.user.email = register['emailAddress'];
-      dynamic response =
-          await client.post('s1/growerp/100/UserAndCompany', data: register);
-      Authenticate result = authenticateFromJson(response.toString());
+      dynamic response = await client.post('services/registerUserAndCompany',
+          data: jsonEncode({
+            "companyName": companyName,
+            "currencyId": currencyId,
+            "firstName": firstName,
+            "lastName": lastName,
+            "classificationId": classificationId,
+            "emailAddress": randomString4 + "dummy@example.com",
+            "companyEmail": randomString4 + "1dummy@example.com",
+            "username": randomString4 + "dummy@example.com",
+            "userGroupId": 'GROWERP_M_ADMIN'
+          }));
+      Authenticate result = authenticateFromJson(getResponseData(response));
       authenticateNoKey.company.partyId = result.company.partyId;
-      authenticateNoKey.company.image = result.company.image;
       authenticateNoKey.user.partyId = result.user?.partyId;
-      authenticateNoKey.user.userId = result.user?.userId;
       authenticateNoKey.user.email = result.user?.email;
       authenticateNoKey.user.name = result.user?.name;
-      authenticateNoKey.user.image = result.user?.image;
-      authenticateNoKey.company.email = result.company.email;
-      authenticateNoKey.apiKey = result.apiKey;
-      apiKey = result.apiKey;
+      authenticateNoKey.company.email = result.company?.email;
+      authenticateNoKey.company.image = null;
+      authenticateNoKey.company.employees = result.company.employees;
+      authenticateNoKey.user.image = null;
+      authenticateNoKey.user.groupDescription = result.user.groupDescription;
       login.addAll({
         'companyPartyId': result.company.partyId,
         'username': result.user?.name,
@@ -128,7 +93,30 @@ Accept: application/json" -H "Authorization: Bearer $token" --insecure
     });
   });
 
-    group('Check companies and login:', () {
+  test('get companies no auth', () async {
+    Response response = await client.get('services/getCompanies?inParams=' +
+        Uri.encodeComponent('{"classificationId":"$classificationId"}'));
+    dynamic result = companiesFromJson(getResponseData(response));
+    //expect(companies, companiesFromJson(result));
+  });
+
+  test(' get token', () async {
+    String username = 'admin';
+    String password = 'ofbiz';
+    String basicAuth =
+        'Basic ' + base64Encode(utf8.encode('$username:$password'));
+
+    client.options.headers["Authorization"] = basicAuth;
+    Response response = await client.post('auth/token');
+    Map jsonData = json.decode(response.toString()) as Map;
+    String token = jsonData["data"]["access_token"];
+
+    client.options.headers["Authorization"] = 'Bearer ' + token;
+
+    expect(jsonData["statusCode"], 200);
+  });
+
+/*    group('Check companies and login:', () {
       test('Companies', () async {
         Response response = await client.get('s1/growerp/100/Companies');
         dynamic result = companiesFromJson(response.toString());
@@ -169,5 +157,5 @@ Accept: application/json" -H "Authorization: Bearer $token" --insecure
           'A reset password was sent');
     });
   });
-}
 */
+}

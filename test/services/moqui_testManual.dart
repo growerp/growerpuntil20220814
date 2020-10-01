@@ -33,6 +33,7 @@ void main() {
   group('Register first company', () {
     test('register', () async {
       register['moquiSessionToken'] = sessionToken;
+      register['partyClassificationId'] = classificationId;
       register['emailAddress'] = randomString4 + register['emailAddress'];
       register['companyEmail'] = register['emailAddress'];
       register['username'] = register['emailAddress'];
@@ -53,6 +54,7 @@ void main() {
       authenticateNoKey.company.email = result.company.email;
       authenticateNoKey.apiKey = result.apiKey;
       apiKey = result.apiKey;
+      // used later for login test
       login.addAll({
         'companyPartyId': result.company.partyId,
         'username': result.user?.name,
