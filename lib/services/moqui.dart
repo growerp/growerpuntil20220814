@@ -258,6 +258,15 @@ class Moqui {
     }
   }
 
+/*
+  async uploadImage(size, base64, type, id) {
+    axios.post('s1/growerp/UploadImage',
+      {   type: type, id: id,
+        size: size, contentFile: base64 })}
+  async downloadImage(size, type, id) {
+    return await axios.post('s1/growerp/DownloadImage',
+      {   size: size, type: type, id: id })}
+*/
   Future<dynamic> updateUser(User user, String imagePath) async {
     // no partyId is add
     try {

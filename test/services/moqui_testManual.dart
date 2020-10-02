@@ -34,6 +34,8 @@ void main() {
     test('register', () async {
       register['moquiSessionToken'] = sessionToken;
       register['partyClassificationId'] = classificationId;
+      register['companyName'] = companyName;
+      register['currencyId'] = currencyId;
       register['emailAddress'] = randomString4 + register['emailAddress'];
       register['companyEmail'] = register['emailAddress'];
       register['username'] = register['emailAddress'];
