@@ -32,10 +32,11 @@ void main() {
     blocTest('Login success',
         build: () => LoginBloc(repos: mockReposRepository),
         act: (bloc) async {
-          when(mockReposRepository.login(username: email, password: password))
+          when(mockReposRepository.login(
+                  username: emailAddress, password: password))
               .thenAnswer((_) async => authenticate);
           bloc.add(LoginButtonPressed(
-              company: company, username: email, password: password));
+              company: company, username: emailAddress, password: password));
           whenListen(
               authBloc,
               Stream.fromIterable(

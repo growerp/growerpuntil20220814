@@ -48,11 +48,19 @@ class Ofbiz {
       // Do something with response data
       print("===incoming response: ${response.toString()}");
       return response; // continue
-    }, onError: (DioError e) async {
-      // Do something with response error
-      print("error: $e");
-      return e; //continue
-    }));
+  }, onError: (DioError e) async {
+    // Do something with response error
+    if (e.response != null) {
+      print("=== e.response.data: ${e.response.data}");
+      print("=== e.response.headers: ${e.response.headers}");
+      print("=== e.response.request: ${e.response.request}");
+    } else {
+      // Something happened in setting up or sending the request that triggered an Error
+      print("=== e.request: ${e.request}");
+      print("=== e.message: ${e.message}");
+    }
+    return e; //continue
+  }));
 */
   }
 

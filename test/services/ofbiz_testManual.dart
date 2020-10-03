@@ -78,9 +78,9 @@ void main() {
               "firstName": firstName,
               "lastName": lastName,
               "classificationId": classificationId,
-              "emailAddress": email,
-              "companyEmail": email,
-              "username": randomString4 + email,
+              "emailAddress": emailAddress,
+              "companyEmail": emailAddress,
+              "username": randomString4 + emailAddress,
               "userGroupId": 'GROWERP_M_ADMIN'
             }));
       } catch (e) {
@@ -90,7 +90,7 @@ void main() {
       authenticateNoKey.company.partyId = result.company.partyId;
       authenticateNoKey.user.partyId = result.user?.partyId;
       authenticateNoKey.user.email = result.user?.email;
-      authenticateNoKey.user.name = randomString4 + email;
+      authenticateNoKey.user.name = randomString4 + emailAddress;
       authenticateNoKey.company.email = result.company?.email;
       authenticateNoKey.company.image = null;
       authenticateNoKey.company.employees = result.company.employees;

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:master/models/@models.dart';
@@ -30,30 +32,22 @@ void main() {
     });
   });
 
-  group('Register first company', () {
+  group('Register first company, login, upload inmage', () {
     test('register', () async {
       register['moquiSessionToken'] = sessionToken;
-      register['partyClassificationId'] = classificationId;
-      register['companyName'] = companyName;
-      register['currencyId'] = currencyId;
+      register['username'] = randomString4 + register['emailAddress'];
       register['emailAddress'] = randomString4 + register['emailAddress'];
-      register['companyEmail'] = register['emailAddress'];
-      register['username'] = register['emailAddress'];
-      authenticateNoKey.user.email = register['emailAddress'];
       dynamic response =
           await client.post('s1/growerp/100/UserAndCompany', data: register);
       Authenticate result = authenticateFromJson(response.toString());
       authenticateNoKey.company.partyId = result.company.partyId;
+      authenticateNoKey.user.partyId = result.user.partyId;
+      authenticateNoKey.user.name = register['emailAddress'];
+      authenticateNoKey.user.email = register['emailAddress'];
+      authenticateNoKey.user.image = result.user.image;
+      authenticateNoKey.user.userId = result.user.userId;
       authenticateNoKey.company.image = result.company.image;
       authenticateNoKey.company.employees = result.company.employees;
-      authenticateNoKey.user.partyId = result.user?.partyId;
-      authenticateNoKey.user.userId = result.user?.userId;
-      authenticateNoKey.user.email = result.user?.email;
-      authenticateNoKey.user.name = result.user?.name;
-      authenticateNoKey.user.image = result.user?.image;
-      authenticateNoKey.user.language = result.user?.language;
-      authenticateNoKey.user.country = result.user?.country;
-      authenticateNoKey.company.email = result.company.email;
       authenticateNoKey.apiKey = result.apiKey;
       apiKey = result.apiKey;
       // used later for login test
@@ -65,9 +59,8 @@ void main() {
       authenticate = authenticateNoKey;
       expect(authenticateToJson(result), authenticateToJson(authenticateNoKey));
     });
-  });
+    Authenticate loginAuth;
 
-  group('Check companies and login:', () {
     test('Companies', () async {
       Response response = await client.get('s1/growerp/100/Companies');
       dynamic result = companiesFromJson(response.toString());
@@ -76,14 +69,29 @@ void main() {
 
     test('login', () async {
       dynamic response = await client.post('s1/growerp/100/Login', data: login);
-      Authenticate loginAuth = authenticateFromJson(response.toString());
+      loginAuth = authenticateFromJson(response.toString());
       authenticate.apiKey = loginAuth.apiKey;
       apiKey = loginAuth.apiKey;
+      client.options.headers['api_key'] = loginAuth.apiKey;
       authenticate.moquiSessionToken = loginAuth.moquiSessionToken;
       sessionToken = loginAuth.moquiSessionToken;
       expect(authenticateToJson(loginAuth), authenticateToJson(authenticate));
     });
+
+    test('upload', () async {
+      dynamic response = await client.post('s1/growerp/100/Image', data: {
+        'type': 'company',
+        'id': loginAuth.company.partyId,
+        'base64': imageBase64,
+        'moquiSessionToken': sessionToken,
+      });
+      response = await client.get('rest/s1/growerp/100/Company',
+          queryParameters: {'partyId': loginAuth.company.partyId});
+      loginAuth.company.image = base64.decode(imageBase64);
+      expect(companyToJson(loginAuth.company), response.data["company"]);
+    });
   });
+/*
   group('password reset and update', () {
     test('update password', () async {
       Map updPassword = {
@@ -106,4 +114,5 @@ void main() {
           'A reset password was sent');
     });
   });
+*/
 }

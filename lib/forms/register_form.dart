@@ -243,7 +243,7 @@ class _RegisterHeaderState extends State<RegisterHeader> {
                                           .add(
                                         RegisterCompanyAdmin(
                                           companyName: _companyController.text,
-                                          currency:
+                                          currencyId:
                                               _currencySelected.currencyId,
                                           firstName: _firstNameController.text,
                                           lastName: _lastNameController.text,

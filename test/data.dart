@@ -88,7 +88,9 @@ Authenticate authenticateNoKey = authenticateFromJson('''
                        "name": "dummyUsername",
                        "image": null,
                        "groupDescription": "Admin",
-                       "userGroupId":"GROWERP_M_ADMIN"
+                       "userGroupId":"GROWERP_M_ADMIN",
+                       "language": "null",
+                       "country": null
                        },
               "apiKey": null
             }
@@ -113,23 +115,25 @@ final String errorMessage = 'Dummy error message';
 final String screenMessage = 'Dummy screen message';
 final String companyName = 'Dummy Company Name';
 final String companyPartyId = '100001';
+final String companyEmailAddress = 'dummy@example.com';
 final String firstName = 'dummyFirstName';
 final String lastName = 'dummyLastName';
 final String username = 'dummyUsername';
 final String password = 'dummyPassword9!';
 final String newPassword = 'dummyNewPassword9!';
-final String email = 'dummy@example.com';
+final String emailAddress = 'dummy@example.com';
 final String classificationId = 'AppEcommerceShop';
-
+final String imageBase64 =
+    "iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAAH0lEQVR42mNk+M9Qz0BFwDhq4KiBowaOGjhq4Eg1EAAlJx3tIbLVagAAAABJRU5ErkJggg==";
 Map register = {
   'username': username,
-  'emailAddress': email,
+  'emailAddress': emailAddress,
   'newPassword': password,
   'firstName': firstName,
   'lastName': lastName,
   'companyName': companyName,
   'currencyId': currencyId,
-  'companyEmail': email,
+  'companyEmailAddress': emailAddress,
   'classificationId': classificationId,
   'environment': true, // true for production, false for debug
   'moquiSessionToken': null // need to be set when used!

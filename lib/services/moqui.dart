@@ -43,11 +43,19 @@ class Moqui {
       // Do something with response data
       print("===incoming response: ${response.toString()}");
       return response; // continue
-    }, onError: (DioError e) async {
-      // Do something with response error
-      print("error: $e");
-      return e; //continue
-    }));
+  }, onError: (DioError e) async {
+    // Do something with response error
+    if (e.response != null) {
+      print("=== e.response.data: ${e.response.data}");
+      print("=== e.response.headers: ${e.response.headers}");
+      print("=== e.response.request: ${e.response.request}");
+    } else {
+      // Something happened in setting up or sending the request that triggered an Error
+      print("=== e.request: ${e.request}");
+      print("=== e.message: ${e.message}");
+    }
+    return e; //continue
+  }));
 */
   }
 
@@ -144,7 +152,7 @@ class Moqui {
       String companyPartyId, // if empty will create new company too!
       @required String firstName,
       @required String lastName,
-      String currency,
+      String currencyId,
       @required String email,
       List data}) async {
     try {
@@ -157,9 +165,9 @@ class Moqui {
                 'newPassword': 'qqqqqq9!', 'firstName': firstName,
                 'lastName': lastName, 'locale': locale,
                 'companyPartyId': companyPartyId, // for existing companies
-                'companyName': companyName, 'currencyUomId': currency,
+                'companyName': companyName, 'currencyUomId': currencyId,
                 'companyEmail': email,
-                'partyClassificationId': 'AppMaster',
+                'classificationId': 'AppMaster',
                 'environment': kReleaseMode,
                 'moquiSessionToken': sessionToken
               },

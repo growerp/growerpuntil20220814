@@ -83,7 +83,7 @@ void main() {
 //      await tester.enterText(find.byType(DropdownButton), currencies[2]);
       await tester.enterText(find.byKey(Key('firstName')), username);
       await tester.enterText(find.byKey(Key('lastName')), password);
-      await tester.enterText(find.byKey(Key('email')), email);
+      await tester.enterText(find.byKey(Key('email')), emailAddress);
       await tester.tap(find.byKey(Key('newCompany')));
       await tester.pumpAndSettle();
       whenListen(
@@ -92,10 +92,10 @@ void main() {
             LoadRegister(),
             RegisterCompanyAdmin(
                 companyName: companyName,
-                currency: currencyId,
+                currencyId: currencyId,
                 firstName: firstName,
                 lastName: lastName,
-                email: email)
+                email: emailAddress)
           ]));
     });
   });

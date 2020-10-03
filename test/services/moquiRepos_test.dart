@@ -91,8 +91,8 @@ void main() {
           companyName: companyName,
           firstName: firstName,
           lastName: lastName,
-          currency: currencyId,
-          email: email);
+          currencyId: currencyId,
+          email: emailAddress);
       final expected = authenticateNoKey;
 
       expect(

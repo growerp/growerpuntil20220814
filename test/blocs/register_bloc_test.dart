@@ -44,14 +44,14 @@ void main() {
                 companyPartyId: companyPartyId,
                 firstName: firstName,
                 lastName: lastName,
-                email: email))
+                email: emailAddress))
             .thenAnswer((_) async => authenticate);
         bloc.add(LoadRegister());
         bloc.add(RegisterButtonPressed(
             companyPartyId: companyPartyId,
             firstName: firstName,
             lastName: lastName,
-            email: email));
+            email: emailAddress));
       },
       expect: <RegisterState>[
         RegisterLoading(),
@@ -66,18 +66,18 @@ void main() {
       act: (bloc) async {
         when(mockReposRepository.register(
                 companyName: companyName,
-                currency: currencyId,
+                currencyId: currencyId,
                 firstName: firstName,
                 lastName: lastName,
-                email: email))
+                email: emailAddress))
             .thenAnswer((_) async => authenticateNoKey);
         bloc.add(LoadRegister());
         bloc.add(RegisterCompanyAdmin(
             companyName: companyName,
-            currency: currencyId,
+            currencyId: currencyId,
             firstName: firstName,
             lastName: lastName,
-            email: email));
+            email: emailAddress));
       },
       expect: <RegisterState>[
         RegisterLoading(),
@@ -94,14 +94,14 @@ void main() {
                 companyPartyId: companyPartyId,
                 firstName: firstName,
                 lastName: lastName,
-                email: email))
+                email: emailAddress))
             .thenAnswer((_) async => errorMessage);
         bloc.add(LoadRegister());
         bloc.add(RegisterButtonPressed(
             companyPartyId: companyPartyId,
             firstName: firstName,
             lastName: lastName,
-            email: email));
+            email: emailAddress));
       },
       expect: <RegisterState>[
         RegisterLoading(),
