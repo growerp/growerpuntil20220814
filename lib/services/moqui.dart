@@ -84,21 +84,12 @@ class Moqui {
           errorDescription = 'Send timeout in connection with API server';
           break;
       }
-      print("====dio error: $errorDescription");
+      // print("====dio error: $errorDescription");
     }
     if (e?.response != null && e?.response?.data != null) {
       errorDescription = e.response.data["errors"];
     }
-//    if (e.response != null) {
-    // print('dio error data: ${e.response.data}');
-    // print('dio error headers: ${e.response.headers}');
-    // print('dio error request: ${e.response.request}');
-//    } else {
-    // Something happened in setting up or sending the request that triggered an Error
-    // print('dio no response, request: ${e.request}');
-    // print('dio no response, message: ${e.message}');
-//    }
-    print('==repos.dart: returning error message: $errorDescription');
+    //print('==repos.dart: returning error message: $errorDescription');
     return errorDescription;
   }
 
@@ -166,8 +157,8 @@ class Moqui {
                 'lastName': lastName, 'locale': locale,
                 'companyPartyId': companyPartyId, // for existing companies
                 'companyName': companyName, 'currencyUomId': currencyId,
-                'companyEmail': email,
-                'classificationId': 'AppMaster',
+                'companyEmailAddress': email,
+                'classificationId': 'AppAdmin',
                 'environment': kReleaseMode,
                 'moquiSessionToken': sessionToken
               },
@@ -290,11 +281,13 @@ class Moqui {
       }
       Response response;
       if (user.partyId != null) {
+        //update
         response = await client.patch('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
           'moquiSessionToken': sessionToken
         });
       } else {
+        //create
         await client.put('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
           'moquiSessionToken': sessionToken
@@ -318,7 +311,7 @@ class Moqui {
 
   Future<dynamic> updateCompany(Company company, String imagePath) async {
     try {
-      if (imagePath != null) {
+/*      if (imagePath != null) {
         String justName = imagePath.split('/').last;
         FormData formData = FormData.fromMap({
           "type": 'company',
@@ -328,6 +321,7 @@ class Moqui {
         });
         await client.post("growerp/uploadImage", data: formData);
       }
+*/
       Response response = await client.post('rest/s1/growerp/100/Company',
           data: {
             'company': companyToJson(company),

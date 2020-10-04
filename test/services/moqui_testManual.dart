@@ -11,12 +11,42 @@ void main() {
   String apiKey;
   Map login = Map<dynamic, dynamic>();
   Authenticate authenticate;
-
   client = Dio();
   client.options.baseUrl = 'http://localhost:8080/rest/';
   client.options.connectTimeout = 20000; //10s
   client.options.receiveTimeout = 40000;
   client.options.headers = {'Content-Type': 'application/json'};
+
+  client.interceptors
+      .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
+    print('===Outgoing dio request path: ${options.path}');
+    print('===Outgoing dio request headers: ${options.headers}');
+    print('===Outgoing dio request data: ${options.data}');
+    print('===Outgoing dio request method: ${options.method}');
+    // Do something before request is sent
+    return options; //continue
+    // If you want to resolve the request with some custom data，
+    // you can return a `Response` object or return `dio.resolve(data)`.
+    // If you want to reject the request with a error message,
+    // you can return a `DioError` object or return `dio.reject(errMsg)`
+  }, onResponse: (Response response) async {
+    // Do something with response data
+    print("===incoming response: ${response.toString()}");
+    return response; // continue
+  }, onError: (DioError e) async {
+    // Do something with response error
+    if (e.response != null) {
+      print("=== e.response.data: ${e.response.data}");
+      print("=== e.response.headers: ${e.response.headers}");
+      print("=== e.response.request: ${e.response.request}");
+    } else {
+      // Something happened in setting up or sending the request that triggered an Error
+      print("=== e.request: ${e.request}");
+      print("=== e.message: ${e.message}");
+    }
+    return e; //continue
+  }));
+
   setUp(() async {
     Response response = await client.get('moquiSessionToken');
     sessionToken = response.data;
@@ -59,6 +89,7 @@ void main() {
       authenticate = authenticateNoKey;
       expect(authenticateToJson(result), authenticateToJson(authenticateNoKey));
     });
+
     Authenticate loginAuth;
 
     test('Companies', () async {
@@ -85,7 +116,7 @@ void main() {
         'base64': imageBase64,
         'moquiSessionToken': sessionToken,
       });
-      response = await client.get('rest/s1/growerp/100/Company',
+      response = await client.get('s1/growerp/100/Company',
           queryParameters: {'partyId': loginAuth.company.partyId});
       loginAuth.company.image = base64.decode(imageBase64);
       expect(companyToJson(loginAuth.company), response.data["company"]);
