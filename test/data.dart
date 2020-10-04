@@ -1,4 +1,4 @@
-import 'package:master/models/@models.dart';
+import 'package:admin/models/@models.dart';
 import 'dart:math';
 
 final String randomString4 = Random().nextInt(9999).toString();

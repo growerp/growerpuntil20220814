@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:master/models/@models.dart';
+import 'package:admin/models/@models.dart';
 import '../data.dart';
 
 class MyHttpOverrides extends HttpOverrides {
