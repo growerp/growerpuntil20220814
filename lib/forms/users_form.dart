@@ -20,7 +20,6 @@ import '../blocs/@blocs.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
-import '@forms.dart';
 
 class UsersForm extends StatefulWidget {
   @override
@@ -35,9 +34,11 @@ class _UsersFormState extends State<UsersForm> {
         appBar: AppBar(title: const Text('User List')),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            dynamic user = await Navigator.pushNamed(context, UserRoute);
+            dynamic user = await Navigator.pushNamed(context, UserRoute,
+                arguments: User());
             setState(() {
-              authenticate.company.employees.add(user);
+              if (user?.partyId != null)
+                authenticate.company.employees.add(user);
             });
           },
           tooltip: 'Add new user',

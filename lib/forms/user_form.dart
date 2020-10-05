@@ -7,7 +7,6 @@ import '../models/@models.dart';
 import '../blocs/@blocs.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
-import '@forms.dart';
 
 class UserForm extends StatelessWidget {
   final User user;
@@ -33,6 +32,7 @@ class UserForm extends StatelessWidget {
             ),
             body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
               if (state is AuthProblem) {
+                user = state.newUser;
                 HelperFunctions.showMessage(
                     context, '${state.errorMessage}', Colors.red);
               }
@@ -253,7 +253,8 @@ class _MyUserState extends State<MyUserPage> {
                       SizedBox(height: 20),
                       TextFormField(
                         key: Key('name'),
-                        decoration: InputDecoration(labelText: 'Login Name'),
+                        decoration:
+                            InputDecoration(labelText: 'User Login Name'),
                         controller: _nameController,
                         validator: (value) {
                           if (value.isEmpty)
@@ -315,9 +316,6 @@ class _MyUserState extends State<MyUserPage> {
                             if (_formKey.currentState.validate())
                               //&& state is! UsersLoading)
                               updatedUser = User(
-                                image: _imageFile != null
-                                    ? File(_imageFile.path).readAsBytesSync()
-                                    : null,
                                 partyId: user?.partyId,
                                 firstName: _firstNameController.text,
                                 lastName: _lastNameController.text,
@@ -332,7 +330,7 @@ class _MyUserState extends State<MyUserPage> {
                                     .toString(),
                               );
                             BlocProvider.of<AuthBloc>(context).add(UpdateUser(
-                              widget.authenticate,
+                              authenticate,
                               updatedUser,
                               _imageFile?.path,
                             ));

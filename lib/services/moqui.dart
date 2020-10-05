@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:http/http.dart' show get;
 import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter/foundation.dart';
-import 'dart:io' show Platform;
+import 'dart:io' show File, Platform;
 import 'dart:async';
 import '../models/@models.dart';
 import 'dart:convert';
@@ -156,7 +157,7 @@ class Moqui {
                 'newPassword': 'qqqqqq9!', 'firstName': firstName,
                 'lastName': lastName, 'locale': locale,
                 'companyPartyId': companyPartyId, // for existing companies
-                'companyName': companyName, 'currencyUomId': currencyId,
+                'companyName': companyName, 'currencyId': currencyId,
                 'companyEmailAddress': email,
                 'classificationId': 'AppAdmin',
                 'environment': kReleaseMode,
@@ -257,39 +258,32 @@ class Moqui {
     }
   }
 
-/*
-  async uploadImage(size, base64, type, id) {
-    axios.post('s1/growerp/UploadImage',
-      {   type: type, id: id,
-        size: size, contentFile: base64 })}
-  async downloadImage(size, type, id) {
-    return await axios.post('s1/growerp/DownloadImage',
-      {   size: size, type: type, id: id })}
-*/
   Future<dynamic> updateUser(User user, String imagePath) async {
     // no partyId is add
     try {
+      user.image = null;
+      String base64Image;
       if (imagePath != null) {
-        String justName = imagePath.split('/').last;
-        FormData formData = FormData.fromMap({
-          "type": 'user',
-          "id": user.partyId,
-          "file": await MultipartFile.fromFile(imagePath, filename: justName),
-          "moquiSessionToken": this.sessionToken
-        });
-        await client.post("growerp/uploadImage", data: formData);
+        if (kIsWeb) {
+          var response = await get(imagePath);
+          base64Image = base64Encode(response.bodyBytes);
+        } else {
+          base64Image = base64Encode(File(imagePath).readAsBytesSync());
+        }
       }
       Response response;
       if (user.partyId != null) {
         //update
         response = await client.patch('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
+          'base64': base64Image,
           'moquiSessionToken': sessionToken
         });
       } else {
         //create
-        await client.put('rest/s1/growerp/100/User', data: {
+        response = await client.put('rest/s1/growerp/100/User', data: {
           'user': userToJson(user),
+          'base64': base64Image,
           'moquiSessionToken': sessionToken
         });
       }
@@ -311,26 +305,24 @@ class Moqui {
 
   Future<dynamic> updateCompany(Company company, String imagePath) async {
     try {
-/*      if (imagePath != null) {
-        String justName = imagePath.split('/').last;
-        FormData formData = FormData.fromMap({
-          "type": 'company',
-          "id": company.partyId,
-          "file": await MultipartFile.fromFile(imagePath, filename: justName),
-          "moquiSessionToken": this.sessionToken
-        });
-        await client.post("growerp/uploadImage", data: formData);
+      company.image = null;
+      String base64Image;
+      if (imagePath != null) {
+        if (kIsWeb) {
+          var response = await get(imagePath);
+          base64Image = base64Encode(response.bodyBytes);
+        } else {
+          base64Image = base64Encode(File(imagePath).readAsBytesSync());
+        }
       }
-*/
-      Response response = await client.post('rest/s1/growerp/100/Company',
-          data: {
-            'company': companyToJson(company),
-            'moquiSessionToken': sessionToken
-          });
-      print("===aaa==${response.toString()}=");
+      Response response =
+          await client.post('rest/s1/growerp/100/Company', data: {
+        'company': companyToJson(company),
+        'base64': base64Image,
+        'moquiSessionToken': sessionToken
+      });
       return companyFromJson(response.toString());
     } catch (e) {
-      print("===catch: $e");
       return responseMessage(e);
     }
   }

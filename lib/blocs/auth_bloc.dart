@@ -102,21 +102,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (event is UpdateCompany) {
       yield AuthLoading();
       dynamic result =
-          await repos.updateCompany(event.company, event.imageFilename);
+          await repos.updateCompany(event.company, event.imagePath);
       if (result is Company) {
         event.authenticate.company = result;
         yield AuthCompanyUpdateSuccess(event.authenticate);
       } else {
-        yield AuthProblem(result);
+        yield AuthProblem(result, event.company);
       }
     } else if (event is UpdateUser) {
       yield AuthLoading();
-      dynamic result = await repos.updateUser(event.user, event.imageFilename);
+      dynamic result = await repos.updateUser(event.user, event.imagePath);
       if (result is User) {
         event.authenticate.user = result;
         yield AuthUserUpdateSuccess(event.authenticate);
       } else {
-        yield AuthProblem(result);
+        yield AuthProblem(result, null, event.user);
       }
     }
   }
@@ -148,19 +148,20 @@ class UpdateAuth extends AuthEvent {
 class UpdateCompany extends AuthEvent {
   final Authenticate authenticate;
   final Company company;
-  final String imageFilename;
-  UpdateCompany(this.authenticate, this.company, this.imageFilename);
+  final String imagePath;
+  UpdateCompany(this.authenticate, this.company, this.imagePath);
   @override
   List<Object> get props => [authenticate];
   @override
-  String toString() => 'Update Company ${authenticate.company.toString()}';
+  String toString() => 'Update Company ${authenticate.company.toString()} '
+      'new image: ${imagePath != null ? imagePath.length : 0}';
 }
 
 class UpdateUser extends AuthEvent {
   final Authenticate authenticate;
   final User user;
-  final String imageFilename;
-  UpdateUser(this.authenticate, this.user, this.imageFilename);
+  final String imagePath;
+  UpdateUser(this.authenticate, this.user, this.imagePath);
   @override
   List<Object> get props => [authenticate];
   @override
@@ -225,7 +226,9 @@ class AuthImageUpdated extends AuthState {}
 
 class AuthProblem extends AuthState {
   final String errorMessage;
-  AuthProblem(this.errorMessage);
+  final Company newCompany;
+  final User newUser;
+  AuthProblem(this.errorMessage, [this.newCompany, this.newUser]);
   @override
   List<Object> get props => [errorMessage];
   @override

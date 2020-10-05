@@ -26,6 +26,7 @@ class CompanyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
+    Company company;
     bool isAdmin = false;
     return Scaffold(
         appBar: AppBar(title: const Text('Company page'), actions: <Widget>[
@@ -39,18 +40,21 @@ class CompanyForm extends StatelessWidget {
                 'Company ${authenticate.company.name} updated', Colors.green);
           }
           if (state is AuthProblem) {
+            company = state.newCompany;
             HelperFunctions.showMessage(
                 context, '${state.errorMessage}', Colors.red);
           }
         }, builder: (context, state) {
           if (state is AuthUnauthenticated) {
             authenticate = state.authenticate;
+            company = authenticate.company;
           }
           if (state is AuthAuthenticated) {
             authenticate = state.authenticate;
+            if (company == null) company = authenticate.company;
             isAdmin = authenticate?.user?.userGroupId == 'GROWERP_M_ADMIN';
           }
-          return CompanyPage(authenticate, isAdmin);
+          return CompanyPage(authenticate, isAdmin, company);
         }));
   }
 }
@@ -58,7 +62,8 @@ class CompanyForm extends StatelessWidget {
 class CompanyPage extends StatefulWidget {
   final Authenticate authenticate;
   final bool isAdmin;
-  CompanyPage(this.authenticate, this.isAdmin);
+  final Company company;
+  CompanyPage(this.authenticate, this.isAdmin, this.company);
   @override
   _CompanyState createState() => _CompanyState(authenticate);
 }
@@ -119,9 +124,9 @@ class _CompanyState extends State<CompanyPage> {
                       textAlign: TextAlign.center,
                     );
                   }
-                  return _showForm(widget.isAdmin);
+                  return _showForm(widget.isAdmin, widget.company);
                 })
-            : _showForm(widget.isAdmin),
+            : _showForm(widget.isAdmin, widget.company),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -162,8 +167,7 @@ class _CompanyState extends State<CompanyPage> {
     return null;
   }
 
-  Widget _showForm(isAdmin) {
-    Company company = authenticate.company;
+  Widget _showForm(isAdmin, company) {
     _nameController..text = company.name;
     _emailController..text = company.email;
     Company updatedCompany;
@@ -195,27 +199,18 @@ class _CompanyState extends State<CompanyPage> {
                     key: _formKey,
                     child: ListView(children: <Widget>[
                       SizedBox(height: 30),
-                      GestureDetector(
-                        onTap: () async {
-                          PickedFile pickedFile = await _picker.getImage(
-                              source: ImageSource.gallery);
-                          BlocProvider.of<AuthBloc>(context).add(
-                              UploadImage(company.partyId, pickedFile.path));
-                        },
-                        child: CircleAvatar(
-                            backgroundColor: Colors.green,
-                            radius: 80,
-                            child: _imageFile != null
-                                ? kIsWeb
-                                    ? Image.network(_imageFile.path)
-                                    : Image.file(File(_imageFile.path))
-                                : company.image != null
-                                    ? Image.memory(company.image)
-                                    : Text(company.name.substring(0, 1) ?? '',
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            color: Colors.black))),
-                      ),
+                      CircleAvatar(
+                          backgroundColor: Colors.green,
+                          radius: 80,
+                          child: _imageFile != null
+                              ? kIsWeb
+                                  ? Image.network(_imageFile.path)
+                                  : Image.file(File(_imageFile.path))
+                              : company.image != null
+                                  ? Image.memory(company.image)
+                                  : Text(company.name.substring(0, 1) ?? '',
+                                      style: TextStyle(
+                                          fontSize: 30, color: Colors.black))),
                       SizedBox(height: 20),
                       TextFormField(
                         readOnly: !isAdmin,
@@ -285,14 +280,10 @@ class _CompanyState extends State<CompanyPage> {
                               child: Text(company.partyId == null
                                   ? 'Create'
                                   : 'Update'),
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey.currentState.validate())
                                   //&& state is! UsersLoading)
                                   updatedCompany = Company(
-                                    image: _imageFile != null
-                                        ? File(_imageFile.path)
-                                            .readAsBytesSync()
-                                        : null,
                                     partyId: company.partyId,
                                     email: _emailController.text,
                                     name: _nameController.text,
