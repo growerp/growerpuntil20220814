@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:admin/models/@models.dart';
@@ -67,11 +66,11 @@ void main() {
     return json.encode(jsonData["data"]);
   }
 
-  group('Register first company', () {
+  group('Register, login: Check companies token and Auhtenticate', () {
     test('register', () async {
       Response response;
       try {
-        response = await client.post('services/registerUserAndCompany',
+        response = await client.post('services/registerUserAndCompany100',
             data: jsonEncode({
               "companyName": companyName,
               "currencyId": currencyId,
@@ -81,7 +80,9 @@ void main() {
               "emailAddress": emailAddress,
               "companyEmail": emailAddress,
               "username": randomString4 + emailAddress,
-              "userGroupId": 'GROWERP_M_ADMIN'
+              "userGroupId": 'GROWERP_M_ADMIN',
+              "password": password,
+              "passwordVerify": password,
             }));
       } catch (e) {
         print("==catch e======${e.response}");
@@ -96,64 +97,49 @@ void main() {
       authenticateNoKey.company.employees = result.company.employees;
       authenticateNoKey.user.image = null;
       authenticateNoKey.user.groupDescription = result.user.groupDescription;
-      login.addAll({
-        'companyPartyId': result.company.partyId,
-        'username': result.user?.name,
-        'password': password
-      });
-      authenticate = authenticateNoKey;
+      login.addAll(
+          {'username': randomString4 + emailAddress, 'password': password});
+      expect(authenticateToJson(result), authenticateToJson(authenticateNoKey));
+    });
+
+    test('get companies no auth', () async {
+      try {
+        Response response = await client.get(
+            'services/getCompanies100?inParams=' +
+                Uri.encodeComponent(
+                    '{"classificationId": "$classificationId" }'));
+        dynamic result = companiesFromJson(getResponseData(response));
+        print("number of companies: ${result != null ? result.length : 0}");
+      } catch (e) {
+        print("catch ${e.toString()}");
+      }
+      expect(companies, companies);
+    });
+
+    test(' get token', () async {
+      String username = randomString4 + emailAddress;
+      String basicAuth =
+          'Basic ' + base64Encode(utf8.encode('$username:$password'));
+      client.options.headers["Authorization"] = basicAuth;
+      Response response = await client.post('auth/token');
+      Map jsonData = json.decode(response.toString()) as Map;
+      String token = jsonData["data"]["access_token"];
+
+      client.options.headers["Authorization"] = 'Bearer ' + token;
+
+      expect(jsonData["statusCode"], 200);
+    });
+
+    test('-->login', () async {
+      Response response = await client.get(
+          'services/getAuthenticate100?inParams=' +
+              Uri.encodeComponent('{"x":"x"}'));
+      Authenticate result = authenticateFromJson(getResponseData(response));
       expect(authenticateToJson(result), authenticateToJson(authenticateNoKey));
     });
   });
 
-  test('get companies no auth', () async {
-    try {
-      Response response = await client.get('services/getCompanies?inParams=' +
-          Uri.encodeComponent('{"classificationId":"$classificationId"}'));
-      dynamic result = companiesFromJson(getResponseData(response));
-      print("number of companies: ${result != null ? result.length : 0}");
-    } catch (e) {
-      print("catch ${e.toString()}");
-    }
-    expect(companies, companies);
-  });
-
-  test(' get token', () async {
-    String username = 'admin';
-    String password = 'ofbiz';
-    String basicAuth =
-        'Basic ' + base64Encode(utf8.encode('$username:$password'));
-
-    client.options.headers["Authorization"] = basicAuth;
-    Response response = await client.post('auth/token');
-    Map jsonData = json.decode(response.toString()) as Map;
-    String token = jsonData["data"]["access_token"];
-
-    client.options.headers["Authorization"] = 'Bearer ' + token;
-
-    expect(jsonData["statusCode"], 200);
-  });
-
-/*    group('Check companies and login:', () {
-      test('Companies', () async {
-        Response response = await client.get('s1/growerp/100/Companies');
-        dynamic result = companiesFromJson(response.toString());
-        expect(result.length > 0, true);
-      });
-
-      test('login', () async {
-        dynamic response =
-            await client.post('s1/growerp/100/Login', data: login);
-        Authenticate loginAuth = authenticateFromJson(response.toString());
-        authenticate.apiKey = loginAuth.apiKey;
-        apiKey = loginAuth.apiKey;
-        authenticate.moquiSessionToken = loginAuth.moquiSessionToken;
-        sessionToken = loginAuth.moquiSessionToken;
-        expect(authenticateToJson(loginAuth), authenticateToJson(authenticate));
-      });
-    });
-
-  group('password reset and update', () {
+/*  group('password reset and update', () {
     test('update password', () async {
       Map updPassword = {
         'username': login['username'],

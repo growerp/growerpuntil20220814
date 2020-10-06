@@ -12,8 +12,7 @@ class Moqui {
   final Dio client;
 
   String sessionToken;
-  String partyClassificationId =
-      GlobalConfiguration().getValue("partyClassificationId");
+  String classificationId = GlobalConfiguration().getValue("classificationId");
 
   Moqui({@required this.client}) {
     if (kReleaseMode) {
