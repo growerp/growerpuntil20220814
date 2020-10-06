@@ -1,5 +1,5 @@
 {
     "__comment__": "moqui / ofbiz",
     "backend": "moqui",
-    "partyClassificationId": "AppEcommerceShop"
+    "partyClassificationId": "AppAdmin"
 }

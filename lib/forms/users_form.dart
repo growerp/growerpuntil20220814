@@ -34,8 +34,8 @@ class _UsersFormState extends State<UsersForm> {
         appBar: AppBar(title: const Text('User List')),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            dynamic user = await Navigator.pushNamed(context, UserRoute,
-                arguments: User());
+            dynamic user =
+                await Navigator.pushNamed(context, UserRoute, arguments: null);
             setState(() {
               if (user?.partyId != null)
                 authenticate.company.employees.add(user);
