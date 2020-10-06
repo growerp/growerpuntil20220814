@@ -89,7 +89,7 @@ Authenticate authenticateNoKey = authenticateFromJson('''
                        "image": null,
                        "groupDescription": "Admin",
                        "userGroupId":"GROWERP_M_ADMIN",
-                       "language": "null",
+                       "language": null,
                        "country": null
                        },
               "apiKey": null
