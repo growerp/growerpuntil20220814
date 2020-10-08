@@ -18,9 +18,9 @@ class MyHttpOverrides extends HttpOverrides {
 void main() {
   HttpOverrides.global = new MyHttpOverrides();
   Dio client;
-  String apiKey;
-  Map login = Map<dynamic, dynamic>();
   Authenticate authenticate;
+  String username = randomString4 + emailAddress;
+  String password = "qqqqqq9!";
 
   client = Dio();
 
@@ -66,58 +66,46 @@ void main() {
     return json.encode(jsonData["data"]);
   }
 
-  group('Register, login: Check companies token and Auhtenticate', () {
-    test('register', () async {
-      Response response;
-      try {
-        response = await client.post('services/registerUserAndCompany100',
-            data: jsonEncode({
-              "companyName": companyName,
-              "currencyId": currencyId,
-              "firstName": firstName,
-              "lastName": lastName,
-              "classificationId": classificationId,
-              "emailAddress": emailAddress,
-              "companyEmail": emailAddress,
-              "username": randomString4 + emailAddress,
-              "userGroupId": 'GROWERP_M_ADMIN',
-              "password": password,
-              "passwordVerify": password,
-            }));
-      } catch (e) {
-        print("==catch e======${e.response}");
-      }
-      Authenticate result = authenticateFromJson(getResponseData(response));
-      authenticateNoKey.company.partyId = result.company.partyId;
-      authenticateNoKey.user.partyId = result.user?.partyId;
-      authenticateNoKey.user.email = result.user?.email;
-      authenticateNoKey.user.name = randomString4 + emailAddress;
-      authenticateNoKey.company.email = result.company?.email;
-      authenticateNoKey.company.image = null;
-      authenticateNoKey.company.employees = result.company.employees;
-      authenticateNoKey.user.image = null;
-      authenticateNoKey.user.groupDescription = result.user.groupDescription;
-      login.addAll(
-          {'username': randomString4 + emailAddress, 'password': password});
-      expect(authenticateToJson(result), authenticateToJson(authenticateNoKey));
-    });
+  setUpAll(() async {
+    // register new company, user and login
+    try {
+      return client.post('services/registerUserAndCompany100',
+          data: jsonEncode({
+            "companyName": companyName,
+            "currencyId": currencyId,
+            "firstName": firstName,
+            "lastName": lastName,
+            "classificationId": classificationId,
+            "emailAddress": emailAddress,
+            "companyEmail": emailAddress,
+            "username": username,
+            "userGroupId": 'GROWERP_M_ADMIN',
+            "password": password,
+            "passwordVerify": password,
+          }));
+    } catch (e) {
+      print("==catch e======${e.response}");
+    }
+  });
 
+  group('Public tests>>>>', () {
     test('get companies no auth', () async {
+      dynamic result;
       try {
         Response response = await client.get(
             'services/getCompanies100?inParams=' +
                 Uri.encodeComponent(
                     '{"classificationId": "$classificationId" }'));
-        dynamic result = companiesFromJson(getResponseData(response));
-        print("number of companies: ${result != null ? result.length : 0}");
+        result = companiesFromJson(getResponseData(response));
+        print("number of companies: ${result != null ? result?.length : 0}");
       } catch (e) {
         print("catch ${e.toString()}");
       }
-      expect(companies, companies);
+      expect(result.length, greaterThan(0));
     });
 
-    test(' get token', () async {
-      String username = randomString4 + emailAddress;
+    test('login', () async {
+      // get token
       String basicAuth =
           'Basic ' + base64Encode(utf8.encode('$username:$password'));
       client.options.headers["Authorization"] = basicAuth;
@@ -128,33 +116,39 @@ void main() {
       client.options.headers["Authorization"] = 'Bearer ' + token;
 
       expect(jsonData["statusCode"], 200);
-    });
 
-    test('-->login', () async {
-      Response response = await client.get(
-          'services/getAuthenticate100?inParams=' +
-              Uri.encodeComponent('{"x":"x"}'));
-      Authenticate result = authenticateFromJson(getResponseData(response));
-      expect(authenticateToJson(result), authenticateToJson(authenticateNoKey));
+      // get company and user data using token
+      response = await client.get('services/getAuthenticate100');
+      authenticate = authenticateFromJson(getResponseData(response));
+      authenticateNoKey.company.partyId = authenticate.company.partyId;
+      authenticateNoKey.user.partyId = authenticate.user?.partyId;
+      authenticateNoKey.company.image = null;
+      authenticateNoKey.company.employees = authenticate.company.employees;
+      authenticateNoKey.user.name = username;
+      authenticateNoKey.user.image = null;
+      authenticateNoKey.user.email = emailAddress;
+      authenticateNoKey.company.email = emailAddress;
+      authenticateNoKey.user.groupDescription =
+          authenticate.user.groupDescription;
+      expect(authenticateToJson(authenticate),
+          authenticateToJson(authenticateNoKey));
     });
   });
-
-/*  group('password reset and update', () {
+/* 
     test('update password', () async {
       Map updPassword = {
-        'username': login['username'],
+        'username': username,
         'oldPassword': password,
         'newPassword': newPassword,
-        'moquiSessionToken': sessionToken,
       };
       dynamic response =
-          await client.put('s1/growerp/100/Password', data: updPassword);
+          await client.post('s1/growerp/100/Password', data: updPassword);
       expect(response.data['messages'].substring(0, 16), 'Password updated');
     });
     test('reset password', () async {
       Response response = await client.post('s1/growerp/100/ResetPassword',
           data: {
-            'username': login['username'],
+            'username': username,
             'moquiSessionToken': sessionToken
           });
       expect(response.data['messages'].substring(0, 25),
@@ -162,4 +156,16 @@ void main() {
     });
   });
 */
+  group('User operations >>>>> ', () {
+    test('update loggedin user', () async {
+      try {
+        Response response = await client.post('services/updateUser100',
+            data: userToJson(authenticate.user));
+        dynamic result = userFromJson(getResponseData(response));
+        expect(userToJson(result), userToJson(authenticate.user));
+      } catch (e) {
+        print("==catch==${e?.response?.data} ${e.response.headers}");
+      }
+    });
+  });
 }
