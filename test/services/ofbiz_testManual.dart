@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:admin/models/@models.dart';
@@ -102,7 +101,7 @@ void main() {
       } catch (e) {
         print("catch ${e?.response?.data}");
       }
-      // expect(result?.length, greaterThan(0));
+      expect(result.length, greaterThan(0));
     });
 
     test('login', () async {
