@@ -28,6 +28,7 @@ class User {
   String country;
   String externalId; // when customer register they give their telno
   Uint8List image;
+  String base64Upload; // to upload images to the
 
   User({
     this.partyId,

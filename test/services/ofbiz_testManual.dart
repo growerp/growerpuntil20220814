@@ -133,6 +133,16 @@ void main() {
       expect(authenticateToJson(authenticate),
           authenticateToJson(authenticateNoKey));
     });
+
+    test('check if api_key works', () async {
+      try {
+        Response response = await client.post('services/checkToken');
+        Map jsonData = json.decode(response.toString()) as Map;
+        String token = jsonData["data"]["ok"];
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
   });
 /* 
     test('update password', () async {

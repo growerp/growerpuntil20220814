@@ -135,6 +135,7 @@ Map register = {
   'currencyId': currencyId,
   'companyEmailAddress': emailAddress,
   'classificationId': classificationId,
+  'language': 'en_US',
   'environment': true, // true for production, false for debug
   'moquiSessionToken': null // need to be set when used!
 };

@@ -52,7 +52,7 @@ void main() {
     sessionToken = response.data;
   });
 
-  group('Connection test and public api', () {
+  group('Connection test and public api >>>>>', () {
     test('test connection', () async {
       print("need a local version of Moqui see: README of this project");
       print("=========================================================");
@@ -62,7 +62,7 @@ void main() {
     });
   });
 
-  group('Register first company, login, upload inmage', () {
+  group('Register first company, login, upload inmage>>>>>', () {
     test('register', () async {
       register['moquiSessionToken'] = sessionToken;
       register['username'] = randomString4 + register['emailAddress'];
@@ -76,6 +76,7 @@ void main() {
       authenticateNoKey.user.email = register['emailAddress'];
       authenticateNoKey.user.image = result.user.image;
       authenticateNoKey.user.userId = result.user.userId;
+      authenticateNoKey.user.language = result.user.language;
       authenticateNoKey.company.image = result.company.image;
       authenticateNoKey.company.employees = result.company.employees;
       authenticateNoKey.apiKey = result.apiKey;
@@ -109,21 +110,33 @@ void main() {
       expect(authenticateToJson(loginAuth), authenticateToJson(authenticate));
     });
 
-    test('upload', () async {
-      dynamic response = await client.post('s1/growerp/100/Image', data: {
+    test('upload image company', () async {
+      await client.post('s1/growerp/100/Image', data: {
         'type': 'company',
         'id': loginAuth.company.partyId,
         'base64': imageBase64,
         'moquiSessionToken': sessionToken,
       });
-      response = await client.get('s1/growerp/100/Company',
+      dynamic response = await client.get('s1/growerp/100/Company',
           queryParameters: {'partyId': loginAuth.company.partyId});
-      loginAuth.company.image = base64.decode(imageBase64);
-      //expect(companyToJson(loginAuth.company), response.data["company"]);
+      Company company = companyFromJson(response.toString());
+      expect(company.image, isNotEmpty);
+    });
+    test('upload image user', () async {
+      await client.post('s1/growerp/100/Image', data: {
+        'type': 'user',
+        'id': loginAuth.user.partyId,
+        'base64': imageBase64,
+        'moquiSessionToken': sessionToken,
+      });
+      dynamic response = await client.get('s1/growerp/100/User',
+          queryParameters: {'partyId': loginAuth.user.partyId});
+      User user = userFromJson(response.toString());
+      expect(user.image, isNotEmpty);
     });
   });
 
-  group('password reset and update', () {
+  group('password reset and update >>>>>', () {
     test('update password', () async {
       Map updPassword = {
         'username': login['username'],
