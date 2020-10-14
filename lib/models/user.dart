@@ -57,7 +57,9 @@ class User {
         language: json["language"],
         country: json["country"],
         externalId: json["externalId"],
-        image: json["image"] != null ? base64.decode(json["image"]) : null,
+        image: json["image"] == null || json["image"] == "null"
+            ? null
+            : base64.decode(json["image"]),
       );
 
   Map<String, dynamic> toJson() => {
@@ -76,24 +78,8 @@ class User {
       };
 
   @override
-  List<Object> get props => [
-        partyId,
-        userId,
-        firstName,
-        lastName,
-        name,
-        email,
-        groupDescription,
-        userGroupId,
-        language,
-        country,
-        externalId,
-        image,
-      ];
-
-  @override
   String toString() {
     return 'User $firstName $lastName [$partyId] sec: $userGroupId img size: '
-        '${image != null ? image.length : 0}';
+        '${image?.length}';
   }
 }

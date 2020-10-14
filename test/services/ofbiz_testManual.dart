@@ -97,11 +97,10 @@ void main() {
                 Uri.encodeComponent(
                     '{"classificationId": "$classificationId" }'));
         result = companiesFromJson(getResponseData(response));
-        print("number of companies: ${result != null ? result?.length : 0}");
+        expect(result != null ? result.length : 0, greaterThan(0));
       } catch (e) {
         print("catch ${e?.response?.data}");
       }
-      expect(result.length, greaterThan(0));
     });
 
     test('login', () async {
@@ -136,9 +135,10 @@ void main() {
 
     test('check if api_key works', () async {
       try {
-        Response response = await client.post('services/checkToken');
+        Response response = await client.get('services/checkToken100');
         Map jsonData = json.decode(response.toString()) as Map;
-        String token = jsonData["data"]["ok"];
+        String ok = jsonData["data"]["ok"];
+        expect(ok, 'ok');
       } on DioError catch (e) {
         expect(null, e?.response?.data);
       }
@@ -179,44 +179,83 @@ void main() {
       }
     });
     test('change data of company', () async {
-      authenticate.company.image = null; // fill when want to change
-      authenticate.company.name = 'xxxx';
-      authenticate.company.email = 'yyyy@yy.co';
-      Response response = await client.post('services/updateCompany100',
-          data: companyToJson(authenticate.company));
-      dynamic result = companyFromJson(getResponseData(response));
-      expect(companyToJson(result), companyToJson(authenticate.company));
+      try {
+        authenticate.company.image = null; // fill when want to change
+        authenticate.company.name = 'xxxx';
+        authenticate.company.email = 'yyyy@yy.co';
+        Response response = await client.post('services/updateCompany100',
+            data: companyToJson(authenticate.company));
+        dynamic result = companyFromJson(getResponseData(response));
+        expect(companyToJson(result), companyToJson(authenticate.company));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+    test('upload company image', () async {
+      try {
+        authenticate.company.image = base64.decode(imageBase64);
+        Response response = await client.post('services/updateCompany100',
+            data: companyToJson(authenticate.company));
+        Company result = companyFromJson(getResponseData(response));
+        //  print("====result of company update: ${result.toString()}");
+        expect(result?.image, isNotEmpty);
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+
+    test('check if a company still exits', () async {
+      try {
+        Response response = await client.get(
+            'services/checkCompany100?inParams=' +
+                Uri.encodeComponent(
+                    '{"companyPartyId": "${authenticate.company.partyId}" }'));
+        Map jsonData = json.decode(response.toString()) as Map;
+        String ok = jsonData["data"]["ok"];
+        expect(ok, 'ok');
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
     });
   });
 
   group('User operations >>>>> ', () {
     test('update logged in user', () async {
-      authenticate.user.image = null; // fill when want to change
-      Response response = await client.post('services/updateUser100',
-          data: userToJson(authenticate.user));
-      dynamic result = userFromJson(getResponseData(response));
-      expect(userToJson(result), userToJson(authenticate.user));
+      try {
+        authenticate.user.image = null; // fill when want to change
+        Response response = await client.post('services/updateUser100',
+            data: userToJson(authenticate.user));
+        dynamic result = userFromJson(getResponseData(response));
+        expect(userToJson(result), userToJson(authenticate.user));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
     });
     test('change data of logged in user', () async {
-      authenticate.user.image = null; // fill when want to change
-      authenticate.user.firstName = 'xxxx';
-      authenticate.user.lastName = 'yyyy';
-      Response response = await client.post('services/updateUser100',
-          data: userToJson(authenticate.user));
-      dynamic result = userFromJson(getResponseData(response));
-      expect(userToJson(result), userToJson(authenticate.user));
-    });
-/*
-    test('upload image', () async {
-      authenticate.user.image =
-          base64.decode("R0lGODlhAQABAAAAACwAAAAAAQABAAA=");
-      Response response = await client.post('services/updateUser100',
-          data: userToJson(authenticate.user));
-      dynamic result = userFromJson(getResponseData(response));
-      expect(userToJson(result), userToJson(authenticate.user));
+      try {
+        authenticate.user.image = null; // fill when want to change
+        authenticate.user.firstName = 'xxxx';
+        authenticate.user.lastName = 'yyyy';
+        Response response = await client.post('services/updateUser100',
+            data: userToJson(authenticate.user));
+        dynamic result = userFromJson(getResponseData(response));
+        expect(userToJson(result), userToJson(authenticate.user));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
     });
 
-  });
-*/
+    test('upload user image', () async {
+      try {
+        authenticate.user.image = base64.decode(imageBase64);
+        Response response = await client.post('services/updateUser100',
+            data: userToJson(authenticate.user));
+        User result = userFromJson(getResponseData(response));
+        print("====result of user update: ${result.toString()}");
+        expect(result?.image, isNotEmpty);
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
   });
 }

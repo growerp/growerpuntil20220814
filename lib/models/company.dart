@@ -45,7 +45,9 @@ class Company {
         classificationDescr: json["classificationDescr"],
         email: json["email"],
         currencyId: json["currencyId"],
-        image: json["image"] != null ? base64.decode(json["image"]) : null,
+        image: json["image"] == null || json["image"] == "null"
+            ? null
+            : base64.decode(json["image"]),
         employees: json["employees"] != null
             ? List<User>.from(json["employees"].map((x) => User.fromJson(x)))
             : null,
@@ -65,6 +67,6 @@ class Company {
       };
 
   String toString() => 'Company name: $name[$partyId] Curr: $currencyId '
-      'empl: ${employees != null ? employees.length : 0} '
-      'imgSize: ${image != null ? image.length : 0}';
+      'empl: ${employees?.length} '
+      'imgSize: ${image?.length}';
 }
