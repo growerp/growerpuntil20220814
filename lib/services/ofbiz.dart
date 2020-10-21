@@ -12,10 +12,19 @@ class Ofbiz {
   final Dio client;
 
   String classificationId = GlobalConfiguration().getValue("classificationId");
+  String prodUrl = GlobalConfiguration().getValue("prodUrl");
+  int connectTimeoutProd =
+      int.parse(GlobalConfiguration().getValue("connectTimeoutProd")) * 1000;
+  int receiveTimeoutProd =
+      int.parse(GlobalConfiguration().getValue("receiveTimeoutProd")) * 1000;
+  int connectTimeoutTest =
+      int.parse(GlobalConfiguration().getValue("connectTimeouttest")) * 1000;
+  int receiveTimeoutTest =
+      int.parse(GlobalConfiguration().getValue("receiveTimeoutTest")) * 1000;
 
   Ofbiz({@required this.client}) {
     if (kReleaseMode) {
-      client.options.baseUrl = 'https://ofbiz.growerp.com/rest/';
+      client.options.baseUrl = prodUrl;
     } else if (kIsWeb) {
       // when flutter web need apache httpd webserver infront
       client.options.baseUrl = 'http://localhost/rest/';
@@ -24,8 +33,13 @@ class Ofbiz {
     } else if (Platform.isAndroid) {
       client.options.baseUrl = 'http://10.0.2.2:8080/rest/';
     }
-    client.options.connectTimeout = 40000; //20s
-    client.options.receiveTimeout = 60000;
+    if (kReleaseMode) {
+      client.options.connectTimeout = connectTimeoutProd;
+      client.options.receiveTimeout = receiveTimeoutProd;
+    } else {
+      client.options.connectTimeout = connectTimeoutTest;
+      client.options.receiveTimeout = receiveTimeoutTest;
+    }
     client.options.headers = {'Content-Type': 'application/json'};
 
 //  logging in/out going backend requests

@@ -2,5 +2,12 @@
     "__comment__backend": "moqui / ofbiz",
     "backend": "ofbiz",
     "__comment__class": "AppAdmin, AppHotel, AppEcommerce etc",
-    "classificationId": "AppAdmin"
+    "classificationId": "AppAdmin",
+    "__production url__": "https://rest.example.com",
+    "prodUrl": "https://test.growerp.com",
+    "__ time outs on rest interface connect, receive": "in seconds for development and production",
+    "connectTimeoutProd": "10",
+    "receiveTimeoutProd": "20",
+    "connectTimeoutTest": "20",
+    "receiveTimeouttest": "40"
 }
