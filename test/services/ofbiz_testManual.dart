@@ -28,8 +28,9 @@ void main() {
   client.options.connectTimeout = 20000; //10s
   client.options.receiveTimeout = 40000;
   client.options.headers = {'Content-Type': 'application/json'};
-  print("need a local trunk version of OFBiz with REST and Growerp plugin");
-  print("=========================================================");
+  print(
+      "need a local trunk version of OFBiz framework with REST and Growerp plugin");
+  print("====================================================================");
 
 /*  client.interceptors
       .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
@@ -89,14 +90,25 @@ void main() {
   });
 
   group('Public tests>>>>', () {
+    test('Ping the system', () async {
+      try {
+        String msg = "ok?";
+        Response response = await client.get('services/growerpPing?inParams=' +
+            Uri.encodeComponent('{"message": "$msg" }'));
+        Map jsonData = json.decode(response.toString()) as Map;
+        String result = jsonData["data"]["message"];
+        expect(result, msg);
+      } catch (e) {
+        print("catch ${e?.response?.data}");
+      }
+    });
     test('get companies no auth', () async {
-      dynamic result;
       try {
         Response response = await client.get(
             'services/getCompanies100?inParams=' +
                 Uri.encodeComponent(
                     '{"classificationId": "$classificationId" }'));
-        result = companiesFromJson(getResponseData(response));
+        dynamic result = companiesFromJson(getResponseData(response));
         expect(result != null ? result.length : 0, greaterThan(0));
       } catch (e) {
         print("catch ${e?.response?.data}");
@@ -251,7 +263,7 @@ void main() {
         Response response = await client.post('services/updateUser100',
             data: userToJson(authenticate.user));
         User result = userFromJson(getResponseData(response));
-        print("====result of user update: ${result.toString()}");
+        // print("====result of user update: ${result.toString()}");
         expect(result?.image, isNotEmpty);
       } on DioError catch (e) {
         expect(null, e?.response?.data);

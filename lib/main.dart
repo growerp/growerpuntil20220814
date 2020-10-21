@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:bloc/bloc.dart';
@@ -5,19 +6,32 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'blocs/@blocs.dart';
-import 'services/ofbiz.dart';
-import 'services/moqui.dart';
+import 'services/@services.dart';
 import 'styles/themes.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
+import 'dart:io';
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
 
 void main() async {
+  // HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+
   await GlobalConfiguration().loadFromAsset("app_settings");
+  String backend = GlobalConfiguration().getValue("backend");
+  //if (!kReleaseMode && backend == 'ofbiz')
+
   Bloc.observer = SimpleBlocObserver();
-  final Object repos = GlobalConfiguration().getValue("backend") == 'moqui'
-      ? Moqui(client: Dio())
-      : Ofbiz(client: Dio());
+  var repos =
+      (backend == 'moqui') ? Moqui(client: Dio()) : Ofbiz(client: Dio());
   runApp(RepositoryProvider(
     create: (context) => repos,
     child: MultiBlocProvider(
@@ -25,7 +39,7 @@ void main() async {
         BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(repos: repos)..add(LoadAuth())),
       ],
-      // add other blocs here
+      // add other blocs here, shopping cart, catalog?
       child: MyApp(),
     ),
   ));

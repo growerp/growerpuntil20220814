@@ -32,12 +32,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   @override
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
     Authenticate authenticate;
+    // ################# local functions ###################
 
     Future<void> findDefaultCompany() async {
-      //print("===15==1==");
+      // print("===15==1==");
       dynamic companies = await repos.getCompanies();
       if (companies is List<Company> && companies.length > 0) {
-        //print("===16====");
+        //  print("===15==2==");
         authenticate =
             Authenticate(company: companies[0], user: authenticate?.user);
         await repos.persistAuthenticate(authenticate);
@@ -66,6 +67,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     }
 
+    // ################# start bloc ###################
     if (event is LoadAuth) {
       yield AuthLoading();
       dynamic connected = await repos.getConnected();
@@ -74,7 +76,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         authenticate = await repos.getAuthenticate();
         if (authenticate?.company?.partyId != null) {
-          //print("===1====");
+          // print("===1====");
           // check company
           dynamic result =
               await repos.checkCompany(authenticate.company.partyId);

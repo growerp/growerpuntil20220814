@@ -16,8 +16,6 @@ class Moqui {
 
   Moqui({@required this.client}) {
     if (kReleaseMode) {
-      //platform not supported on the web
-      // is Release Mode ??
       client.options.baseUrl = 'https://test.growerp.org/';
     } else if (kIsWeb || Platform.isIOS || Platform.isLinux) {
       client.options.baseUrl = 'http://localhost:8080/';
@@ -28,7 +26,7 @@ class Moqui {
     client.options.receiveTimeout = 40000;
     client.options.headers = {'Content-Type': 'application/json'};
 
-/*    client.interceptors
+    client.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
       print('===Outgoing dio request path: ${options.path}');
       print('===Outgoing dio request headers: ${options.headers}');
@@ -43,20 +41,19 @@ class Moqui {
       // Do something with response data
       print("===incoming response: ${response.toString()}");
       return response; // continue
-  }, onError: (DioError e) async {
-    // Do something with response error
-    if (e.response != null) {
-      print("=== e.response.data: ${e.response.data}");
-      print("=== e.response.headers: ${e.response.headers}");
-      print("=== e.response.request: ${e.response.request}");
-    } else {
-      // Something happened in setting up or sending the request that triggered an Error
-      print("=== e.request: ${e.request}");
-      print("=== e.message: ${e.message}");
-    }
-    return e; //continue
-  }));
-*/
+    }, onError: (DioError e) async {
+      // Do something with response error
+      if (e.response != null) {
+        print("=== e.response.data: ${e.response.data}");
+        print("=== e.response.headers: ${e.response.headers}");
+        print("=== e.response.request: ${e.response.request}");
+      } else {
+        // Something happened in setting up or sending the request that triggered an Error
+        print("=== e.request: ${e.request}");
+        print("=== e.message: ${e.message}");
+      }
+      return e; //continue
+    }));
   }
 
   String responseMessage(e) {
@@ -89,7 +86,7 @@ class Moqui {
     if (e?.response != null && e?.response?.data != null) {
       errorDescription = e.response.data["errors"];
     }
-    //print('==repos.dart: returning error message: $errorDescription');
+    print('==moqui.dart: returning error message: $errorDescription');
     return errorDescription;
   }
 
@@ -129,7 +126,8 @@ class Moqui {
 
   Future<dynamic> getCompanies() async {
     try {
-      Response response = await client.get('rest/s1/growerp/100/Companies');
+      Response response = await client.get('rest/s1/growerp/100/Companies',
+          queryParameters: {"classificationId": classificationId});
       return companiesFromJson(response.toString());
     } catch (e) {
       return responseMessage(e);

@@ -1,5 +1,6 @@
 {
-    "__comment__": "moqui / ofbiz",
+    "__comment__backend": "moqui / ofbiz",
     "backend": "ofbiz",
+    "__comment__class": "AppAdmin, AppHotel, AppEcommerce etc",
     "classificationId": "AppAdmin"
 }
