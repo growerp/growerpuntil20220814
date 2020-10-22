@@ -14,13 +14,13 @@ class Ofbiz {
   String classificationId = GlobalConfiguration().getValue("classificationId");
   String prodUrl = GlobalConfiguration().getValue("prodUrl");
   int connectTimeoutProd =
-      int.parse(GlobalConfiguration().getValue("connectTimeoutProd")) * 1000;
+      GlobalConfiguration().getValue<int>("connectTimeoutProd") * 1000;
   int receiveTimeoutProd =
-      int.parse(GlobalConfiguration().getValue("receiveTimeoutProd")) * 1000;
+      GlobalConfiguration().getValue<int>("receiveTimeoutProd") * 1000;
   int connectTimeoutTest =
-      int.parse(GlobalConfiguration().getValue("connectTimeouttest")) * 1000;
+      GlobalConfiguration().getValue<int>("connectTimeoutTest") * 1000;
   int receiveTimeoutTest =
-      int.parse(GlobalConfiguration().getValue("receiveTimeoutTest")) * 1000;
+      GlobalConfiguration().getValue<int>("receiveTimeoutTest") * 1000;
 
   Ofbiz({@required this.client}) {
     if (kReleaseMode) {
@@ -40,6 +40,7 @@ class Ofbiz {
       client.options.connectTimeout = connectTimeoutTest;
       client.options.receiveTimeout = receiveTimeoutTest;
     }
+
     client.options.headers = {'Content-Type': 'application/json'};
 
 //  logging in/out going backend requests

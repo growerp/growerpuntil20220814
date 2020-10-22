@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:bloc/bloc.dart';
@@ -10,24 +9,12 @@ import 'services/@services.dart';
 import 'styles/themes.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
-import 'dart:io';
-
-class MyHttpOverrides extends HttpOverrides {
-  @override
-  HttpClient createHttpClient(SecurityContext context) {
-    return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-  }
-}
 
 void main() async {
-  // HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
 
   await GlobalConfiguration().loadFromAsset("app_settings");
   String backend = GlobalConfiguration().getValue("backend");
-  //if (!kReleaseMode && backend == 'ofbiz')
 
   Bloc.observer = SimpleBlocObserver();
   var repos =
