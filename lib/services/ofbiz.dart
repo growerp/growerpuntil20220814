@@ -11,8 +11,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class Ofbiz {
   final Dio client;
 
-  String classificationId = GlobalConfiguration().getValue("classificationId");
-  String prodUrl = GlobalConfiguration().getValue("prodUrl");
+  String classificationId = GlobalConfiguration().get("classificationId");
+  String prodUrl = GlobalConfiguration().get("prodUrl");
   int connectTimeoutProd =
       GlobalConfiguration().getValue<int>("connectTimeoutProd") * 1000;
   int receiveTimeoutProd =
@@ -26,7 +26,7 @@ class Ofbiz {
     if (kReleaseMode) {
       client.options.baseUrl = prodUrl;
     } else if (kIsWeb) {
-      // when flutter web need apache httpd webserver infront
+      // when flutter web need apache httpd webserver in front
       client.options.baseUrl = 'http://localhost/rest/';
     } else if (Platform.isIOS || Platform.isLinux) {
       client.options.baseUrl = 'http://localhost:8080/rest/';
@@ -190,7 +190,7 @@ class Ofbiz {
         "password": 'qqqqqq9!', // TODO: should be removed
         "passwordVerify": 'qqqqqq9!' // TODO: should be removed
       });
-      return authenticateFromJson(response.toString());
+      return authenticateFromJson(getResponseData(response));
     } catch (e) {
       return responseMessage(e);
     }
@@ -222,8 +222,8 @@ class Ofbiz {
 
   Future<dynamic> resetPassword({@required String username}) async {
     try {
-      Response result = await client.post('rest/s1/growerp/100/ResetPassword',
-          data: {'username': username});
+      Response result = await client
+          .post('services/ResetPassword100', data: {'username': username});
       return json.decode(result.toString());
     } catch (e) {
       return responseMessage(e);
@@ -248,7 +248,6 @@ class Ofbiz {
 
   Future<dynamic> logout() async {
     try {
-      await client.post('rest/logout');
       Authenticate authenticate = await getAuthenticate();
       authenticate.apiKey = null;
       persistAuthenticate(authenticate);

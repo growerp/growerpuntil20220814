@@ -12,8 +12,8 @@ class Moqui {
   final Dio client;
 
   String sessionToken;
-  String classificationId = GlobalConfiguration().getValue("classificationId");
-  String prodUrl = GlobalConfiguration().getValue("prodUrl");
+  String classificationId = GlobalConfiguration().get("classificationId");
+  String prodUrl = GlobalConfiguration().get("prodUrl");
   int connectTimeoutProd =
       GlobalConfiguration().getValue<int>("connectTimeoutProd") * 1000;
   int receiveTimeoutProd =

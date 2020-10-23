@@ -70,20 +70,21 @@ void main() {
   setUpAll(() async {
     // register new company, user and login
     try {
-      return client.post('services/registerUserAndCompany100',
-          data: jsonEncode({
-            "companyName": companyName,
-            "currencyId": currencyId,
-            "firstName": firstName,
-            "lastName": lastName,
-            "classificationId": classificationId,
-            "emailAddress": emailAddress,
-            "companyEmail": emailAddress,
-            "username": username,
-            "userGroupId": 'GROWERP_M_ADMIN',
-            "password": password,
-            "passwordVerify": password,
-          }));
+      Response response =
+          await client.post('services/registerUserAndCompany100',
+              data: jsonEncode({
+                "companyName": companyName,
+                "currencyId": currencyId,
+                "firstName": firstName,
+                "lastName": lastName,
+                "classificationId": classificationId,
+                "emailAddress": emailAddress,
+                "companyEmail": emailAddress,
+                "username": username,
+                "userGroupId": 'GROWERP_M_ADMIN',
+                "password": password,
+              }));
+      authenticate = authenticateFromJson(getResponseData(response));
     } catch (e) {
       print("==catch e======${e.response}");
     }
@@ -146,6 +147,7 @@ void main() {
     });
 
     test('check if api_key works', () async {
+      print("===333===${client.options.headers["Authorization"]}");
       try {
         Response response = await client.get('services/checkToken100');
         Map jsonData = json.decode(response.toString()) as Map;
@@ -156,28 +158,7 @@ void main() {
       }
     });
   });
-/* 
-    test('update password', () async {
-      Map updPassword = {
-        'username': username,
-        'oldPassword': password,
-        'newPassword': newPassword,
-      };
-      dynamic response =
-          await client.post('s1/growerp/100/Password', data: updPassword);
-      expect(response.data['messages'].substring(0, 16), 'Password updated');
-    });
-    test('reset password', () async {
-      Response response = await client.post('s1/growerp/100/ResetPassword',
-          data: {
-            'username': username,
-            'moquiSessionToken': sessionToken
-          });
-      expect(response.data['messages'].substring(0, 25),
-          'A reset password was sent');
-    });
-  });
-*/
+
   group('Company operations >>>>> ', () {
     test('confirm existing data', () async {
       try {
@@ -265,6 +246,15 @@ void main() {
         User result = userFromJson(getResponseData(response));
         // print("====result of user update: ${result.toString()}");
         expect(result?.image, isNotEmpty);
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+    test('forget password', () async {
+      try {
+        // this will change the password
+        await client.post('services/resetPassword100',
+            data: {'username': authenticate.user.name});
       } on DioError catch (e) {
         expect(null, e?.response?.data);
       }
