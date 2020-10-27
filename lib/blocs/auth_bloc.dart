@@ -38,24 +38,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       //print("===15==1==");
       dynamic companies = await repos.getCompanies();
       if (companies is List<Company> && companies.length > 0) {
-        //print("===15==2==");
-        authenticate.company = companies[0];
+        // print("===15==2==");
+        authenticate = Authenticate(company: companies[0], user: null);
         await repos.persistAuthenticate(authenticate);
       } else {
         //print("===15==3==");
-        if (authenticate != null) authenticate.company = null;
+        authenticate = null;
         await repos.persistAuthenticate(authenticate);
       }
     }
 
     Future<AuthState> checkApikey() async {
-      //print("===10==== apiKey: ${authenticate?.apiKey}");
+      // print("===10==== apiKey: ${authenticate?.apiKey}");
       if (authenticate?.apiKey == null) {
         return AuthUnauthenticated(authenticate);
       } else {
         repos.setApikey(authenticate?.apiKey);
         dynamic result = await repos.checkApikey();
-        //print("=====checkapiKey result: $result");
+        // print("=====checkapiKey result: $result");
         if (result is bool && result) {
           // print("===11====");
           return AuthAuthenticated(authenticate);

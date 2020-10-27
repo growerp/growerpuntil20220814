@@ -214,14 +214,11 @@ class Ofbiz {
           'Basic ' + base64Encode(utf8.encode('$username:$password'));
       client.options.headers["Authorization"] = basicAuth;
       Response response = await client.post('auth/token');
-      Map jsonData = json.decode(response.toString()) as Map;
-      String token = jsonData["data"]["access_token"];
-
+      String token = getResponseData(response, "access_token");
       client.options.headers["Authorization"] = 'Bearer ' + token;
+
       response = await client.get('services/getAuthenticate100');
-      dynamic result = jsonDecode(response.toString());
-//      if (result['passwordChange'] == 'true') return 'passwordChange';
-      result = authenticateFromJson(getResponseData(response));
+      dynamic result = authenticateFromJson(getResponseData(response));
       if (result is Authenticate) result.apiKey = token;
       return result;
     } catch (e) {

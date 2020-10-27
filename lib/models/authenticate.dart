@@ -40,5 +40,5 @@ class Authenticate {
       };
   @override
   String toString() => 'Company: ${company?.toString()} '
-      'User: ${user?.toString()} apiKey: ${apiKey?.substring(apiKey.length - 10)}';
+      'User: ${user?.toString()} apiKey: ....${apiKey?.substring(apiKey.length - 10)}';
 }
