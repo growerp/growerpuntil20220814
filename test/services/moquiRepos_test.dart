@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:admin/models/@models.dart';
@@ -9,13 +10,15 @@ import '../data.dart';
 class DioAdapterMock extends Mock implements HttpClientAdapter {}
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   final Dio tdio = Dio();
   DioAdapterMock dioAdapterMock;
   Moqui repos;
 
-  setUp(() {
+  setUpAll(() async {
     dioAdapterMock = DioAdapterMock();
     tdio.httpClientAdapter = dioAdapterMock;
+    await GlobalConfiguration().loadFromAsset("app_settings");
     repos = Moqui(client: tdio);
   });
 
@@ -39,26 +42,6 @@ void main() {
       expect(response, equals(expected));
     });
 
-/*    test('Get currencies', () async {
-      final responsepayload =
-          currencyListToJson(CurrencyList(currencyList: currencies));
-      final httpResponse = ResponseBody.fromString(
-        responsepayload,
-        200,
-        headers: {
-          Headers.contentTypeHeader: [Headers.jsonContentType],
-        },
-      );
-
-      when(dioAdapterMock.fetch(any, any, any))
-          .thenAnswer((_) async => httpResponse);
-
-      final response = await repos.getCurrencies();
-      final expected = currencies;
-
-      expect(response, equals(expected));
-    });
-*/
     test('Get companies', () async {
       final responsepayload = companiesToJson(companies);
       final httpResponse = ResponseBody.fromString(
