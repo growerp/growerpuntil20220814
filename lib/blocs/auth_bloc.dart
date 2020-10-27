@@ -35,32 +35,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // ################# local functions ###################
 
     Future<void> findDefaultCompany() async {
-      // print("===15==1==");
+      //print("===15==1==");
       dynamic companies = await repos.getCompanies();
       if (companies is List<Company> && companies.length > 0) {
-        //  print("===15==2==");
-        authenticate =
-            Authenticate(company: companies[0], user: authenticate?.user);
+        //print("===15==2==");
+        authenticate.company = companies[0];
         await repos.persistAuthenticate(authenticate);
       } else {
-        authenticate = Authenticate(company: null, user: authenticate?.user);
+        //print("===15==3==");
+        if (authenticate != null) authenticate.company = null;
+        await repos.persistAuthenticate(authenticate);
       }
     }
 
     Future<AuthState> checkApikey() async {
-      //print("===10==== apiKey: ${authenticate.apiKey}");
-      if (authenticate.apiKey == null) {
+      //print("===10==== apiKey: ${authenticate?.apiKey}");
+      if (authenticate?.apiKey == null) {
         return AuthUnauthenticated(authenticate);
       } else {
-        repos.setApikey(authenticate.apiKey);
+        repos.setApikey(authenticate?.apiKey);
         dynamic result = await repos.checkApikey();
+        //print("=====checkapiKey result: $result");
         if (result is bool && result) {
-          //print("===11====");
+          // print("===11====");
           return AuthAuthenticated(authenticate);
         } else {
           //print("===12====");
           authenticate.apiKey = null; // revoked
           repos.setApikey(null);
+          //print("===13====");
           await repos.persistAuthenticate(authenticate);
           return AuthUnauthenticated(authenticate);
         }
@@ -76,16 +79,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         authenticate = await repos.getAuthenticate();
         if (authenticate?.company?.partyId != null) {
-          // print("===1====");
+          //print("===1====${authenticate.apiKey}");
           // check company
           dynamic result =
               await repos.checkCompany(authenticate.company.partyId);
           if (result == false) await findDefaultCompany();
-          //print("===2====");
           // now check user apiKey
           yield await checkApikey();
         } else {
-          //print("===3====");
+          //print("===3====${authenticate?.apiKey}");
           await findDefaultCompany();
           yield await checkApikey();
         }

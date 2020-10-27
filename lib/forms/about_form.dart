@@ -6,7 +6,7 @@ class AboutForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AboutPage(
-        title: Text('About GrowERP and Master branch'),
+        title: Text('About GrowERP and Master Admin branch'),
         applicationVersion: 'Version {{ version }}, build #{{ buildNumber }}',
         applicationIcon: Image(
           image: AssetImage('assets/growerp.png'),

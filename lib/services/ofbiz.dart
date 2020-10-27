@@ -13,6 +13,10 @@ class Ofbiz {
 
   String classificationId = GlobalConfiguration().get("classificationId");
   String prodUrl = GlobalConfiguration().get("prodUrl");
+  bool restRequestLogs =
+      GlobalConfiguration().getValue<bool>("restRequestLogs");
+  bool restResponseLogs =
+      GlobalConfiguration().getValue<bool>("restResponseLogs");
   int connectTimeoutProd =
       GlobalConfiguration().getValue<int>("connectTimeoutProd") * 1000;
   int receiveTimeoutProd =
@@ -43,12 +47,14 @@ class Ofbiz {
 
     client.options.headers = {'Content-Type': 'application/json'};
 
-//  logging in/out going backend requests
-/*    client.interceptors
+    //  processing in/out going backend requests
+    client.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-      print('===Outgoing dio request ${options.baseUrl}${options.path}');
-      print('===Outgoing dio request headers: ${options.headers}');
-      print('===Outgoing dio request data: ${options.data}');
+      if (restRequestLogs) {
+        print('===Outgoing dio request ${options.baseUrl}${options.path}');
+        print('===Outgoing dio request headers: ${options.headers}');
+        print('===Outgoing dio request data: ${options.data}');
+      }
       // Do something before request is sent
       return options; //continue
       // If you want to resolve the request with some custom data，
@@ -57,7 +63,9 @@ class Ofbiz {
       // you can return a `DioError` object or return `dio.reject(errMsg)`
     }, onResponse: (Response response) async {
       // Do something with response data
-      print("===incoming response: ${response.toString()}");
+      if (restResponseLogs) {
+        print("===incoming response: ${response.toString()}");
+      }
       return response; // continue
     }, onError: (DioError e) async {
       // Do something with response error
@@ -72,7 +80,6 @@ class Ofbiz {
       }
       return e; //continue
     }));
-*/
   }
 
   String responseMessage(e) {
@@ -109,8 +116,9 @@ class Ofbiz {
     return errorDescription;
   }
 
-  String getResponseData(Response input) {
+  String getResponseData(Response input, [String field]) {
     Map jsonData = json.decode(input.toString()) as Map;
+    if (field != null) return jsonData["data"][field];
     return json.encode(jsonData["data"]);
   }
 
@@ -120,22 +128,22 @@ class Ofbiz {
       String msg = "ok?";
       Response response = await client.get('services/growerpPing?inParams=' +
           Uri.encodeComponent('{"message": "$msg" }'));
-      Map jsonData = json.decode(response.toString()) as Map;
-      String result = jsonData["data"]["message"];
-      return result == msg;
+      return getResponseData(response, "msg") == msg;
     } catch (e) {
       return responseMessage(e);
     }
   }
 
   void setApikey(String apiKey) {
-    client.options.headers["Authorization"] = 'Bearer ' + apiKey;
+    if (apiKey != null)
+      client.options.headers["Authorization"] = 'Bearer ' + apiKey;
   }
 
   Future<dynamic> checkApikey() async {
     try {
       Response response = await client.get('services/checkToken100');
-      return response.data["ok"] == 'ok'; // return true if session token ok
+      // return true if session token ok
+      return getResponseData(response, "ok") == "ok";
     } catch (e) {
       return responseMessage(e);
     }
@@ -146,7 +154,8 @@ class Ofbiz {
       Response response = await client.get(
           'services/checkCompany100?inParams=' +
               Uri.encodeComponent('{"companyPartyId": "$partyId"}'));
-      return response.data["ok"] == 'ok'; // return true if session token ok
+      // return true if session token ok
+      return getResponseData(response, "ok") == "ok";
     } catch (e) {
       return responseMessage(e);
     }
@@ -211,9 +220,9 @@ class Ofbiz {
       client.options.headers["Authorization"] = 'Bearer ' + token;
       response = await client.get('services/getAuthenticate100');
       dynamic result = jsonDecode(response.toString());
-      if (result['passwordChange'] == 'true') return 'passwordChange';
+//      if (result['passwordChange'] == 'true') return 'passwordChange';
       result = authenticateFromJson(getResponseData(response));
-      if (result is Authenticate) result.apiKey = 'Bearer ' + token;
+      if (result is Authenticate) result.apiKey = token;
       return result;
     } catch (e) {
       return (responseMessage(e));
@@ -305,16 +314,14 @@ class Ofbiz {
       Response response;
       if (user.partyId != null) {
         //update
-        response = await client.post('services/updateUser100', data: {
-          'user': userToJson(user),
-        });
+        response =
+            await client.post('services/updateUser100', data: userToJson(user));
       } else {
         //create
-        response = await client.post('services/createUser100', data: {
-          'user': userToJson(user),
-        });
+        response =
+            await client.post('services/createUser100', data: userToJson(user));
       }
-      return userFromJson(response.toString());
+      return userFromJson(getResponseData(response));
     } catch (e) {
       return responseMessage(e);
     }
@@ -323,8 +330,8 @@ class Ofbiz {
   Future<dynamic> deleteUser(String partyId) async {
     try {
       Response response = await client
-          .post('services/createUser100', data: {'partyId': partyId});
-      return response.data["partyId"];
+          .post('services/deleteUser100', data: {'partyId': partyId});
+      return getResponseData(response, "partyId");
     } catch (e) {
       return responseMessage(e);
     }
@@ -343,8 +350,8 @@ class Ofbiz {
         company.image = null;
 
       Response response = await client.post('services/updateCompany100',
-          data: {'company': companyToJson(company)});
-      return companyFromJson(response.toString());
+          data: companyToJson(company));
+      return companyFromJson(getResponseData(response));
     } catch (e) {
       return responseMessage(e);
     }

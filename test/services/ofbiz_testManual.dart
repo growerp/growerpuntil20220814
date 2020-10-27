@@ -147,7 +147,6 @@ void main() {
     });
 
     test('check if api_key works', () async {
-      print("===333===${client.options.headers["Authorization"]}");
       try {
         Response response = await client.get('services/checkToken100');
         Map jsonData = json.decode(response.toString()) as Map;

@@ -14,6 +14,10 @@ class Moqui {
   String sessionToken;
   String classificationId = GlobalConfiguration().get("classificationId");
   String prodUrl = GlobalConfiguration().get("prodUrl");
+  bool restRequestLogs =
+      GlobalConfiguration().getValue<bool>("restRequestLogs");
+  bool restResponseLogs =
+      GlobalConfiguration().getValue<bool>("restResponseLogs");
   int connectTimeoutProd =
       GlobalConfiguration().getValue<int>("connectTimeoutProd") * 1000;
   int receiveTimeoutProd =
@@ -43,9 +47,11 @@ class Moqui {
 
     client.interceptors
         .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-      print('===Outgoing dio request path: ${options.path}');
-      print('===Outgoing dio request headers: ${options.headers}');
-      print('===Outgoing dio request data: ${options.data}');
+      if (restRequestLogs) {
+        print('===Outgoing dio request path: ${options.path}');
+        print('===Outgoing dio request headers: ${options.headers}');
+        print('===Outgoing dio request data: ${options.data}');
+      }
       // Do something before request is sent
       return options; //continue
       // If you want to resolve the request with some custom data，
@@ -54,7 +60,9 @@ class Moqui {
       // you can return a `DioError` object or return `dio.reject(errMsg)`
     }, onResponse: (Response response) async {
       // Do something with response data
-      print("===incoming response: ${response.toString()}");
+      if (restResponseLogs) {
+        print("===incoming response: ${response.toString()}");
+      }
       return response; // continue
     }, onError: (DioError e) async {
       // Do something with response error
