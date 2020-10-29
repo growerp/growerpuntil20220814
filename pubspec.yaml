@@ -12,7 +12,7 @@ dependencies:
   dio: ^3.0.9
   flutter_bloc: ^6.0.1
   meta: ^1.1.6
-  shared_preferences: ^0.5.10
+  shared_preferences: ^0.5.12+2
   image_picker: ^0.6.7+7
   image_picker_for_web: ^0.1.0+2
   about: ^1.1.2

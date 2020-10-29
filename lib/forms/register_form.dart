@@ -234,8 +234,8 @@ class _RegisterHeaderState extends State<RegisterHeader> {
                               SizedBox(height: 20),
                               RaisedButton(
                                   key: Key('newCompany'),
-                                  child: Text(
-                                      'Register AND create a new Ecommerce shop'),
+                                  child:
+                                      Text('Register AND create a new Company'),
                                   onPressed: () {
                                     if (_formKey.currentState.validate() &&
                                         state is! RegisterSending)

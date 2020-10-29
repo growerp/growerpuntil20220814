@@ -6,3 +6,5 @@ const String ChangePwRoute = '/changePw';
 const String ProductRoute = '/product';
 const String AboutRoute = '/about';
 const String UserRoute = '/user';
+const String UsersRoute = '/users';
+const String CompanyRoute = '/company';

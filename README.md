@@ -1,9 +1,17 @@
 # GrowERP Admin App
 
-GrowERP Flutter frontend component for Android, IOS and Web using Flutter on Ofbiz or Moqui.
+GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev
+All screens work on all these devices however a smaller screen will show information but is still usable.
+
+It is simplified frontend however with the ability to still use with, or in addition to the original ERP system screens.
+The system is a true multicompany system and can support virtually any ERP backend as long as it has a REST interface.
+
+The system is properly implemented with https://pub.dev/packages/flutter_bloc state management.
 
 System configuration file in /assets/cfg/app_settings.json
 here you can set either Moqui or Apache OFBiz system
+
+For test purposes we can provide access to Moqui or OFBiz systems.
 
 This admin branch contains all basicfunctions:
 
@@ -30,9 +38,12 @@ This admin branch contains all basicfunctions:
   - Moqui:  https://github.com/growerp/growerp-moqui
   - OFBiz:  https://github.com/growerp/growerp-ofbiz
 
+Additional ERP systems can be added on request, A REST interface is required.
+The implementation time is 40+ hours.
+
 Functions coming up:
 * Catalog and product management
-* Order managment
+* Order management
 * Customer & Lead management
 * Accounting
 * Inventory

@@ -21,8 +21,16 @@ import '../models/@models.dart';
 import '../blocs/@blocs.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
+import '../widgets/@widgets.dart';
 
 class CompanyForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FormHeader(CompanyFormheader());
+  }
+}
+
+class CompanyFormheader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
@@ -34,10 +42,11 @@ class CompanyForm extends StatelessWidget {
               icon: Icon(Icons.home),
               onPressed: () => Navigator.pushNamed(context, HomeRoute)),
         ]),
+        drawer: myDrawer(context, authenticate),
         body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-          if (state is AuthCompanyUpdateSuccess) {
-            HelperFunctions.showMessage(context,
-                'Company ${authenticate.company.name} updated', Colors.green);
+          if (state is AuthAuthenticated) {
+            HelperFunctions.showMessage(
+                context, '${state.message}', Colors.green);
           }
           if (state is AuthProblem) {
             company = state.newCompany;

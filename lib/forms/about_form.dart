@@ -1,8 +1,16 @@
 import 'package:about/about.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../widgets/@widgets.dart';
 
 class AboutForm extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FormHeader(AboutFormHeader());
+  }
+}
+
+class AboutFormHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AboutPage(

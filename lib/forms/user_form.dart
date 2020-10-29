@@ -7,6 +7,7 @@ import '../models/@models.dart';
 import '../blocs/@blocs.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
+import '../widgets/@widgets.dart';
 
 class UserForm extends StatelessWidget {
   final User user;
@@ -14,58 +15,47 @@ class UserForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var a = (user) => (UserFormHeader(user));
+    return FormHeader(a(user));
+  }
+}
+
+class UserFormHeader extends StatelessWidget {
+  final User user;
+  UserFormHeader(this.user);
+
+  @override
+  Widget build(BuildContext context) {
     Authenticate authenticate;
     User user = this.user;
-    return WillPopScope(
-        onWillPop: () async {
-          Navigator.pop(context, user);
-          return;
-        },
-        child: Scaffold(
-            appBar: AppBar(
-              title: const Text('User page'),
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.home),
-                    onPressed: () => Navigator.pushNamed(context, HomeRoute)),
-              ],
-            ),
-            body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-              if (state is AuthProblem) {
-                user = state.newUser;
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              }
-              if (state is AuthUserUpdateSuccess) {
-                authenticate = state.authenticate;
-                HelperFunctions.showMessage(
-                    context, 'user added/updated', Colors.green);
-              }
-            }, builder: (context, state) {
-              if (state is AuthUnauthenticated)
-                return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: RaisedButton(
-                            child: Text("Press to login first!"),
-                            onPressed: () async {
-                              final dynamic result = await Navigator.pushNamed(
-                                  context, LoginRoute);
-                              HelperFunctions.showMessage(
-                                  context, '$result', Colors.green);
-                            }),
-                      )
-                    ]);
-              if (state is AuthAuthenticated) authenticate = state.authenticate;
-              if (state is AuthLoading)
-                return Center(child: CircularProgressIndicator());
-              if (state is AuthUserUpdateSuccess)
-                user = state?.authenticate?.user;
-
-              return MyUserPage(authenticate, user);
-            })));
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) authenticate = state.authenticate;
+      user ??= authenticate?.user;
+      return Scaffold(
+          appBar: AppBar(
+            title: const Text('User page'),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.home),
+                  onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+            ],
+          ),
+          drawer: myDrawer(context, authenticate),
+          body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthProblem) {
+                  user = state.newUser;
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+                }
+                if (state is AuthAuthenticated) {
+                  authenticate = state.authenticate;
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+                }
+              },
+              child: MyUserPage(authenticate, user)));
+    });
   }
 }
 

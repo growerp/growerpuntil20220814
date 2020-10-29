@@ -109,7 +109,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await repos.updateCompany(event.company, event.imagePath);
       if (result is Company) {
         event.authenticate.company = result;
-        yield AuthCompanyUpdateSuccess(event.authenticate);
+        yield AuthAuthenticated(event.authenticate, 'Company updated');
       } else {
         yield AuthProblem(result, event.company);
       }
@@ -118,7 +118,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       dynamic result = await repos.updateUser(event.user, event.imagePath);
       if (result is User) {
         event.authenticate.user = result;
-        yield AuthUserUpdateSuccess(event.authenticate);
+        yield AuthAuthenticated(event.authenticate, 'User updated');
       } else {
         yield AuthProblem(result, null, event.user);
       }
@@ -226,8 +226,6 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class AuthImageUpdated extends AuthState {}
-
 class AuthProblem extends AuthState {
   final String errorMessage;
   final Company newCompany;
@@ -240,31 +238,23 @@ class AuthProblem extends AuthState {
 }
 
 class AuthAuthenticated extends AuthState {
+  final String message;
   final Authenticate authenticate;
-  AuthAuthenticated(this.authenticate);
+  AuthAuthenticated(this.authenticate, [this.message]);
   @override
   List<Object> get props => [authenticate];
   @override
-  String toString() => 'Authenticated: ${authenticate.toString()}';
+  String toString() =>
+      'Authenticated: Msg: $message ${authenticate.toString()}';
 }
 
 class AuthUnauthenticated extends AuthState {
+  final String message;
   final Authenticate authenticate;
-  AuthUnauthenticated(this.authenticate);
+  AuthUnauthenticated(this.authenticate, [this.message]);
   @override
   List<Object> get props => [authenticate];
   @override
-  String toString() => 'Unauthenticated: ${authenticate.toString()}';
-}
-
-class AuthUserUpdateSuccess extends AuthAuthenticated {
-  AuthUserUpdateSuccess(Authenticate authenticate) : super(authenticate);
-}
-
-class AuthUserDeleteSuccess extends AuthAuthenticated {
-  AuthUserDeleteSuccess(Authenticate authenticate) : super(authenticate);
-}
-
-class AuthCompanyUpdateSuccess extends AuthAuthenticated {
-  AuthCompanyUpdateSuccess(Authenticate authenticate) : super(authenticate);
+  String toString() =>
+      'Unauthenticated: msg: $message ${authenticate.toString()}';
 }

@@ -110,7 +110,7 @@ class Ofbiz {
       print("====dio error: $errorDescription");
     }
     if (e.response != null && e.response.data != null) {
-      errorDescription = e.response.data["errors"];
+      errorDescription = e.response.data["errorMessage"];
     }
     print('==ofbiz.dart: returning error message: $errorDescription');
     return errorDescription;

@@ -21,17 +21,27 @@ import '../helper_functions.dart';
 import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
 
-class UsersForm extends StatefulWidget {
+class UsersForm extends StatelessWidget {
   @override
-  _UsersFormState createState() => _UsersFormState();
+  Widget build(BuildContext context) {
+    return FormHeader(UsersFormHeader());
+  }
 }
 
-class _UsersFormState extends State<UsersForm> {
+class UsersFormHeader extends StatefulWidget {
+  @override
+  State<UsersFormHeader> createState() => _UsersFormStateHeader();
+}
+
+class _UsersFormStateHeader extends State<UsersFormHeader> {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
     return Scaffold(
-        appBar: AppBar(title: const Text('User List')),
+        appBar: AppBar(
+            title: const Text('User List'),
+            automaticallyImplyLeading:
+                ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             dynamic user =
@@ -49,33 +59,11 @@ class _UsersFormState extends State<UsersForm> {
             HelperFunctions.showMessage(
                 context, '${state.errorMessage}', Colors.red);
           }
-          if (state is AuthUserUpdateSuccess) {
+          if (state is AuthAuthenticated) {
             HelperFunctions.showMessage(
-                context, 'Update success', Colors.green);
-          }
-          if (state is AuthUserDeleteSuccess) {
-            HelperFunctions.showMessage(
-                context, 'Delete success', Colors.green);
+                context, '${state.message}', Colors.green);
           }
         }, builder: (context, state) {
-          if (state is AuthUnauthenticated) {
-            return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Center(
-                    child: RaisedButton(
-                        child: Text("Press to login first!"),
-                        onPressed: () async {
-                          final dynamic result =
-                              await Navigator.pushNamed(context, LoginRoute);
-                          HelperFunctions.showMessage(
-                              context, '$result', Colors.green);
-                        }),
-                  )
-                ]);
-          }
-
           if (state is AuthAuthenticated) authenticate = state.authenticate;
           return userList(context, authenticate);
         }));
