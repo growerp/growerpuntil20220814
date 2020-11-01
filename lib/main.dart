@@ -17,8 +17,11 @@ void main() async {
   String backend = GlobalConfiguration().getValue("backend");
 
   Bloc.observer = SimpleBlocObserver();
-  var repos =
-      (backend == 'moqui') ? Moqui(client: Dio()) : Ofbiz(client: Dio());
+  var repos = backend == 'moqui'
+      ? Moqui(client: Dio())
+      : backend == 'ofbiz'
+          ? Ofbiz(client: Dio())
+          : null;
   runApp(RepositoryProvider(
     create: (context) => repos,
     child: MultiBlocProvider(
@@ -38,7 +41,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
             BouncingScrollWrapper.builder(context, widget),
-            maxWidth: 1200,
+            maxWidth: 2460,
             minWidth: 450,
             defaultScale: true,
             breakpoints: [
