@@ -26,7 +26,7 @@ import '../widgets/@widgets.dart';
 class CompanyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FormHeader(CompanyFormheader());
+    return FormHeader(CompanyFormheader(), 2);
   }
 }
 
@@ -44,6 +44,7 @@ class CompanyFormheader extends StatelessWidget {
         ]),
         drawer: myDrawer(context, authenticate),
         body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+          print("====yes state: $state");
           if (state is AuthAuthenticated) {
             HelperFunctions.showMessage(
                 context, '${state.message}', Colors.green);

@@ -54,7 +54,7 @@ class _RegisterHeaderState extends State<RegisterHeader> {
   final _formKey = GlobalKey<FormState>();
   Currency _currencySelected = kReleaseMode ? '' : currencies[0];
   final _companyController = TextEditingController()
-    ..text = kReleaseMode ? '' : 'Master template app';
+    ..text = kReleaseMode ? '' : 'Demo company from John Doe';
   final _firstNameController = TextEditingController()
     ..text = kReleaseMode ? '' : 'John';
   final _lastNameController = TextEditingController()

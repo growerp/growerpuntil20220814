@@ -16,7 +16,7 @@ class UserForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var a = (user) => (UserFormHeader(user));
-    return FormHeader(a(user));
+    return FormHeader(a(user), 1);
   }
 }
 

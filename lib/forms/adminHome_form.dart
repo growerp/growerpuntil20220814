@@ -28,7 +28,7 @@ class AdminHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var a = (message) => (DashBoard(message));
-    return FormHeader(a(message));
+    return FormHeader(a(message), 0);
   }
 }
 
@@ -57,6 +57,7 @@ class DashBoard extends StatelessWidget {
             drawer: myDrawer(context, authenticate),
             body: BlocListener<AuthBloc, AuthState>(
                 listener: (context, state) {
+                  print("======adminHome received state change: $state");
                   if (state is AuthProblem) {
                     HelperFunctions.showMessage(
                         context, '${state.errorMessage}', Colors.red);

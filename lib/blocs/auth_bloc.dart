@@ -70,6 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     }
 
+    print("==== incoming event: $event");
     // ################# start bloc ###################
     if (event is LoadAuth) {
       yield AuthLoading();
@@ -93,11 +94,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
     } else if (event is LoggedIn) {
+      yield AuthLoading();
       await repos.persistAuthenticate(event.authenticate);
-      yield AuthAuthenticated(event.authenticate);
+      yield AuthAuthenticated(event.authenticate, "Successfully logged in");
     } else if (event is Logout) {
+      yield AuthLoading();
       final Authenticate authenticate = await repos.logout();
-      yield AuthUnauthenticated(authenticate);
+      yield AuthUnauthenticated(authenticate, "you are logged out now");
     } else if (event is ResetPassword) {
       await repos.resetPassword(username: event.username);
     } else if (event is UpdateAuth) {

@@ -24,7 +24,7 @@ import '../widgets/@widgets.dart';
 class UsersForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FormHeader(UsersFormHeader());
+    return FormHeader(UsersFormHeader(), 3);
   }
 }
 

@@ -7,7 +7,8 @@ import '@widgets.dart';
 
 class FormHeader extends StatelessWidget {
   final Widget widget;
-  const FormHeader(this.widget);
+  final int selectedIndex;
+  const FormHeader(this.widget, this.selectedIndex);
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
@@ -36,7 +37,7 @@ class FormHeader extends StatelessWidget {
       }
 
       return loggedIn && !ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-          ? myNavigationRail(context, authenticate, widget)
+          ? myNavigationRail(context, authenticate, widget, selectedIndex)
           : widget;
     });
   }

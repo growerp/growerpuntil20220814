@@ -6,7 +6,7 @@ import '../widgets/@widgets.dart';
 class AboutForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FormHeader(AboutFormHeader());
+    return FormHeader(AboutFormHeader(), 4);
   }
 }
 
