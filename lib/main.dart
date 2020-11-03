@@ -9,6 +9,7 @@ import 'services/@services.dart';
 import 'styles/themes.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
+import 'models/@models.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +39,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    Authenticate authenticate;
     return MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
             BouncingScrollWrapper.builder(context, widget),
@@ -61,9 +63,8 @@ class MyApp extends StatelessWidget {
             if (state is AuthUnauthenticated &&
                 state.authenticate?.company == null)
               return RegisterForm('No companies found in system, create one?');
-            else
-              return AdminHome(
-                  "Welcome!"); // change this to HomeForm in specifc apps
+            if (state is AuthAuthenticated) authenticate = state.authenticate;
+            return AdminHome(AdminHomeArg(authenticate, "Welcome"));
           },
         ));
   }

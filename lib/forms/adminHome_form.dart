@@ -21,106 +21,121 @@ import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class AdminHome extends StatelessWidget {
+class AdminHomeArg {
+  final Authenticate authenticate;
   final String message;
-  AdminHome(this.message);
+  AdminHomeArg(this.authenticate, this.message);
+}
+
+class AdminHome extends StatelessWidget {
+  final AdminHomeArg adminHomeArg;
+  AdminHome(this.adminHomeArg);
 
   @override
   Widget build(BuildContext context) {
-    var a = (message) => (DashBoard(message));
-    return FormHeader(a(message), 0);
+    var a = (adminHomeArg) =>
+        (DashBoard(adminHomeArg.authenticate, adminHomeArg.message));
+    return FormHeader(a(adminHomeArg), 0);
   }
 }
 
 class DashBoard extends StatelessWidget {
+  final Authenticate authenticate;
   final String message;
-  const DashBoard(this.message);
+  const DashBoard(this.authenticate, [this.message]);
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate;
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) {
-        authenticate = state.authenticate;
-        return Scaffold(
-            appBar: AppBar(
-                title: Text("${authenticate?.company?.name ?? 'Company??'}"),
-                actions: <Widget>[
-                  if (authenticate?.apiKey != null)
-                    IconButton(
-                        icon: Icon(Icons.do_not_disturb),
-                        tooltip: 'Logout',
-                        onPressed: () => {
-                              BlocProvider.of<AuthBloc>(context).add(Logout()),
-                              BlocProvider.of<AuthBloc>(context).add(LoadAuth())
-                            })
-                ]),
-            drawer: myDrawer(context, authenticate),
-            body: BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  print("======adminHome received state change: $state");
-                  if (state is AuthProblem) {
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                  }
-                  if (state is AuthLoading) {
-                    HelperFunctions.showMessage(
-                        context, 'Loading data', Colors.green);
-                  }
-                  if (state is AuthAuthenticated) {
-                    HelperFunctions.showMessage(
-                        context, '${state.message}', Colors.green);
-                  }
-                },
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
-                  child: GridView.count(
-                    crossAxisCount:
-                        ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                            ? 2
-                            : 3,
-                    padding: EdgeInsets.all(3.0),
-                    children: <Widget>[
-                      makeDashboardItem("Ordbog", Icons.book),
-                      makeDashboardItem("Alphabet", Icons.alarm),
-                      makeDashboardItem("Alphabet", Icons.alarm),
-                      makeDashboardItem("Alphabet", Icons.alarm),
-                      makeDashboardItem("Alphabet", Icons.alarm),
-                      makeDashboardItem("Alphabet", Icons.alarm)
-                    ],
-                  ),
-                )));
-      }
-      if (state is AuthUnauthenticated) {
-        authenticate = state.authenticate;
-        return Scaffold(
-            appBar: AppBar(
-                title: Text("${authenticate?.company?.name ?? 'Company??'}")),
-            body: Center(
-                child: Column(children: <Widget>[
-              SizedBox(height: 150),
-              Text("Login to an existing company"),
-              RaisedButton(
-                child: Text('Login'),
-                onPressed: () {
-                  Navigator.pushNamed(context, LoginRoute);
-                },
-              ),
-              SizedBox(height: 50),
-              Text("Or create a new company and you being the administrator"),
-              RaisedButton(
-                child: Text('Create a new company and admin'),
-                onPressed: () {
-                  authenticate.company.partyId = null;
-                  BlocProvider.of<AuthBloc>(context)
-                      .add(UpdateAuth(authenticate));
-                  Navigator.popAndPushNamed(context, RegisterRoute);
-                },
-              ),
-            ])));
-      }
-      return (Center(child: Container(child: Text("????"))));
-    });
+    if (authenticate?.apiKey != null) {
+      return Scaffold(
+          appBar: AppBar(
+              title: Text("${authenticate?.company?.name ?? 'Company??'}"),
+              actions: <Widget>[
+                if (authenticate?.apiKey != null)
+                  IconButton(
+                      icon: Icon(Icons.do_not_disturb),
+                      tooltip: 'Logout',
+                      onPressed: () => {
+                            BlocProvider.of<AuthBloc>(context).add(Logout()),
+                            BlocProvider.of<AuthBloc>(context).add(LoadAuth())
+                          })
+              ]),
+          drawer: myDrawer(context, authenticate),
+          body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthProblem) {
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+                }
+                if (state is AuthLoading) {
+                  HelperFunctions.showMessage(
+                      context, 'Loading data', Colors.green);
+                }
+                if (state is AuthAuthenticated) {
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
+                child: GridView.count(
+                  crossAxisCount:
+                      ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                          ? 2
+                          : 3,
+                  padding: EdgeInsets.all(3.0),
+                  children: <Widget>[
+                    makeDashboardItem("DashBoard1", Icons.bubble_chart),
+                    makeDashboardItem(
+                        "DashBoard2", Icons.bubble_chart_outlined),
+                    makeDashboardItem("DashBoard3", Icons.bubble_chart),
+                    makeDashboardItem("DashBoard4", Icons.bar_chart_rounded),
+                    makeDashboardItem("DashBoard5", Icons.bar_chart_outlined),
+                    makeDashboardItem("DashBoard6", Icons.bar_chart)
+                  ],
+                ),
+              )));
+    } else {
+      return Scaffold(
+          appBar: AppBar(
+              title: Text("${authenticate?.company?.name ?? 'Company??'}")),
+          body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthProblem) {
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+                }
+                if (state is AuthLoading) {
+                  HelperFunctions.showMessage(
+                      context, 'Loading data', Colors.green);
+                }
+                if (state is AuthAuthenticated) {
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+                }
+              },
+              child: Center(
+                  child: Column(children: <Widget>[
+                SizedBox(height: 150),
+                Text("Login to an existing company"),
+                RaisedButton(
+                  child: Text('Login'),
+                  onPressed: () {
+                    Navigator.pushNamed(context, LoginRoute);
+                  },
+                ),
+                SizedBox(height: 50),
+                Text("Or create a new company and you being the administrator"),
+                RaisedButton(
+                  child: Text('Create a new company and admin'),
+                  onPressed: () {
+                    authenticate.company.partyId = null;
+                    BlocProvider.of<AuthBloc>(context)
+                        .add(UpdateAuth(authenticate));
+                    Navigator.popAndPushNamed(context, RegisterRoute);
+                  },
+                ),
+              ]))));
+    }
   }
 }
 

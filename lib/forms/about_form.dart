@@ -1,4 +1,5 @@
 import 'package:about/about.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/@widgets.dart';
@@ -13,9 +14,13 @@ class AboutForm extends StatelessWidget {
 class AboutFormHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double version = GlobalConfiguration().get("version");
+    double build = GlobalConfiguration().get("build");
+
     return AboutPage(
-        title: Text('About GrowERP and Master Admin branch'),
-        applicationVersion: 'Version {{ version }}, build #{{ buildNumber }}',
+        dialog: true,
+        title: Text('About GrowERP and this Admin app'),
+        applicationVersion: 'Version $version, build #$build',
         applicationIcon: Image(
           image: AssetImage('assets/growerp.png'),
           height: 100,

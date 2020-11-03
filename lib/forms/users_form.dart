@@ -22,18 +22,24 @@ import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
 
 class UsersForm extends StatelessWidget {
+  final Authenticate authenticate;
+  UsersForm(this.authenticate);
   @override
   Widget build(BuildContext context) {
-    return FormHeader(UsersFormHeader(), 3);
+    var a = (authenticate) => (UsersFormHeader(authenticate));
+    return FormHeader(a(authenticate), 3);
   }
 }
 
 class UsersFormHeader extends StatefulWidget {
+  final Authenticate authenticate;
+  UsersFormHeader(this.authenticate);
   @override
   State<UsersFormHeader> createState() => _UsersFormStateHeader();
 }
 
 class _UsersFormStateHeader extends State<UsersFormHeader> {
+  Authenticate authenticate;
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
@@ -70,7 +76,7 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
   }
 
   Widget userList(context, Authenticate authenticate) {
-    List<User> users = authenticate.company.employees;
+    List<User> users = authenticate?.company?.employees;
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(

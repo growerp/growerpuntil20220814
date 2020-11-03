@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import '../models/@models.dart';
 
-List options = [
-  {"image": "assets/dashBoard.png", "title": "Dash Board", "route": "/home"},
-  {"image": "assets/myInfo.png", "title": "User Info", "route": "/user"},
-  {"image": "assets/company.png", "title": "Company Info", "route": "/company"},
-  {"image": "assets/users.png", "title": "User list", "route": "/users"},
-  {"image": "assets/about.png", "title": "About", "route": "/about"},
-];
-
-Widget myDrawer(context, authenticate) {
+Widget myDrawer(BuildContext context, Authenticate authenticate) {
+  String groupId = authenticate?.user?.userGroupId;
+  List options = [];
+  menuItems.forEach((option) => {
+        if (option.userGroups.contains(groupId))
+          options.add({
+            "route": option.route,
+            "selImage": option.selectedImage,
+            "title": option.title,
+          }),
+      });
   bool loggedIn = authenticate?.apiKey != null;
   return (loggedIn && ResponsiveWrapper.of(context).isSmallerThan(TABLET))
       ? Drawer(
@@ -38,10 +41,11 @@ Widget myDrawer(context, authenticate) {
                 contentPadding: EdgeInsets.all(5.0),
                 title: Text(options[i - 1]["title"]),
                 leading: Image.asset(
-                  options[i - 1]["image"],
+                  options[i - 1]["selImage"],
                 ),
                 onTap: () {
-                  Navigator.pushNamed(context, options[i - 1]["route"]);
+                  Navigator.pushNamed(context, options[i - 1]["route"],
+                      arguments: authenticate);
                 });
           },
         ))
@@ -50,11 +54,13 @@ Widget myDrawer(context, authenticate) {
 
 Widget myNavigationRail(context, authenticate, widget, selectedIndex) {
   List<NavigationRailDestination> items = [];
-  options.forEach((option) => {
-        items.add(NavigationRailDestination(
-          icon: Image.asset(option["image"]),
-          label: Text(option["title"]),
-        )),
+  menuItems.forEach((option) => {
+        if (option.userGroups.contains(authenticate.user.userGroupId))
+          items.add(NavigationRailDestination(
+            icon: Image.asset(option.image),
+            selectedIcon: Image.asset(option.selectedImage),
+            label: Text(option.title),
+          )),
       });
 
   return Row(children: <Widget>[
@@ -74,7 +80,8 @@ Widget myNavigationRail(context, authenticate, widget, selectedIndex) {
         selectedIndex: selectedIndex,
         onDestinationSelected: (int index) {
           selectedIndex = index;
-          Navigator.pushNamed(context, options[index]["route"]);
+          Navigator.pushNamed(context, menuItems[index].route,
+              arguments: authenticate);
         },
         labelType: NavigationRailLabelType.selected,
         destinations: items),

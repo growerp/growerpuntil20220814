@@ -22,6 +22,7 @@ import '../blocs/@blocs.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class CompanyForm extends StatelessWidget {
   @override
@@ -37,11 +38,15 @@ class CompanyFormheader extends StatelessWidget {
     Company company;
     bool isAdmin = false;
     return Scaffold(
-        appBar: AppBar(title: const Text('Company page'), actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.home),
-              onPressed: () => Navigator.pushNamed(context, HomeRoute)),
-        ]),
+        appBar: AppBar(
+            automaticallyImplyLeading:
+                ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+            title: const Text('Company page'),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.home),
+                  onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+            ]),
         drawer: myDrawer(context, authenticate),
         body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
           print("====yes state: $state");

@@ -27,7 +27,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case CompanyRoute:
       return MaterialPageRoute(builder: (context) => CompanyForm());
     case UsersRoute:
-      return MaterialPageRoute(builder: (context) => UsersForm());
+      return MaterialPageRoute(
+          builder: (context) => UsersForm(settings.arguments));
     default:
       return MaterialPageRoute(
           builder: (context) => UndefinedView(name: settings.name));

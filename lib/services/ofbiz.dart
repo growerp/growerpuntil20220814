@@ -232,7 +232,7 @@ class Ofbiz {
   Future<dynamic> resetPassword({@required String username}) async {
     try {
       Response result = await client
-          .post('services/ResetPassword100', data: {'username': username});
+          .post('services/resetPassword100', data: {'username': username});
       return json.decode(result.toString());
     } catch (e) {
       return responseMessage(e);
@@ -244,7 +244,7 @@ class Ofbiz {
       @required String oldPassword,
       @required String newPassword}) async {
     try {
-      await client.put('rest/s1/growerp/100/Password', data: {
+      await client.put('services/updatePassword100', data: {
         'username': username,
         'oldPassword': oldPassword,
         'newPassword': newPassword,

@@ -8,54 +8,53 @@ import '../blocs/@blocs.dart';
 import '../helper_functions.dart';
 import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class UserForm extends StatelessWidget {
-  final User user;
-  UserForm(this.user);
+  final Authenticate authenticate;
+  UserForm(this.authenticate);
 
   @override
   Widget build(BuildContext context) {
-    var a = (user) => (UserFormHeader(user));
-    return FormHeader(a(user), 1);
+    var a = (authenticate) => (UserFormHeader(authenticate));
+    return FormHeader(a(authenticate), 1);
   }
 }
 
 class UserFormHeader extends StatelessWidget {
-  final User user;
-  UserFormHeader(this.user);
+  final Authenticate authenticate;
+  UserFormHeader(this.authenticate);
 
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    User user = this.user;
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      user ??= authenticate?.user;
-      return Scaffold(
-          appBar: AppBar(
-            title: const Text('User page'),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.home),
-                  onPressed: () => Navigator.pushNamed(context, HomeRoute)),
-            ],
-          ),
-          drawer: myDrawer(context, authenticate),
-          body: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthProblem) {
-                  user = state.newUser;
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-                }
-                if (state is AuthAuthenticated) {
-                  authenticate = state.authenticate;
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
-                }
-              },
-              child: MyUserPage(authenticate, user)));
-    });
+    User user = this.authenticate.user;
+    return Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading:
+              ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+          title: const Text('User page'),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.home),
+                onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+          ],
+        ),
+        drawer: myDrawer(context, authenticate),
+        body: BlocListener<AuthBloc, AuthState>(
+            listener: (context, state) {
+              if (state is AuthProblem) {
+                user = state.newUser;
+                HelperFunctions.showMessage(
+                    context, '${state.errorMessage}', Colors.red);
+              }
+              if (state is AuthAuthenticated) {
+                authenticate = state.authenticate;
+                HelperFunctions.showMessage(
+                    context, '${state.message}', Colors.green);
+              }
+            },
+            child: MyUserPage(authenticate, user)));
   }
 }
 

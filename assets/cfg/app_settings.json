@@ -1,4 +1,5 @@
 {
+    "version": 0.1, "build": 10,
     "_________________comment__backend": "moqui / ofbiz",
     "backend": "ofbiz",
     "_________________comment__class": "AppAdmin, AppHotel, AppEcommerce etc",

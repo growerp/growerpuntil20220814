@@ -70,7 +70,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     }
 
-    print("==== incoming event: $event");
     // ################# start bloc ###################
     if (event is LoadAuth) {
       yield AuthLoading();
@@ -200,7 +199,7 @@ class ResetPassword extends AuthEvent {
   @override
   List<Object> get props => [username];
   @override
-  String toString() => 'ResetPassword userName: $username';
+  String toString() => 'ResetPassword userName/email: $username';
 }
 
 class LoggingOut extends AuthEvent {
