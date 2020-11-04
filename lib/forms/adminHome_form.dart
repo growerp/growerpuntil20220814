@@ -21,21 +21,15 @@ import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class AdminHomeArg {
-  final Authenticate authenticate;
-  final String message;
-  AdminHomeArg(this.authenticate, this.message);
-}
-
 class AdminHome extends StatelessWidget {
-  final AdminHomeArg adminHomeArg;
-  AdminHome(this.adminHomeArg);
+  final FormArguments formArguments;
+  AdminHome(this.formArguments);
 
   @override
   Widget build(BuildContext context) {
-    var a = (adminHomeArg) =>
-        (DashBoard(adminHomeArg.authenticate, adminHomeArg.message));
-    return FormHeader(a(adminHomeArg), 0);
+    var a = (formArguments) =>
+        (DashBoard(formArguments.authenticate, formArguments.message));
+    return FormHeader(a(formArguments), 0);
   }
 }
 

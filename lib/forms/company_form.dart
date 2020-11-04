@@ -25,17 +25,25 @@ import '../widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class CompanyForm extends StatelessWidget {
+  final FormArguments formArguments;
+  CompanyForm(this.formArguments);
+
   @override
   Widget build(BuildContext context) {
-    return FormHeader(CompanyFormheader(), 2);
+    var a = (formArguments) =>
+        (CompanyFormHeader(formArguments.authenticate, formArguments.message));
+    return FormHeader(a(formArguments), 1);
   }
 }
 
-class CompanyFormheader extends StatelessWidget {
+class CompanyFormHeader extends StatelessWidget {
+  final Authenticate authenticate;
+  final String message;
+  CompanyFormHeader(this.authenticate, this.message);
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    Company company;
+    Company company = this.authenticate.company;
     bool isAdmin = false;
     return Scaffold(
         appBar: AppBar(
@@ -45,11 +53,11 @@ class CompanyFormheader extends StatelessWidget {
             actions: <Widget>[
               IconButton(
                   icon: Icon(Icons.home),
-                  onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+                  onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                      arguments: FormArguments(authenticate)))
             ]),
         drawer: myDrawer(context, authenticate),
         body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-          print("====yes state: $state");
           if (state is AuthAuthenticated) {
             HelperFunctions.showMessage(
                 context, '${state.message}', Colors.green);

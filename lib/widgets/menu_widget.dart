@@ -45,7 +45,7 @@ Widget myDrawer(BuildContext context, Authenticate authenticate) {
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, options[i - 1]["route"],
-                      arguments: authenticate);
+                      arguments: FormArguments(authenticate));
                 });
           },
         ))
@@ -81,7 +81,7 @@ Widget myNavigationRail(context, authenticate, widget, selectedIndex) {
         onDestinationSelected: (int index) {
           selectedIndex = index;
           Navigator.pushNamed(context, menuItems[index].route,
-              arguments: authenticate);
+              arguments: FormArguments(authenticate));
         },
         labelType: NavigationRailLabelType.selected,
         destinations: items),

@@ -22,18 +22,20 @@ import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
 
 class UsersForm extends StatelessWidget {
-  final Authenticate authenticate;
-  UsersForm(this.authenticate);
+  final FormArguments formArguments;
+  UsersForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (authenticate) => (UsersFormHeader(authenticate));
-    return FormHeader(a(authenticate), 3);
+    var a = (formArguments) =>
+        (UsersFormHeader(formArguments.authenticate, formArguments.message));
+    return FormHeader(a(formArguments), 0);
   }
 }
 
 class UsersFormHeader extends StatefulWidget {
   final Authenticate authenticate;
-  UsersFormHeader(this.authenticate);
+  final String message;
+  const UsersFormHeader(this.authenticate, this.message);
   @override
   State<UsersFormHeader> createState() => _UsersFormStateHeader();
 }
@@ -50,8 +52,8 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
                 ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            dynamic user =
-                await Navigator.pushNamed(context, UserRoute, arguments: null);
+            dynamic user = await Navigator.pushNamed(context, UserRoute,
+                arguments: FormArguments(authenticate));
             setState(() {
               if (user?.partyId != null)
                 authenticate.company.employees.add(user);
@@ -108,7 +110,8 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
               return InkWell(
                 onTap: () async {
                   dynamic user = await Navigator.pushNamed(context, UserRoute,
-                      arguments: users[index]);
+                      arguments:
+                          FormArguments(authenticate, null, users[index]));
                   setState(() {
                     if (user != null)
                       users.replaceRange(index, index + 1, [user]);

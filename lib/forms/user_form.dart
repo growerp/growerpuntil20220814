@@ -11,23 +11,24 @@ import '../widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 class UserForm extends StatelessWidget {
-  final Authenticate authenticate;
-  UserForm(this.authenticate);
+  final FormArguments formArguments;
+  UserForm(this.formArguments);
 
   @override
   Widget build(BuildContext context) {
-    var a = (authenticate) => (UserFormHeader(authenticate));
-    return FormHeader(a(authenticate), 1);
+    var a = (formArguments) =>
+        (UserFormHeader(formArguments.authenticate, formArguments.message));
+    return FormHeader(a(formArguments), 1);
   }
 }
 
 class UserFormHeader extends StatelessWidget {
   final Authenticate authenticate;
-  UserFormHeader(this.authenticate);
+  final String message;
+  UserFormHeader(this.authenticate, this.message);
 
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate;
     User user = this.authenticate.user;
     return Scaffold(
         appBar: AppBar(
@@ -49,7 +50,7 @@ class UserFormHeader extends StatelessWidget {
                     context, '${state.errorMessage}', Colors.red);
               }
               if (state is AuthAuthenticated) {
-                authenticate = state.authenticate;
+                user = state.authenticate.user;
                 HelperFunctions.showMessage(
                     context, '${state.message}', Colors.green);
               }

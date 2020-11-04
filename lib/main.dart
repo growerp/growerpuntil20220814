@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
               return RegisterForm('No companies found in system, create one?');
             if (state is AuthAuthenticated) authenticate = state.authenticate;
             if (state is AuthUnauthenticated) authenticate = state.authenticate;
-            return AdminHome(AdminHomeArg(authenticate, "Welcome"));
+            return AdminHome(FormArguments(authenticate, "Welcome"));
           },
         ));
   }
