@@ -38,7 +38,8 @@ class UserFormHeader extends StatelessWidget {
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.home),
-                onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+                onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                    arguments: FormArguments(authenticate)))
           ],
         ),
         drawer: myDrawer(context, authenticate),
