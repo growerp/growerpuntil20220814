@@ -107,7 +107,7 @@ Authenticate authenticate = authenticateFromJson('''
         "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
                        "userGroupId":"GROWERP_M_ADMIN"
                        },
-              "apiKey": "dummyKey"
+              "apiKey": "dummyKey............"
             }
       ''');
 

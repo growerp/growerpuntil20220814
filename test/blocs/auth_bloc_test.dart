@@ -15,7 +15,7 @@ void main() {
     mockReposRepository = MockReposRepository();
   });
 
-  group('Authbloc test', () {
+  group('Authbloc test>>>', () {
     blocTest(
       'check initial state',
       build: () => AuthBloc(repos: mockReposRepository),
@@ -81,7 +81,9 @@ void main() {
       expect: <AuthState>[
         AuthLoading(),
         AuthUnauthenticated(authenticateNoKey),
+        AuthLoading(),
         AuthAuthenticated(authenticate),
+        AuthLoading(),
         AuthUnauthenticated(authenticateNoKey),
       ],
     );
@@ -98,6 +100,7 @@ void main() {
       expect: <AuthState>[
         AuthLoading(),
         AuthUnauthenticated(authenticateNoKey),
+        AuthLoading(),
         AuthAuthenticated(authenticate),
       ],
     );
