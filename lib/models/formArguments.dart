@@ -6,5 +6,5 @@ class FormArguments {
   final Object object;
   FormArguments(this.authenticate, [this.message, this.object]);
   String toString() =>
-      'Auth: ${authenticate.company.name} msg: $message object: ${object.toString()}';
+      'Auth: ${authenticate?.company?.name} msg: $message object: ${object?.toString()}';
 }

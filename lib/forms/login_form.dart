@@ -167,7 +167,8 @@ class _LoginHeaderState extends State<LoginHeader> {
                             .add(UpdateAuth(authenticate));
                         Navigator.pushNamedAndRemoveUntil(
                             context, HomeRoute, ModalRoute.withName(HomeRoute),
-                            arguments: "Ecommerce company changed!");
+                            arguments: FormArguments(
+                                authenticate, "Ecommerce company changed!"));
                       },
                       isExpanded: true,
                     ),

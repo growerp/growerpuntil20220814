@@ -1,3 +1,4 @@
+import 'package:admin/widgets/@widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/foundation.dart';
@@ -28,7 +29,8 @@ class RegisterForm extends StatelessWidget {
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.home),
-                onPressed: () => Navigator.pushNamed(context, HomeRoute)),
+                onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                    arguments: FormArguments(authenticate)))
           ],
         ),
         body: BlocProvider(
@@ -97,9 +99,11 @@ class _RegisterHeaderState extends State<RegisterHeader> {
           } else {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRoute, ModalRoute.withName(HomeRoute),
-                arguments: "Register Company and admin successfull\n"
+                arguments: FormArguments(
+                    authenticate,
+                    "Register Company and admin successfull\n"
                     "you can now login at the top right corner\n"
-                    "with your email password.");
+                    "with your email password."));
           }
         }
       },
