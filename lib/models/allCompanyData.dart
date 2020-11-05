@@ -12,5 +12,21 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-export 'moqui.dart';
-export 'ofbiz.dart';
+import '@models.dart';
+
+class AllCompanyData {
+  Authenticate authenticate;
+  List<Product> products;
+  List<Order> orders;
+  List<User> customers;
+  List<User> suppliers;
+  // Ledger ledger;
+  AllCompanyData({
+    this.authenticate,
+    this.products,
+    this.orders,
+    this.customers,
+    this.suppliers,
+    //this.ledger
+  });
+}

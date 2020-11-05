@@ -1,3 +1,17 @@
+/*
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' show get;
 import 'package:global_configuration/global_configuration.dart';
@@ -179,7 +193,7 @@ class Moqui {
                 'companyPartyId': companyPartyId, // for existing companies
                 'companyName': companyName, 'currencyId': currencyId,
                 'companyEmailAddress': email,
-                'classificationId': 'AppAdmin',
+                'classificationId': classificationId,
                 'environment': kReleaseMode,
                 'moquiSessionToken': sessionToken
               },
@@ -342,6 +356,149 @@ class Moqui {
         'moquiSessionToken': sessionToken
       });
       return companyFromJson(response.toString());
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> getCatalog(String companyPartyId) async {
+    try {
+/*      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('categoriesAndProducts', response.toString());
+      String catProdJson = prefs.getString('categoriesAndProducts');
+      if (catProdJson != null) return catalogFromJson(catProdJson);
+*/
+      Response response = await client.get(
+          'rest/s1/growerp/100/CategoriesAndProducts',
+          queryParameters: {'companyPartyId': companyPartyId});
+      return catalogFromJson(response.toString());
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> getCart() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+//      String orderJson = prefs.getString('orderAndItems');
+//      if (orderJson != null) return orderFromJson(orderJson);
+      return null;
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> saveCart({Order order}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          'orderAndItems', order == null ? null : orderToJson(order));
+      return null;
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> createOrder(Order order) async {
+    try {
+      Authenticate authenticate = await getAuthenticate();
+      client.options.headers['api_key'] = authenticate.apiKey;
+      Response response = await client.post('rest/s1/growerp/100/Order', data: {
+        'orderJson': orderToJson(order),
+        'moquiSessionToken': sessionToken
+      });
+      return 'orderId' + response.data["orderId"];
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> updateCategory(
+      ProductCategory category, String imagePath) async {
+    // no categoryId is add
+    try {
+      category.image = null;
+      String base64Image;
+      if (imagePath != null) {
+        if (kIsWeb) {
+          var response = await get(imagePath);
+          base64Image = base64Encode(response.bodyBytes);
+        } else {
+          base64Image = base64Encode(File(imagePath).readAsBytesSync());
+        }
+      }
+      Response response;
+      if (category.categoryId != null) {
+        //update
+        response = await client.patch('rest/s1/growerp/100/Category', data: {
+          'category': categoryToJson(category),
+          'base64': base64Image,
+          'moquiSessionToken': sessionToken
+        });
+      } else {
+        //create
+        response = await client.put('rest/s1/growerp/100/Category', data: {
+          'category': categoryToJson(category),
+          'base64': base64Image,
+          'moquiSessionToken': sessionToken
+        });
+      }
+      return categoryFromJson(response.toString());
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> deleteCategory(String categoryId) async {
+    try {
+      Response response = await client.delete('rest/s1/growerp/100/Category',
+          queryParameters: {'categoryId': categoryId});
+      return response.data["categoryId"];
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> updateProduct(Product product, String imagePath) async {
+    // no productId is add
+    try {
+      product.image = null;
+      String base64Image;
+      if (imagePath != null) {
+        if (kIsWeb) {
+          var response = await get(imagePath);
+          base64Image = base64Encode(response.bodyBytes);
+        } else {
+          base64Image = base64Encode(File(imagePath).readAsBytesSync());
+        }
+      }
+      Response response;
+      if (product.productId != null) {
+        //update
+        response = await client.patch('rest/s1/growerp/100/Product', data: {
+          'product': productToJson(product),
+          'base64': base64Image,
+          'moquiSessionToken': sessionToken
+        });
+      } else {
+        //create
+        response = await client.put('rest/s1/growerp/100/Product', data: {
+          'product': productToJson(product),
+          'base64': base64Image,
+          'moquiSessionToken': sessionToken
+        });
+      }
+      return productFromJson(response.toString());
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> deleteProduct(String productId) async {
+    try {
+      Response response = await client.delete('rest/s1/growerp/100/Product',
+          queryParameters: {'productId': productId});
+      return response.data["productId"];
     } catch (e) {
       return responseMessage(e);
     }

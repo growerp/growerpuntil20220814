@@ -1,3 +1,17 @@
+/*
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:bloc/bloc.dart';
@@ -29,6 +43,10 @@ void main() async {
       providers: [
         BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(repos: repos)..add(LoadAuth())),
+        BlocProvider<CatalogBloc>(
+            create: (context) => CatalogBloc(repos: repos)..add(LoadCatalog())),
+        BlocProvider<CartBloc>(
+            create: (context) => CartBloc(repos: repos)..add(LoadCart())),
       ],
       // add other blocs here, shopping cart, catalog?
       child: MyApp(),
@@ -74,19 +92,19 @@ class MyApp extends StatelessWidget {
 class SimpleBlocObserver extends BlocObserver {
   @override
   void onEvent(Cubit cubit, Object event) {
-    print("Bloc event { $event: }");
+    print(">>>Bloc event { $event: }");
     super.onEvent(cubit, event);
   }
 
   @override
   void onTransition(Cubit cubit, Transition transition) {
-    print(transition);
+    print(">>>$transition");
     super.onTransition(cubit, transition);
   }
 
   @override
   void onError(Cubit cubit, Object error, StackTrace stackTrace) {
-    print("error: $error");
+    print(">>>error: $error");
     super.onError(cubit, error, stackTrace);
   }
 }

@@ -12,6 +12,20 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+/*
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -31,62 +45,16 @@ class CompanyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) =>
-        (CompanyFormHeader(formArguments.authenticate, formArguments.message));
-    return FormHeader(a(formArguments), 1);
-  }
-}
-
-class CompanyFormHeader extends StatelessWidget {
-  final Authenticate authenticate;
-  final String message;
-  CompanyFormHeader(this.authenticate, this.message);
-  @override
-  Widget build(BuildContext context) {
-    Authenticate authenticate;
-    Company company = this.authenticate.company;
-    bool isAdmin = false;
-    return Scaffold(
-        appBar: AppBar(
-            automaticallyImplyLeading:
-                ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-            title: const Text('Company page'),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.home),
-                  onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                      arguments: FormArguments(authenticate)))
-            ]),
-        drawer: myDrawer(context, authenticate),
-        body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            HelperFunctions.showMessage(
-                context, '${state.message}', Colors.green);
-          }
-          if (state is AuthProblem) {
-            company = state.newCompany;
-            HelperFunctions.showMessage(
-                context, '${state.errorMessage}', Colors.red);
-          }
-        }, builder: (context, state) {
-          if (state is AuthUnauthenticated) {
-            authenticate = state.authenticate;
-            company = authenticate.company;
-          }
-          if (state is AuthAuthenticated) {
-            authenticate = state.authenticate;
-            if (company == null) company = authenticate.company;
-            isAdmin = authenticate?.user?.userGroupId == 'GROWERP_M_ADMIN';
-          }
-          return CompanyPage(authenticate, isAdmin, company);
-        }));
+        (CompanyPage(formArguments.authenticate, formArguments.message));
+    return CheckConnectAndAddRail(a(formArguments));
   }
 }
 
 class CompanyPage extends StatefulWidget {
   final Authenticate authenticate;
-  final bool isAdmin;
-  final Company company;
-  CompanyPage(this.authenticate, this.isAdmin, this.company);
+  final String message;
+  CompanyPage(this.authenticate, this.message);
+
   @override
   _CompanyState createState() => _CompanyState(authenticate);
 }
@@ -135,50 +103,83 @@ class _CompanyState extends State<CompanyPage> {
 
   @override
   Widget build(BuildContext context) {
+    Company updatedCompany;
+    bool isAdmin = authenticate?.user?.userGroupId == "GROWERP_M_ADMIN";
+
     return Scaffold(
-      body: Center(
-        child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-            ? FutureBuilder<void>(
-                future: retrieveLostData(),
-                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text(
-                      'Pick image error: ${snapshot.error}}',
-                      textAlign: TextAlign.center,
-                    );
-                  }
-                  return _showForm(widget.isAdmin, widget.company);
-                })
-            : _showForm(widget.isAdmin, widget.company),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 60),
-          Visibility(
-              visible: widget.isAdmin,
-              child: FloatingActionButton(
-                onPressed: () {
-                  _onImageButtonPressed(ImageSource.gallery, context: context);
-                },
-                heroTag: 'image0',
-                tooltip: 'Pick Image from gallery',
-                child: const Icon(Icons.photo_library),
-              )),
-          SizedBox(height: 20),
-          Visibility(
-              visible: widget.isAdmin,
-              child: FloatingActionButton(
-                onPressed: () {
-                  _onImageButtonPressed(ImageSource.camera, context: context);
-                },
-                heroTag: 'image1',
-                tooltip: 'Take a Photo',
-                child: const Icon(Icons.camera_alt),
-              )),
-        ],
-      ),
-    );
+        appBar: AppBar(
+            automaticallyImplyLeading:
+                ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+            title: companyLogo(context, authenticate, 'Company Detail'),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.home),
+                  onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                      arguments: FormArguments(authenticate)))
+            ]),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 100),
+            Visibility(
+                visible: isAdmin,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    _onImageButtonPressed(ImageSource.gallery,
+                        context: context);
+                  },
+                  heroTag: 'image0',
+                  tooltip: 'Pick Image from gallery',
+                  child: const Icon(Icons.photo_library),
+                )),
+            SizedBox(height: 20),
+            Visibility(
+                visible: isAdmin,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    _onImageButtonPressed(ImageSource.camera, context: context);
+                  },
+                  heroTag: 'image1',
+                  tooltip: 'Take a Photo',
+                  child: const Icon(Icons.camera_alt),
+                )),
+          ],
+        ),
+        drawer: myDrawer(context, authenticate),
+        body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+          if (state is AuthAuthenticated) {
+            HelperFunctions.showMessage(
+                context, '${state.message}', Colors.green);
+          }
+          if (state is AuthProblem) {
+            updatedCompany = state.newCompany;
+            HelperFunctions.showMessage(
+                context, '${state.errorMessage}', Colors.red);
+          }
+        }, builder: (context, state) {
+          if (state is AuthUnauthenticated) {
+            updatedCompany = state.authenticate.company;
+          }
+          if (state is AuthAuthenticated) {
+            updatedCompany = authenticate.company;
+          }
+          return Center(
+            child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                ? FutureBuilder<void>(
+                    future: retrieveLostData(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<void> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text(
+                          'Pick image error: ${snapshot.error}}',
+                          textAlign: TextAlign.center,
+                        );
+                      }
+                      return _showForm(isAdmin, updatedCompany);
+                    })
+                : _showForm(isAdmin, updatedCompany),
+          );
+        }));
   }
 
   Text _getRetrieveErrorWidget() {
@@ -190,17 +191,16 @@ class _CompanyState extends State<CompanyPage> {
     return null;
   }
 
-  Widget _showForm(isAdmin, company) {
-    _nameController..text = company.name;
-    _emailController..text = company.email;
-    Company updatedCompany;
+  Widget _showForm(isAdmin, updatedCompany) {
+    _nameController..text = updatedCompany.name;
+    _emailController..text = updatedCompany.email;
 
     final Text retrieveError = _getRetrieveErrorWidget();
     if (_selectedCurrency == null &&
-        company?.currencyId != null &&
+        updatedCompany?.currencyId != null &&
         currencies != null)
-      _selectedCurrency =
-          currencies.firstWhere((a) => a.currencyId == company.currencyId);
+      _selectedCurrency = currencies
+          .firstWhere((a) => a.currencyId == updatedCompany.currencyId);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -229,9 +229,10 @@ class _CompanyState extends State<CompanyPage> {
                               ? kIsWeb
                                   ? Image.network(_imageFile.path)
                                   : Image.file(File(_imageFile.path))
-                              : company.image != null
-                                  ? Image.memory(company.image)
-                                  : Text(company.name.substring(0, 1) ?? '',
+                              : updatedCompany.image != null
+                                  ? Image.memory(updatedCompany.image)
+                                  : Text(
+                                      updatedCompany.name.substring(0, 1) ?? '',
                                       style: TextStyle(
                                           fontSize: 30, color: Colors.black))),
                       SizedBox(height: 20),
@@ -300,14 +301,14 @@ class _CompanyState extends State<CompanyPage> {
                           visible: isAdmin,
                           child: RaisedButton(
                               key: Key('update'),
-                              child: Text(company.partyId == null
+                              child: Text(updatedCompany.partyId == null
                                   ? 'Create'
                                   : 'Update'),
                               onPressed: () async {
                                 if (_formKey.currentState.validate())
                                   //&& state is! UsersLoading)
                                   updatedCompany = Company(
-                                    partyId: company.partyId,
+                                    partyId: updatedCompany.partyId,
                                     email: _emailController.text,
                                     name: _nameController.text,
                                     currencyId: _selectedCurrency.currencyId,

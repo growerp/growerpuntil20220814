@@ -28,21 +28,29 @@ class AdminHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) =>
-        (DashBoard(formArguments.authenticate, formArguments.message));
-    return FormHeader(a(formArguments), 0);
+        (DashBoard(formArguments?.authenticate, formArguments?.message));
+    return CheckConnectAndAddRail(a(formArguments), 0);
   }
 }
 
 class DashBoard extends StatelessWidget {
   final Authenticate authenticate;
   final String message;
-  const DashBoard(this.authenticate, [this.message]);
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  DashBoard(this.authenticate, [this.message]) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (authenticate?.apiKey != null) {
+    if (authenticate?.apiKey != null)
       return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
-              title: Text("${authenticate?.company?.name ?? 'Company??'}"),
+              automaticallyImplyLeading:
+                  ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+              title: companyLogo(context, authenticate,
+                  authenticate?.company?.name ?? 'Company??'),
               actions: <Widget>[
                 if (authenticate?.apiKey != null)
                   IconButton(
@@ -50,8 +58,11 @@ class DashBoard extends StatelessWidget {
                       tooltip: 'Logout',
                       onPressed: () => {
                             BlocProvider.of<AuthBloc>(context).add(Logout()),
-                            BlocProvider.of<AuthBloc>(context).add(LoadAuth())
-                          })
+                            authenticate?.apiKey = null,
+                            Navigator.pushNamed(context, HomeRoute,
+                                arguments: FormArguments(
+                                    authenticate, "Successfully logged out."))
+                          }),
               ]),
           drawer: myDrawer(context, authenticate),
           body: BlocListener<AuthBloc, AuthState>(
@@ -62,7 +73,7 @@ class DashBoard extends StatelessWidget {
                 }
                 if (state is AuthLoading) {
                   HelperFunctions.showMessage(
-                      context, 'Loading data', Colors.green);
+                      context, '${state.message}', Colors.green);
                 }
                 if (state is AuthAuthenticated) {
                   HelperFunctions.showMessage(
@@ -88,10 +99,12 @@ class DashBoard extends StatelessWidget {
                   ],
                 ),
               )));
-    } else {
+    else
       return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
-              title: Text("${authenticate?.company?.name ?? 'Company??'}")),
+              title: companyLogo(context, authenticate,
+                  authenticate?.company?.name ?? 'Company??')),
           body: BlocListener<AuthBloc, AuthState>(
               listener: (context, state) {
                 if (state is AuthProblem) {
@@ -110,11 +123,16 @@ class DashBoard extends StatelessWidget {
               child: Center(
                   child: Column(children: <Widget>[
                 SizedBox(height: 150),
-                Text("Login to an existing company"),
+                Text("Login with an existing Id"),
                 RaisedButton(
+                  autofocus: true,
                   child: Text('Login'),
-                  onPressed: () {
-                    Navigator.pushNamed(context, LoginRoute);
+                  onPressed: () async {
+                    dynamic result =
+                        await Navigator.pushNamed(context, LoginRoute);
+                    Navigator.pushNamed(context, HomeRoute,
+                        arguments:
+                            FormArguments(result, "Successfully logged in."));
                   },
                 ),
                 SizedBox(height: 50),
@@ -123,13 +141,10 @@ class DashBoard extends StatelessWidget {
                   child: Text('Create a new company and admin'),
                   onPressed: () {
                     authenticate.company.partyId = null;
-                    BlocProvider.of<AuthBloc>(context)
-                        .add(UpdateAuth(authenticate));
                     Navigator.popAndPushNamed(context, RegisterRoute);
                   },
                 ),
               ]))));
-    }
   }
 }
 

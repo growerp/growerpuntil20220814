@@ -1,3 +1,17 @@
+/*
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,73 +30,41 @@ class UserForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (UserFormHeader(formArguments.authenticate, formArguments.message));
-    return FormHeader(a(formArguments), 1);
-  }
-}
-
-class UserFormHeader extends StatelessWidget {
-  final Authenticate authenticate;
-  final String message;
-  UserFormHeader(this.authenticate, this.message);
-
-  @override
-  Widget build(BuildContext context) {
-    User user = this.authenticate.user;
-    return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading:
-              ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-          title: const Text('User page'),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.home),
-                onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                    arguments: FormArguments(authenticate)))
-          ],
-        ),
-        drawer: myDrawer(context, authenticate),
-        body: BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is AuthProblem) {
-                user = state.newUser;
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              }
-              if (state is AuthAuthenticated) {
-                user = state.authenticate.user;
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-              }
-            },
-            child: MyUserPage(authenticate, user)));
+    var a = (formArguments) => (MyUserPage(formArguments.authenticate,
+        formArguments.message, formArguments.object));
+    return CheckConnectAndAddRail(a(formArguments), 0);
   }
 }
 
 class MyUserPage extends StatefulWidget {
   final Authenticate authenticate;
+  final String message;
   final User user;
-  MyUserPage(this.authenticate, this.user);
+  MyUserPage(this.authenticate, this.message, this.user);
   @override
-  _MyUserState createState() => _MyUserState(authenticate, user);
+  _MyUserState createState() => _MyUserState(authenticate, message, user);
 }
 
 class _MyUserState extends State<MyUserPage> {
   final Authenticate authenticate;
+  final String message;
   final User user;
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  bool loading = false;
   UserGroup _selectedUserGroup;
   PickedFile _imageFile;
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MyUserState(this.authenticate, this.user);
+  _MyUserState(this.authenticate, [this.message, this.user]) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -115,46 +97,76 @@ class _MyUserState extends State<MyUserPage> {
 
   @override
   Widget build(BuildContext context) {
+    User updatedUser = this.user;
     return Scaffold(
-      body: Center(
-        child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-            ? FutureBuilder<void>(
-                future: retrieveLostData(),
-                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text(
-                      'Pick image error: ${snapshot.error}}',
-                      textAlign: TextAlign.center,
-                    );
-                  }
-                  return _showForm();
-                })
-            : _showForm(),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 60),
-          FloatingActionButton(
-            onPressed: () {
-              _onImageButtonPressed(ImageSource.gallery, context: context);
-            },
-            heroTag: 'image0',
-            tooltip: 'Pick Image from gallery',
-            child: const Icon(Icons.photo_library),
+        key: _scaffoldKey,
+        appBar: AppBar(
+          automaticallyImplyLeading:
+              ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+          title: companyLogo(context, authenticate, 'User detail'),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.home),
+                onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                    arguments: FormArguments(authenticate)))
+          ],
+        ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(height: 100),
+            FloatingActionButton(
+              onPressed: () {
+                _onImageButtonPressed(ImageSource.gallery, context: context);
+              },
+              heroTag: 'image0',
+              tooltip: 'Pick Image from gallery',
+              child: const Icon(Icons.photo_library),
+            ),
+            SizedBox(height: 20),
+            FloatingActionButton(
+              onPressed: () {
+                _onImageButtonPressed(ImageSource.camera, context: context);
+              },
+              heroTag: 'image1',
+              tooltip: 'Take a Photo',
+              child: const Icon(Icons.camera_alt),
+            ),
+          ],
+        ),
+        drawer: myDrawer(context, authenticate),
+        body: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthProblem) {
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            }
+            if (state is AuthLoading) {
+              loading = true;
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+            }
+            if (state is AuthAuthenticated) {
+              Navigator.pop(context, state.authenticate);
+            }
+          },
+          child: Center(
+            child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                ? FutureBuilder<void>(
+                    future: retrieveLostData(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<void> snapshot) {
+                      if (snapshot.hasError) {
+                        return Text(
+                          'Pick image error: ${snapshot.error}}',
+                          textAlign: TextAlign.center,
+                        );
+                      }
+                      return _showForm(updatedUser);
+                    })
+                : _showForm(updatedUser),
           ),
-          SizedBox(height: 20),
-          FloatingActionButton(
-            onPressed: () {
-              _onImageButtonPressed(ImageSource.camera, context: context);
-            },
-            heroTag: 'image1',
-            tooltip: 'Take a Photo',
-            child: const Icon(Icons.camera_alt),
-          ),
-        ],
-      ),
-    );
+        ));
   }
 
   Text _getRetrieveErrorWidget() {
@@ -166,12 +178,11 @@ class _MyUserState extends State<MyUserPage> {
     return null;
   }
 
-  Widget _showForm() {
+  Widget _showForm(updatedUser) {
     _firstNameController..text = user?.firstName;
     _lastNameController..text = user?.lastName;
     _nameController..text = user?.name;
     _emailController..text = user?.email;
-    User updatedUser;
     final Text retrieveError = _getRetrieveErrorWidget();
     if (_selectedUserGroup == null && user?.userGroupId != null)
       _selectedUserGroup =
@@ -300,12 +311,12 @@ class _MyUserState extends State<MyUserPage> {
                       ),
                       SizedBox(height: 20),
                       RaisedButton(
+                          disabledColor: Colors.grey,
                           key: Key('update'),
                           child:
                               Text(user?.partyId == null ? 'Create' : 'Update'),
                           onPressed: () {
-                            if (_formKey.currentState.validate())
-                              //&& state is! UsersLoading)
+                            if (_formKey.currentState.validate()) {
                               updatedUser = User(
                                 partyId: user?.partyId,
                                 firstName: _firstNameController.text,
@@ -320,11 +331,12 @@ class _MyUserState extends State<MyUserPage> {
                                     .languageCode
                                     .toString(),
                               );
-                            BlocProvider.of<AuthBloc>(context).add(UpdateUser(
-                              authenticate,
-                              updatedUser,
-                              _imageFile?.path,
-                            ));
+                              BlocProvider.of<AuthBloc>(context).add(UpdateUser(
+                                authenticate,
+                                updatedUser,
+                                _imageFile?.path,
+                              ));
+                            }
                           })
                     ])))));
   }

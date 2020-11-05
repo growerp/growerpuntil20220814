@@ -1,9 +1,24 @@
+/*
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:admin/models/@models.dart';
 import '../data.dart';
+import 'package:global_configuration/global_configuration.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -15,9 +30,21 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void main() {
+void main() async {
+  await GlobalConfiguration().loadFromAsset("app_settings");
   HttpOverrides.global = new MyHttpOverrides();
   Dio client;
+  String sessionToken;
+  String classificationId = GlobalConfiguration().get("classificationId");
+  bool restRequestLogs =
+      GlobalConfiguration().getValue<bool>("restRequestLogs");
+  bool restResponseLogs =
+      GlobalConfiguration().getValue<bool>("restResponseLogs");
+  int connectTimeoutTest =
+      GlobalConfiguration().getValue<int>("connectTimeoutTest") * 1000;
+  int receiveTimeoutTest =
+      GlobalConfiguration().getValue<int>("receiveTimeoutTest") * 1000;
+
   Authenticate authenticate;
   String username = randomString4 + emailAddress;
   String password = "qqqqqq9!";
@@ -25,19 +52,20 @@ void main() {
   client = Dio();
 
   client.options.baseUrl = 'https://localhost:8443/rest/';
-  client.options.connectTimeout = 20000; //10s
-  client.options.receiveTimeout = 40000;
+  client.options.connectTimeout = connectTimeoutTest;
+  client.options.receiveTimeout = receiveTimeoutTest;
   client.options.headers = {'Content-Type': 'application/json'};
   print(
       "need a local trunk version of OFBiz framework with REST and Growerp plugin");
   print("====================================================================");
 
-/*  client.interceptors
+  client.interceptors
       .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-    print('===Outgoing dio request path: ${options.path}');
-    print('===Outgoing dio request headers: ${options.headers}');
-    print('===Outgoing dio request data: ${options.data}');
-    print('===Outgoing dio request method: ${options.method}');
+    if (restRequestLogs) {
+      print('===Outgoing dio request path: ${options.path}');
+      print('===Outgoing dio request headers: ${options.headers}');
+      print('===Outgoing dio request data: ${options.data}');
+    }
     // Do something before request is sent
     return options; //continue
     // If you want to resolve the request with some custom data，
@@ -46,7 +74,9 @@ void main() {
     // you can return a `DioError` object or return `dio.reject(errMsg)`
   }, onResponse: (Response response) async {
     // Do something with response data
-    print("===incoming response: ${response.toString()}");
+    if (restResponseLogs) {
+      print("===incoming response: ${response.toString()}");
+    }
     return response; // continue
   }, onError: (DioError e) async {
     // Do something with response error
@@ -61,7 +91,7 @@ void main() {
     }
     return e; //continue
   }));
-*/
+
   String getResponseData(Response input) {
     Map jsonData = json.decode(input.toString()) as Map;
     return json.encode(jsonData["data"]);

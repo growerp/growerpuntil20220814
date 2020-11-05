@@ -1,4 +1,16 @@
-import 'dart:convert';
+/*
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,18 +23,21 @@ void main() {
   String apiKey;
   Map login = Map<dynamic, dynamic>();
   Authenticate authenticate;
+  Authenticate loginAuth;
+  String categoryId;
+
   client = Dio();
   client.options.baseUrl = 'http://localhost:8080/rest/';
   client.options.connectTimeout = 20000; //10s
   client.options.receiveTimeout = 40000;
   client.options.headers = {'Content-Type': 'application/json'};
-/*
   client.interceptors
       .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-    print('===Outgoing dio request path: ${options.path}');
-    print('===Outgoing dio request headers: ${options.headers}');
-    print('===Outgoing dio request data: ${options.data}');
-    print('===Outgoing dio request method: ${options.method}');
+    if (false) {
+      print('===Outgoing dio request path: ${options.path}');
+      print('===Outgoing dio request headers: ${options.headers}');
+      print('===Outgoing dio request data: ${options.data}');
+    }
     // Do something before request is sent
     return options; //continue
     // If you want to resolve the request with some custom data，
@@ -31,7 +46,9 @@ void main() {
     // you can return a `DioError` object or return `dio.reject(errMsg)`
   }, onResponse: (Response response) async {
     // Do something with response data
-    print("===incoming response: ${response.toString()}");
+    if (false) {
+      print("===incoming response: ${response.toString()}");
+    }
     return response; // continue
   }, onError: (DioError e) async {
     // Do something with response error
@@ -46,7 +63,7 @@ void main() {
     }
     return e; //continue
   }));
-*/
+
   setUp(() async {
     Response response = await client.get('moquiSessionToken');
     sessionToken = response.data;
@@ -62,11 +79,12 @@ void main() {
     });
   });
 
-  group('Register first company, login, upload inmage>>>>>', () {
+  group('Register first company, login>>>>>', () {
     test('register', () async {
       register['moquiSessionToken'] = sessionToken;
       register['username'] = randomString4 + register['emailAddress'];
       register['emailAddress'] = randomString4 + register['emailAddress'];
+      register['classificationId'] = 'AppAdmin';
       dynamic response =
           await client.post('s1/growerp/100/UserAndCompany', data: register);
       Authenticate result = authenticateFromJson(response.toString());
@@ -79,6 +97,10 @@ void main() {
       authenticateNoKey.user.language = result.user.language;
       authenticateNoKey.company.image = result.company.image;
       authenticateNoKey.company.employees = result.company.employees;
+      authenticateNoKey.company.classificationId =
+          result.company.classificationId;
+      authenticateNoKey.company.classificationDescr =
+          result.company.classificationDescr;
       authenticateNoKey.apiKey = result.apiKey;
       apiKey = result.apiKey;
       // used later for login test
@@ -90,8 +112,6 @@ void main() {
       authenticate = authenticateNoKey;
       expect(authenticateToJson(result), authenticateToJson(authenticateNoKey));
     });
-
-    Authenticate loginAuth;
 
     test('Companies', () async {
       Response response = await client.get('s1/growerp/100/Companies');
@@ -109,7 +129,26 @@ void main() {
       sessionToken = loginAuth.moquiSessionToken;
       expect(authenticateToJson(loginAuth), authenticateToJson(authenticate));
     });
+  });
 
+  group('Catalog >>>>>', () {
+    test('create/get category ', () async {
+      client.options.headers['api_key'] = apiKey;
+      try {
+        category.categoryId = null;
+        Response response = await client.put('s1/growerp/100/Category', data: {
+          'category': categoryToJson(category),
+          'moquiSessionToken': sessionToken
+        });
+        categoryId = categoryFromJson(response.toString()).categoryId;
+        print("====category: ${categoryFromJson(response.toString())}");
+        expect(categoryToJson(category),
+            categoryToJson(categoryFromJson(response.toString())));
+      } catch (e) {}
+    });
+  });
+
+  group('Image upload tests>>>>>', () {
     test('upload image company', () async {
       await client.post('s1/growerp/100/Image', data: {
         'type': 'company',
@@ -134,9 +173,22 @@ void main() {
       User user = userFromJson(response.toString());
       expect(user.image, isNotEmpty);
     });
-  });
 
-  group('password reset and update >>>>>', () {
+    test('upload image category', () async {
+      await client.post('s1/growerp/100/Image', data: {
+        'type': 'category',
+        'id': categoryId,
+        'base64': imageBase64,
+        'moquiSessionToken': sessionToken,
+      });
+
+      dynamic response = await client.get('s1/growerp/100/Categories',
+          queryParameters: {'categoryId': categoryId});
+      ProductCategory category = categoryFromJson(response.toString());
+      expect(category.image, isNotEmpty);
+    });
+
+/*  group('password reset and update >>>>>', () {
     test('update password', () async {
       Map updPassword = {
         'username': login['username'],
@@ -157,5 +209,7 @@ void main() {
       expect(response.data['messages'].substring(0, 25),
           'A reset password was sent');
     });
+  });
+*/
   });
 }

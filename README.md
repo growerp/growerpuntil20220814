@@ -13,7 +13,7 @@ here you can set either Moqui or Apache OFBiz system
 
 For test purposes we can provide access to Moqui or OFBiz systems.
 
-This admin branch contains all basicfunctions:
+This admin branch contains all basic functions:
 
 1. login
 2. logout
@@ -33,7 +33,11 @@ This admin branch contains all basicfunctions:
 16. Interface to either OFBiz or Moqui ERP system.
 17. Central configuration file
 
-* For the backend you need the Moqui or OFBiz ERP system
+And applications:
+* Company & User management
+* Catalog and product management
+
+For the backend you need the Moqui or OFBiz ERP system
   with an extra component:
   - Moqui:  https://github.com/growerp/growerp-moqui
   - OFBiz:  https://github.com/growerp/growerp-ofbiz
@@ -42,7 +46,6 @@ Additional ERP systems can be added on request, A REST interface is required.
 The implementation time is 40+ hours.
 
 Functions coming up:
-* Catalog and product management
 * Order management
 * Customer & Lead management
 * Accounting

@@ -1,3 +1,17 @@
+/*
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 import 'package:admin/models/@models.dart';
 import 'dart:math';
 
@@ -143,20 +157,20 @@ Map register = {
 final Catalog emptyCatalog = Catalog(categories: [], products: []);
 final Catalog catalog = Catalog(categories: categories, products: products);
 
-final Category category = categoryFromJson('''
+final ProductCategory category = categoryFromJson('''
   { "category":
-      {"productCategoryId": "dummyFirstCategory", "categoryName": "1stCat",
+      {"categoryId": "dummyFirstCategory", "categoryName": "1stCat",
       "description": "this is the long description of category first", 
       "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA="}
   }''');
 
-final List<Category> categories = categoriesFromJson('''
+final List<ProductCategory> categories = categoriesFromJson('''
     {
       "categories": [ 
-      {"productCategoryId": "dummyFirstCategory", "categoryName": "1stCat",
+      {"categoryId": "dummyFirstCategory", "categoryName": "1stCat",
       "description": "this is the long description of category first", 
       "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA="},
-      {"productCategoryId": "secondCategory", "categoryName": "This is the second category",
+      {"categoryId": "secondCategory", "categoryName": "This is the second category",
       "description": "this is the long description of category second",
       "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA="}]
 }''');
