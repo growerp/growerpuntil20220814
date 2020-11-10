@@ -26,69 +26,63 @@ class UsersForm extends StatelessWidget {
   UsersForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (UsersFormHeader(formArguments.authenticate, formArguments.message));
+    var a = (formArguments) => (UsersFormHeader(formArguments.message));
     return CheckConnectAndAddRail(a(formArguments), 2);
   }
 }
 
 class UsersFormHeader extends StatefulWidget {
-  final Authenticate authenticate;
   final String message;
-  const UsersFormHeader(this.authenticate, this.message);
+  const UsersFormHeader(this.message);
   @override
-  _UsersFormStateHeader createState() =>
-      _UsersFormStateHeader(authenticate, message);
+  _UsersFormStateHeader createState() => _UsersFormStateHeader(message);
 }
 
 class _UsersFormStateHeader extends State<UsersFormHeader> {
-  final Authenticate authenticate;
   final String message;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _UsersFormStateHeader(this.authenticate, this.message) {
+  _UsersFormStateHeader(this.message) {
     HelperFunctions.showTopMessage(_scaffoldKey, message);
   }
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate = this.authenticate;
-    List<User> users = authenticate?.company?.employees;
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-            title: companyLogo(context, authenticate, 'Company Users List'),
-            automaticallyImplyLeading:
-                ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            dynamic auth = await Navigator.pushNamed(context, UserRoute,
-                arguments: FormArguments(
-                    authenticate, 'Enter new employee information...'));
-            Navigator.pushNamed(context, UsersRoute,
-                arguments: FormArguments(auth, 'User has been added..'));
-          },
-          tooltip: 'Add new user',
-          child: Icon(Icons.add),
-        ),
-        body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-          if (state is AuthProblem) {
-            HelperFunctions.showMessage(
-                context, '${state.errorMessage}', Colors.red);
-          }
-          if (state is AuthAuthenticated) {
-            setState(() {
-              users = state.authenticate.company.employees;
-            });
-            HelperFunctions.showMessage(
-                context, '${state.message}', Colors.green);
-          }
-        }, builder: (context, state) {
-          if (state is AuthAuthenticated) authenticate = state.authenticate;
-          return userList(users);
-        }));
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) {
+        Authenticate authenticate = state.authenticate;
+        return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+                title: companyLogo(context, authenticate, 'Company Users List'),
+                automaticallyImplyLeading:
+                    ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                dynamic auth = await Navigator.pushNamed(context, UserRoute,
+                    arguments:
+                        FormArguments('Enter new employee information...'));
+                Navigator.pushNamed(context, UsersRoute,
+                    arguments: FormArguments(auth, 'User has been added..'));
+              },
+              tooltip: 'Add new user',
+              child: Icon(Icons.add),
+            ),
+            drawer: myDrawer(context, authenticate),
+            body: BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthProblem) {
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                  }
+                },
+                child: userList(authenticate)));
+      }
+      return Container(child: Text("needs logging in"));
+    });
   }
 
-  Widget userList(users) {
+  Widget userList(authenticate) {
+    List<User> users = authenticate.company.employees;
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(
@@ -120,8 +114,7 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
               return InkWell(
                 onTap: () async {
                   dynamic result = await Navigator.pushNamed(context, UserRoute,
-                      arguments:
-                          FormArguments(authenticate, null, users[index]));
+                      arguments: FormArguments(null, users[index]));
                   setState(() {
                     if (result is Authenticate)
                       users = result.company.employees;

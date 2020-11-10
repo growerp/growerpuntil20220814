@@ -43,7 +43,7 @@ class RegisterForm extends StatelessWidget {
             IconButton(
                 icon: Icon(Icons.home),
                 onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                    arguments: FormArguments(authenticate)))
+                    arguments: FormArguments()))
           ],
         ),
         body: BlocProvider(
@@ -112,11 +112,10 @@ class _RegisterHeaderState extends State<RegisterHeader> {
           } else {
             Navigator.pushNamedAndRemoveUntil(
                 context, HomeRoute, ModalRoute.withName(HomeRoute),
-                arguments: FormArguments(
-                    authenticate,
-                    "Register Company and admin successfull\n"
-                    "you can now login with the password\n"
-                    "you can find in the email which was send to you."));
+                arguments:
+                    FormArguments("Register Company and admin successfull\n"
+                        "you can now login with the password\n"
+                        "you can find in the email which was send to you."));
           }
         }
       },

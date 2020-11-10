@@ -26,77 +26,76 @@ class CategoriesForm extends StatelessWidget {
   CategoriesForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (CategoriesFormHeader(formArguments.authenticate,
-        formArguments.message, formArguments.object));
+    var a = (formArguments) => (CategoriesFormHeader(formArguments.message));
     return CheckConnectAndAddRail(a(formArguments), 4);
   }
 }
 
 class CategoriesFormHeader extends StatefulWidget {
-  final Authenticate authenticate;
   final String message;
-  final Catalog catalog;
-  const CategoriesFormHeader(this.authenticate, this.message, this.catalog);
+  const CategoriesFormHeader(this.message);
   @override
   _CategoriesFormStateHeader createState() =>
-      _CategoriesFormStateHeader(authenticate, message, catalog);
+      _CategoriesFormStateHeader(message);
 }
 
 class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
-  final Authenticate authenticate;
   final String message;
-  final Catalog catalog;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _CategoriesFormStateHeader(this.authenticate, this.message, this.catalog) {
+  _CategoriesFormStateHeader(this.message) {
     HelperFunctions.showTopMessage(_scaffoldKey, message);
   }
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate = this.authenticate;
-    Catalog catalog = this.catalog;
-    BlocProvider.of<CatalogBloc>(context).add(LoadCatalog());
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-            title: companyLogo(context, authenticate, 'Category List'),
-            automaticallyImplyLeading:
-                ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            dynamic cat = await Navigator.pushNamed(context, CategoryRoute,
-                arguments: FormArguments(
-                    authenticate, 'Enter new category information', catalog));
-            Navigator.pushNamed(context, UsersRoute,
-                arguments:
-                    FormArguments(authenticate, 'User has been added..', cat));
-          },
-          tooltip: 'Add new category',
-          child: Icon(Icons.add),
-        ),
-        body: BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is AuthProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-            },
-            child: BlocConsumer<CatalogBloc, CatalogState>(
+    Authenticate authenticate;
+    Catalog catalog;
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) {
+        authenticate = state.authenticate;
+        return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+                title: companyLogo(context, authenticate, 'Category List'),
+                automaticallyImplyLeading:
+                    ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                dynamic cat = await Navigator.pushNamed(context, CategoryRoute,
+                    arguments: FormArguments(
+                        'Enter new category information', catalog));
+                Navigator.pushNamed(context, UsersRoute,
+                    arguments: FormArguments('User has been added..', cat));
+              },
+              tooltip: 'Add new category',
+              child: Icon(Icons.add),
+            ),
+            body: BlocListener<AuthBloc, AuthState>(
                 listener: (context, state) {
-              print("===cats listen  state: $state");
-              if (state is CatalogProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              if (state is CatalogLoaded)
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-              if (state is CatalogLoading)
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-            }, builder: (context, state) {
-              print("===cats build  state: $state");
-              if (state is CatalogLoaded) catalog = state.catalog;
-              return categoryList(catalog);
-            })));
+                  if (state is AuthProblem)
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                },
+                child: BlocConsumer<CatalogBloc, CatalogState>(
+                    listener: (context, state) {
+                  print("===cats listen  state: $state");
+                  if (state is CatalogProblem)
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                  if (state is CatalogLoaded)
+                    HelperFunctions.showMessage(
+                        context, '${state.message}', Colors.green);
+                  if (state is CatalogLoading)
+                    HelperFunctions.showMessage(
+                        context, '${state.message}', Colors.green);
+                }, builder: (context, state) {
+                  print("===cats build  state: $state");
+                  if (state is CatalogLoaded) catalog = state.catalog;
+                  return categoryList(catalog);
+                })));
+      }
+      return Container(child: Text("needs logging in"));
+    });
   }
 
   Widget categoryList(catalog) {
@@ -128,8 +127,7 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                 onTap: () async {
                   dynamic result = await Navigator.pushNamed(
                       context, CategoryRoute,
-                      arguments: FormArguments(
-                          authenticate, null, catalog, categories[index]));
+                      arguments: FormArguments(null, categories[index]));
                   setState(() {
                     if (result is Catalog) categories = result?.categories;
                   });

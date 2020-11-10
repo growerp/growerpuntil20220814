@@ -12,14 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'authenticate.dart';
-
 class FormArguments {
-  final Authenticate authenticate;
   final String message;
   final Object object;
   final Object detail;
-  FormArguments(this.authenticate, [this.message, this.object, this.detail]);
-  String toString() => 'Auth: ${authenticate?.company?.name} msg: $message '
+  FormArguments([this.message, this.object, this.detail]);
+  String toString() => 'msg: $message '
       'object: $object detail: $detail';
 }

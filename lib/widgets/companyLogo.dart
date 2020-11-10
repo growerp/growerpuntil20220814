@@ -20,8 +20,7 @@ Widget companyLogo(context, authenticate, title) {
   return Row(children: [
     InkWell(
       onTap: () {
-        Navigator.pushNamed(context, CompanyRoute,
-            arguments: FormArguments(authenticate));
+        Navigator.pushNamed(context, CompanyRoute, arguments: FormArguments());
       },
       child: CircleAvatar(
           backgroundColor: Colors.green,

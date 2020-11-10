@@ -284,7 +284,7 @@ class AuthUnauthenticated extends AuthState {
   final String message;
   AuthUnauthenticated(this.authenticate, [this.message]);
   @override
-  List<Object> get props => [authenticate];
+  List<Object> get props => [authenticate, message];
   @override
   String toString() => 'Unauthenticated: msg: $message $authenticate';
 }

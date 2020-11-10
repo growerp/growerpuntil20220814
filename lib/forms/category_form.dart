@@ -30,27 +30,22 @@ class CategoryForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (MyCategoryPage(formArguments.authenticate,
-        formArguments.message, formArguments.object, formArguments.detail));
+    var a = (formArguments) =>
+        (MyCategoryPage(formArguments.message, formArguments.object));
     return CheckConnectAndAddRail(a(formArguments), 4);
   }
 }
 
 class MyCategoryPage extends StatefulWidget {
-  final Authenticate authenticate;
   final String message;
-  final Catalog catalog;
   final ProductCategory category;
-  MyCategoryPage(this.authenticate, this.message, this.catalog, this.category);
+  MyCategoryPage(this.message, this.category);
   @override
-  _MyCategoryState createState() =>
-      _MyCategoryState(authenticate, message, catalog, category);
+  _MyCategoryState createState() => _MyCategoryState(message, category);
 }
 
 class _MyCategoryState extends State<MyCategoryPage> {
-  final Authenticate authenticate;
   final String message;
-  final Catalog catalog;
   final ProductCategory category;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
@@ -61,8 +56,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MyCategoryState(
-      this.authenticate, this.message, this.catalog, this.category) {
+  _MyCategoryState(this.message, this.category) {
     HelperFunctions.showTopMessage(_scaffoldKey, message);
   }
 
@@ -97,68 +91,71 @@ class _MyCategoryState extends State<MyCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          automaticallyImplyLeading:
-              ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-          title: companyLogo(context, authenticate, 'Category detail'),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.home),
-                onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                    arguments: FormArguments(authenticate)))
-          ],
-        ),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: 100),
-            FloatingActionButton(
-              onPressed: () {
-                _onImageButtonPressed(ImageSource.gallery, context: context);
-              },
-              heroTag: 'image0',
-              tooltip: 'Pick Image from gallery',
-              child: const Icon(Icons.photo_library),
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) {
+        Authenticate authenticate = state.authenticate;
+        return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              automaticallyImplyLeading:
+                  ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+              title: companyLogo(context, authenticate, 'Category detail'),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.home),
+                    onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                        arguments: FormArguments()))
+              ],
             ),
-            SizedBox(height: 20),
-            FloatingActionButton(
-              onPressed: () {
-                _onImageButtonPressed(ImageSource.camera, context: context);
-              },
-              heroTag: 'image1',
-              tooltip: 'Take a Photo',
-              child: const Icon(Icons.camera_alt),
+            floatingActionButton: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 100),
+                FloatingActionButton(
+                  onPressed: () {
+                    _onImageButtonPressed(ImageSource.gallery,
+                        context: context);
+                  },
+                  heroTag: 'image0',
+                  tooltip: 'Pick Image from gallery',
+                  child: const Icon(Icons.photo_library),
+                ),
+                SizedBox(height: 20),
+                FloatingActionButton(
+                  onPressed: () {
+                    _onImageButtonPressed(ImageSource.camera, context: context);
+                  },
+                  heroTag: 'image1',
+                  tooltip: 'Take a Photo',
+                  child: const Icon(Icons.camera_alt),
+                ),
+              ],
             ),
-          ],
-        ),
-        drawer: myDrawer(context, authenticate),
-        body: BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is AuthProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-            },
-            child: BlocConsumer<CatalogBloc, CatalogState>(
+            drawer: myDrawer(context, authenticate),
+            body: BlocListener<AuthBloc, AuthState>(
                 listener: (context, state) {
-              if (state is CatalogProblem) {
-                updatedCategory = state.newCategory;
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.green);
-              }
-              if (state is CatalogLoaded)
-                Navigator.pushNamed(context, CategoriesRoute,
-                    arguments: FormArguments(
-                        authenticate, state.message, state.catalog));
-            }, builder: (context, state) {
-              if (state is CatalogLoading)
-                HelperFunctions.showMessage(
-                    context, 'processing...', Colors.green);
-              if (state is CatalogLoaded) updatedCategory = state.category;
-              return Center(
-                child:
-                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                  if (state is AuthProblem)
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                },
+                child: BlocConsumer<CatalogBloc, CatalogState>(
+                    listener: (context, state) {
+                  if (state is CatalogProblem) {
+                    updatedCategory = state.newCategory;
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.green);
+                  }
+                  if (state is CatalogLoaded)
+                    Navigator.pushNamed(context, CategoriesRoute,
+                        arguments: FormArguments(state.message, state.catalog));
+                }, builder: (context, state) {
+                  if (state is CatalogLoading)
+                    HelperFunctions.showMessage(
+                        context, 'processing...', Colors.green);
+                  if (state is CatalogLoaded) updatedCategory = state.category;
+                  return Center(
+                    child: !kIsWeb &&
+                            defaultTargetPlatform == TargetPlatform.android
                         ? FutureBuilder<void>(
                             future: retrieveLostData(),
                             builder: (BuildContext context,
@@ -172,8 +169,11 @@ class _MyCategoryState extends State<MyCategoryPage> {
                               return _showForm(updatedCategory);
                             })
                         : _showForm(updatedCategory),
-              );
-            })));
+                  );
+                })));
+      }
+      return Container(child: Text("needs logging in"));
+    });
   }
 
   Text _getRetrieveErrorWidget() {

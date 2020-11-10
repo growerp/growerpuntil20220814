@@ -26,64 +26,72 @@ class ProductsForm extends StatelessWidget {
   ProductsForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (ProductsFormHeader(formArguments.authenticate, formArguments.message));
+    var a = (formArguments) => (ProductsFormHeader(formArguments.message));
     return CheckConnectAndAddRail(a(formArguments), 3);
   }
 }
 
 class ProductsFormHeader extends StatefulWidget {
-  final Authenticate authenticate;
   final String message;
-  const ProductsFormHeader(this.authenticate, this.message);
+  const ProductsFormHeader(this.message);
   @override
-  _ProductsFormStateHeader createState() =>
-      _ProductsFormStateHeader(authenticate, message);
+  _ProductsFormStateHeader createState() => _ProductsFormStateHeader(message);
 }
 
 class _ProductsFormStateHeader extends State<ProductsFormHeader> {
-  final Authenticate authenticate;
   final String message;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _ProductsFormStateHeader(this.authenticate, this.message);
+  _ProductsFormStateHeader(this.message) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate = this.authenticate;
+    Authenticate authenticate;
     Catalog catalog;
-    return Scaffold(
-        appBar: AppBar(
-            title: companyLogo(context, authenticate, 'Product List'),
-            automaticallyImplyLeading:
-                ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            dynamic user = await Navigator.pushNamed(context, ProductRoute,
-                arguments: FormArguments(authenticate));
-            setState(() {
-              if (user?.partyId != null)
-                authenticate.company.employees.add(user);
-            });
-          },
-          tooltip: 'Add new user',
-          child: Icon(Icons.add),
-        ),
-        body:
-            BlocConsumer<CatalogBloc, CatalogState>(listener: (context, state) {
-          if (state is CatalogProblem) {
-            HelperFunctions.showMessage(
-                context, '${state.errorMessage}', Colors.red);
-          }
-//          if (state is CatalogLoaded) {
-//            HelperFunctions.showMessage(
-//                context, '${state.message}', Colors.green);
-//          }
-        }, builder: (context, state) {
-          if (state is CatalogLoaded) catalog = state.catalog;
-          return productList(context, catalog);
-        }));
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) {
+        authenticate = state.authenticate;
+        return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+                title: companyLogo(context, authenticate, 'Product List'),
+                automaticallyImplyLeading:
+                    ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () async {
+                dynamic user = await Navigator.pushNamed(context, ProductRoute,
+                    arguments: FormArguments());
+                setState(() {
+                  if (user?.partyId != null)
+                    authenticate.company.employees.add(user);
+                });
+              },
+              tooltip: 'Add new user',
+              child: Icon(Icons.add),
+            ),
+            body: BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthProblem)
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                },
+                child: BlocConsumer<CatalogBloc, CatalogState>(
+                    listener: (context, state) {
+                  if (state is CatalogProblem) {
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                  }
+                }, builder: (context, state) {
+                  if (state is CatalogLoaded) catalog = state.catalog;
+                  return productList(catalog);
+                })));
+      }
+      return Container(child: Text("needs logging in"));
+    });
   }
 
-  Widget productList(context, Catalog catalog) {
+  Widget productList(Catalog catalog) {
     List<Product> products = catalog?.products;
     return CustomScrollView(
       slivers: <Widget>[
@@ -113,8 +121,7 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                 onTap: () async {
                   dynamic user = await Navigator.pushNamed(
                       context, ProductRoute,
-                      arguments:
-                          FormArguments(authenticate, null, products[index]));
+                      arguments: FormArguments(null, products[index]));
                   setState(() {
                     if (user != null)
                       products.replaceRange(index, index + 1, [user]);

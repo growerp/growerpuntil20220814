@@ -30,23 +30,21 @@ class UserForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (MyUserPage(formArguments.authenticate,
-        formArguments.message, formArguments.object));
+    var a = (formArguments) =>
+        (MyUserPage(formArguments.message, formArguments.object));
     return CheckConnectAndAddRail(a(formArguments), 0);
   }
 }
 
 class MyUserPage extends StatefulWidget {
-  final Authenticate authenticate;
   final String message;
   final User user;
-  MyUserPage(this.authenticate, this.message, this.user);
+  MyUserPage(this.message, this.user);
   @override
-  _MyUserState createState() => _MyUserState(authenticate, message, user);
+  _MyUserState createState() => _MyUserState(message, user);
 }
 
 class _MyUserState extends State<MyUserPage> {
-  final Authenticate authenticate;
   final String message;
   final User user;
   final _formKey = GlobalKey<FormState>();
@@ -54,6 +52,7 @@ class _MyUserState extends State<MyUserPage> {
   final _lastNameController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  User updatedUser;
   bool loading = false;
   UserGroup _selectedUserGroup;
   PickedFile _imageFile;
@@ -62,7 +61,7 @@ class _MyUserState extends State<MyUserPage> {
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MyUserState(this.authenticate, [this.message, this.user]) {
+  _MyUserState([this.message, this.user]) {
     HelperFunctions.showTopMessage(_scaffoldKey, message);
   }
 
@@ -97,76 +96,83 @@ class _MyUserState extends State<MyUserPage> {
 
   @override
   Widget build(BuildContext context) {
-    User updatedUser = this.user;
-    return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          automaticallyImplyLeading:
-              ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-          title: companyLogo(context, authenticate, 'User detail'),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.home),
-                onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                    arguments: FormArguments(authenticate)))
-          ],
-        ),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: 100),
-            FloatingActionButton(
-              onPressed: () {
-                _onImageButtonPressed(ImageSource.gallery, context: context);
-              },
-              heroTag: 'image0',
-              tooltip: 'Pick Image from gallery',
-              child: const Icon(Icons.photo_library),
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) {
+        Authenticate authenticate = state.authenticate;
+        return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              automaticallyImplyLeading:
+                  ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+              title: companyLogo(context, authenticate, 'User detail'),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.home),
+                    onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                        arguments: FormArguments()))
+              ],
             ),
-            SizedBox(height: 20),
-            FloatingActionButton(
-              onPressed: () {
-                _onImageButtonPressed(ImageSource.camera, context: context);
-              },
-              heroTag: 'image1',
-              tooltip: 'Take a Photo',
-              child: const Icon(Icons.camera_alt),
+            floatingActionButton: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 100),
+                FloatingActionButton(
+                  onPressed: () {
+                    _onImageButtonPressed(ImageSource.gallery,
+                        context: context);
+                  },
+                  heroTag: 'image0',
+                  tooltip: 'Pick Image from gallery',
+                  child: const Icon(Icons.photo_library),
+                ),
+                SizedBox(height: 20),
+                FloatingActionButton(
+                  onPressed: () {
+                    _onImageButtonPressed(ImageSource.camera, context: context);
+                  },
+                  heroTag: 'image1',
+                  tooltip: 'Take a Photo',
+                  child: const Icon(Icons.camera_alt),
+                ),
+              ],
             ),
-          ],
-        ),
-        drawer: myDrawer(context, authenticate),
-        body: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            if (state is AuthProblem) {
-              HelperFunctions.showMessage(
-                  context, '${state.errorMessage}', Colors.red);
-            }
-            if (state is AuthLoading) {
-              loading = true;
-              HelperFunctions.showMessage(
-                  context, '${state.message}', Colors.green);
-            }
-            if (state is AuthAuthenticated) {
-              Navigator.pop(context, state.authenticate);
-            }
-          },
-          child: Center(
-            child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-                ? FutureBuilder<void>(
-                    future: retrieveLostData(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<void> snapshot) {
-                      if (snapshot.hasError) {
-                        return Text(
-                          'Pick image error: ${snapshot.error}}',
-                          textAlign: TextAlign.center,
-                        );
-                      }
-                      return _showForm(updatedUser);
-                    })
-                : _showForm(updatedUser),
-          ),
-        ));
+            drawer: myDrawer(context, authenticate),
+            body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthProblem) {
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+                }
+                if (state is AuthLoading) {
+                  loading = true;
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+                }
+                if (state is AuthAuthenticated) {
+                  Navigator.pop(context, state.authenticate);
+                }
+              },
+              child: Center(
+                child:
+                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                        ? FutureBuilder<void>(
+                            future: retrieveLostData(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<void> snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                  'Pick image error: ${snapshot.error}}',
+                                  textAlign: TextAlign.center,
+                                );
+                              }
+                              return _showForm(authenticate, updatedUser);
+                            })
+                        : _showForm(authenticate, updatedUser),
+              ),
+            ));
+      }
+      return Container(child: Text("needs logging in"));
+    });
   }
 
   Text _getRetrieveErrorWidget() {
@@ -178,7 +184,7 @@ class _MyUserState extends State<MyUserPage> {
     return null;
   }
 
-  Widget _showForm(updatedUser) {
+  Widget _showForm(authenticate, updatedUser) {
     _firstNameController..text = user?.firstName;
     _lastNameController..text = user?.lastName;
     _nameController..text = user?.name;

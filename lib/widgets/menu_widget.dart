@@ -39,8 +39,7 @@ Widget myDrawer(BuildContext context, Authenticate authenticate) {
                   child: InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, UserRoute,
-                            arguments: FormArguments(
-                                authenticate, null, authenticate.user));
+                            arguments: FormArguments(null, authenticate.user));
                       },
                       child: Column(children: [
                         CircleAvatar(
@@ -69,7 +68,7 @@ Widget myDrawer(BuildContext context, Authenticate authenticate) {
                 ),
                 onTap: () {
                   Navigator.pushNamed(context, options[i - 1]["route"],
-                      arguments: FormArguments(authenticate));
+                      arguments: FormArguments());
                 });
           },
         ))
@@ -94,8 +93,7 @@ Widget myNavigationRail(context, authenticate, widget, selectedIndex) {
             child: InkWell(
                 onTap: () {
                   Navigator.pushNamed(context, UserRoute,
-                      arguments:
-                          FormArguments(authenticate, null, authenticate.user));
+                      arguments: FormArguments(null, authenticate.user));
                 },
                 child: Column(children: [
                   SizedBox(height: 5),
@@ -116,7 +114,7 @@ Widget myNavigationRail(context, authenticate, widget, selectedIndex) {
         onDestinationSelected: (int index) {
           selectedIndex = index;
           Navigator.pushNamed(context, menuItems[index].route,
-              arguments: FormArguments(authenticate));
+              arguments: FormArguments());
         },
         labelType: NavigationRailLabelType.all,
         selectedLabelTextStyle: TextStyle(fontSize: 12, color: Colors.black),

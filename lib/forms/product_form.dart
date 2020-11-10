@@ -30,76 +30,40 @@ class ProductForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (ProductFormHeader(formArguments.authenticate,
-        formArguments.message, formArguments.object));
-    return CheckConnectAndAddRail(a(formArguments), 5);
-  }
-}
-
-class ProductFormHeader extends StatelessWidget {
-  final Authenticate authenticate;
-  final String message;
-  final Product product;
-  ProductFormHeader(this.authenticate, this.message, this.product);
-
-  @override
-  Widget build(BuildContext context) {
-    Product product = this.product;
-    Catalog catalog;
-    return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading:
-              ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-          title: const Text('Product page'),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.home),
-                onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                    arguments: FormArguments(authenticate)))
-          ],
-        ),
-        drawer: myDrawer(context, authenticate),
-        body: BlocListener<AuthBloc, AuthState>(
-            listener: (context, state) {
-              if (state is AuthProblem) {
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              }
-            },
-            child: BlocConsumer<CatalogBloc, CatalogState>(
-                listener: (context, state) {
-              if (state is CatalogProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.green);
-            }, builder: (context, state) {
-              if (state is CatalogLoaded) catalog = state.catalog;
-              return MyProductPage(product, catalog);
-            })));
+    var a = (formArguments) =>
+        (MyProductPage(formArguments.message, formArguments.object));
+    return CheckConnectAndAddRail(a(formArguments), 3);
   }
 }
 
 class MyProductPage extends StatefulWidget {
-  final Product product;
-  final Catalog catalog;
-  MyProductPage(this.product, this.catalog);
+  final String message;
+  final Product category;
+  MyProductPage(this.message, this.category);
   @override
-  _MyProductState createState() => _MyProductState(product, catalog);
+  _MyProductState createState() => _MyProductState(message, category);
 }
 
 class _MyProductState extends State<MyProductPage> {
+  final String message;
   final Product product;
-  final Catalog catalog;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
+  Catalog catalog;
+  Product updatedProduct;
+  bool loading = false;
   ProductCategory _selectedCategory;
   PickedFile _imageFile;
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MyProductState(this.product, this.catalog);
+  _MyProductState(this.message, this.product) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -132,46 +96,88 @@ class _MyProductState extends State<MyProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-            ? FutureBuilder<void>(
-                future: retrieveLostData(),
-                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text(
-                      'Pick image error: ${snapshot.error}}',
-                      textAlign: TextAlign.center,
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) {
+        Authenticate authenticate = state.authenticate;
+        return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+              automaticallyImplyLeading:
+                  ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+              title: companyLogo(context, authenticate, 'Product detail'),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.home),
+                    onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                        arguments: FormArguments()))
+              ],
+            ),
+            floatingActionButton: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 100),
+                FloatingActionButton(
+                  onPressed: () {
+                    _onImageButtonPressed(ImageSource.gallery,
+                        context: context);
+                  },
+                  heroTag: 'image0',
+                  tooltip: 'Pick Image from gallery',
+                  child: const Icon(Icons.photo_library),
+                ),
+                SizedBox(height: 20),
+                FloatingActionButton(
+                  onPressed: () {
+                    _onImageButtonPressed(ImageSource.camera, context: context);
+                  },
+                  heroTag: 'image1',
+                  tooltip: 'Take a Photo',
+                  child: const Icon(Icons.camera_alt),
+                ),
+              ],
+            ),
+            drawer: myDrawer(context, authenticate),
+            body: BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthProblem)
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                },
+                child: BlocConsumer<CatalogBloc, CatalogState>(
+                    listener: (context, state) {
+                  if (state is CatalogProblem) {
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.green);
+                  }
+                  if (state is CatalogLoaded)
+                    Navigator.pushNamed(context, CategoriesRoute,
+                        arguments: FormArguments(state.message, state.catalog));
+                }, builder: (context, state) {
+                  if (state is CatalogLoaded) {
+                    catalog = state.catalog;
+                    updatedProduct = state.product;
+                    return Center(
+                      child: !kIsWeb &&
+                              defaultTargetPlatform == TargetPlatform.android
+                          ? FutureBuilder<void>(
+                              future: retrieveLostData(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text(
+                                    'Pick image error: ${snapshot.error}}',
+                                    textAlign: TextAlign.center,
+                                  );
+                                }
+                                return _showForm(updatedProduct);
+                              })
+                          : _showForm(updatedProduct),
                     );
                   }
-                  return _showForm();
-                })
-            : _showForm(),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          SizedBox(height: 100),
-          FloatingActionButton(
-            onPressed: () {
-              _onImageButtonPressed(ImageSource.gallery, context: context);
-            },
-            heroTag: 'image0',
-            tooltip: 'Pick Image from gallery',
-            child: const Icon(Icons.photo_library),
-          ),
-          SizedBox(height: 20),
-          FloatingActionButton(
-            onPressed: () {
-              _onImageButtonPressed(ImageSource.camera, context: context);
-            },
-            heroTag: 'image1',
-            tooltip: 'Take a Photo',
-            child: const Icon(Icons.camera_alt),
-          ),
-        ],
-      ),
-    );
+                  return Container(child: Text("needs logging in"));
+                })));
+      }
+    });
   }
 
   Text _getRetrieveErrorWidget() {
@@ -183,12 +189,11 @@ class _MyProductState extends State<MyProductPage> {
     return null;
   }
 
-  Widget _showForm() {
+  Widget _showForm(updatedProduct) {
     _nameController..text = product?.name;
     _descriptionController..text = product?.description;
     _priceController
       ..text = product?.price != null ? product.price.toString() : '';
-    Product updatedProduct;
     final Text retrieveError = _getRetrieveErrorWidget();
     if (_selectedCategory == null && product?.productCategoryId != null)
       _selectedCategory = catalog.categories

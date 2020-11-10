@@ -44,33 +44,35 @@ class CompanyForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (CompanyPage(formArguments.authenticate, formArguments.message));
+    var a = (formArguments) => (CompanyPage(formArguments.message));
     return CheckConnectAndAddRail(a(formArguments));
   }
 }
 
 class CompanyPage extends StatefulWidget {
-  final Authenticate authenticate;
   final String message;
-  CompanyPage(this.authenticate, this.message);
+  CompanyPage(this.message);
 
   @override
-  _CompanyState createState() => _CompanyState(authenticate);
+  _CompanyState createState() => _CompanyState(message);
 }
 
 class _CompanyState extends State<CompanyPage> {
-  final Authenticate authenticate;
+  final String message;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  Company updatedCompany;
   Currency _selectedCurrency;
   PickedFile _imageFile;
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _CompanyState(this.authenticate);
+  _CompanyState(this.message) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -103,83 +105,94 @@ class _CompanyState extends State<CompanyPage> {
 
   @override
   Widget build(BuildContext context) {
-    Company updatedCompany;
-    bool isAdmin = authenticate?.user?.userGroupId == "GROWERP_M_ADMIN";
+    bool isAdmin;
+    Authenticate authenticate;
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) {
+        authenticate = state.authenticate;
+        isAdmin = authenticate?.user?.userGroupId == "GROWERP_M_ADMIN";
 
-    return Scaffold(
-        appBar: AppBar(
-            automaticallyImplyLeading:
-                ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-            title: companyLogo(context, authenticate, 'Company Detail'),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.home),
-                  onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                      arguments: FormArguments(authenticate)))
-            ]),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(height: 100),
-            Visibility(
-                visible: isAdmin,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    _onImageButtonPressed(ImageSource.gallery,
-                        context: context);
-                  },
-                  heroTag: 'image0',
-                  tooltip: 'Pick Image from gallery',
-                  child: const Icon(Icons.photo_library),
-                )),
-            SizedBox(height: 20),
-            Visibility(
-                visible: isAdmin,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    _onImageButtonPressed(ImageSource.camera, context: context);
-                  },
-                  heroTag: 'image1',
-                  tooltip: 'Take a Photo',
-                  child: const Icon(Icons.camera_alt),
-                )),
-          ],
-        ),
-        drawer: myDrawer(context, authenticate),
-        body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
-          if (state is AuthAuthenticated) {
-            HelperFunctions.showMessage(
-                context, '${state.message}', Colors.green);
-          }
-          if (state is AuthProblem) {
-            updatedCompany = state.newCompany;
-            HelperFunctions.showMessage(
-                context, '${state.errorMessage}', Colors.red);
-          }
-        }, builder: (context, state) {
-          if (state is AuthUnauthenticated) {
-            updatedCompany = state.authenticate.company;
-          }
-          if (state is AuthAuthenticated) {
-            updatedCompany = authenticate.company;
-          }
-          return Center(
-            child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-                ? FutureBuilder<void>(
-                    future: retrieveLostData(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<void> snapshot) {
-                      if (snapshot.hasError) {
-                        return Text(
-                          'Pick image error: ${snapshot.error}}',
-                          textAlign: TextAlign.center,
-                        );
-                      }
-                      return _showForm(isAdmin, updatedCompany);
-                    })
-                : _showForm(isAdmin, updatedCompany),
-          );
-        }));
+        return Scaffold(
+            key: _scaffoldKey,
+            appBar: AppBar(
+                automaticallyImplyLeading:
+                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+                title: companyLogo(context, authenticate, 'Company Detail'),
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.home),
+                      onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                          arguments: FormArguments()))
+                ]),
+            floatingActionButton: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(height: 100),
+                Visibility(
+                    visible: isAdmin,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        _onImageButtonPressed(ImageSource.gallery,
+                            context: context);
+                      },
+                      heroTag: 'image0',
+                      tooltip: 'Pick Image from gallery',
+                      child: const Icon(Icons.photo_library),
+                    )),
+                SizedBox(height: 20),
+                Visibility(
+                    visible: isAdmin,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        _onImageButtonPressed(ImageSource.camera,
+                            context: context);
+                      },
+                      heroTag: 'image1',
+                      tooltip: 'Take a Photo',
+                      child: const Icon(Icons.camera_alt),
+                    )),
+              ],
+            ),
+            drawer: myDrawer(context, authenticate),
+            body: BlocConsumer<AuthBloc, AuthState>(listener: (context, state) {
+              if (state is AuthAuthenticated) {
+                HelperFunctions.showMessage(
+                    context, '${state.message}', Colors.green);
+              }
+              if (state is AuthProblem) {
+                updatedCompany = state.newCompany;
+                HelperFunctions.showMessage(
+                    context, '${state.errorMessage}', Colors.red);
+              }
+            }, builder: (context, state) {
+              if (state is AuthUnauthenticated) {
+                updatedCompany = state.authenticate.company;
+              }
+              if (state is AuthAuthenticated) {
+                updatedCompany = authenticate.company;
+              }
+              return Center(
+                child:
+                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                        ? FutureBuilder<void>(
+                            future: retrieveLostData(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<void> snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                  'Pick image error: ${snapshot.error}}',
+                                  textAlign: TextAlign.center,
+                                );
+                              }
+                              return _showForm(
+                                  authenticate, isAdmin, updatedCompany);
+                            })
+                        : _showForm(authenticate, isAdmin, updatedCompany),
+              );
+            }));
+      }
+      return Container(child: Text("needs logging in"));
+    });
   }
 
   Text _getRetrieveErrorWidget() {
@@ -191,7 +204,7 @@ class _CompanyState extends State<CompanyPage> {
     return null;
   }
 
-  Widget _showForm(isAdmin, updatedCompany) {
+  Widget _showForm(authenticate, isAdmin, updatedCompany) {
     _nameController..text = updatedCompany.name;
     _emailController..text = updatedCompany.email;
 

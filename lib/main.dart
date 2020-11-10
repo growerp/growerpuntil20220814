@@ -57,7 +57,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate;
     return MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
             BouncingScrollWrapper.builder(context, widget),
@@ -81,9 +80,7 @@ class MyApp extends StatelessWidget {
             if (state is AuthUnauthenticated &&
                 state.authenticate?.company == null)
               return RegisterForm('No companies found in system, create one?');
-            if (state is AuthAuthenticated) authenticate = state.authenticate;
-            if (state is AuthUnauthenticated) authenticate = state.authenticate;
-            return AdminHome(FormArguments(authenticate, "Welcome"));
+            return AdminHome(FormArguments(null, "Welcome"));
           },
         ));
   }
