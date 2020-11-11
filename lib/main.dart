@@ -42,11 +42,11 @@ void main() async {
     child: MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-            create: (context) => AuthBloc(repos: repos)..add(LoadAuth())),
+            create: (context) => AuthBloc(repos)..add(LoadAuth())),
         BlocProvider<CatalogBloc>(
-            create: (context) => CatalogBloc(repos: repos)..add(LoadCatalog())),
+            create: (context) => CatalogBloc(repos)..add(LoadCatalog())),
         BlocProvider<CartBloc>(
-            create: (context) => CartBloc(repos: repos)..add(LoadCart())),
+            create: (context) => CartBloc(repos)..add(LoadCart())),
       ],
       // add other blocs here, shopping cart, catalog?
       child: MyApp(),

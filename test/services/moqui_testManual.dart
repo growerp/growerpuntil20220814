@@ -25,6 +25,7 @@ void main() {
   Authenticate authenticate;
   Authenticate loginAuth;
   String categoryId;
+  String productId;
 
   client = Dio();
   client.options.baseUrl = 'http://localhost:8080/rest/';
@@ -141,9 +142,22 @@ void main() {
           'moquiSessionToken': sessionToken
         });
         categoryId = categoryFromJson(response.toString()).categoryId;
-        print("====category: ${categoryFromJson(response.toString())}");
         expect(categoryToJson(category),
             categoryToJson(categoryFromJson(response.toString())));
+      } catch (e) {}
+    });
+    test('create/get product ', () async {
+      client.options.headers['api_key'] = apiKey;
+      try {
+        product.productId = null;
+        product.categoryId = categoryId;
+        Response response = await client.put('s1/growerp/100/Product', data: {
+          'product': productToJson(product),
+          'moquiSessionToken': sessionToken
+        });
+        productId = productFromJson(response.toString()).productId;
+        expect(productToJson(product),
+            productToJson(productFromJson(response.toString())));
       } catch (e) {}
     });
   });
@@ -188,7 +202,22 @@ void main() {
       expect(category.image, isNotEmpty);
     });
 
-/*  group('password reset and update >>>>>', () {
+    test('upload image product', () async {
+      await client.post('s1/growerp/100/Image', data: {
+        'type': 'product',
+        'id': productId,
+        'base64': imageBase64,
+        'moquiSessionToken': sessionToken,
+      });
+
+      dynamic response = await client.get('s1/growerp/100/Products',
+          queryParameters: {'productId': productId});
+      Product product = productFromJson(response.toString());
+      expect(product.image, isNotEmpty);
+    });
+  });
+
+  group('password reset and update >>>>>', () {
     test('update password', () async {
       Map updPassword = {
         'username': login['username'],
@@ -209,7 +238,5 @@ void main() {
       expect(response.data['messages'].substring(0, 25),
           'A reset password was sent');
     });
-  });
-*/
   });
 }

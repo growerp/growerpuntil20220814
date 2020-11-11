@@ -22,24 +22,26 @@ import '@widgets.dart';
 /// Checks connection and add navigation rail
 ///
 /// Shows the navigation rail when loggedin and having tablet or web
-class CheckConnectAndAddRail extends StatelessWidget {
+class ShowNavigationRail extends StatelessWidget {
   /// widget to continue
   final Widget widget;
 
   /// item on the rail which is selected
   final int selectedIndex;
-  const CheckConnectAndAddRail(this.widget, [this.selectedIndex]);
+  final Authenticate authenticate;
+  const ShowNavigationRail(this.widget,
+      [this.selectedIndex, this.authenticate]);
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate;
+    Authenticate authenticate = this.authenticate;
     bool loggedIn = false;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
         authenticate = state.authenticate;
         loggedIn = true;
       }
-      if (state is AuthUnauthenticated) authenticate = state.authenticate;
-      return loggedIn && !ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+      return this.authenticate != null ||
+              (loggedIn && !ResponsiveWrapper.of(context).isSmallerThan(TABLET))
           ? myNavigationRail(context, authenticate, widget, selectedIndex)
           : widget;
     });

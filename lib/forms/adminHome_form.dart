@@ -28,7 +28,7 @@ class AdminHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) => (DashBoard(formArguments?.message));
-    return CheckConnectAndAddRail(a(formArguments), 0);
+    return ShowNavigationRail(a(formArguments), 0);
   }
 }
 

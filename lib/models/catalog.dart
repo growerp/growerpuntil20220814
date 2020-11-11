@@ -41,10 +41,14 @@ class Catalog {
   Product getByProductPosition(int position) => products[position % 2];
 
   factory Catalog.fromJson(Map<String, dynamic> json) => Catalog(
-        categories: List<ProductCategory>.from(
-            json["categories"].map((x) => ProductCategory.fromJson(x))),
-        products: List<Product>.from(
-            json["products"].map((x) => Product.fromJson(x))),
+        categories: json["categories"] != null
+            ? List<ProductCategory>.from(
+                json["categories"].map((x) => ProductCategory.fromJson(x)))
+            : null,
+        products: json["products"] != null
+            ? List<Product>.from(
+                json["products"].map((x) => Product.fromJson(x)))
+            : null,
       );
 
   Map<String, dynamic> toJson() => {
@@ -53,6 +57,6 @@ class Catalog {
       };
 
   String toString() =>
-      'CatalogLoaded, categories: ${categories.length}' +
-      ' products: ${products.length}';
+      'CatalogLoaded, categories: ${categories?.length}' +
+      ' products: ${products?.length}';
 }

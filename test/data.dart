@@ -194,7 +194,7 @@ final Product product = productFromJson('''
 { "product":
       {"productId": "secondProduct", "name": "This is the second product",
        "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
-       "price": "17.13", "productCategoryId": "dummyFirstCategory",
+       "price": "17.13", "categoryId": "dummyFirstCategory",
        "description": "This is a dummy description"}
 }    ''');
 final String currencyId = 'USD';

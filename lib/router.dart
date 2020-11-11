@@ -19,7 +19,7 @@ import 'forms/@forms.dart';
 // https://medium.com/flutter-community/flutter-navigation-cheatsheet-a-guide-to-named-routing-dc642702b98c
 Route<dynamic> generateRoute(RouteSettings settings) {
   print(">>>NavigateTo { ${settings.name} " +
-      "with data: ${settings.arguments.toString()} }");
+      "with: ${settings.arguments.toString()} }");
   switch (settings.name) {
     case HomeRoute:
       return MaterialPageRoute(

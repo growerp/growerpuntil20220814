@@ -26,81 +26,77 @@ class CategoriesForm extends StatelessWidget {
   CategoriesForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (CategoriesFormHeader(formArguments.message));
-    return CheckConnectAndAddRail(a(formArguments), 4);
+    var a = (formArguments) => (CategoriesFormHeader(
+        formArguments.message, formArguments.object, formArguments.detail));
+    return ShowNavigationRail(a(formArguments), 4, formArguments.object);
   }
 }
 
 class CategoriesFormHeader extends StatefulWidget {
   final String message;
-  const CategoriesFormHeader(this.message);
+  final Authenticate authenticate;
+  final Catalog catalog;
+  const CategoriesFormHeader(this.message, this.authenticate, this.catalog);
   @override
   _CategoriesFormStateHeader createState() =>
-      _CategoriesFormStateHeader(message);
+      _CategoriesFormStateHeader(message, authenticate, catalog);
 }
 
 class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
   final String message;
+  final Authenticate authenticate;
+  final Catalog catalog;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _CategoriesFormStateHeader(this.message) {
+  _CategoriesFormStateHeader(this.message, this.authenticate, this.catalog) {
     HelperFunctions.showTopMessage(_scaffoldKey, message);
   }
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate;
-    Catalog catalog;
+    Authenticate authenticate = this.authenticate;
+    Catalog catalog = this.catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) {
-        authenticate = state.authenticate;
-        return Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
-                title: companyLogo(context, authenticate, 'Category List'),
-                automaticallyImplyLeading:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                dynamic cat = await Navigator.pushNamed(context, CategoryRoute,
-                    arguments: FormArguments(
-                        'Enter new category information', catalog));
-                Navigator.pushNamed(context, UsersRoute,
-                    arguments: FormArguments('User has been added..', cat));
+      if (state is AuthAuthenticated) authenticate = state.authenticate;
+      return Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+              title: companyLogo(context, authenticate, 'Category List'),
+              automaticallyImplyLeading:
+                  ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, CategoryRoute,
+                  arguments: FormArguments('Enter new category information'));
+            },
+            tooltip: 'Add new category',
+            child: Icon(Icons.add),
+          ),
+          body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthProblem)
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
               },
-              tooltip: 'Add new category',
-              child: Icon(Icons.add),
-            ),
-            body: BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthProblem)
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                },
-                child: BlocConsumer<CatalogBloc, CatalogState>(
-                    listener: (context, state) {
-                  print("===cats listen  state: $state");
-                  if (state is CatalogProblem)
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                  if (state is CatalogLoaded)
-                    HelperFunctions.showMessage(
-                        context, '${state.message}', Colors.green);
-                  if (state is CatalogLoading)
-                    HelperFunctions.showMessage(
-                        context, '${state.message}', Colors.green);
-                }, builder: (context, state) {
-                  print("===cats build  state: $state");
-                  if (state is CatalogLoaded) catalog = state.catalog;
-                  return categoryList(catalog);
-                })));
-      }
-      return Container(child: Text("needs logging in"));
+              child: BlocConsumer<CatalogBloc, CatalogState>(
+                  listener: (context, state) {
+                if (state is CatalogProblem)
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+                if (state is CatalogLoaded)
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+                if (state is CatalogLoading)
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+              }, builder: (context, state) {
+                if (state is CatalogLoaded) catalog = state.catalog;
+                return categoryList(catalog);
+              })));
     });
   }
 
   Widget categoryList(catalog) {
     List<ProductCategory> categories = catalog?.categories;
-    print("=====cats form $catalog");
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(
@@ -114,8 +110,7 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                 Expanded(
                     child: Text("Category Name", textAlign: TextAlign.center)),
                 Expanded(
-                    child:
-                        Text("productCategoryId", textAlign: TextAlign.center)),
+                    child: Text("categoryId", textAlign: TextAlign.center)),
               ],
             ),
           ),
@@ -144,6 +139,9 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                   if (result) {
                     BlocProvider.of<CatalogBloc>(context)
                         .add(DeleteCategory(catalog, categories[index]));
+                    Navigator.pushNamed(context, CategoriesRoute,
+                        arguments: FormArguments(
+                            'Category deleted', authenticate, catalog));
                   }
                 },
                 child: ListTile(

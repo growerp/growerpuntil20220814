@@ -25,7 +25,7 @@ import '../models/@models.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final repos;
 
-  AuthBloc({@required this.repos})
+  AuthBloc(this.repos)
       : assert(repos != null),
         super(AuthInitial());
 
@@ -207,7 +207,7 @@ class DeleteUser extends AuthEvent {
   @override
   List<Object> get props => [authenticate];
   @override
-  String toString() => 'Update User ${authenticate.user.toString()} ';
+  String toString() => 'Update User $user';
 }
 
 class LoggedIn extends AuthEvent {

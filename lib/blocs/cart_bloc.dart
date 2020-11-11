@@ -23,7 +23,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   final repos;
   Authenticate authenticate;
 
-  CartBloc({@required this.repos}) : super(CartInitial());
+  CartBloc(this.repos) : super(CartInitial());
 
   @override
   Stream<CartState> mapEventToState(CartEvent event) async* {

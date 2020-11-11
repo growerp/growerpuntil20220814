@@ -45,7 +45,7 @@ class CompanyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) => (CompanyPage(formArguments.message));
-    return CheckConnectAndAddRail(a(formArguments));
+    return ShowNavigationRail(a(formArguments));
   }
 }
 
@@ -121,8 +121,7 @@ class _CompanyState extends State<CompanyPage> {
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),
-                      onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                          arguments: FormArguments()))
+                      onPressed: () => Navigator.pushNamed(context, HomeRoute))
                 ]),
             floatingActionButton: Column(
               mainAxisAlignment: MainAxisAlignment.start,

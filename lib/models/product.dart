@@ -36,7 +36,7 @@ class Product {
   String name;
   String description;
   double price;
-  String productCategoryId;
+  String categoryId;
   Uint8List image;
 
   Product({
@@ -44,7 +44,7 @@ class Product {
     this.name,
     this.description,
     this.price,
-    this.productCategoryId,
+    this.categoryId,
     this.image,
   });
 
@@ -53,7 +53,7 @@ class Product {
         name: json["name"],
         description: json["description"],
         price: double.parse(json["price"]),
-        productCategoryId: json["productCategoryId"],
+        categoryId: json["categoryId"],
         image: json["image"] != null ? base64.decode(json["image"]) : null,
       );
 
@@ -62,10 +62,9 @@ class Product {
         "name": name,
         "description": description,
         "price": price.toString(),
-        "productCategoryId": productCategoryId,
+        "categoryId": categoryId,
         "image": image != null ? base64.encode(image) : null,
       };
 
-  @override
-  String toString() => 'Product name: $name';
+  String toString() => 'Product name: $name categoryId: $categoryId';
 }

@@ -32,7 +32,7 @@ class CategoryForm extends StatelessWidget {
   Widget build(BuildContext context) {
     var a = (formArguments) =>
         (MyCategoryPage(formArguments.message, formArguments.object));
-    return CheckConnectAndAddRail(a(formArguments), 4);
+    return ShowNavigationRail(a(formArguments), 4);
   }
 }
 
@@ -49,6 +49,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
   final ProductCategory category;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  bool loading = false;
   ProductCategory updatedCategory;
   PickedFile _imageFile;
   dynamic _pickImageError;
@@ -91,88 +92,91 @@ class _MyCategoryState extends State<MyCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    Authenticate authenticate;
+    Catalog catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) {
-        Authenticate authenticate = state.authenticate;
-        return Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
-              automaticallyImplyLeading:
-                  ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-              title: companyLogo(context, authenticate, 'Category detail'),
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.home),
-                    onPressed: () => Navigator.pushNamed(context, HomeRoute,
-                        arguments: FormArguments()))
-              ],
-            ),
-            floatingActionButton: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(height: 100),
-                FloatingActionButton(
-                  onPressed: () {
-                    _onImageButtonPressed(ImageSource.gallery,
-                        context: context);
-                  },
-                  heroTag: 'image0',
-                  tooltip: 'Pick Image from gallery',
-                  child: const Icon(Icons.photo_library),
-                ),
-                SizedBox(height: 20),
-                FloatingActionButton(
-                  onPressed: () {
-                    _onImageButtonPressed(ImageSource.camera, context: context);
-                  },
-                  heroTag: 'image1',
-                  tooltip: 'Take a Photo',
-                  child: const Icon(Icons.camera_alt),
-                ),
-              ],
-            ),
-            drawer: myDrawer(context, authenticate),
-            body: BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthProblem)
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
+      if (state is AuthAuthenticated) authenticate = state.authenticate;
+      return Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+            automaticallyImplyLeading:
+                ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+            title: companyLogo(context, authenticate, 'Category detail'),
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.home),
+                  onPressed: () => Navigator.pushNamed(context, HomeRoute))
+            ],
+          ),
+          floatingActionButton: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: 100),
+              FloatingActionButton(
+                onPressed: () {
+                  _onImageButtonPressed(ImageSource.gallery, context: context);
                 },
-                child: BlocConsumer<CatalogBloc, CatalogState>(
-                    listener: (context, state) {
-                  if (state is CatalogProblem) {
-                    updatedCategory = state.newCategory;
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.green);
-                  }
-                  if (state is CatalogLoaded)
-                    Navigator.pushNamed(context, CategoriesRoute,
-                        arguments: FormArguments(state.message, state.catalog));
-                }, builder: (context, state) {
-                  if (state is CatalogLoading)
-                    HelperFunctions.showMessage(
-                        context, 'processing...', Colors.green);
-                  if (state is CatalogLoaded) updatedCategory = state.category;
-                  return Center(
-                    child: !kIsWeb &&
-                            defaultTargetPlatform == TargetPlatform.android
-                        ? FutureBuilder<void>(
-                            future: retrieveLostData(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<void> snapshot) {
-                              if (snapshot.hasError) {
-                                return Text(
-                                  'Pick image error: ${snapshot.error}}',
-                                  textAlign: TextAlign.center,
-                                );
-                              }
-                              return _showForm(updatedCategory);
-                            })
-                        : _showForm(updatedCategory),
-                  );
-                })));
-      }
-      return Container(child: Text("needs logging in"));
+                heroTag: 'image0',
+                tooltip: 'Pick Image from gallery',
+                child: const Icon(Icons.photo_library),
+              ),
+              SizedBox(height: 20),
+              FloatingActionButton(
+                onPressed: () {
+                  _onImageButtonPressed(ImageSource.camera, context: context);
+                },
+                heroTag: 'image1',
+                tooltip: 'Take a Photo',
+                child: const Icon(Icons.camera_alt),
+              ),
+            ],
+          ),
+          drawer: myDrawer(context, authenticate),
+          body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthProblem)
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+              },
+              child: BlocConsumer<CatalogBloc, CatalogState>(
+                  listener: (context, state) {
+                if (state is CatalogProblem) {
+                  loading = false;
+                  updatedCategory = state.newCategory;
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.green);
+                }
+                if (state is CatalogLoading) {
+                  loading = true;
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+                }
+                if (state is CatalogLoaded)
+                  Navigator.pushNamed(context, CategoriesRoute,
+                      arguments: FormArguments(state.message));
+              }, builder: (context, state) {
+                if (state is CatalogLoaded) {
+                  updatedCategory = state.category;
+                  catalog = state.catalog;
+                }
+                return Center(
+                  child:
+                      !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                          ? FutureBuilder<void>(
+                              future: retrieveLostData(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text(
+                                    'Pick image error: ${snapshot.error}}',
+                                    textAlign: TextAlign.center,
+                                  );
+                                }
+                                return _showForm(catalog, updatedCategory);
+                              })
+                          : _showForm(catalog, updatedCategory),
+                );
+              })));
     });
   }
 
@@ -185,7 +189,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
     return null;
   }
 
-  Widget _showForm(updatedCategory) {
+  Widget _showForm(Catalog catalog, ProductCategory updatedCategory) {
     _nameController..text = category?.categoryName;
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
@@ -197,73 +201,64 @@ class _MyCategoryState extends State<MyCategoryPage> {
         textAlign: TextAlign.center,
       );
     }
-    return WillPopScope(
-        onWillPop: () async {
-          Navigator.pop(context, updatedCategory);
-          return false;
-        },
-        child: Center(
-            child: Container(
-                width: 400,
-                child: Form(
-                    key: _formKey,
-                    child: ListView(children: <Widget>[
-                      SizedBox(height: 30),
-                      GestureDetector(
-                        onTap: () async {
-                          PickedFile pickedFile = await _picker.getImage(
-                              source: ImageSource.gallery);
-                          BlocProvider.of<AuthBloc>(context).add(UploadImage(
-                              category.categoryId, pickedFile.path));
-                        },
-                        child: CircleAvatar(
-                            backgroundColor: Colors.green,
-                            radius: 80,
-                            child: _imageFile != null
-                                ? kIsWeb
-                                    ? Image.network(_imageFile.path)
-                                    : Image.file(File(_imageFile.path))
-                                : category?.image != null
-                                    ? Image.memory(category?.image)
-                                    : Text(
-                                        category?.categoryName
-                                                ?.substring(0, 1) ??
-                                            '',
-                                        style: TextStyle(
-                                            fontSize: 30,
-                                            color: Colors.black))),
-                      ),
-                      SizedBox(height: 30),
-                      TextFormField(
-                        key: Key('name'),
-                        decoration: InputDecoration(labelText: 'Category Name'),
-                        controller: _nameController,
-                        validator: (value) {
-                          if (value.isEmpty)
-                            return 'Please enter a category name?';
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      RaisedButton(
-                          key: Key('update'),
-                          child: Text(category?.categoryId == null
-                              ? 'Create'
-                              : 'Update'),
-                          onPressed: () {
-                            if (_formKey.currentState.validate())
-                              //&& state is! CategorysLoading)
-                              updatedCategory = ProductCategory(
-                                categoryId: category?.categoryId,
-                                categoryName: _nameController.text,
-                              );
-                            BlocProvider.of<CatalogBloc>(context)
-                                .add(UpdateCategory(
-                              null, //catalog,
-                              updatedCategory,
-                              _imageFile?.path,
-                            ));
-                          })
-                    ])))));
+    return Center(
+        child: Container(
+            width: 400,
+            child: Form(
+                key: _formKey,
+                child: ListView(children: <Widget>[
+                  SizedBox(height: 30),
+                  GestureDetector(
+                    onTap: () async {
+                      PickedFile pickedFile =
+                          await _picker.getImage(source: ImageSource.gallery);
+                      BlocProvider.of<AuthBloc>(context).add(
+                          UploadImage(category.categoryId, pickedFile.path));
+                    },
+                    child: CircleAvatar(
+                        backgroundColor: Colors.green,
+                        radius: 80,
+                        child: _imageFile != null
+                            ? kIsWeb
+                                ? Image.network(_imageFile.path)
+                                : Image.file(File(_imageFile.path))
+                            : category?.image != null
+                                ? Image.memory(category?.image)
+                                : Text(
+                                    category?.categoryName?.substring(0, 1) ??
+                                        '',
+                                    style: TextStyle(
+                                        fontSize: 30, color: Colors.black))),
+                  ),
+                  SizedBox(height: 30),
+                  TextFormField(
+                    key: Key('name'),
+                    decoration: InputDecoration(labelText: 'Category Name'),
+                    controller: _nameController,
+                    validator: (value) {
+                      if (value.isEmpty) return 'Please enter a category name?';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  RaisedButton(
+                      key: Key('update'),
+                      child: Text(
+                          category?.categoryId == null ? 'Create' : 'Update'),
+                      onPressed: () {
+                        if (_formKey.currentState.validate() && !loading) {
+                          updatedCategory = ProductCategory(
+                            categoryId: category?.categoryId,
+                            categoryName: _nameController.text,
+                          );
+                          BlocProvider.of<CatalogBloc>(context)
+                              .add(UpdateCategory(
+                            catalog,
+                            updatedCategory,
+                            _imageFile?.path,
+                          ));
+                        }
+                      })
+                ]))));
   }
 }

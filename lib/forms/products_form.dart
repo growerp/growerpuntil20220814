@@ -26,72 +26,76 @@ class ProductsForm extends StatelessWidget {
   ProductsForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (ProductsFormHeader(formArguments.message));
-    return CheckConnectAndAddRail(a(formArguments), 3);
+    var a = (formArguments) => (ProductsFormHeader(
+        formArguments.message, formArguments.object, formArguments.detail));
+    return ShowNavigationRail(a(formArguments), 3, formArguments.object);
   }
 }
 
 class ProductsFormHeader extends StatefulWidget {
   final String message;
-  const ProductsFormHeader(this.message);
+  final Authenticate authenticate;
+  final Catalog catalog;
+  const ProductsFormHeader(this.message, this.authenticate, this.catalog);
   @override
-  _ProductsFormStateHeader createState() => _ProductsFormStateHeader(message);
+  _ProductsFormStateHeader createState() =>
+      _ProductsFormStateHeader(message, authenticate, catalog);
 }
 
 class _ProductsFormStateHeader extends State<ProductsFormHeader> {
   final String message;
+  final Authenticate authenticate;
+  final Catalog catalog;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _ProductsFormStateHeader(this.message) {
+  _ProductsFormStateHeader(this.message, this.authenticate, this.catalog) {
     HelperFunctions.showTopMessage(_scaffoldKey, message);
   }
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate;
-    Catalog catalog;
+    Authenticate authenticate = this.authenticate;
+    Catalog catalog = this.catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) {
-        authenticate = state.authenticate;
-        return Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
-                title: companyLogo(context, authenticate, 'Product List'),
-                automaticallyImplyLeading:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                dynamic user = await Navigator.pushNamed(context, ProductRoute,
-                    arguments: FormArguments());
-                setState(() {
-                  if (user?.partyId != null)
-                    authenticate.company.employees.add(user);
-                });
+      if (state is AuthAuthenticated) authenticate = state.authenticate;
+      return Scaffold(
+          key: _scaffoldKey,
+          appBar: AppBar(
+              title: companyLogo(context, authenticate, 'Product List'),
+              automaticallyImplyLeading:
+                  ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, ProductRoute,
+                  arguments: FormArguments('Enter the product information'));
+            },
+            tooltip: 'Add new product',
+            child: Icon(Icons.add),
+          ),
+          body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (state is AuthProblem)
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
               },
-              tooltip: 'Add new user',
-              child: Icon(Icons.add),
-            ),
-            body: BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthProblem)
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                },
-                child: BlocConsumer<CatalogBloc, CatalogState>(
-                    listener: (context, state) {
-                  if (state is CatalogProblem) {
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                  }
-                }, builder: (context, state) {
-                  if (state is CatalogLoaded) catalog = state.catalog;
-                  return productList(catalog);
-                })));
-      }
-      return Container(child: Text("needs logging in"));
+              child: BlocConsumer<CatalogBloc, CatalogState>(
+                  listener: (context, state) {
+                if (state is CatalogProblem)
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+                if (state is CatalogLoaded)
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+                if (state is CatalogLoading)
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+              }, builder: (context, state) {
+                if (state is CatalogLoaded) catalog = state.catalog;
+                return productList(catalog);
+              })));
     });
   }
 
-  Widget productList(Catalog catalog) {
+  Widget productList(catalog) {
     List<Product> products = catalog?.products;
     return CustomScrollView(
       slivers: <Widget>[
@@ -132,10 +136,10 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                       "${products[index].name}", "Delete this product?");
                   if (result) {
                     BlocProvider.of<CatalogBloc>(context)
-                        .add(DeleteProduct(catalog, products[index].productId));
-                    setState(() {
-                      products.removeAt(index);
-                    });
+                        .add(DeleteProduct(catalog, products[index]));
+                    Navigator.pushNamed(context, ProductsRoute,
+                        arguments: FormArguments(
+                            'product deleted', authenticate, catalog));
                   }
                 },
                 child: ListTile(
@@ -158,7 +162,7 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                           child: Text("${products[index].price}",
                               textAlign: TextAlign.center)),
                       Expanded(
-                          child: Text("${products[index].productCategoryId}",
+                          child: Text("${products[index].categoryId}",
                               textAlign: TextAlign.center)),
                     ],
                   ),
