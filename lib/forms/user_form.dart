@@ -274,33 +274,22 @@ class _MyUserState extends State<MyUserPage> {
                     },
                   ),
                   SizedBox(height: 10),
-                  Container(
-                    width: 400,
-                    height: 60,
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      border: Border.all(
-                          color: Colors.grey,
-                          style: BorderStyle.solid,
-                          width: 0.80),
-                    ),
-                    child: DropdownButton<UserGroup>(
-                      key: Key('dropDown'),
-                      underline: SizedBox(), // remove underline
-                      hint: Text('User Group'),
-                      value: _selectedUserGroup,
-                      items: userGroups?.map((item) {
-                        return DropdownMenuItem<UserGroup>(
-                            child: Text(item.description), value: item);
-                      })?.toList(),
-                      onChanged: (UserGroup newValue) {
-                        setState(() {
-                          _selectedUserGroup = newValue;
-                        });
-                      },
-                      isExpanded: true,
-                    ),
+                  DropdownButtonFormField<UserGroup>(
+                    key: Key('dropDown'),
+                    hint: Text('User Group'),
+                    value: _selectedUserGroup,
+                    validator: (value) =>
+                        value == null ? 'field required' : null,
+                    items: userGroups?.map((item) {
+                      return DropdownMenuItem<UserGroup>(
+                          child: Text(item.description), value: item);
+                    })?.toList(),
+                    onChanged: (UserGroup newValue) {
+                      setState(() {
+                        _selectedUserGroup = newValue;
+                      });
+                    },
+                    isExpanded: true,
                   ),
                   SizedBox(height: 20),
                   RaisedButton(

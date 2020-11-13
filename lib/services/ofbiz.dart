@@ -344,8 +344,8 @@ class Ofbiz {
   Future<dynamic> deleteUser(String partyId) async {
     try {
       Response response = await client
-          .post('services/deleteUser100', data: {'partyId': partyId});
-      return getResponseData(response, "partyId");
+          .post('services/deleteUser100', data: {'userPartyId': partyId});
+      return getResponseData(response, "userPartyId");
     } catch (e) {
       return responseMessage(e);
     }
@@ -366,6 +366,135 @@ class Ofbiz {
       Response response = await client.post('services/updateCompany100',
           data: companyToJson(company));
       return companyFromJson(getResponseData(response));
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> getCatalog(String companyPartyId) async {
+    try {
+/*      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('categoriesAndProducts', response.toString());
+      String catProdJson = prefs.getString('categoriesAndProducts');
+      if (catProdJson != null) return catalogFromJson(catProdJson);
+*/
+      print("====get catalog $companyPartyId");
+      Response response = await client.get('services/getCatalog100?inParams=' +
+          Uri.encodeComponent('{"companyPartyId": "$companyPartyId"}'));
+      Catalog result = catalogFromJson(getResponseData(response));
+      if (result.categories == null) result.categories = [];
+      if (result.products == null) result.products = [];
+      return result;
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> getCart() async {
+    try {
+//      SharedPreferences prefs = await SharedPreferences.getInstance();
+//      String orderJson = prefs.getString('orderAndItems');
+//      if (orderJson != null) return orderFromJson(orderJson);
+      return null;
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> saveCart({Order order}) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString(
+          'orderAndItems', order == null ? null : orderToJson(order));
+      return null;
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> createOrder(Order order) async {
+    try {
+      Response response = await client.post('services/createOrder',
+          data: {'orderJson': orderToJson(order)});
+      return 'orderId' + response.data["orderId"];
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> updateCategory(
+      ProductCategory category, String imagePath) async {
+    // no categoryId is add
+    try {
+      if (imagePath != null) {
+        if (kIsWeb) {
+          var response = await get(imagePath);
+          category.image = response.bodyBytes;
+        } else {
+          category.image = File(imagePath).readAsBytesSync();
+        }
+      }
+
+      Response response;
+      if (category.categoryId != null) {
+        //update
+        response = await client.post('services/updateCategory100',
+            data: categoryToJson(category));
+      } else {
+        //create
+        response = await client.post('services/createCategory100',
+            data: categoryToJson(category));
+      }
+      return categoryFromJson(getResponseData(response));
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> deleteCategory(String categoryId) async {
+    try {
+      Response response = await client
+          .post('services/deleteCategory100', data: {'categoryId': categoryId});
+      return getResponseData(response, "categoryId");
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> updateProduct(Product product, String imagePath) async {
+    // no productId is add
+    print("======create prod $product");
+    try {
+      if (imagePath != null) {
+        if (kIsWeb) {
+          var response = await get(imagePath);
+          product.image = response.bodyBytes;
+        } else {
+          product.image = File(imagePath).readAsBytesSync();
+        }
+      }
+
+      Response response;
+      if (product.productId != null) {
+        //update
+        response = await client.post('services/updateProduct100',
+            data: productToJson(product));
+      } else {
+        //create
+        response = await client.post('services/createProduct100',
+            data: productToJson(product));
+      }
+      return productFromJson(getResponseData(response));
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> deleteProduct(String productId) async {
+    try {
+      Response response = await client
+          .post('services/deleteProduct100', data: {'productId': '$productId'});
+      return getResponseData(response, "productId");
     } catch (e) {
       return responseMessage(e);
     }

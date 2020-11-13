@@ -98,7 +98,7 @@ void main() {
         AuthLoading(),
         AuthAuthenticated(authenticate),
         AuthLoading(),
-        AuthUnauthenticated(authenticateNoKey),
+        AuthUnauthenticated(authenticateNoKey, 'you are logged out now'),
       ],
     );
     blocTest(

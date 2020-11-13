@@ -18,7 +18,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:admin/models/@models.dart';
 import '../data.dart';
-import 'package:global_configuration/global_configuration.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -31,19 +30,8 @@ class MyHttpOverrides extends HttpOverrides {
 }
 
 void main() async {
-  await GlobalConfiguration().loadFromAsset("app_settings");
   HttpOverrides.global = new MyHttpOverrides();
   Dio client;
-  String sessionToken;
-  String classificationId = GlobalConfiguration().get("classificationId");
-  bool restRequestLogs =
-      GlobalConfiguration().getValue<bool>("restRequestLogs");
-  bool restResponseLogs =
-      GlobalConfiguration().getValue<bool>("restResponseLogs");
-  int connectTimeoutTest =
-      GlobalConfiguration().getValue<int>("connectTimeoutTest") * 1000;
-  int receiveTimeoutTest =
-      GlobalConfiguration().getValue<int>("receiveTimeoutTest") * 1000;
 
   Authenticate authenticate;
   String username = randomString4 + emailAddress;
@@ -52,8 +40,8 @@ void main() async {
   client = Dio();
 
   client.options.baseUrl = 'https://localhost:8443/rest/';
-  client.options.connectTimeout = connectTimeoutTest;
-  client.options.receiveTimeout = receiveTimeoutTest;
+  client.options.connectTimeout = 20000;
+  client.options.receiveTimeout = 40000;
   client.options.headers = {'Content-Type': 'application/json'};
   print(
       "need a local trunk version of OFBiz framework with REST and Growerp plugin");
@@ -61,7 +49,7 @@ void main() async {
 
   client.interceptors
       .add(InterceptorsWrapper(onRequest: (RequestOptions options) async {
-    if (restRequestLogs) {
+    if (false) {
       print('===Outgoing dio request path: ${options.path}');
       print('===Outgoing dio request headers: ${options.headers}');
       print('===Outgoing dio request data: ${options.data}');
@@ -74,7 +62,7 @@ void main() async {
     // you can return a `DioError` object or return `dio.reject(errMsg)`
   }, onResponse: (Response response) async {
     // Do something with response data
-    if (restResponseLogs) {
+    if (false) {
       print("===incoming response: ${response.toString()}");
     }
     return response; // continue
@@ -85,7 +73,8 @@ void main() async {
       print("=== e.response.headers: ${e.response.headers}");
       print("=== e.response.request: ${e.response.request}");
     } else {
-      // Something happened in setting up or sending the request that triggered an Error
+      // Something happened in setting up or sending the request
+      // that triggered an Error
       print("=== e.request: ${e.request}");
       print("=== e.message: ${e.message}");
     }
@@ -188,7 +177,7 @@ void main() async {
     });
   });
 
-  group('Company operations >>>>> ', () {
+/*  group('Company operations >>>>> ', () {
     test('confirm existing data', () async {
       try {
         authenticate.company.image = null; // fill when want to change
@@ -284,6 +273,148 @@ void main() async {
         // this will change the password
         await client.post('services/resetPassword100',
             data: {'username': authenticate.user.name});
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+    test('delete user', () async {
+      try {
+        // check if user exist
+        Response response = await client.get('services/getUsers100?inParams=' +
+            Uri.encodeComponent(
+                '{"userPartyId": "${authenticate.user.partyId}" }'));
+        Map jsonData = json.decode(response.toString()) as Map;
+        expect(false, jsonData["data"]["user"] == null);
+        // delete the user
+        response = await client.post('services/deleteUser100',
+            data: {'userPartyId': authenticate.user.partyId});
+        jsonData = json.decode(response.toString()) as Map;
+        String userPartyId = jsonData["data"]["userPartyId"];
+        expect(userPartyId, authenticate.user.partyId);
+        // check agian
+        response = await client.get('services/getUsers100?inParams=' +
+            Uri.encodeComponent(
+                '{"userPartyId": "${authenticate.user.partyId}" }'));
+        jsonData = json.decode(response.toString()) as Map;
+        expect(true, jsonData["data"]["user"] == null);
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+  });
+
+  group('Category operations >>>>> ', () {
+    test('create  category', () async {
+      try {
+        category.image = null; // fill when want to change
+        category.categoryId = null;
+        Response response = await client.post('services/createCategory100',
+            data: categoryToJson(category));
+        dynamic result = categoryFromJson(getResponseData(response));
+        category.categoryId = result.categoryId;
+        category.image = result.image;
+        expect(categoryToJson(result), categoryToJson(category));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+    test('update  category', () async {
+      try {
+        category.image = null; // fill when want to change
+        Response response = await client.post('services/updateCategory100',
+            data: categoryToJson(category));
+        dynamic result = categoryFromJson(getResponseData(response));
+        category.image = result.image;
+        expect(categoryToJson(result), categoryToJson(category));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+    test('change data category', () async {
+      try {
+        category.image = null; // fill when want to change
+        category.categoryName = 'xxxx';
+        Response response = await client.post('services/updateCategory100',
+            data: categoryToJson(category));
+        dynamic result = categoryFromJson(getResponseData(response));
+        category.image = result.image;
+        expect(categoryToJson(result), categoryToJson(category));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+
+    test('upload category image', () async {
+      try {
+        category.image = base64.decode(imageBase64);
+        Response response = await client.post('services/updateCategory100',
+            data: categoryToJson(category));
+        ProductCategory result = categoryFromJson(getResponseData(response));
+        // print("====result of category update: ${result.toString()}");
+        expect(result?.image, isNotEmpty);
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+  });
+*/
+  group('Product operations >>>>> ', () {
+    test('create  product', () async {
+      try {
+        // create category for product
+        category.image = null; // fill when want to change
+        category.categoryId = null;
+        Response response = await client.post('services/createCategory100',
+            data: categoryToJson(category));
+        dynamic result = categoryFromJson(getResponseData(response));
+        product.image = null; // fill when want to change
+        product.productId = null;
+        product.categoryId = result.categoryId;
+        // create the product
+        response = await client.post('services/createProduct100',
+            data: productToJson(product));
+        result = productFromJson(getResponseData(response));
+        product.productId = result.productId;
+        product.image = result.image;
+        expect(productToJson(result), productToJson(product));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+    test('update  product', () async {
+      try {
+        product.image = null; // fill when want to change
+        Response response = await client.post('services/updateProduct100',
+            data: productToJson(product));
+        dynamic result = productFromJson(getResponseData(response));
+        product.image = result.image;
+        expect(productToJson(result), productToJson(product));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+    test('change data product', () async {
+      try {
+        product.image = null; // fill when want to change
+        product.productName = 'xxxx';
+        Response response = await client.post('services/updateProduct100',
+            data: productToJson(product));
+        dynamic result = productFromJson(getResponseData(response));
+        product.image = result.image;
+        expect(productToJson(result), productToJson(product));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+
+    test('upload product image', () async {
+      try {
+        product.image = base64.decode(imageBase64);
+        Response response = await client.post('services/updateProduct100',
+            data: productToJson(product));
+        Product result = productFromJson(getResponseData(response));
+        // print("====result of product update: ${result.toString()}");
+        expect(result?.image, isNotEmpty);
       } on DioError catch (e) {
         expect(null, e?.response?.data);
       }

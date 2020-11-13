@@ -18,6 +18,7 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:decimal/decimal.dart';
 
 Product productFromJson(String str) =>
     Product.fromJson(json.decode(str)["product"]);
@@ -33,15 +34,15 @@ String productsToJson(List<Product> data) =>
 
 class Product {
   String productId;
-  String name;
+  String productName;
   String description;
-  double price;
+  Decimal price;
   String categoryId;
   Uint8List image;
 
   Product({
     this.productId,
-    this.name,
+    this.productName,
     this.description,
     this.price,
     this.categoryId,
@@ -50,21 +51,22 @@ class Product {
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
         productId: json["productId"],
-        name: json["name"],
+        productName: json["productName"],
         description: json["description"],
-        price: double.parse(json["price"]),
+        price: Decimal.parse(json["price"]),
         categoryId: json["categoryId"],
         image: json["image"] != null ? base64.decode(json["image"]) : null,
       );
 
   Map<String, dynamic> toJson() => {
         "productId": productId,
-        "name": name,
+        "productName": productName,
         "description": description,
         "price": price.toString(),
         "categoryId": categoryId,
         "image": image != null ? base64.encode(image) : null,
       };
 
-  String toString() => 'Product name: $name categoryId: $categoryId';
+  String toString() =>
+      'Product name: $productName price: $price categoryId: $categoryId';
 }

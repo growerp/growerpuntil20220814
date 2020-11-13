@@ -133,7 +133,7 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                 },
                 onLongPress: () async {
                   bool result = await confirmDialog(context,
-                      "${products[index].name}", "Delete this product?");
+                      "${products[index].productName}", "Delete this product?");
                   if (result) {
                     BlocProvider.of<CatalogBloc>(context)
                         .add(DeleteProduct(catalog, products[index]));
@@ -148,15 +148,15 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                     backgroundColor: Colors.green,
                     child: products[index]?.image != null
                         ? Image.memory(products[index]?.image)
-                        : Text(products[index]?.name[0]),
+                        : Text(products[index]?.productName[0]),
                   ),
                   title: Row(
                     children: <Widget>[
                       Expanded(
-                          child: Text("${products[index].name}, "
+                          child: Text("${products[index].productName}, "
                               "[${products[index].productId}]")),
                       Expanded(
-                          child: Text("${products[index].name}",
+                          child: Text("${products[index].description}",
                               textAlign: TextAlign.center)),
                       Expanded(
                           child: Text("${products[index].price}",

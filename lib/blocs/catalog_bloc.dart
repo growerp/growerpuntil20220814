@@ -50,7 +50,6 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
       yield CatalogLoading(
           (event.product?.productId == null ? "Adding " : "Updating") +
               " product ${event.product}");
-      print("=====catbloc prouct: ${event.product}");
       dynamic result =
           await repos.updateProduct(event.product, event.imagePath);
       if (result is Product) {
@@ -82,14 +81,14 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
       }
     } else if (event is UpdateCategory) {
       yield CatalogLoading(
-          (event.category?.categoryId == null ? "Adding " : "Updating") +
-              " category ${event.category}");
+          "${(event.category?.categoryId == null ? 'Adding' : 'Updating')}"
+          " category ${event.category}");
       dynamic result =
           await repos.updateCategory(event.category, event.imagePath);
       if (result is ProductCategory) {
-        if (event.category?.categoryId == null)
+        if (event.category?.categoryId == null) {
           event.catalog.categories.add(event.category);
-        else {
+        } else {
           int index = event.catalog.categories
               .indexWhere((cat) => cat.categoryId == result.categoryId);
           event.catalog.categories.replaceRange(index, index + 1, [result]);
@@ -134,7 +133,7 @@ class DeleteProduct extends CatalogEvent {
   final Product product;
   DeleteProduct(this.catalog, this.product);
   @override
-  String toString() => "DeleteProduct: $product";
+  String toString() => "DeleteProduct: $product in $catalog";
 }
 
 class UpdateProduct extends CatalogEvent {
@@ -143,7 +142,7 @@ class UpdateProduct extends CatalogEvent {
   final String imagePath;
   UpdateProduct(this.catalog, this.product, this.imagePath);
   @override
-  String toString() => "UpdateProduct: $product";
+  String toString() => "UpdateProduct: $product in $catalog";
 }
 
 class DeleteCategory extends CatalogEvent {
@@ -151,7 +150,7 @@ class DeleteCategory extends CatalogEvent {
   final ProductCategory category;
   DeleteCategory(this.catalog, this.category);
   @override
-  String toString() => "DeleteCategory: $category";
+  String toString() => "DeleteCategory: $category in $catalog";
 }
 
 class UpdateCategory extends CatalogEvent {
@@ -160,7 +159,7 @@ class UpdateCategory extends CatalogEvent {
   final String imagePath;
   UpdateCategory(this.catalog, this.category, this.imagePath);
   @override
-  String toString() => "UpdateCategory: $category";
+  String toString() => "UpdateCategory: $category in $catalog";
 }
 
 // ################## state ###################

@@ -13,6 +13,7 @@
  */
 
 import 'dart:async';
+import 'package:decimal/decimal.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -118,11 +119,12 @@ class CartLoading extends CartState {}
 class CartLoaded extends CartState {
   final Order order;
   const CartLoaded(this.order);
-  double get totalPrice {
-    if (order?.orderItems?.length == 0) return 0.00;
-    double total = 0.00;
+  Decimal get totalPrice {
+    if (order?.orderItems?.length == 0) return Decimal.parse('0');
+    Decimal total = Decimal.parse('0');
     if (order != null)
-      for (OrderItem i in order?.orderItems) total += (i.price * i.quantity);
+      for (OrderItem i in order?.orderItems)
+        total += (i.price * Decimal.parse(i.quantity.toString()));
     return total;
   }
 

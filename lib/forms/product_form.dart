@@ -13,6 +13,7 @@
  */
 
 import 'dart:io';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -194,10 +195,9 @@ class _MyProductState extends State<MyProductPage> {
   }
 
   Widget _showForm(Catalog catalog, Product updatedProduct) {
-    _nameController..text = product?.name;
+    _nameController..text = product?.productName;
     _descriptionController..text = product?.description;
-    _priceController
-      ..text = product?.price != null ? product.price.toString() : '';
+    _priceController..text = product?.price?.toString();
     final Text retrieveError = _getRetrieveErrorWidget();
     if (_selectedCategory == null && product?.categoryId != null)
       _selectedCategory = catalog.categories
@@ -234,7 +234,8 @@ class _MyProductState extends State<MyProductPage> {
                                 : Image.file(File(_imageFile.path))
                             : product?.image != null
                                 ? Image.memory(product?.image)
-                                : Text(product?.name?.substring(0, 1) ?? '',
+                                : Text(
+                                    product?.productName?.substring(0, 1) ?? '',
                                     style: TextStyle(
                                         fontSize: 30, color: Colors.black))),
                   ),
@@ -265,33 +266,22 @@ class _MyProductState extends State<MyProductPage> {
                     },
                   ),
                   SizedBox(height: 10),
-                  Container(
-                    width: 400,
-                    height: 60,
-                    padding: EdgeInsets.symmetric(horizontal: 10.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      border: Border.all(
-                          color: Colors.grey,
-                          style: BorderStyle.solid,
-                          width: 0.80),
-                    ),
-                    child: DropdownButton<ProductCategory>(
-                      key: Key('dropDown'),
-                      underline: SizedBox(), // remove underline
-                      hint: Text('Product Category'),
-                      value: _selectedCategory,
-                      items: catalog?.categories?.map((item) {
-                        return DropdownMenuItem<ProductCategory>(
-                            child: Text(item.categoryName), value: item);
-                      })?.toList(),
-                      onChanged: (ProductCategory newValue) {
-                        setState(() {
-                          _selectedCategory = newValue;
-                        });
-                      },
-                      isExpanded: true,
-                    ),
+                  DropdownButtonFormField<ProductCategory>(
+                    key: Key('dropDown'),
+                    hint: Text('Product Category'),
+                    value: _selectedCategory,
+                    validator: (value) =>
+                        value == null ? 'field required' : null,
+                    items: catalog?.categories?.map((item) {
+                      return DropdownMenuItem<ProductCategory>(
+                          child: Text(item?.categoryName ?? ''), value: item);
+                    })?.toList(),
+                    onChanged: (ProductCategory newValue) {
+                      setState(() {
+                        _selectedCategory = newValue;
+                      });
+                    },
+                    isExpanded: true,
                   ),
                   SizedBox(height: 20),
                   RaisedButton(
@@ -302,9 +292,9 @@ class _MyProductState extends State<MyProductPage> {
                         if (_formKey.currentState.validate() && !loading) {
                           updatedProduct = Product(
                             productId: product?.productId,
-                            name: _nameController.text,
+                            productName: _nameController.text,
                             description: _descriptionController.text,
-                            price: double.parse(_priceController.text),
+                            price: Decimal.parse(_priceController.text),
                             categoryId: _selectedCategory.categoryId,
                           );
                           BlocProvider.of<CatalogBloc>(context)

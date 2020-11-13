@@ -61,8 +61,8 @@ class ProductCategory {
         "categoryName": categoryName,
         "preparationAreaId": preparationAreaId,
         "description": description,
-        // image upload separate
+        "image": image != null ? base64.encode(image) : null,
       };
 
-  String toString() => 'ProductCategory name: $categoryName';
+  String toString() => 'ProductCategory name: $categoryName[$categoryId]';
 }

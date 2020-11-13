@@ -13,6 +13,7 @@
  */
 
 import 'package:admin/models/@models.dart';
+import 'package:decimal/decimal.dart';
 import 'dart:math';
 
 final String randomString4 = Random().nextInt(9999).toString();
@@ -160,7 +161,7 @@ final Catalog catalog = Catalog(categories: categories, products: products);
 final ProductCategory category = categoryFromJson('''
   { "category":
       {"categoryId": "dummyFirstCategory", "categoryName": "1stCat",
-      "description": "this is the long description of category first", 
+      "description": null, 
       "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA="}
   }''');
 
@@ -176,15 +177,15 @@ final List<ProductCategory> categories = categoriesFromJson('''
 }''');
 final List<Product> products = productsFromJson('''
 {     "products": [
-      {"productId": "dummyFirstProduct", "name": "This is the first product",
+      {"productId": "dummyFirstProduct", "productName": "This is the first product",
       "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
       "price": "23.99", "productCategoryId": "dummyFirstCategory",
       "description": "This is a dummy description of first product"},
-      {"productId": "secondProduct", "name": "This is the second product",
+      {"productId": "secondProduct", "productName": "This is the second product",
        "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
        "price": "17.13", "productCategoryId": "dummyFirstCategory",
        "description": "This is a dummy description of second product"},
-      {"productId": "thirdProduct", "name": "This is the third product",
+      {"productId": "thirdProduct", "productName": "This is the third product",
        "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
        "price": "12.33", "productCategoryId": "secondCategory",
        "description": "This is a dummy description of third product"}]
@@ -192,7 +193,7 @@ final List<Product> products = productsFromJson('''
     ''');
 final Product product = productFromJson('''
 { "product":
-      {"productId": "secondProduct", "name": "This is the second product",
+      {"productId": "secondProduct", "productName": "This is the second product",
        "image": "R0lGODlhAQABAAAAACwAAAAAAQABAAA=",
        "price": "17.13", "categoryId": "dummyFirstCategory",
        "description": "This is a dummy description"}
@@ -221,12 +222,12 @@ final Order emptyOrder = Order(currencyId: 'THB', orderItems: []);
 final OrderItem orderItem1 = OrderItem(
     productId: "dummyFirstProduct",
     description: "This is the first product",
-    quantity: 5,
-    price: 3.3);
+    quantity: Decimal.parse('5'),
+    price: Decimal.parse('3.3'));
 final OrderItem orderItem2 = OrderItem(
     productId: "dummySecondProduct",
     description: "This is the second product",
-    quantity: 3,
-    price: 2.2);
+    quantity: Decimal.parse('3'),
+    price: Decimal.parse('2.2'));
 final Order totalOrder =
     Order(currencyId: 'THB', orderItems: [orderItem1, orderItem2]);

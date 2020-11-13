@@ -17,6 +17,7 @@
 //     final order = orderFromJson(jsonString);
 
 import 'dart:convert';
+import 'package:decimal/decimal.dart';
 
 Order orderFromJson(String str) => Order.fromJson(json.decode(str)["order"]);
 String orderToJson(Order data) => '{"order:' + json.encode(data.toJson()) + "}";
@@ -39,7 +40,7 @@ class Order {
   String firstName;
   String lastName;
   String statusId;
-  double grandTotal;
+  Decimal grandTotal;
   String table;
   String accommodationAreaId;
   String accommodationSpotId;
@@ -74,7 +75,7 @@ class Order {
         firstName: json["firstName"],
         lastName: json["lastName"],
         statusId: json["statusId"],
-        grandTotal: double.parse(json["grandTotal"]),
+        grandTotal: Decimal.parse(json["grandTotal"]),
         accommodationAreaId: json["accommodationAreaId"],
         accommodationSpotId: json["accommodationSpotId"],
         orderItems: List<OrderItem>.from(
@@ -112,15 +113,15 @@ class OrderItem {
   String orderItemSeqId;
   String productId;
   String description;
-  int quantity;
-  double price;
+  Decimal quantity;
+  Decimal price;
 
   factory OrderItem.fromJson(Map<String, dynamic> json) => OrderItem(
       orderItemSeqId: json["orderItemSeqId"],
       productId: json["productId"],
       description: json["description"],
-      quantity: int.parse(json["quantity"]),
-      price: double.parse(json["price"]));
+      quantity: Decimal.parse(json["quantity"]),
+      price: Decimal.parse(json["price"]));
 
   Map<String, dynamic> toJson() => {
         "orderItemSeqId": orderItemSeqId,
