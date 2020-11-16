@@ -278,10 +278,10 @@ class Moqui {
     return null;
   }
 
-  Future<dynamic> getUser(String partyId) async {
+  Future<dynamic> getUser({String partyId, String userGroupId}) async {
     try {
       Response response = await client.get('rest/s1/growerp/100/User',
-          queryParameters: {'partyId': partyId});
+          queryParameters: {'partyId': partyId, 'userGroupId': userGroupId});
       if (partyId == null)
         return usersFromJson(response.toString());
       else {
@@ -292,7 +292,7 @@ class Moqui {
     }
   }
 
-  Future<dynamic> updateUser(User user, String imagePath) async {
+  Future<dynamic> updateUser(User user, [String imagePath]) async {
     // no partyId is add
     try {
       user.image = null;
@@ -404,10 +404,31 @@ class Moqui {
       Authenticate authenticate = await getAuthenticate();
       client.options.headers['api_key'] = authenticate.apiKey;
       Response response = await client.post('rest/s1/growerp/100/Order', data: {
-        'orderJson': orderToJson(order),
+        'order': orderToJson(order),
         'moquiSessionToken': sessionToken
       });
-      return 'orderId' + response.data["orderId"];
+      print("=====receiving created order: $response");
+      return orderFromJson(response.toString());
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> getOrders() async {
+    try {
+      Response response = await client.get('rest/s1/growerp/100/Order');
+      return ordersFromJson(response.toString());
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> getOrder(String orderId) async {
+    try {
+      Response response = await client.get('rest/s1/growerp/100/Order',
+          queryParameters: {'orderId': orderId});
+      print("=====receiving single order: $response");
+      return orderFromJson(response.toString());
     } catch (e) {
       return responseMessage(e);
     }

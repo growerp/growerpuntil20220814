@@ -75,4 +75,12 @@ List<MenuItem> menuItems = [
       route: CategoriesRoute,
       readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE"],
       writeGroups: ["GROWERP_M_ADMIN"]),
+  MenuItem(
+      menuItemId: 600,
+      image: "assets/orderGrey.png",
+      selectedImage: "assets/order.png",
+      title: "Orders",
+      route: OrdersRoute,
+      readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE"],
+      writeGroups: ["GROWERP_M_ADMIN"]),
 ];

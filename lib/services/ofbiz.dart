@@ -313,7 +313,7 @@ class Ofbiz {
     }
   }
 
-  Future<dynamic> updateUser(User user, String imagePath) async {
+  Future<dynamic> updateUser(User user, [String imagePath]) async {
     // no partyId is add
     try {
       if (imagePath != null) {

@@ -1,7 +1,7 @@
 {
     "version": 0.1, "build": 10,
     "_________________comment__backend": "moqui / ofbiz",
-    "backend": "ofbiz",
+    "backend": "moqui",
     "_________________comment__class": "AppAdmin, AppHotel, AppEcommerce etc",
     "classificationId": "AppAdmin",
     "_________________comment__production url__": "https://rest.example.com",

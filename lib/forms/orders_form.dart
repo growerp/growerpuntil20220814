@@ -21,52 +21,52 @@ import '../helper_functions.dart';
 import '../routing_constants.dart';
 import '../widgets/@widgets.dart';
 
-class UsersForm extends StatelessWidget {
+class OrdersForm extends StatelessWidget {
   final FormArguments formArguments;
-  UsersForm(this.formArguments);
+  OrdersForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) =>
-        (UsersFormHeader(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 2, formArguments.object);
+        (OrdersFormHeader(formArguments.message, formArguments.object));
+    return ShowNavigationRail(a(formArguments), 5, formArguments.object);
   }
 }
 
-class UsersFormHeader extends StatefulWidget {
+class OrdersFormHeader extends StatefulWidget {
   final String message;
   final Authenticate authenticate;
-  const UsersFormHeader([this.message, this.authenticate]);
+  const OrdersFormHeader([this.message, this.authenticate]);
   @override
-  _UsersFormStateHeader createState() =>
-      _UsersFormStateHeader(message, authenticate);
+  _OrdersFormStateHeader createState() =>
+      _OrdersFormStateHeader(message, authenticate);
 }
 
-class _UsersFormStateHeader extends State<UsersFormHeader> {
+class _OrdersFormStateHeader extends State<OrdersFormHeader> {
   final String message;
   final Authenticate authenticate;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _UsersFormStateHeader([this.message, this.authenticate]) {
+  _OrdersFormStateHeader([this.message, this.authenticate]) {
     HelperFunctions.showTopMessage(_scaffoldKey, message);
   }
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
+    List<Order> orders;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(
-              title: companyLogo(context, authenticate, 'Company Users List'),
+              title: companyLogo(context, authenticate, 'Company Orders List'),
               automaticallyImplyLeading:
                   ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.pushNamed(context, UserRoute,
-                  arguments:
-                      FormArguments('Enter new employee information...'));
+              Navigator.pushNamed(context, OrderRoute,
+                  arguments: FormArguments('Enter a new Order...'));
             },
-            tooltip: 'Add new user',
+            tooltip: 'Add new order',
             child: Icon(Icons.add),
           ),
           drawer: myDrawer(context, authenticate),
@@ -75,16 +75,26 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
                 if (state is AuthProblem)
                   HelperFunctions.showMessage(
                       context, '${state.errorMessage}', Colors.red);
-                if (state is AuthLoading)
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.red);
               },
-              child: userList(authenticate)));
+              child: BlocConsumer<OrderBloc, OrderState>(
+                  listener: (context, state) {
+                if (state is OrderProblem)
+                  HelperFunctions.showMessage(
+                      context, '${state.errorMessage}', Colors.red);
+                if (state is OrderLoading)
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+                if (state is OrderLoaded)
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.green);
+              }, builder: (context, state) {
+                if (state is OrderLoaded) orders = state.orders;
+                return orderList(orders);
+              })));
     });
   }
 
-  Widget userList(authenticate) {
-    List<User> users = authenticate.company.employees;
+  Widget orderList(orders) {
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(
@@ -95,17 +105,14 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
             ),
             title: Row(
               children: <Widget>[
-                Expanded(child: Text("Name", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(
-                      child: Text("login name", textAlign: TextAlign.center)),
+                Expanded(child: Text("Customer", textAlign: TextAlign.center)),
                 Expanded(child: Text("Email", textAlign: TextAlign.center)),
-                Expanded(child: Text("Group", textAlign: TextAlign.center)),
+                Expanded(child: Text("Date", textAlign: TextAlign.center)),
+                Expanded(child: Text("Total", textAlign: TextAlign.center)),
                 if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                  Expanded(
-                      child: Text("Language", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(child: Text("Country", textAlign: TextAlign.center)),
+                  Expanded(child: Text("Status", textAlign: TextAlign.center)),
+                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
+                  Expanded(child: Text("#items", textAlign: TextAlign.center)),
               ],
             ),
           ),
@@ -115,69 +122,66 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
             (context, index) {
               return InkWell(
                 onTap: () async {
-                  dynamic result = await Navigator.pushNamed(context, UserRoute,
-                      arguments: FormArguments(null, users[index]));
+                  dynamic result = await Navigator.pushNamed(
+                      context, OrderRoute,
+                      arguments: FormArguments(null, orders[index]));
                   setState(() {
-                    if (result is Authenticate)
-                      users = result.company.employees;
+                    if (result is List) orders = result;
                   });
                   HelperFunctions.showMessage(
                       context,
-                      'User ${users[index].firstName} '
-                      '${users[index].lastName} modified',
+                      'Order ${orders[index].firstName} '
+                      '${orders[index].lastName} modified',
                       Colors.green);
                 },
                 onLongPress: () async {
                   bool result = await confirmDialog(
                       context,
-                      "${users[index].firstName} ${users[index].lastName}",
-                      "Delete this user?");
+                      "${orders[index].firstName} ${orders[index].lastName}",
+                      "Delete this order?");
                   if (result) {
-                    BlocProvider.of<AuthBloc>(context)
-                        .add(DeleteEmployee(authenticate, users[index]));
-                    Navigator.pushNamed(context, UsersRoute,
+                    BlocProvider.of<OrderBloc>(context)
+                        .add(CancelOrder(orders, orders[index].orderId));
+                    Navigator.pushNamed(context, OrdersRoute,
                         arguments:
-                            FormArguments('Employee deleted', authenticate));
+                            FormArguments('Order deleted', authenticate));
                   }
                 },
                 child: ListTile(
                   //return  ListTile(
                   leading: CircleAvatar(
                     backgroundColor: Colors.green,
-                    child: users[index]?.image != null
-                        ? Image.memory(users[index]?.image)
-                        : Text(users[index]?.firstName[0]),
+                    child: Text(orders[index]?.orderStatusId[0]),
                   ),
                   title: Row(
                     children: <Widget>[
                       Expanded(
-                          child: Text("${users[index].lastName}, "
-                              "${users[index].firstName} "
-                              "[${users[index].partyId}]")),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                        Expanded(
-                            child: Text("${users[index].name}",
-                                textAlign: TextAlign.center)),
+                          child: Text("${orders[index].lastName}, "
+                              "${orders[index].firstName} "
+                              "[${orders[index].customerPartyId}]")),
                       Expanded(
-                          child: Text("${users[index].email}",
+                          child: Text("${orders[index].email}",
                               textAlign: TextAlign.center)),
                       Expanded(
-                          child: Text("${users[index].groupDescription}",
+                          child: Text("${orders[index].placedDate}",
+                              textAlign: TextAlign.center)),
+                      Expanded(
+                          child: Text("${orders[index].grandTotal}",
                               textAlign: TextAlign.center)),
                       if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
                         Expanded(
-                            child: Text("${users[index].language}",
+                            child: Text("${orders[index].orderStatusId}",
                                 textAlign: TextAlign.center)),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
+                      if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
                         Expanded(
-                            child: Text("${users[index].country}",
+                            child: Text("${orders[index].orderItems?.length}",
                                 textAlign: TextAlign.center)),
                     ],
                   ),
                 ),
               );
             },
-            childCount: users == null ? 0 : users?.length,
+            childCount: orders == null ? 0 : orders?.length,
           ),
         ),
       ],

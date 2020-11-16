@@ -27,16 +27,16 @@ import 'models/@models.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await GlobalConfiguration().loadFromAsset("app_settings");
-  String backend = GlobalConfiguration().getValue("backend");
-
   Bloc.observer = SimpleBlocObserver();
+
+  String backend = GlobalConfiguration().getValue("backend");
   var repos = backend == 'moqui'
       ? Moqui(client: Dio())
       : backend == 'ofbiz'
           ? Ofbiz(client: Dio())
           : null;
+
   runApp(RepositoryProvider(
     create: (context) => repos,
     child: MultiBlocProvider(
@@ -44,9 +44,19 @@ void main() async {
         BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(repos)..add(LoadAuth())),
         BlocProvider<CatalogBloc>(
-            create: (context) => CatalogBloc(repos)..add(LoadCatalog())),
+            create: (context) =>
+                CatalogBloc(repos, BlocProvider.of<AuthBloc>(context))
+                  ..add(LoadCatalog())),
+        BlocProvider<OrderBloc>(
+            create: (context) => OrderBloc(repos)..add(LoadOrder())),
+        BlocProvider<CrmBloc>(
+            create: (context) => CrmBloc(repos)..add(CrmLoad())),
         BlocProvider<CartBloc>(
-            create: (context) => CartBloc(repos)..add(LoadCart())),
+            create: (context) => CartBloc(
+                BlocProvider.of<OrderBloc>(context),
+                BlocProvider.of<CatalogBloc>(context),
+                BlocProvider.of<CrmBloc>(context))
+              ..add(LoadCart())),
       ],
       // add other blocs here, shopping cart, catalog?
       child: MyApp(),

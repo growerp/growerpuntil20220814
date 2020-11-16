@@ -21,25 +21,26 @@ import '@blocs.dart';
 
 class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
   final repos;
-//  final AuthBloc authBloc;
-//  StreamSubscription authSubscription;
+  final AuthBloc authBloc;
+  StreamSubscription authBlocSubscription;
+  Catalog catalog;
+  Authenticate authenticate;
 
-  CatalogBloc(this.repos) : super(CatalogInitial());
-
-/*  CatalogBloc(this.repos, {this.authBloc}) : super(CatalogInitial()) {
-    authSubscription = authBloc?.listen((state) {
-      if (state is AuthAuthenticated) {
-        print(
-            "====subscription auth bloc authentiocate: ${state.authenticate}");
-      }
+  CatalogBloc(this.repos, this.authBloc) : super(CatalogInitial()) {
+    authBlocSubscription = authBloc.listen((state) {
+      if (state is AuthAuthenticated) authenticate = state.authenticate;
     });
   }
-*/
+  @override
+  Future<void> close() {
+    authBlocSubscription.cancel();
+    return super.close();
+  }
+
   @override
   Stream<CatalogState> mapEventToState(CatalogEvent event) async* {
     if (event is LoadCatalog) {
       yield CatalogLoading();
-      dynamic authenticate = await repos.getAuthenticate();
       String companyPartyId = authenticate?.company?.partyId;
       dynamic result = await repos.getCatalog(companyPartyId);
       if (result is Catalog)
@@ -198,9 +199,6 @@ class CatalogProblem extends CatalogState {
   final ProductCategory newCategory;
 
   const CatalogProblem({this.errorMessage, this.newProduct, this.newCategory});
-
-  @override
-  List<Object> get props => [];
 
   @override
   String toString() => 'CatalogProblem { error: $errorMessage }';

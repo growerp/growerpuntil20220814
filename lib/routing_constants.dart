@@ -25,3 +25,5 @@ const String ProductsRoute = '/products';
 const String ProductRoute = '/product';
 const String CategoriesRoute = '/categories';
 const String CategoryRoute = '/category';
+const String OrdersRoute = '/orders';
+const String OrderRoute = '/order';

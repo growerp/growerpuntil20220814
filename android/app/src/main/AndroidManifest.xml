@@ -7,7 +7,6 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:usesCleartextTraffic="true"
-        android:name="io.flutter.app.FlutterApplication"
         android:label="admin"
         android:icon="@mipmap/launcher_icon">
         <activity

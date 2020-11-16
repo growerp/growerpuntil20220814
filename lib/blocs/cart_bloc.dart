@@ -19,63 +19,85 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import '../models/@models.dart';
+import '../blocs/@blocs.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  final repos;
+  final OrderBloc orderBloc;
+  final CatalogBloc catalogBloc;
+  final CrmBloc crmBloc;
+  StreamSubscription authBlocSubscription;
+  StreamSubscription catalogBlocSubscription;
+  StreamSubscription crmBlocSubscription;
+  Order order = Order(grandTotal: Decimal.parse('0'), orderItems: []);
   Authenticate authenticate;
+  Catalog catalog;
+  List<User> crmUsers;
 
-  CartBloc(this.repos) : super(CartInitial());
+  CartBloc(this.orderBloc, this.catalogBloc, this.crmBloc)
+      : super(CartInitial()) {
+    catalogBlocSubscription = catalogBloc.listen((state) {
+      if (state is CatalogLoaded) {
+        catalog = state.catalog;
+        add(CatalogUpdated((catalogBloc.state as CatalogLoaded).catalog));
+      }
+    });
+    crmBlocSubscription = crmBloc.listen((state) {
+      if (state is CrmLoaded) {
+        crmUsers = state.crmUsers;
+        add(CrmUpdated((crmBloc.state as CrmLoaded).crmUsers));
+      }
+    });
+  }
+  @override
+  Future<void> close() {
+    authBlocSubscription.cancel();
+    catalogBlocSubscription.cancel();
+    crmBlocSubscription.cancel();
+    return super.close();
+  }
 
   @override
   Stream<CartState> mapEventToState(CartEvent event) async* {
     if (event is LoadCart) {
-      yield* _mapLoadCartToState();
-    } else if (event is AddOrderItem) {
-      yield* _mapAddOrderItemToState(event);
-    } else if (event is PayOrder) {
-      yield CartPaying();
-      dynamic result = await repos.createOrder(event.order);
-      if (result is String && result.startsWith('orderId')) {
-        yield CartPaid(orderId: result.substring(7));
-        repos.saveCart(order: null);
-        yield* _mapLoadCartToState();
-      } else
-        yield CartError(message: result);
-    }
-  }
-
-  Stream<CartState> _mapLoadCartToState() async* {
-    yield CartLoading();
-    dynamic order = await repos.getCart();
-    if (order is String) {
-      yield CartError(message: order);
-    } else {
-      if (order == null) {
-        Authenticate authenticate = await repos.getAuthenticate();
-        order = Order(
-          orderStatusId: "OrderOpen",
-          partyId: authenticate?.user?.partyId,
-          firstName: authenticate?.user?.firstName,
-          lastName: authenticate?.user?.lastName,
-          statusId: "Open",
-          currencyId: authenticate?.company?.currencyId,
-          companyPartyId: authenticate?.company?.partyId,
-          orderItems: [],
-        );
+      yield CartLoaded(
+          order, crmUsers, catalog?.products, "cart initial load.");
+    } else if (event is UpdateCart) {
+      yield CartLoading();
+      order.customerPartyId = event.order.customerPartyId;
+      event.order.orderItems[0].orderItemSeqId = order.orderItems.length + 1;
+      event.order.orderItems[0].description = catalog.products
+          .firstWhere((x) => event.order.orderItems[0].productId == x.productId)
+          .description;
+      order.orderItems.add(event.order.orderItems[0]);
+      order.grandTotal = Decimal.parse('0');
+      order.orderItems.forEach((x) {
+        order.grandTotal += x.quantity * x.price;
+      });
+      yield CartLoaded(order, crmUsers, catalog?.products, "cart updated");
+    } else if (event is DeleteItemCart) {
+      yield CartLoading();
+      order.orderItems.removeWhere((x) => x == event.orderItem);
+      order.grandTotal = Decimal.parse('0');
+      order.orderItems.forEach((x) {
+        order.grandTotal += x.quantity * x.price;
+      });
+      yield CartLoaded(order, crmUsers, catalog?.products,
+          "Item ${event.orderItem} deleted");
+    } else if (event is ConfirmCart) {
+      yield CartLoading('Saving order...');
+      try {
+        orderBloc.add(CreateOrder(order));
+        order = Order(grandTotal: Decimal.parse('0'), orderItems: []);
+        yield CartLoaded(order, crmUsers, catalog?.products, "order created");
+      } catch (e) {
+        yield CartProblem(e.toString());
       }
-      yield CartLoaded(order);
-    }
-  }
-
-  Stream<CartState> _mapAddOrderItemToState(AddOrderItem event) async* {
-    final currentState = state;
-    if (currentState is CartLoaded) {
-      currentState.order.orderItems.add(event.orderItem);
-      dynamic result = await repos.saveCart(order: currentState.order);
-      if (result is String)
-        yield CartError(message: result);
-      else
-        yield CartLoaded(currentState.order);
+    } else if (event is CatalogUpdated) {
+      yield CartLoading();
+      yield CartLoaded(order, crmUsers, catalog?.products, "catalog updated");
+    } else if (event is CrmUpdated) {
+      yield CartLoading();
+      yield CartLoaded(order, crmUsers, catalog?.products, "crm updated");
     }
   }
 }
@@ -90,18 +112,39 @@ abstract class CartEvent extends Equatable {
 
 class LoadCart extends CartEvent {}
 
-class AddOrderItem extends CartEvent {
-  final OrderItem orderItem;
-  const AddOrderItem(this.orderItem);
+class ConfirmCart extends CartEvent {}
+
+class UpdateCart extends CartEvent {
+  final Order order;
+  const UpdateCart(this.order);
   @override
-  List<Object> get props => [orderItem];
+  String toString() => 'Updating cart: $order';
+}
+
+class DeleteItemCart extends CartEvent {
+  final OrderItem orderItem;
+  DeleteItemCart(this.orderItem);
+  @override
+  String toString() => 'Delete orderitem: ${orderItem.orderItemSeqId}';
+}
+
+class CatalogUpdated extends CartEvent {
+  final Catalog catalog;
+  CatalogUpdated(this.catalog);
+  @override
+  String toString() => 'Updating cart with catalog: $catalog';
+}
+
+class CrmUpdated extends CartEvent {
+  final List<User> crmUsers;
+  CrmUpdated(this.crmUsers);
+  @override
+  String toString() => 'Updating cart with crm users#: ${crmUsers?.length}';
 }
 
 class PayOrder extends CartEvent {
   final Order order;
   PayOrder(this.order);
-  @override
-  List<Object> get props => [order.lastName];
 }
 
 // ================= state ========================
@@ -114,11 +157,18 @@ abstract class CartState extends Equatable {
 
 class CartInitial extends CartState {}
 
-class CartLoading extends CartState {}
+class CartLoading extends CartState {
+  final String message;
+  CartLoading([this.message]);
+  String toString() => 'Cart loading...';
+}
 
 class CartLoaded extends CartState {
   final Order order;
-  const CartLoaded(this.order);
+  final List customers;
+  final List products;
+  final String message;
+  const CartLoaded(this.order, this.customers, this.products, [this.message]);
   Decimal get totalPrice {
     if (order?.orderItems?.length == 0) return Decimal.parse('0');
     Decimal total = Decimal.parse('0');
@@ -132,8 +182,9 @@ class CartLoaded extends CartState {
   List<Object> get props => [order];
   @override
   String toString() =>
-      'Cart loaded, products: ' +
-      '${order?.orderItems?.length} value: $totalPrice';
+      'Cart loaded, cart items: ' +
+      '${order?.orderItems?.length} value: $totalPrice '
+          'Cust: ${customers?.length} Prod: ${products?.length}';
 }
 
 class CartPaying extends CartState {}
@@ -145,9 +196,9 @@ class CartPaid extends CartState {
   String toString() => 'Cart Paid, orderId : $orderId';
 }
 
-class CartError extends CartState {
-  final message;
-  const CartError({this.message});
+class CartProblem extends CartState {
+  final errorMessage;
+  const CartProblem(this.errorMessage);
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [errorMessage];
 }

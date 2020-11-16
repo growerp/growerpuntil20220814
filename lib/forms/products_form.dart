@@ -107,13 +107,16 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
             ),
             title: Row(
               children: <Widget>[
-                Expanded(child: Text(" ", textAlign: TextAlign.center)),
-                Expanded(child: Text("Name", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(
-                      child: Text("productCategoryId",
-                          textAlign: TextAlign.center)),
+                Expanded(
+                    child: Text("Product name [Id] ",
+                        textAlign: TextAlign.center)),
+                Expanded(
+                    child: Text("Description", textAlign: TextAlign.center)),
                 Expanded(child: Text("price", textAlign: TextAlign.center)),
+                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
+                  Expanded(
+                      child:
+                          Text("Category [id]", textAlign: TextAlign.center)),
               ],
             ),
           ),
@@ -148,7 +151,9 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                     backgroundColor: Colors.green,
                     child: products[index]?.image != null
                         ? Image.memory(products[index]?.image)
-                        : Text(products[index]?.productName[0]),
+                        : Text(products[index]?.productName != null
+                            ? products[index]?.productName[0]
+                            : '?'),
                   ),
                   title: Row(
                     children: <Widget>[
@@ -162,7 +167,9 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                           child: Text("${products[index].price}",
                               textAlign: TextAlign.center)),
                       Expanded(
-                          child: Text("${products[index].categoryId}",
+                          child: Text(
+                              "${products[index].categoryName}"
+                              "[${products[index].categoryId}]",
                               textAlign: TextAlign.center)),
                     ],
                   ),

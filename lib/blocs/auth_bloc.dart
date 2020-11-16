@@ -24,6 +24,7 @@ import '../models/@models.dart';
 /// keeps the token and apiKey in the [Authenticate] class.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final repos;
+  Authenticate authenticate;
 
   AuthBloc(this.repos)
       : assert(repos != null),
@@ -31,7 +32,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   @override
   Stream<AuthState> mapEventToState(AuthEvent event) async* {
-    Authenticate authenticate;
     // ################# local functions ###################
 
     Future<void> findDefaultCompany() async {
@@ -115,7 +115,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         yield AuthProblem(result, event.company);
       }
-    } else if (event is UpdateUser) {
+    } else if (event is UpdateEmployee) {
       yield AuthLoading((event.user?.partyId == null ? "Adding " : "Updating") +
           " user ${event.user}");
       dynamic result = await repos.updateUser(event.user, event.imagePath);
@@ -137,7 +137,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       } else {
         yield AuthProblem(result, null, event.user);
       }
-    } else if (event is DeleteUser) {
+    } else if (event is DeleteEmployee) {
       yield AuthLoading("Deleting user ${event.user}");
       dynamic result = await repos.deleteUser(event.user.partyId);
       if (result == event.user.partyId) {
@@ -189,21 +189,21 @@ class UpdateCompany extends AuthEvent {
       'new image: ${imagePath != null ? imagePath.length : 0}';
 }
 
-class UpdateUser extends AuthEvent {
+class UpdateEmployee extends AuthEvent {
   final Authenticate authenticate;
   final User user;
   final String imagePath;
-  UpdateUser(this.authenticate, this.user, this.imagePath);
+  UpdateEmployee(this.authenticate, this.user, this.imagePath);
   @override
   List<Object> get props => [authenticate];
   @override
   String toString() => (user?.partyId == null ? 'Add' : 'Update') + '$user';
 }
 
-class DeleteUser extends AuthEvent {
+class DeleteEmployee extends AuthEvent {
   final Authenticate authenticate;
   final User user;
-  DeleteUser(this.authenticate, this.user);
+  DeleteEmployee(this.authenticate, this.user);
   @override
   List<Object> get props => [authenticate];
   @override

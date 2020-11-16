@@ -38,6 +38,7 @@ class Product {
   String description;
   Decimal price;
   String categoryId;
+  String categoryName;
   Uint8List image;
 
   Product({
@@ -46,6 +47,7 @@ class Product {
     this.description,
     this.price,
     this.categoryId,
+    this.categoryName,
     this.image,
   });
 
@@ -55,6 +57,7 @@ class Product {
         description: json["description"],
         price: Decimal.parse(json["price"]),
         categoryId: json["categoryId"],
+        categoryName: json["categoryName"],
         image: json["image"] != null ? base64.decode(json["image"]) : null,
       );
 
@@ -64,9 +67,10 @@ class Product {
         "description": description,
         "price": price.toString(),
         "categoryId": categoryId,
+        "categoryName": categoryName,
         "image": image != null ? base64.encode(image) : null,
       };
 
   String toString() =>
-      'Product name: $productName price: $price categoryId: $categoryId';
+      'Product name: $productName price: $price category: $categoryName';
 }

@@ -56,6 +56,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case CategoryRoute:
       return MaterialPageRoute(
           builder: (context) => CategoryForm(settings.arguments));
+    case OrdersRoute:
+      return MaterialPageRoute(
+          builder: (context) => OrdersForm(settings.arguments));
+    case OrderRoute:
+      return MaterialPageRoute(
+          builder: (context) => OrderForm(settings.arguments));
     default:
       return MaterialPageRoute(
           builder: (context) => UndefinedView(name: settings.name));

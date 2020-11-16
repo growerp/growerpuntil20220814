@@ -36,7 +36,7 @@ class User {
   String lastName;
   String name;
   String email;
-  String groupDescription;
+  String groupDescription; // admin, employee, customer, supplier etc...
   String userGroupId;
   String language;
   String country;

@@ -82,9 +82,6 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                 if (state is CatalogProblem)
                   HelperFunctions.showMessage(
                       context, '${state.errorMessage}', Colors.red);
-                if (state is CatalogLoaded)
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
                 if (state is CatalogLoading)
                   HelperFunctions.showMessage(
                       context, '${state.message}', Colors.green);

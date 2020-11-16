@@ -64,4 +64,13 @@ void main() {
     Authenticate newAuth = authenticateFromJson(json1);
     expect(authenticateToJson(newAuth), authenticateToJson(authenticate));
   });
+
+  test('order', () {
+    String json1 = orderToJson(order);
+    Order neworder = orderFromJson(json1);
+    expect(orderToJson(neworder), orderToJson(order));
+    String json2 = ordersToJson(orders);
+    List<Order> neworders = ordersFromJson(json2);
+    expect(ordersToJson(neworders), ordersToJson(orders));
+  });
 }

@@ -7,7 +7,7 @@ All screens work on all IOS/Anderoid/Web devices however a smaller screen will s
 It is a simplified frontend however with the ability to still use with, or in addition to the original ERP system screens.
 The system is a true multicompany system and can support virtually any ERP backend as long as it has a REST interface.
 
-The system is properly implemented with https://pub.dev/packages/flutter_bloc state management, data models, automated tests and a separated rest interface for the different systems.
+The system is implemented with https://pub.dev/packages/flutter_bloc state management with the https://bloclibrary.dev documentation, data models, automated tests and a separated rest interface for the different systems. 
 
 The system configuration file is in /assets/cfg/app_settings.json.
 There you can configure which system, currently either the Moqui or Apache OFBiz system.
@@ -38,6 +38,7 @@ This admin branch contains all basic functions:
 And applications:
 * Company & User management
 * Catalog and product management
+* Order management
 
 Other branches are under development:
   - Ecommerce : https://github.com/growerp/growerp/tree/ecommerce
@@ -52,7 +53,6 @@ Additional ERP systems can be added on request, A REST interface is required.
 The implementation time is 40+ hours.
 
 Functions coming up:
-* Order management
 * Customer & Lead management
 * Accounting
 * Inventory

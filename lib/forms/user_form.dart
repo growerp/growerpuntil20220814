@@ -312,7 +312,7 @@ class _MyUserState extends State<MyUserPage> {
                                 .languageCode
                                 .toString(),
                           );
-                          BlocProvider.of<AuthBloc>(context).add(UpdateUser(
+                          BlocProvider.of<AuthBloc>(context).add(UpdateEmployee(
                             authenticate,
                             updatedUser,
                             _imageFile?.path,

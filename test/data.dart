@@ -28,6 +28,16 @@ User user = userFromJson('''
             }
   }
 ''');
+User customer = userFromJson('''
+  {"user": {"firstName": "dummyCustomerName",
+            "lastName": "dummyCustomerLastName",
+            "email": "customer@example.com",
+            "name": "dummyCustomername",
+            "image": "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==",
+            "userGroupId":"GROWERP_M_CUSTOMER"
+            }
+  }
+''');
 List<User> users = usersFromJson('''
   {"users": [
       { "partyId": "12345",
@@ -206,19 +216,47 @@ final currencies = [
 ];
 
 final Order order = orderFromJson('''
-  { "order": { "orderId": null, "orderStatusId": "OrderOpen", "currencyUomId": "THB",
-    "placedDate": null, "placedTime": null, "partyId": null,
-    "firstName": "dummyFirstName", "lastName": "dummylastName", "statusId": "Open", 
-    "grandTotal": "44.53", "table": null, "accommodationAreaId": null,
-    "accommodationSpotId": null,
-  "orderItems": [
-  { "orderItemSeqId": "01", "productId": null, "description": "Cola",
-    "quantity": "5", "price": "1.5"},
-  { "orderItemSeqId": "02", "productId": null, "description": "Macaroni",
-    "quantity": "3", "price": "4.5"}
+  { "order":
+    { "orderId": null, "orderStatusId": "OrderOpen", 
+      "currencyUomId": "THB",
+      "placedDate": null, "placedTime": null, "partyId": null,
+      "firstName": "dummyFirstName", "lastName": "dummylastName",
+      "grandTotal": "44.53", "table": null, "accommodationAreaId": null,
+      "accommodationSpotId": null,
+      "orderItems": [
+        { "orderItemSeqId": "01", "productId": null, "description": "Cola",
+          "quantity": "5", "price": "1.5"},
+        { "orderItemSeqId": "02", "productId": null, "description": "Macaroni",
+          "quantity": "3", "price": "4.5"}
    ]}}
 ''');
-final Order emptyOrder = Order(currencyId: 'THB', orderItems: []);
+final List<Order> orders = ordersFromJson('''
+  { "orders": [
+    { "orderId": "00002", "orderStatusId": "OrderOpen", 
+      "placedDate": null, "placedTime": null, "partyId": null,
+      "firstName": "dummyFirstName", "lastName": "dummylastName",  
+      "grandTotal": "44.53", "table": null, "accommodationAreaId": null,
+      "accommodationSpotId": null,
+      "orderItems": [
+        { "orderItemSeqId": "01", "productId": null, "description": "Cola",
+          "quantity": "5", "price": "1.5"},
+        { "orderItemSeqId": "02", "productId": null, "description": "Macaroni",
+          "quantity": "3", "price": "4.5"}
+      ]},
+    { "orderId": "00003", "orderStatusId": "OrderOpen", 
+      "placedDate": null, "placedTime": null, "partyId": null,
+      "firstName": "dummyFirstName", "lastName": "dummylastName",
+      "grandTotal": "44.53", "table": null, "accommodationAreaId": null,
+      "accommodationSpotId": null,
+      "orderItems": [
+        { "orderItemSeqId": "01", "productId": null, "description": "Cola",
+          "quantity": "5", "price": "1.5"},
+        { "orderItemSeqId": "02", "productId": null, "description": "Macaroni",
+          "quantity": "3", "price": "4.5"}
+      ]}
+   ]}
+''');
+final Order emptyOrder = Order(orderItems: []);
 final OrderItem orderItem1 = OrderItem(
     productId: "dummyFirstProduct",
     description: "This is the first product",
@@ -229,5 +267,4 @@ final OrderItem orderItem2 = OrderItem(
     description: "This is the second product",
     quantity: Decimal.parse('3'),
     price: Decimal.parse('2.2'));
-final Order totalOrder =
-    Order(currencyId: 'THB', orderItems: [orderItem1, orderItem2]);
+final Order totalOrder = Order(orderItems: [orderItem1, orderItem2]);
