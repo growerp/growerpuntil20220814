@@ -131,9 +131,10 @@ class _MyOrderState extends State<MyOrderPage> {
                         child: DropdownButtonFormField<User>(
                           key: Key('dropDownCust'),
                           hint: Text('Customer'),
-                          value: _selectedCustomer ??
-                              customers?.firstWhere(
-                                  (x) => order.customerPartyId == x.partyId),
+                          value: _selectedCustomer ?? order != null
+                              ? customers?.firstWhere(
+                                  (x) => order.customerPartyId == x.partyId)
+                              : null,
                           validator: (value) =>
                               value == null ? 'field required' : null,
                           items: customers?.map((customer) {

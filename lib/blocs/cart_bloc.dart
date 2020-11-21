@@ -36,12 +36,14 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc(this.orderBloc, this.catalogBloc, this.crmBloc)
       : super(CartInitial()) {
     catalogBlocSubscription = catalogBloc.listen((state) {
+      print("====catbloc listen : $state");
       if (state is CatalogLoaded) {
         catalog = state.catalog;
         add(CatalogUpdated((catalogBloc.state as CatalogLoaded).catalog));
       }
     });
     crmBlocSubscription = crmBloc.listen((state) {
+      print("====crmbloc listen : $state");
       if (state is CrmLoaded) {
         crmUsers = state.crmUsers;
         add(CrmUpdated((crmBloc.state as CrmLoaded).crmUsers));
@@ -93,10 +95,12 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         yield CartProblem(e.toString());
       }
     } else if (event is CatalogUpdated) {
+      print("====catalog updated");
       yield CartLoading();
       yield CartLoaded(order, crmUsers, catalog?.products, "catalog updated");
     } else if (event is CrmUpdated) {
       yield CartLoading();
+      print("=====crm updated");
       yield CartLoaded(order, crmUsers, catalog?.products, "crm updated");
     }
   }
