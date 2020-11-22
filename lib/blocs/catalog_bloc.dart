@@ -28,7 +28,10 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
 
   CatalogBloc(this.repos, this.authBloc) : super(CatalogInitial()) {
     authBlocSubscription = authBloc.listen((state) {
+      print("====listening to authbloc in catalog bloc: state: $state");
       if (state is AuthAuthenticated) authenticate = state.authenticate;
+      if (state is AuthUnauthenticated) authenticate = state.authenticate;
+      if (authenticate != null) add(LoadCatalog());
     });
   }
   @override
@@ -42,6 +45,7 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
     if (event is LoadCatalog) {
       yield CatalogLoading();
       String companyPartyId = authenticate?.company?.partyId;
+      print("===catalog, authenticate: $authenticate");
       dynamic result = await repos.getCatalog(companyPartyId);
       if (result is Catalog)
         yield CatalogLoaded(catalog: result);

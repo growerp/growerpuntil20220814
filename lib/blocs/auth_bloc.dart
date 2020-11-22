@@ -212,7 +212,7 @@ class DeleteEmployee extends AuthEvent {
 
 class LoggedIn extends AuthEvent {
   final Authenticate authenticate;
-  const LoggedIn({@required this.authenticate});
+  const LoggedIn(this.authenticate);
   @override
   List<Object> get props => [authenticate.user.name];
   @override

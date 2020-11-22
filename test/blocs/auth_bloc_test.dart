@@ -89,7 +89,7 @@ void main() {
         when(mockReposRepository.logout())
             .thenAnswer((_) async => authenticateNoKey);
         bloc.add(LoadAuth());
-        bloc.add(LoggedIn(authenticate: authenticate));
+        bloc.add(LoggedIn(authenticate));
         bloc.add(Logout());
       },
       expect: <AuthState>[
@@ -109,7 +109,7 @@ void main() {
         when(mockReposRepository.getAuthenticate())
             .thenAnswer((_) async => authenticateNoKey);
         bloc.add(LoadAuth());
-        bloc.add(LoggedIn(authenticate: authenticate));
+        bloc.add(LoggedIn(authenticate));
       },
       expect: <AuthState>[
         AuthLoading(),

@@ -114,7 +114,7 @@ class _LoginHeaderState extends State<LoginHeader> {
             }
             if (state is LoginOk) {
               BlocProvider.of<AuthBloc>(context)
-                  .add(LoggedIn(authenticate: state.authenticate));
+                  .add(LoggedIn(state.authenticate));
             }
           }),
         ],
