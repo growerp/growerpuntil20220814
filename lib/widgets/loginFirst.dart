@@ -12,9 +12,8 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-export 'loading_indicator.dart';
-export 'confirm_dialog.dart';
-export 'menu_widget.dart';
-export 'ShowNavigationRail.dart';
-export 'companyLogo.dart';
-export 'loginFirst.dart';
+import 'package:flutter/material.dart';
+
+Widget loginFirst() {
+  return Container(child: Center(child: Text("Need to login first!")));
+}
