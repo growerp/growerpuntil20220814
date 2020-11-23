@@ -12,13 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 
 class HelperFunctions {
   static showMessage(context, message, colors) {
-    Scaffold.of(context)
+    ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
@@ -31,18 +29,5 @@ class HelperFunctions {
           backgroundColor: colors,
         ),
       );
-  }
-
-  static showTopMessage(_scaffoldKey, message) {
-    if (message != null)
-      scheduleMicrotask(() => _scaffoldKey.currentState.showSnackBar(SnackBar(
-            content: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('$message'),
-              ],
-            ),
-            backgroundColor: Colors.green,
-          )));
   }
 }

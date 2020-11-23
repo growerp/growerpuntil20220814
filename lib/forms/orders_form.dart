@@ -41,11 +41,9 @@ class OrdersFormHeader extends StatefulWidget {
 class _OrdersFormStateHeader extends State<OrdersFormHeader> {
   final String message;
   final Authenticate authenticate;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _OrdersFormStateHeader([this.message, this.authenticate]) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
-  }
+  _OrdersFormStateHeader([this.message, this.authenticate]);
+
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
@@ -53,7 +51,6 @@ class _OrdersFormStateHeader extends State<OrdersFormHeader> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
-          key: _scaffoldKey,
           appBar: AppBar(
               title: companyLogo(context, authenticate, 'Company Orders List'),
               automaticallyImplyLeading:

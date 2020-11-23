@@ -89,7 +89,7 @@ class _LoginHeaderState extends State<LoginHeader> {
           BlocListener<AuthBloc, AuthState>(listener: (context, state) {
             if (state is AuthAuthenticated) Navigator.pop(context, true);
             if (state is AuthProblem) {
-              Scaffold.of(context).showSnackBar(SnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text('${state.errorMessage}'),
                 backgroundColor: Colors.red,
               ));

@@ -59,11 +59,8 @@ class _MyUserState extends State<MyUserPage> {
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MyUserState([this.message, this.user]) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
-  }
+  _MyUserState([this.message, this.user]);
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -100,7 +97,6 @@ class _MyUserState extends State<MyUserPage> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
-          key: _scaffoldKey,
           appBar: AppBar(
             automaticallyImplyLeading:
                 ResponsiveWrapper.of(context).isSmallerThan(TABLET),
@@ -313,7 +309,6 @@ class _MyUserState extends State<MyUserPage> {
                                 .toString(),
                           );
                           BlocProvider.of<AuthBloc>(context).add(UpdateEmployee(
-                            authenticate,
                             updatedUser,
                             _imageFile?.path,
                           ));

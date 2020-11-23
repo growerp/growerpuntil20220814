@@ -26,8 +26,8 @@ Widget companyLogo(context, authenticate, title) {
           backgroundColor: Colors.green,
           radius: 15,
           child: authenticate?.company?.image != null
-              ? Image.memory(authenticate.company?.image)
-              : Text(authenticate.company?.name?.substring(0, 1) ?? '',
+              ? Image.memory(authenticate?.company?.image)
+              : Text(authenticate?.company?.name?.substring(0, 1) ?? '',
                   style: TextStyle(fontSize: 20, color: Colors.black))),
     ),
     SizedBox(width: 10),

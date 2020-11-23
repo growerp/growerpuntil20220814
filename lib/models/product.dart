@@ -72,5 +72,5 @@ class Product {
       };
 
   String toString() =>
-      'Product name: $productName price: $price category: $categoryName';
+      'Product name: $productName[$productId] price: $price category: $categoryName';
 }

@@ -46,11 +46,9 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
   final String message;
   final Authenticate authenticate;
   final Catalog catalog;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _ProductsFormStateHeader(this.message, this.authenticate, this.catalog) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
-  }
+  _ProductsFormStateHeader(this.message, this.authenticate, this.catalog);
+
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
@@ -58,7 +56,6 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
-          key: _scaffoldKey,
           appBar: AppBar(
               title: companyLogo(context, authenticate, 'Product List'),
               automaticallyImplyLeading:
@@ -139,7 +136,7 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                       "${products[index].productName}", "Delete this product?");
                   if (result) {
                     BlocProvider.of<CatalogBloc>(context)
-                        .add(DeleteProduct(catalog, products[index]));
+                        .add(DeleteProduct(products[index]));
                     Navigator.pushNamed(context, ProductsRoute,
                         arguments: FormArguments(
                             'product deleted', authenticate, catalog));
@@ -158,7 +155,7 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                   title: Row(
                     children: <Widget>[
                       Expanded(
-                          child: Text("${products[index].productName}, "
+                          child: Text("${products[index].productName}"
                               "[${products[index].productId}]")),
                       Expanded(
                           child: Text("${products[index].description}",
