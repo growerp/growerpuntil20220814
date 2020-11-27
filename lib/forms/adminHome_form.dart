@@ -12,6 +12,8 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../blocs/@blocs.dart';
@@ -34,9 +36,10 @@ class AdminHome extends StatelessWidget {
 
 class DashBoard extends StatelessWidget {
   final String message;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   DashBoard([this.message]) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
+    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
   @override
@@ -44,95 +47,100 @@ class DashBoard extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
-        return Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
-                automaticallyImplyLeading:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(context, authenticate,
-                    authenticate?.company?.name ?? 'Company??'),
-                actions: <Widget>[
-                  if (authenticate?.apiKey != null)
-                    IconButton(
-                        icon: Icon(Icons.do_not_disturb),
-                        tooltip: 'Logout',
-                        onPressed: () => {
-                              BlocProvider.of<AuthBloc>(context).add(Logout()),
-                              Navigator.pushNamed(context, HomeRoute,
-                                  arguments:
-                                      FormArguments("Successfully logged out."))
-                            }),
-                ]),
-            drawer: myDrawer(context, authenticate),
-            body: BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthProblem) {
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                  }
-                },
-                child: Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
-                  child: GridView.count(
-                    crossAxisCount:
-                        ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                            ? 2
-                            : 3,
-                    padding: EdgeInsets.all(3.0),
-                    children: <Widget>[
-                      makeDashboardItem("DashBoard1", Icons.bubble_chart),
-                      makeDashboardItem(
-                          "DashBoard2", Icons.bubble_chart_outlined),
-                      makeDashboardItem("DashBoard3", Icons.bubble_chart),
-                      makeDashboardItem("DashBoard4", Icons.bar_chart_rounded),
-                      makeDashboardItem("DashBoard5", Icons.bar_chart_outlined),
-                      makeDashboardItem("DashBoard6", Icons.bar_chart)
-                    ],
-                  ),
-                )));
+        return ScaffoldMessenger(
+            key: scaffoldMessengerKey,
+            child: Scaffold(
+                appBar: AppBar(
+                    automaticallyImplyLeading:
+                        ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+                    title: companyLogo(context, authenticate,
+                        authenticate?.company?.name ?? 'Company??'),
+                    actions: <Widget>[
+                      if (authenticate?.apiKey != null)
+                        IconButton(
+                            icon: Icon(Icons.do_not_disturb),
+                            tooltip: 'Logout',
+                            onPressed: () => {
+                                  BlocProvider.of<AuthBloc>(context)
+                                      .add(Logout()),
+                                  Navigator.pushNamed(context, HomeRoute,
+                                      arguments: FormArguments(
+                                          "Successfully logged out."))
+                                }),
+                    ]),
+                drawer: myDrawer(context, authenticate),
+                body: BlocListener<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthProblem) {
+                        HelperFunctions.showMessage(
+                            context, '${state.errorMessage}', Colors.red);
+                      }
+                    },
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
+                      child: GridView.count(
+                        crossAxisCount:
+                            ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                                ? 2
+                                : 3,
+                        padding: EdgeInsets.all(3.0),
+                        children: <Widget>[
+                          makeDashboardItem("DashBoard1", Icons.bubble_chart),
+                          makeDashboardItem(
+                              "DashBoard2", Icons.bubble_chart_outlined),
+                          makeDashboardItem("DashBoard3", Icons.bubble_chart),
+                          makeDashboardItem(
+                              "DashBoard4", Icons.bar_chart_rounded),
+                          makeDashboardItem(
+                              "DashBoard5", Icons.bar_chart_outlined),
+                          makeDashboardItem("DashBoard6", Icons.bar_chart)
+                        ],
+                      ),
+                    ))));
       }
       if (state is AuthUnauthenticated) {
         Authenticate authenticate = state.authenticate;
-        return Scaffold(
-            key: _scaffoldKey,
-            appBar: AppBar(
-                title: companyLogo(context, authenticate,
-                    authenticate?.company?.name ?? 'Company??')),
-            body: BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthProblem) {
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                  }
-                },
-                child: Center(
-                    child: Column(children: <Widget>[
-                  SizedBox(height: 150),
-                  Text("Login with an existing Id"),
-                  RaisedButton(
-                    autofocus: true,
-                    child: Text('Login'),
-                    onPressed: () async {
-                      dynamic result =
-                          await Navigator.pushNamed(context, LoginRoute);
-                      if (result)
-                        Navigator.pushNamed(context, HomeRoute,
-                            arguments:
-                                FormArguments("Successfully logged in."));
+        return ScaffoldMessenger(
+            key: scaffoldMessengerKey,
+            child: Scaffold(
+                appBar: AppBar(
+                    title: companyLogo(context, authenticate,
+                        authenticate?.company?.name ?? 'Company??')),
+                body: BlocListener<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthProblem) {
+                        HelperFunctions.showMessage(
+                            context, '${state.errorMessage}', Colors.red);
+                      }
                     },
-                  ),
-                  SizedBox(height: 50),
-                  Text(
-                      "Or create a new company and you being the administrator"),
-                  RaisedButton(
-                    child: Text('Create a new company and admin'),
-                    onPressed: () {
-                      authenticate.company.partyId = null;
-                      Navigator.popAndPushNamed(context, RegisterRoute);
-                    },
-                  ),
-                ]))));
+                    child: Center(
+                        child: Column(children: <Widget>[
+                      SizedBox(height: 150),
+                      Text("Login with an existing Id"),
+                      RaisedButton(
+                        autofocus: true,
+                        child: Text('Login'),
+                        onPressed: () async {
+                          dynamic result =
+                              await Navigator.pushNamed(context, LoginRoute);
+                          if (result)
+                            Navigator.pushNamed(context, HomeRoute,
+                                arguments:
+                                    FormArguments("Successfully logged in."));
+                        },
+                      ),
+                      SizedBox(height: 50),
+                      Text(
+                          "Or create a new company and you being the administrator"),
+                      RaisedButton(
+                        child: Text('Create a new company and admin'),
+                        onPressed: () {
+                          authenticate.company.partyId = null;
+                          Navigator.popAndPushNamed(context, RegisterRoute);
+                        },
+                      ),
+                    ])))));
       }
       return Container();
     });

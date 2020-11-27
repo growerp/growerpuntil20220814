@@ -44,10 +44,10 @@ class OrdersFormHeader extends StatefulWidget {
 class _OrdersFormStateHeader extends State<OrdersFormHeader> {
   final String message;
   final Authenticate authenticate;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   _OrdersFormStateHeader([this.message, this.authenticate]) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
+    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   @override
   Widget build(BuildContext context) {
@@ -55,42 +55,46 @@ class _OrdersFormStateHeader extends State<OrdersFormHeader> {
     List<Order> orders;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-              title: companyLogo(context, authenticate, 'Company Orders List'),
-              automaticallyImplyLeading:
-                  ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, OrderRoute,
-                  arguments: FormArguments('Enter a new Order...'));
-            },
-            tooltip: 'Add new order',
-            child: Icon(Icons.add),
-          ),
-          drawer: myDrawer(context, authenticate),
-          body: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthProblem)
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-              },
-              child: BlocConsumer<OrderBloc, OrderState>(
+      return ScaffoldMessenger(
+          key: scaffoldMessengerKey,
+          child: Scaffold(
+              appBar: AppBar(
+                  title:
+                      companyLogo(context, authenticate, 'Company Orders List'),
+                  automaticallyImplyLeading:
+                      ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, OrderRoute,
+                      arguments: FormArguments('Enter a new Order...'));
+                },
+                tooltip: 'Add new order',
+                child: Icon(Icons.add),
+              ),
+              drawer: myDrawer(context, authenticate),
+              body: BlocListener<AuthBloc, AuthState>(
                   listener: (context, state) {
-                if (state is OrderProblem)
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-                if (state is OrderLoading)
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
-                if (state is OrderLoaded)
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
-              }, builder: (context, state) {
-                if (state is OrderLoaded) orders = state.orders;
-                return orderList(orders);
-              })));
+                    if (state is AuthProblem)
+                      HelperFunctions.showMessage(
+                          context, '${state.errorMessage}', Colors.red);
+                  },
+                  child: BlocConsumer<OrderBloc, OrderState>(
+                      listener: (context, state) {
+                    if (state is OrderProblem)
+                      HelperFunctions.showMessage(
+                          context, '${state.errorMessage}', Colors.red);
+                    if (state is OrderLoading)
+                      HelperFunctions.showMessage(
+                          context, '${state.message}', Colors.green);
+                    if (state is OrderLoaded)
+                      HelperFunctions.showMessage(
+                          context, '${state.message}', Colors.green);
+                  }, builder: (context, state) {
+                    if (state is OrderLoading)
+                      return Center(child: CircularProgressIndicator());
+                    if (state is OrderLoaded) orders = state.orders;
+                    return orderList(orders);
+                  }))));
     });
   }
 

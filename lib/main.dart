@@ -51,12 +51,6 @@ void main() async {
             create: (context) => OrderBloc(repos)..add(LoadOrder())),
         BlocProvider<CrmBloc>(
             create: (context) => CrmBloc(repos)..add(CrmLoad())),
-        BlocProvider<CartBloc>(
-            create: (context) => CartBloc(
-                BlocProvider.of<OrderBloc>(context),
-                BlocProvider.of<CatalogBloc>(context),
-                BlocProvider.of<CrmBloc>(context))
-              ..add(LoadCart())),
       ],
       // add other blocs here, shopping cart, catalog?
       child: MyApp(),
@@ -90,7 +84,7 @@ class MyApp extends StatelessWidget {
             if (state is AuthUnauthenticated &&
                 state.authenticate?.company == null)
               return RegisterForm('No companies found in system, create one?');
-            return AdminHome(FormArguments(null, "Welcome"));
+            return AdminHome(FormArguments("Welcome"));
           },
         ));
   }

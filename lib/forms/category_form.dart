@@ -55,10 +55,11 @@ class _MyCategoryState extends State<MyCategoryPage> {
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
 
   _MyCategoryState(this.message, this.category) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
+    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
@@ -96,72 +97,75 @@ class _MyCategoryState extends State<MyCategoryPage> {
     Catalog catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            automaticallyImplyLeading:
-                ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-            title: companyLogo(context, authenticate, 'Category detail'),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.home),
-                  onPressed: () => Navigator.pushNamed(context, HomeRoute))
-            ],
-          ),
-          floatingActionButton: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(height: 100),
-              FloatingActionButton(
-                onPressed: () {
-                  _onImageButtonPressed(ImageSource.gallery, context: context);
-                },
-                heroTag: 'image0',
-                tooltip: 'Pick Image from gallery',
-                child: const Icon(Icons.photo_library),
+      return ScaffoldMessenger(
+          key: scaffoldMessengerKey,
+          child: Scaffold(
+              appBar: AppBar(
+                automaticallyImplyLeading:
+                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+                title: companyLogo(context, authenticate, 'Category detail'),
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.home),
+                      onPressed: () => Navigator.pushNamed(context, HomeRoute))
+                ],
               ),
-              SizedBox(height: 20),
-              FloatingActionButton(
-                onPressed: () {
-                  _onImageButtonPressed(ImageSource.camera, context: context);
-                },
-                heroTag: 'image1',
-                tooltip: 'Take a Photo',
-                child: const Icon(Icons.camera_alt),
+              floatingActionButton: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(height: 100),
+                  FloatingActionButton(
+                    onPressed: () {
+                      _onImageButtonPressed(ImageSource.gallery,
+                          context: context);
+                    },
+                    heroTag: 'image0',
+                    tooltip: 'Pick Image from gallery',
+                    child: const Icon(Icons.photo_library),
+                  ),
+                  SizedBox(height: 20),
+                  FloatingActionButton(
+                    onPressed: () {
+                      _onImageButtonPressed(ImageSource.camera,
+                          context: context);
+                    },
+                    heroTag: 'image1',
+                    tooltip: 'Take a Photo',
+                    child: const Icon(Icons.camera_alt),
+                  ),
+                ],
               ),
-            ],
-          ),
-          drawer: myDrawer(context, authenticate),
-          body: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthProblem)
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-              },
-              child: BlocConsumer<CatalogBloc, CatalogState>(
+              drawer: myDrawer(context, authenticate),
+              body: BlocListener<AuthBloc, AuthState>(
                   listener: (context, state) {
-                if (state is CatalogProblem) {
-                  loading = false;
-                  updatedCategory = state.newCategory;
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.green);
-                }
-                if (state is CatalogLoading) {
-                  loading = true;
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
-                }
-                if (state is CatalogLoaded)
-                  Navigator.pushNamed(context, CategoriesRoute,
-                      arguments: FormArguments(state.message));
-              }, builder: (context, state) {
-                if (state is CatalogLoaded) {
-                  updatedCategory = state.category;
-                  catalog = state.catalog;
-                }
-                return Center(
-                  child:
-                      !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                    if (state is AuthProblem)
+                      HelperFunctions.showMessage(
+                          context, '${state.errorMessage}', Colors.red);
+                  },
+                  child: BlocConsumer<CatalogBloc, CatalogState>(
+                      listener: (context, state) {
+                    if (state is CatalogProblem) {
+                      loading = false;
+                      updatedCategory = state.newCategory;
+                      HelperFunctions.showMessage(
+                          context, '${state.errorMessage}', Colors.green);
+                    }
+                    if (state is CatalogLoading) {
+                      loading = true;
+                      HelperFunctions.showMessage(
+                          context, '${state.message}', Colors.green);
+                    }
+                    if (state is CatalogLoaded)
+                      Navigator.pushNamed(context, CategoriesRoute,
+                          arguments: FormArguments(state.message));
+                  }, builder: (context, state) {
+                    if (state is CatalogLoaded) {
+                      updatedCategory = state.category;
+                      catalog = state.catalog;
+                    }
+                    return Center(
+                      child: !kIsWeb &&
+                              defaultTargetPlatform == TargetPlatform.android
                           ? FutureBuilder<void>(
                               future: retrieveLostData(),
                               builder: (BuildContext context,
@@ -175,8 +179,8 @@ class _MyCategoryState extends State<MyCategoryPage> {
                                 return _showForm(catalog, updatedCategory);
                               })
                           : _showForm(catalog, updatedCategory),
-                );
-              })));
+                    );
+                  }))));
     });
   }
 

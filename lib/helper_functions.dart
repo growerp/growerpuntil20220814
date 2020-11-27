@@ -18,24 +18,24 @@ import 'package:flutter/material.dart';
 
 class HelperFunctions {
   static showMessage(context, message, colors) {
-    Scaffold.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text('$message'),
-            ],
-          ),
-          backgroundColor: colors,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 1),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('$message'),
+          ],
         ),
-      );
+        backgroundColor: colors,
+      ),
+    );
   }
 
   static showTopMessage(_scaffoldKey, message) {
     if (message != null)
       scheduleMicrotask(() => _scaffoldKey.currentState.showSnackBar(SnackBar(
+            duration: const Duration(seconds: 1),
             content: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -407,7 +407,6 @@ class Moqui {
         'order': orderToJson(order),
         'moquiSessionToken': sessionToken
       });
-      print("=====receiving created order: $response");
       return orderFromJson(response.toString());
     } catch (e) {
       return responseMessage(e);

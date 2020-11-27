@@ -29,23 +29,27 @@ class OrderForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (MyOrderPage(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 5);
+    var a = (formArguments) => (MyOrderPage(formArguments.message));
+    return BlocProvider(
+        create: (context) => CartBloc(
+            BlocProvider.of<AuthBloc>(context),
+            BlocProvider.of<OrderBloc>(context),
+            BlocProvider.of<CatalogBloc>(context),
+            BlocProvider.of<CrmBloc>(context))
+          ..add(LoadCart(formArguments.object)),
+        child: ShowNavigationRail(a(formArguments), 5));
   }
 }
 
 class MyOrderPage extends StatefulWidget {
   final String message;
-  final Order order;
-  MyOrderPage(this.message, this.order);
+  MyOrderPage(this.message);
   @override
-  _MyOrderState createState() => _MyOrderState(message, order);
+  _MyOrderState createState() => _MyOrderState(message);
 }
 
 class _MyOrderState extends State<MyOrderPage> {
   final String message;
-  final Order order;
   final _formKey = GlobalKey<FormState>();
   final _priceController = TextEditingController();
   final _quantityController = TextEditingController();
@@ -56,64 +60,73 @@ class _MyOrderState extends State<MyOrderPage> {
   List<User> customers;
   Product _selectedProduct;
   User _selectedCustomer;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  _MyOrderState(this.message, this.order) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
+  _MyOrderState(this.message) {
+    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-            automaticallyImplyLeading:
-                ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-            title: companyLogo(context, authenticate, 'Order detail'),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.home),
-                  onPressed: () => Navigator.pushNamed(context, HomeRoute))
-            ],
-          ),
-          drawer: myDrawer(context, authenticate),
-          body: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthProblem)
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-              },
-              child:
-                  BlocConsumer<CartBloc, CartState>(listener: (context, state) {
-                if (state is CartProblem) {
-                  loading = false;
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.green);
-                }
-                if (state is CartLoading) {
-                  loading = true;
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
-                }
-                if (state is CartLoaded) {
-                  loading = true;
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
-                }
-              }, builder: (context, state) {
-                if (state is CartLoaded) {
-                  customers = state.customers;
-                  products = state.products;
-                  updatedOrder = state.order;
-                }
-                return _orderItemList();
-              })));
-    });
+    return ScaffoldMessenger(
+        key: scaffoldMessengerKey,
+        child: Scaffold(
+            appBar: AppBar(
+              automaticallyImplyLeading:
+                  ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+              title: companyLogo(context, authenticate, 'Order detail'),
+              actions: <Widget>[
+                IconButton(
+                    icon: Icon(Icons.home),
+                    onPressed: () => Navigator.pushNamed(context, HomeRoute))
+              ],
+            ),
+            drawer: myDrawer(context, authenticate),
+            body: BlocListener<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthProblem)
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                },
+                child: BlocConsumer<CartBloc, CartState>(
+                    listener: (context, state) {
+                  if (state is CartProblem) {
+                    loading = false;
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.green);
+                  } else if (state is CartLoading) {
+                    loading = true;
+                    HelperFunctions.showMessage(
+                        context, '${state.message}', Colors.green);
+                    return Center(child: CircularProgressIndicator());
+                  } else if (state is CartLoaded) {
+                    loading = true;
+                    HelperFunctions.showMessage(
+                        context, '${state.message}', Colors.green);
+                    setState(() {
+                      _selectedProduct = null;
+                      _priceController.clear();
+                      _quantityController.clear();
+                    });
+                  }
+                }, builder: (context, state) {
+                  if (state is CartLoading)
+                    return Center(child: CircularProgressIndicator());
+                  else if (state is CartLoaded) {
+                    authenticate = state.authenticate;
+                    customers = state.customers;
+                    products = state.products;
+                    updatedOrder = state.order;
+                  }
+                  return _orderItemList();
+                }))));
   }
 
   Widget _orderItemList() {
-    List<OrderItem> items = order?.orderItems;
+    List<OrderItem> items = updatedOrder?.orderItems;
+    _selectedCustomer ??= updatedOrder?.customerPartyId != null
+        ? customers
+            ?.firstWhere((x) => updatedOrder.customerPartyId == x.partyId)
+        : null;
     loading = false;
     return Center(
         child: Column(children: [
@@ -131,10 +144,7 @@ class _MyOrderState extends State<MyOrderPage> {
                         child: DropdownButtonFormField<User>(
                           key: Key('dropDownCust'),
                           hint: Text('Customer'),
-                          value: _selectedCustomer ?? order != null
-                              ? customers?.firstWhere(
-                                  (x) => order.customerPartyId == x.partyId)
-                              : null,
+                          value: _selectedCustomer,
                           validator: (value) =>
                               value == null ? 'field required' : null,
                           items: customers?.map((customer) {
@@ -211,7 +221,7 @@ class _MyOrderState extends State<MyOrderPage> {
                             customerPartyId: _selectedCustomer.partyId,
                             orderItems: [
                               OrderItem(
-                                  productId: _selectedProduct.productId,
+                                  productId: _selectedProduct?.productId,
                                   price: Decimal.parse(_priceController.text),
                                   quantity:
                                       Decimal.parse(_quantityController.text))
@@ -223,7 +233,7 @@ class _MyOrderState extends State<MyOrderPage> {
                     key: Key('Confirm Order'),
                     child: Text('confirm'),
                     onPressed: () {
-                      if (order.orderItems.length > 0 && !loading) {
+                      if (updatedOrder.orderItems.length > 0 && !loading) {
                         BlocProvider.of<CartBloc>(context).add(ConfirmCart());
                       }
                     }),
@@ -256,10 +266,12 @@ class _MyOrderState extends State<MyOrderPage> {
                 return InkWell(
                     onLongPress: () async {
                       BlocProvider.of<CartBloc>(context)
-                          .add(DeleteItemCart(items[index]));
+                          .add(DeleteItemCart(index));
+                      Navigator.pushNamed(context, OrderRoute,
+                          arguments:
+                              FormArguments('item deleted', updatedOrder));
                     },
                     child: ListTile(
-                      //return  ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.green,
                         child: Text(items[index]?.orderItemSeqId.toString()),

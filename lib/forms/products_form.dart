@@ -46,10 +46,10 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
   final String message;
   final Authenticate authenticate;
   final Catalog catalog;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   _ProductsFormStateHeader(this.message, this.authenticate, this.catalog) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
+    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   @override
   Widget build(BuildContext context) {
@@ -57,41 +57,43 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
     Catalog catalog = this.catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-              title: companyLogo(context, authenticate, 'Product List'),
-              automaticallyImplyLeading:
-                  ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, ProductRoute,
-                  arguments: FormArguments('Enter the product information'));
-            },
-            tooltip: 'Add new product',
-            child: Icon(Icons.add),
-          ),
-          body: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthProblem)
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-              },
-              child: BlocConsumer<CatalogBloc, CatalogState>(
+      return ScaffoldMessenger(
+          key: scaffoldMessengerKey,
+          child: Scaffold(
+              appBar: AppBar(
+                  title: companyLogo(context, authenticate, 'Product List'),
+                  automaticallyImplyLeading:
+                      ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, ProductRoute,
+                      arguments:
+                          FormArguments('Enter the product information'));
+                },
+                tooltip: 'Add new product',
+                child: Icon(Icons.add),
+              ),
+              body: BlocListener<AuthBloc, AuthState>(
                   listener: (context, state) {
-                if (state is CatalogProblem)
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-                if (state is CatalogLoaded)
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
-                if (state is CatalogLoading)
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.green);
-              }, builder: (context, state) {
-                if (state is CatalogLoaded) catalog = state.catalog;
-                return productList(catalog);
-              })));
+                    if (state is AuthProblem)
+                      HelperFunctions.showMessage(
+                          context, '${state.errorMessage}', Colors.red);
+                  },
+                  child: BlocConsumer<CatalogBloc, CatalogState>(
+                      listener: (context, state) {
+                    if (state is CatalogProblem)
+                      HelperFunctions.showMessage(
+                          context, '${state.errorMessage}', Colors.red);
+                    if (state is CatalogLoaded)
+                      HelperFunctions.showMessage(
+                          context, '${state.message}', Colors.green);
+                    if (state is CatalogLoading)
+                      HelperFunctions.showMessage(
+                          context, '${state.message}', Colors.green);
+                  }, builder: (context, state) {
+                    if (state is CatalogLoaded) catalog = state.catalog;
+                    return productList(catalog);
+                  }))));
     });
   }
 

@@ -48,7 +48,7 @@ List<MenuItem> menuItems = [
       menuItemId: 200,
       image: "assets/usersGrey.png",
       selectedImage: "assets/users.png",
-      title: "Users",
+      title: "Employees",
       route: UsersRoute,
       readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE"],
       writeGroups: ["GROWERP_M_ADMIN"]),

@@ -44,42 +44,44 @@ class UsersFormHeader extends StatefulWidget {
 class _UsersFormStateHeader extends State<UsersFormHeader> {
   final String message;
   final Authenticate authenticate;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey<ScaffoldMessengerState>();
   _UsersFormStateHeader([this.message, this.authenticate]) {
-    HelperFunctions.showTopMessage(_scaffoldKey, message);
+    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return Scaffold(
-          key: _scaffoldKey,
-          appBar: AppBar(
-              title: companyLogo(context, authenticate, 'Company Users List'),
-              automaticallyImplyLeading:
-                  ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-          floatingActionButton: FloatingActionButton(
-            onPressed: () {
-              Navigator.pushNamed(context, UserRoute,
-                  arguments:
-                      FormArguments('Enter new employee information...'));
-            },
-            tooltip: 'Add new user',
-            child: Icon(Icons.add),
-          ),
-          drawer: myDrawer(context, authenticate),
-          body: BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) {
-                if (state is AuthProblem)
-                  HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
-                if (state is AuthLoading)
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.red);
-              },
-              child: userList(authenticate)));
+      return ScaffoldMessenger(
+          key: scaffoldMessengerKey,
+          child: Scaffold(
+              appBar: AppBar(
+                  title:
+                      companyLogo(context, authenticate, 'Company Users List'),
+                  automaticallyImplyLeading:
+                      ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, UserRoute,
+                      arguments:
+                          FormArguments('Enter new employee information...'));
+                },
+                tooltip: 'Add new user',
+                child: Icon(Icons.add),
+              ),
+              drawer: myDrawer(context, authenticate),
+              body: BlocListener<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthProblem)
+                      HelperFunctions.showMessage(
+                          context, '${state.errorMessage}', Colors.red);
+                    if (state is AuthLoading)
+                      HelperFunctions.showMessage(
+                          context, '${state.message}', Colors.red);
+                  },
+                  child: userList(authenticate))));
     });
   }
 
