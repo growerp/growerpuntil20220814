@@ -64,10 +64,7 @@ class _MyOrderState extends State<MyOrderPage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated)
-        authenticate = state.authenticate;
-      else
-        Container(child: Center(child: Text("Need to login first!")));
+      if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
           key: _scaffoldKey,
           appBar: AppBar(

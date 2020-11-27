@@ -26,16 +26,19 @@ class OrdersForm extends StatelessWidget {
   OrdersForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (OrdersFormHeader(formArguments.message));
-    return ShowNavigationRail(a(formArguments), 5);
+    var a = (formArguments) =>
+        (OrdersFormHeader(formArguments.message, formArguments.object));
+    return ShowNavigationRail(a(formArguments), 5, formArguments.object);
   }
 }
 
 class OrdersFormHeader extends StatefulWidget {
   final String message;
-  const OrdersFormHeader([this.message]);
+  final Authenticate authenticate;
+  const OrdersFormHeader([this.message, this.authenticate]);
   @override
-  _OrdersFormStateHeader createState() => _OrdersFormStateHeader(message);
+  _OrdersFormStateHeader createState() =>
+      _OrdersFormStateHeader(message, authenticate);
 }
 
 class _OrdersFormStateHeader extends State<OrdersFormHeader> {
