@@ -257,11 +257,16 @@ void main() {
         order.orderItems[0].productId = productId;
         order.orderItems[1].productId = productId;
         // create/get order;
+        print("===ordertosjson: ${orderToJson(order)}");
         print("sending order");
         response = await client.post('s1/growerp/100/Order', data: {
           'order': orderToJson(order),
           'moquiSessionToken': sessionToken
         });
+        print("==1==order received =========");
+        print("===response: $response");
+        print("===reply====${orderFromJson(response.toString())}");
+        print("==2==order received ====?? not showing!=====");
         expect(orderToJson(order),
             orderToJson(orderFromJson(response.toString())));
       } catch (e) {}
