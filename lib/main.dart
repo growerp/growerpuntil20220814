@@ -42,11 +42,11 @@ void main() async {
     child: MultiBlocProvider(
       providers: [
         BlocProvider<AuthBloc>(
-            lazy: false, create: (context) => AuthBloc(repos)..add(LoadAuth())),
+            create: (context) => AuthBloc(repos)..add(LoadAuth())),
         BlocProvider<CatalogBloc>(
-            lazy: false,
-            create: (context) => // load catalog wait for authbloc to finish
-                CatalogBloc(repos, BlocProvider.of<AuthBloc>(context))),
+            create: (context) =>
+                CatalogBloc(repos, BlocProvider.of<AuthBloc>(context))
+                  ..add(LoadCatalog())),
         BlocProvider<OrderBloc>(
             create: (context) => OrderBloc(repos)..add(LoadOrder())),
         BlocProvider<CrmBloc>(

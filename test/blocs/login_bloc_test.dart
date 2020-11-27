@@ -51,8 +51,10 @@ void main() {
               .thenAnswer((_) async => authenticate);
           bloc.add(LoginButtonPressed(
               company: company, username: emailAddress, password: password));
-          whenListen(authBloc,
-              Stream.fromIterable(<AuthEvent>[LoggedIn(authenticate)]));
+          whenListen(
+              authBloc,
+              Stream.fromIterable(
+                  <AuthEvent>[LoggedIn(authenticate: authenticate)]));
         },
         expect: <LoginState>[LogginInProgress(), LoginOk(authenticate)]);
 
@@ -77,7 +79,9 @@ void main() {
         bloc.add(LoginButtonPressed(
             company: company, username: username, password: password));
         whenListen(
-            authBloc, Stream.fromIterable(<AuthEvent>[LoggedIn(authenticate)]));
+            authBloc,
+            Stream.fromIterable(
+                <AuthEvent>[LoggedIn(authenticate: authenticate)]));
       },
       expect: <LoginState>[
         LogginInProgress(),
