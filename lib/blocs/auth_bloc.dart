@@ -110,41 +110,43 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       dynamic result =
           await repos.updateCompany(event.company, event.imagePath);
       if (result is Company) {
-        authenticate.company = result;
-        yield AuthAuthenticated(authenticate, 'Company updated');
+        event.authenticate.company = result;
+        yield AuthAuthenticated(event.authenticate, 'Company updated');
       } else {
-        yield AuthProblem(result);
+        yield AuthProblem(result, event.company);
       }
     } else if (event is UpdateEmployee) {
       yield AuthLoading((event.user?.partyId == null ? "Adding " : "Updating") +
           " user ${event.user}");
       dynamic result = await repos.updateUser(event.user, event.imagePath);
       if (result is User) {
-        if (authenticate.user.partyId == result.partyId)
-          authenticate.user = result;
+        if (event.authenticate.user.partyId == result.partyId)
+          event.authenticate.user = result;
+        List<User> users = event.authenticate.company.employees;
         if (event.user.partyId == null)
-          authenticate.company.employees.add(result);
+          users.add(result);
         else {
-          int index = authenticate.company.employees
-              .indexWhere((user) => user.partyId == result.partyId);
-          authenticate.company.employees
-              .replaceRange(index, index + 1, [result]);
+          // update
+          int index =
+              users.indexWhere((user) => user.partyId == result.partyId);
+          users.replaceRange(index, index + 1, [result]);
         }
-        await repos.persistAuthenticate(authenticate);
-        yield AuthAuthenticated(authenticate,
+        await repos.persistAuthenticate(event.authenticate);
+        yield AuthAuthenticated(event.authenticate,
             'User ' + (event.user?.partyId == null ? 'Added' : 'Updated'));
       } else {
-        yield AuthProblem(result);
+        yield AuthProblem(result, null, event.user);
       }
     } else if (event is DeleteEmployee) {
       yield AuthLoading("Deleting user ${event.user}");
       dynamic result = await repos.deleteUser(event.user.partyId);
       if (result == event.user.partyId) {
-        int index = authenticate.company.employees
-            .indexWhere((user) => user.partyId == result);
-        authenticate.company.employees.removeAt(index);
-        await repos.persistAuthenticate(authenticate);
-        yield AuthAuthenticated(authenticate, 'User ${event.user} deleted');
+        List users = event.authenticate.company.employees;
+        int index = users.indexWhere((user) => user.partyId == result);
+        users.removeAt(index);
+        await repos.persistAuthenticate(event.authenticate);
+        yield AuthAuthenticated(
+            event.authenticate, 'User ${event.user} deleted');
       } else {
         yield AuthProblem(result);
       }
@@ -176,24 +178,34 @@ class UpdateAuth extends AuthEvent {
 }
 
 class UpdateCompany extends AuthEvent {
+  final Authenticate authenticate;
   final Company company;
   final String imagePath;
-  UpdateCompany(this.company, this.imagePath);
+  UpdateCompany(this.authenticate, this.company, this.imagePath);
   @override
-  String toString() => 'Update Company ${company}';
+  List<Object> get props => [authenticate];
+  @override
+  String toString() => 'Update Company ${authenticate.company.toString()} '
+      'new image: ${imagePath != null ? imagePath.length : 0}';
 }
 
 class UpdateEmployee extends AuthEvent {
+  final Authenticate authenticate;
   final User user;
   final String imagePath;
-  UpdateEmployee(this.user, this.imagePath);
+  UpdateEmployee(this.authenticate, this.user, this.imagePath);
+  @override
+  List<Object> get props => [authenticate];
   @override
   String toString() => (user?.partyId == null ? 'Add' : 'Update') + '$user';
 }
 
 class DeleteEmployee extends AuthEvent {
+  final Authenticate authenticate;
   final User user;
-  DeleteEmployee(this.user);
+  DeleteEmployee(this.authenticate, this.user);
+  @override
+  List<Object> get props => [authenticate];
   @override
   String toString() => 'Update User $user';
 }
@@ -202,12 +214,16 @@ class LoggedIn extends AuthEvent {
   final Authenticate authenticate;
   const LoggedIn(this.authenticate);
   @override
+  List<Object> get props => [authenticate.user.name];
+  @override
   String toString() => 'Auth Logged in with userName: ${authenticate.user}';
 }
 
 class ResetPassword extends AuthEvent {
   final String username;
   const ResetPassword({@required this.username});
+  @override
+  List<Object> get props => [username];
   @override
   String toString() => 'ResetPassword userName/email: $username';
 }
@@ -244,7 +260,11 @@ class AuthLoading extends AuthState {
 
 class AuthProblem extends AuthState {
   final String errorMessage;
-  AuthProblem(this.errorMessage);
+  final Company newCompany;
+  final User newUser;
+  AuthProblem(this.errorMessage, [this.newCompany, this.newUser]);
+  @override
+  List<Object> get props => [errorMessage];
   @override
   String toString() => 'AuthProblem: errorMessage: $errorMessage';
 }
@@ -254,6 +274,8 @@ class AuthAuthenticated extends AuthState {
   final String message;
   AuthAuthenticated(this.authenticate, [this.message]);
   @override
+  List<Object> get props => [authenticate];
+  @override
   String toString() => 'Authenticated: Msg: $message $authenticate}';
 }
 
@@ -261,6 +283,8 @@ class AuthUnauthenticated extends AuthState {
   final Authenticate authenticate;
   final String message;
   AuthUnauthenticated(this.authenticate, [this.message]);
+  @override
+  List<Object> get props => [authenticate, message];
   @override
   String toString() => 'Unauthenticated: msg: $message $authenticate';
 }

@@ -59,8 +59,11 @@ class _MyProductState extends State<MyProductPage> {
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MyProductState(this.message, this.product);
+  _MyProductState(this.message, this.product) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -98,6 +101,7 @@ class _MyProductState extends State<MyProductPage> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
             automaticallyImplyLeading:
                 ResponsiveWrapper.of(context).isSmallerThan(TABLET),
@@ -143,9 +147,9 @@ class _MyProductState extends State<MyProductPage> {
                   listener: (context, state) {
                 if (state is CatalogProblem) {
                   loading = false;
-                  updatedProduct = state.product;
+                  updatedProduct = state.newProduct;
                   HelperFunctions.showMessage(
-                      context, '${state.errorMessage}', Colors.red);
+                      context, '${state.errorMessage}', Colors.green);
                 }
                 if (state is CatalogLoading) {
                   loading = true;
@@ -295,6 +299,7 @@ class _MyProductState extends State<MyProductPage> {
                           );
                           BlocProvider.of<CatalogBloc>(context)
                               .add(UpdateProduct(
+                            catalog,
                             updatedProduct,
                             _imageFile?.path,
                           ));

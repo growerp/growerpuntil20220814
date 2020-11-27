@@ -46,9 +46,11 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
   final String message;
   final Authenticate authenticate;
   final Catalog catalog;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _CategoriesFormStateHeader(this.message, this.authenticate, this.catalog);
-
+  _CategoriesFormStateHeader(this.message, this.authenticate, this.catalog) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
@@ -56,6 +58,7 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
               title: companyLogo(context, authenticate, 'Category List'),
               automaticallyImplyLeading:
@@ -132,7 +135,7 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                       "Delete this category?");
                   if (result) {
                     BlocProvider.of<CatalogBloc>(context)
-                        .add(DeleteCategory(categories[index]));
+                        .add(DeleteCategory(catalog, categories[index]));
                     Navigator.pushNamed(context, CategoriesRoute,
                         arguments: FormArguments(
                             'Category deleted', authenticate, catalog));

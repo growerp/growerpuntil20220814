@@ -56,17 +56,20 @@ class _MyOrderState extends State<MyOrderPage> {
   List<User> customers;
   Product _selectedProduct;
   User _selectedCustomer;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MyOrderState(this.message, this.order);
-
+  _MyOrderState(this.message, this.order) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated)
         authenticate = state.authenticate;
       else
-        return loginFirst();
+        Container(child: Center(child: Text("Need to login first!")));
       return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
             automaticallyImplyLeading:
                 ResponsiveWrapper.of(context).isSmallerThan(TABLET),

@@ -55,8 +55,11 @@ class _MyCategoryState extends State<MyCategoryPage> {
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _MyCategoryState(this.message, this.category);
+  _MyCategoryState(this.message, this.category) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -94,6 +97,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
             automaticallyImplyLeading:
                 ResponsiveWrapper.of(context).isSmallerThan(TABLET),
@@ -138,7 +142,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
                   listener: (context, state) {
                 if (state is CatalogProblem) {
                   loading = false;
-                  updatedCategory = state.category;
+                  updatedCategory = state.newCategory;
                   HelperFunctions.showMessage(
                       context, '${state.errorMessage}', Colors.green);
                 }
@@ -249,6 +253,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
                           );
                           BlocProvider.of<CatalogBloc>(context)
                               .add(UpdateCategory(
+                            catalog,
                             updatedCategory,
                             _imageFile?.path,
                           ));

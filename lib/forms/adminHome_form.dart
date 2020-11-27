@@ -32,26 +32,11 @@ class AdminHome extends StatelessWidget {
   }
 }
 
-class DashBoard extends StatefulWidget {
+class DashBoard extends StatelessWidget {
   final String message;
-
-  const DashBoard(this.message);
-
-  @override
-  _DashBoardState createState() => _DashBoardState(message);
-}
-
-class _DashBoardState extends State<DashBoard> {
-  final String message;
-  _DashBoardState(this.message);
-
-  @override
-  void initState() {
-    Future<Null>.delayed(Duration(milliseconds: 0), () {
-      if (message != null)
-        HelperFunctions.showMessage(context, '$message', Colors.green);
-    });
-    super.initState();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  DashBoard([this.message]) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
   }
 
   @override
@@ -60,6 +45,7 @@ class _DashBoardState extends State<DashBoard> {
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
         return Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
@@ -109,6 +95,7 @@ class _DashBoardState extends State<DashBoard> {
       if (state is AuthUnauthenticated) {
         Authenticate authenticate = state.authenticate;
         return Scaffold(
+            key: _scaffoldKey,
             appBar: AppBar(
                 title: companyLogo(context, authenticate,
                     authenticate?.company?.name ?? 'Company??')),

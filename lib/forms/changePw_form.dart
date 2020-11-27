@@ -81,7 +81,7 @@ class _ChangePwEntryState extends State<ChangePwEntry> {
     return BlocListener<ChangePwBloc, ChangePwState>(
         listener: (context, state) {
       if (state is ChangePwFailure) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        Scaffold.of(context).showSnackBar(
           SnackBar(
             content: Text('${state.message}'),
             backgroundColor: Colors.red,

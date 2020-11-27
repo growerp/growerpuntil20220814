@@ -44,15 +44,18 @@ class UsersFormHeader extends StatefulWidget {
 class _UsersFormStateHeader extends State<UsersFormHeader> {
   final String message;
   final Authenticate authenticate;
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _UsersFormStateHeader([this.message, this.authenticate]);
-
+  _UsersFormStateHeader([this.message, this.authenticate]) {
+    HelperFunctions.showTopMessage(_scaffoldKey, message);
+  }
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return Scaffold(
+          key: _scaffoldKey,
           appBar: AppBar(
               title: companyLogo(context, authenticate, 'Company Users List'),
               automaticallyImplyLeading:
@@ -131,7 +134,7 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
                       "Delete this user?");
                   if (result) {
                     BlocProvider.of<AuthBloc>(context)
-                        .add(DeleteEmployee(users[index]));
+                        .add(DeleteEmployee(authenticate, users[index]));
                     Navigator.pushNamed(context, UsersRoute,
                         arguments:
                             FormArguments('Employee deleted', authenticate));

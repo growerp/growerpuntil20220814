@@ -28,10 +28,10 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
 
   CatalogBloc(this.repos, this.authBloc) : super(CatalogInitial()) {
     authBlocSubscription = authBloc.listen((state) {
-      //print("====listening to authbloc in catalog bloc: state: $state");
+      print("====listening to authbloc in catalog bloc: state: $state");
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       if (state is AuthUnauthenticated) authenticate = state.authenticate;
-      if (authenticate != null && catalog == null) add(LoadCatalog());
+      if (authenticate != null) add(LoadCatalog());
     });
   }
   @override
@@ -44,11 +44,12 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
   Stream<CatalogState> mapEventToState(CatalogEvent event) async* {
     if (event is LoadCatalog) {
       yield CatalogLoading();
-      dynamic result = await repos.getCatalog(authenticate?.company?.partyId);
-      if (result is Catalog) {
-        catalog = result;
-        yield CatalogLoaded(catalog: catalog);
-      } else
+      String companyPartyId = authenticate?.company?.partyId;
+      print("===catalog, authenticate: $authenticate");
+      dynamic result = await repos.getCatalog(companyPartyId);
+      if (result is Catalog)
+        yield CatalogLoaded(catalog: result);
+      else
         yield CatalogProblem(errorMessage: result);
     } else if (event is UpdateProduct) {
       yield CatalogLoading(
@@ -58,29 +59,30 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
           await repos.updateProduct(event.product, event.imagePath);
       if (result is Product) {
         if (event.product?.productId == null)
-          catalog.products?.add(result);
+          event.catalog.products?.add(event.product);
         else {
-          int index = catalog.products
+          int index = event.catalog.products
               .indexWhere((prod) => prod.productId == result.productId);
-          catalog.products.replaceRange(index, index + 1, [result]);
+          event.catalog.products.replaceRange(index, index + 1, [result]);
         }
         yield CatalogLoaded(
-            catalog: catalog,
+            catalog: event.catalog,
             message: event.product.productId == null
-                ? 'Product $result added'
-                : 'Product $result updated');
+                ? 'Product added'
+                : 'Product updated');
       } else {
-        yield CatalogProblem(product: event.product, errorMessage: result);
+        yield CatalogProblem(newProduct: event.product, errorMessage: result);
       }
     } else if (event is DeleteProduct) {
-      yield CatalogLoading("Deleting product ${event.product}");
+      yield CatalogLoading("Deleting product ${event.product.productId}");
       dynamic result = await repos.deleteProduct(event.product.productId);
       if (result == event.product.productId) {
-        int index =
-            catalog.products.indexWhere((prod) => prod.productId == result);
-        catalog.products.removeAt(index);
+        List categories = event.catalog.categories;
+        int index = categories.indexWhere((cat) => cat.productId == result);
+        categories.removeAt(index);
         yield CatalogLoaded(
-            catalog: catalog, message: 'Product ${event.product} deleted');
+            catalog: event.catalog,
+            message: 'Product ${event.product} deleted');
       }
     } else if (event is UpdateCategory) {
       yield CatalogLoading(
@@ -90,32 +92,30 @@ class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
           await repos.updateCategory(event.category, event.imagePath);
       if (result is ProductCategory) {
         if (event.category?.categoryId == null) {
-          catalog.categories.add(result);
+          event.catalog.categories.add(event.category);
         } else {
-          int index = catalog.categories
+          int index = event.catalog.categories
               .indexWhere((cat) => cat.categoryId == result.categoryId);
-          catalog.categories.replaceRange(index, index + 1, [result]);
+          event.catalog.categories.replaceRange(index, index + 1, [result]);
         }
         yield CatalogLoaded(
-            catalog: catalog,
-            category: result,
+            catalog: event.catalog,
             message: event.category.categoryId == null
                 ? 'Category added'
                 : 'Category updated');
       } else {
-        yield CatalogProblem(category: event.category, errorMessage: result);
+        yield CatalogProblem(newCategory: event.category, errorMessage: result);
       }
     } else if (event is DeleteCategory) {
       yield CatalogLoading("Deleting category ${event.category}");
       dynamic result = await repos.deleteCategory(event.category.categoryId);
       if (result == event.category.categoryId) {
-        int index =
-            catalog.categories.indexWhere((cat) => cat.categoryId == result);
-        catalog.categories.removeAt(index);
+        List categories = event.catalog.categories;
+        int index = categories.indexWhere((cat) => cat.categoryId == result);
+        categories.removeAt(index);
         yield CatalogLoaded(
-            catalog: catalog, message: 'Category ${event.category} deleted');
-      } else {
-        yield CatalogProblem(category: event.category, errorMessage: result);
+            catalog: event.catalog,
+            message: 'Category ${event.category} deleted');
       }
     }
   }
@@ -134,33 +134,37 @@ class LoadCatalog extends CatalogEvent {
 }
 
 class DeleteProduct extends CatalogEvent {
+  final Catalog catalog;
   final Product product;
-  DeleteProduct(this.product);
+  DeleteProduct(this.catalog, this.product);
   @override
-  String toString() => "DeleteProduct: $product";
+  String toString() => "DeleteProduct: $product in $catalog";
 }
 
 class UpdateProduct extends CatalogEvent {
+  final Catalog catalog;
   final Product product;
   final String imagePath;
-  UpdateProduct(this.product, this.imagePath);
+  UpdateProduct(this.catalog, this.product, this.imagePath);
   @override
-  String toString() => "UpdateProduct: $product";
+  String toString() => "UpdateProduct: $product in $catalog";
 }
 
 class DeleteCategory extends CatalogEvent {
+  final Catalog catalog;
   final ProductCategory category;
-  DeleteCategory(this.category);
+  DeleteCategory(this.catalog, this.category);
   @override
-  String toString() => "DeleteCategory: $category";
+  String toString() => "DeleteCategory: $category in $catalog";
 }
 
 class UpdateCategory extends CatalogEvent {
+  final Catalog catalog;
   final ProductCategory category;
   final String imagePath;
-  UpdateCategory(this.category, this.imagePath);
+  UpdateCategory(this.catalog, this.category, this.imagePath);
   @override
-  String toString() => "UpdateCategory: $category";
+  String toString() => "UpdateCategory: $category in $catalog";
 }
 
 // ################## state ###################
@@ -195,10 +199,10 @@ class CatalogLoaded extends CatalogState {
 
 class CatalogProblem extends CatalogState {
   final String errorMessage;
-  final Product product;
-  final ProductCategory category;
+  final Product newProduct;
+  final ProductCategory newCategory;
 
-  const CatalogProblem({this.errorMessage, this.product, this.category});
+  const CatalogProblem({this.errorMessage, this.newProduct, this.newCategory});
 
   @override
   String toString() => 'CatalogProblem { error: $errorMessage }';
