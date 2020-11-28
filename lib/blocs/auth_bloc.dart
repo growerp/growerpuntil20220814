@@ -13,6 +13,7 @@
  */
 
 import 'dart:async';
+import 'package:admin/blocs/@blocs.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -24,9 +25,11 @@ import '../models/@models.dart';
 /// keeps the token and apiKey in the [Authenticate] class.
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final repos;
+  final CatalogBloc catalogBloc;
+  final CrmBloc crmBloc;
   Authenticate authenticate;
 
-  AuthBloc(this.repos)
+  AuthBloc(this.repos, this.catalogBloc, this.crmBloc)
       : assert(repos != null),
         super(AuthInitial());
 
@@ -58,6 +61,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // print("=====checkapiKey result: $result");
         if (result is bool && result) {
           // print("===11====");
+          catalogBloc.add(LoadCatalog(authenticate.company.partyId));
+          crmBloc.add(LoadCrm(authenticate.company.partyId));
           return AuthAuthenticated(authenticate);
         } else {
           //print("===12====");
@@ -65,6 +70,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           repos.setApikey(null);
           //print("===13====");
           await repos.persistAuthenticate(authenticate);
+          catalogBloc.add(LoadCatalog(authenticate.company.partyId));
           return AuthUnauthenticated(authenticate);
         }
       }
@@ -89,12 +95,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else {
           //print("===3====${authenticate?.apiKey}");
           await findDefaultCompany();
+          // only load crmbloc when logged in
           yield await checkApikey();
         }
       }
     } else if (event is LoggedIn) {
       yield AuthLoading();
       await repos.persistAuthenticate(event.authenticate);
+      // only load crmbloc when logged in
+      crmBloc.add(LoadCrm(authenticate.company.partyId));
       yield AuthAuthenticated(event.authenticate, "Successfully logged in");
     } else if (event is Logout) {
       yield AuthLoading();
@@ -216,7 +225,7 @@ class LoggedIn extends AuthEvent {
   @override
   List<Object> get props => [authenticate.user.name];
   @override
-  String toString() => 'Auth Logged in with userName: ${authenticate.user}';
+  String toString() => 'Auth Logged in with ${authenticate.user}';
 }
 
 class ResetPassword extends AuthEvent {
@@ -225,7 +234,7 @@ class ResetPassword extends AuthEvent {
   @override
   List<Object> get props => [username];
   @override
-  String toString() => 'ResetPassword userName/email: $username';
+  String toString() => 'ResetPassword with $username';
 }
 
 class LoggingOut extends AuthEvent {
@@ -234,7 +243,7 @@ class LoggingOut extends AuthEvent {
   @override
   List<Object> get props => [authenticate];
   @override
-  String toString() => 'loggedOut userName: ${authenticate?.user?.name}';
+  String toString() => 'loggedOut with: ${authenticate?.user?.name}';
 }
 
 class UploadImage extends AuthEvent {

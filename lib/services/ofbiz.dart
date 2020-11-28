@@ -299,11 +299,12 @@ class Ofbiz {
     return null;
   }
 
-  Future<dynamic> getUser(String partyId) async {
+  Future<dynamic> getUser({String userPartyId, String userGroupId}) async {
     try {
       Response response = await client.get('services/getUsers100?inParams=' +
-          Uri.encodeComponent('{"userPartyId": "$partyId" }'));
-      if (partyId == null)
+          Uri.encodeComponent(
+              '{"userPartyId": "$userPartyId", "usergroupId"" "$userGroupId" }'));
+      if (userPartyId == null)
         return usersFromJson(getResponseData(response));
       else {
         return userFromJson(getResponseData(response));

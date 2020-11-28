@@ -37,28 +37,21 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   CartBloc(this.authBloc, this.orderBloc, this.catalogBloc, this.crmBloc)
       : super(CartInitial()) {
     catalogBlocSubscription = catalogBloc.listen((state) {
-      print("====catbloc listen : $state");
       if (state is CatalogLoaded) {
         catalog = state.catalog;
-        add(CatalogUpdated((catalogBloc.state as CatalogLoaded).catalog));
       }
     });
     authBlocSubscription = authBloc.listen((state) {
-      print("====authbloc listen : $state");
       if (state is AuthAuthenticated) {
         authenticate = state.authenticate;
-        add(AuthUpdated((authBloc.state as AuthAuthenticated).authenticate));
       }
       if (state is AuthUnauthenticated) {
         authenticate = state.authenticate;
-        add(AuthUpdated((authBloc.state as AuthUnauthenticated).authenticate));
       }
     });
     crmBlocSubscription = crmBloc.listen((state) {
-      print("====crmbloc listen : $state");
       if (state is CrmLoaded) {
         crmUsers = state.crmUsers;
-        add(CrmUpdated((crmBloc.state as CrmLoaded).crmUsers));
       }
     });
   }
@@ -73,6 +66,9 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   @override
   Stream<CartState> mapEventToState(CartEvent event) async* {
     if (event is LoadCart) {
+      yield CartLoading();
+      catalog = catalogBloc.catalog;
+      crmUsers = crmBloc.crmUsers;
       order = event.order != null ? event.order : order;
       yield CartLoaded(authenticate, order, crmUsers, catalog?.products,
           "cart initial load.");
@@ -109,21 +105,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       } catch (e) {
         yield CartProblem(e.toString());
       }
-    } else if (event is CatalogUpdated) {
-      print("====catalog updated");
-      yield CartLoading();
-      yield CartLoaded(
-          authenticate, order, crmUsers, catalog?.products, "catalog updated");
-    } else if (event is CrmUpdated) {
-      yield CartLoading();
-      print("=====crm updated");
-      yield CartLoaded(
-          authenticate, order, crmUsers, catalog?.products, "crm updated");
-    } else if (event is AuthUpdated) {
-      yield CartLoading();
-      print("=====auth updated");
-      yield CartLoaded(
-          authenticate, order, crmUsers, catalog?.products, "auth updated");
     }
   }
 }

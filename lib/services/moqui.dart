@@ -212,6 +212,7 @@ class Moqui {
         'password': password,
         'moquiSessionToken': this.sessionToken
       });
+      print("======moqui repos: $response");
       dynamic result = jsonDecode(response.toString());
       if (result['passwordChange'] == 'true') return 'passwordChange';
       this.sessionToken = result['moquiSessionToken'];
@@ -278,11 +279,14 @@ class Moqui {
     return null;
   }
 
-  Future<dynamic> getUser({String partyId, String userGroupId}) async {
+  Future<dynamic> getUser({String userPartyId, String userGroupId}) async {
     try {
       Response response = await client.get('rest/s1/growerp/100/User',
-          queryParameters: {'partyId': partyId, 'userGroupId': userGroupId});
-      if (partyId == null)
+          queryParameters: {
+            'userPartyId': userPartyId,
+            'userGroupId': userGroupId
+          });
+      if (userPartyId == null)
         return usersFromJson(response.toString());
       else {
         return userFromJson(response.toString());

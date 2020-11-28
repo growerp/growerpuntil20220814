@@ -17,35 +17,22 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 import '../models/@models.dart';
-import '@blocs.dart';
 
 class CatalogBloc extends Bloc<CatalogEvent, CatalogState> {
   final repos;
-  final AuthBloc authBloc;
-  StreamSubscription authBlocSubscription;
   Catalog catalog;
-  Authenticate authenticate;
 
-  CatalogBloc(this.repos, this.authBloc) : super(CatalogInitial()) {
-    authBlocSubscription = authBloc.listen((state) {
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-    });
-  }
-  @override
-  Future<void> close() {
-    authBlocSubscription.cancel();
-    return super.close();
-  }
-
+  CatalogBloc(this.repos) : super(CatalogInitial());
   @override
   Stream<CatalogState> mapEventToState(CatalogEvent event) async* {
     if (event is LoadCatalog) {
-      yield CatalogLoading();
-      String companyPartyId = authenticate?.company?.partyId;
+      yield CatalogLoading("loading from company: ${event.companyPartyId}");
+      String companyPartyId = event.companyPartyId;
       dynamic result = await repos.getCatalog(companyPartyId);
-      if (result is Catalog)
+      if (result is Catalog) {
+        catalog = result;
         yield CatalogLoaded(catalog: result);
-      else
+      } else
         yield CatalogProblem(errorMessage: result);
     } else if (event is UpdateProduct) {
       yield CatalogLoading(
@@ -126,6 +113,9 @@ abstract class CatalogEvent extends Equatable {
 }
 
 class LoadCatalog extends CatalogEvent {
+  final String companyPartyId;
+  LoadCatalog([this.companyPartyId]);
+  @override
   String toString() => "Loadcatalog: loading products and categories";
 }
 

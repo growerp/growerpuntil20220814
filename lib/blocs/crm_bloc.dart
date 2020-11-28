@@ -15,13 +15,14 @@ class CrmBloc extends Bloc<CrmEvent, CrmState> {
   Stream<CrmState> mapEventToState(
     CrmEvent event,
   ) async* {
-    if (event is CrmLoad) {
+    if (event is LoadCrm) {
       yield CrmLoading('updating');
-      dynamic crmUsers = await repos.getUser(userGroupId: 'GROWERP_M_CUSTOMER');
-      if (crmUsers is String) {
-        yield CrmProblem(crmUsers);
+      dynamic result = await repos.getUser(userGroupId: 'GROWERP_M_CUSTOMER');
+      if (result is List<User>) {
+        crmUsers = result;
+        yield CrmLoaded(result);
       } else {
-        yield CrmLoaded(crmUsers);
+        yield CrmProblem(result);
       }
     } else if (event is UpdateCrmUser) {
       yield CrmLoading(
@@ -64,20 +65,25 @@ abstract class CrmEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class CrmLoad extends CrmEvent {}
+class LoadCrm extends CrmEvent {
+  final String companyPartyId;
+  LoadCrm(this.companyPartyId);
+  @override
+  String toString() => 'LoadCrm using company: $companyPartyId';
+}
 
 class UpdateCrmUser extends CrmEvent {
   final User crmUser;
   UpdateCrmUser(this.crmUser);
   @override
-  String toString() => 'Create/Update User { $crmUser }';
+  String toString() => 'Create/Update CrmUser { $crmUser }';
 }
 
 class DeleteCrmUser extends CrmEvent {
   final User crmUser;
   DeleteCrmUser(this.crmUser);
   @override
-  String toString() => 'Delete User { $crmUser }';
+  String toString() => 'Delete CrmUser { $crmUser }';
 }
 
 //##################### state ##########################
@@ -91,15 +97,16 @@ class CrmInitial extends CrmState {}
 
 class CrmLoading extends CrmState {
   final String message;
-
   CrmLoading(this.message);
+  @override
+  String toString() => 'CrmLoading: { $message }';
 }
 
 class CrmProblem extends CrmState {
   final String errorMessage;
   CrmProblem(this.errorMessage);
   @override
-  String toString() => 'CRM problem { errMsg: $errorMessage }';
+  String toString() => 'CrmProblem { $errorMessage }';
 }
 
 class CrmLoaded extends CrmState {
@@ -107,5 +114,5 @@ class CrmLoaded extends CrmState {
   final String message;
   CrmLoaded(this.crmUsers, [this.message]);
   @override
-  String toString() => 'CRM loaded { crmUsers: ${crmUsers?.length} }';
+  String toString() => 'CrmLoaded { crmUsers#: ${crmUsers?.length} }';
 }
