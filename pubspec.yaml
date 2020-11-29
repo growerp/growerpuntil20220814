@@ -38,5 +38,6 @@ flutter:
 # from https://www.flaticon.com/
   assets:
     - assets/cfg/
+    - assets/images/
     - assets/
     - ./

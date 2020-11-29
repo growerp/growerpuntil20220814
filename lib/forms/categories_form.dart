@@ -26,30 +26,29 @@ class CategoriesForm extends StatelessWidget {
   CategoriesForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (CategoriesFormHeader(
-        formArguments.message, formArguments.object, formArguments.detail));
-    return ShowNavigationRail(a(formArguments), 4, formArguments.object);
+    var a = (formArguments) => (CategoriesFormHeader(formArguments.message));
+    return ShowNavigationRail(a(formArguments), 4);
   }
 }
 
 class CategoriesFormHeader extends StatefulWidget {
   final String message;
-  final Authenticate authenticate;
-  final Catalog catalog;
-  const CategoriesFormHeader(this.message, this.authenticate, this.catalog);
+  const CategoriesFormHeader(this.message);
   @override
   _CategoriesFormStateHeader createState() =>
-      _CategoriesFormStateHeader(message, authenticate, catalog);
+      _CategoriesFormStateHeader(message);
 }
 
 class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
   final String message;
-  final Authenticate authenticate;
-  final Catalog catalog;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
-  _CategoriesFormStateHeader(this.message, this.authenticate, this.catalog) {
+  Authenticate authenticate;
+  Catalog catalog;
+  List<ProductCategory> categories;
+
+  _CategoriesFormStateHeader(this.message) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   @override
@@ -89,14 +88,16 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                       HelperFunctions.showMessage(
                           context, '${state.message}', Colors.green);
                   }, builder: (context, state) {
-                    if (state is CatalogLoaded) catalog = state.catalog;
+                    if (state is CatalogLoaded) {
+                      catalog = state.catalog;
+                      categories = catalog.categories;
+                    }
                     return categoryList(catalog);
                   }))));
     });
   }
 
   Widget categoryList(catalog) {
-    List<ProductCategory> categories = catalog?.categories;
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(
@@ -138,7 +139,7 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                       "Delete this category?");
                   if (result) {
                     BlocProvider.of<CatalogBloc>(context)
-                        .add(DeleteCategory(catalog, categories[index]));
+                        .add(DeleteCategory(categories[index]));
                     Navigator.pushNamed(context, CategoriesRoute,
                         arguments: FormArguments(
                             'Category deleted', authenticate, catalog));

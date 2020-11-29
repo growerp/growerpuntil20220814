@@ -37,6 +37,10 @@ void main() async {
   String username = randomString4 + emailAddress;
   String password = "qqqqqq9!";
 
+  User createdCustomer;
+  Product createdProduct;
+  Order createdOrder;
+
   client = Dio();
 
   client.options.baseUrl = 'https://localhost:8443/rest/';
@@ -301,6 +305,21 @@ void main() async {
         expect(null, e?.response?.data);
       }
     });
+    test('create customer', () async {
+      try {
+        customer.email = randomString4 + customer.email;
+        customer.name = randomString4 + customer.name;
+        Response response = await client.post('services/createUser100',
+            data: userToJson(customer));
+        User result = userFromJson(getResponseData(response));
+        // print("====result of user update: ${result.toString()}");
+        createdCustomer = result;
+        customer.partyId = result.partyId;
+        expect(userToJson(customer), userToJson(result));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
   });
 
   group('Category operations >>>>> ', () {
@@ -376,6 +395,7 @@ void main() async {
         result = productFromJson(getResponseData(response));
         product.productId = result.productId;
         product.image = result.image;
+        createdProduct = product;
         expect(productToJson(result), productToJson(product));
       } on DioError catch (e) {
         expect(null, e?.response?.data);
@@ -415,6 +435,47 @@ void main() async {
         Product result = productFromJson(getResponseData(response));
         // print("====result of product update: ${result.toString()}");
         expect(result?.image, isNotEmpty);
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+  });
+  group('Order operations >>>>> ', () {
+    test('create/get  order', () async {
+      try {
+        order.customerPartyId = createdCustomer.partyId;
+        order.orderItems[0].productId = createdProduct.productId;
+        order.orderItems[0].description = createdProduct.productName;
+        order.orderItems[1].productId = createdProduct.productId;
+        order.orderItems[1].description = createdProduct.productName;
+        Response response = await client.post('services/createOrder100',
+            data: orderToJson(order));
+        createdOrder = orderFromJson(getResponseData(response));
+        order.orderId = createdOrder.orderId;
+        order.placedDate = createdOrder.placedDate;
+        order.placedTime = createdOrder.placedTime;
+        order.firstName = createdCustomer.firstName;
+        order.lastName = createdCustomer.lastName;
+        order.email = createdCustomer.email;
+        order.grandTotal = createdOrder.grandTotal;
+        order.orderItems[0].orderItemSeqId =
+            createdOrder.orderItems[0].orderItemSeqId;
+        order.orderItems[1].orderItemSeqId =
+            createdOrder.orderItems[1].orderItemSeqId;
+        expect(orderToJson(order), orderToJson(createdOrder));
+      } on DioError catch (e) {
+        expect(null, e?.response?.data);
+      }
+    });
+    test('get orderList', () async {
+      try {
+        Response response =
+            await client.get('services/getOrders100?inParams={}');
+        //print("====$response====");
+        List<Order> orders = ordersFromJson(getResponseData(response));
+        //print("===orders# ${orders.length}");
+        expect(orders.length, 1);
+        expect(orderToJson(createdOrder), orderToJson(orders[0]));
       } on DioError catch (e) {
         expect(null, e?.response?.data);
       }

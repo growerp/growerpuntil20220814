@@ -110,26 +110,31 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } else if (event is LoggedIn) {
       yield AuthLoading();
       await repos.persistAuthenticate(event.authenticate);
+      authenticate = event.authenticate;
       // only load crmbloc when logged in
-      if (kIsWeb || !Platform.environment.containsKey('FLUTTER_TEST'))
+      if (kIsWeb || !Platform.environment.containsKey('FLUTTER_TEST')) {
+        catalogBloc.add(LoadCatalog(authenticate.company.partyId));
         crmBloc.add(LoadCrm(authenticate.company.partyId));
-      yield AuthAuthenticated(event.authenticate, "Successfully logged in");
+      }
+      yield AuthAuthenticated(authenticate, "Successfully logged in");
     } else if (event is Logout) {
       yield AuthLoading();
-      final Authenticate authenticate = await repos.logout();
+      authenticate = await repos.logout();
       yield AuthUnauthenticated(authenticate, "you are logged out now");
     } else if (event is ResetPassword) {
       await repos.resetPassword(username: event.username);
     } else if (event is UpdateAuth) {
-      await repos.persistAuthenticate(event.authenticate);
-      yield AuthUnauthenticated(event.authenticate);
+      authenticate = await repos.logout();
+      yield AuthLoading();
+      await repos.persistAuthenticate(authenticate);
+      yield AuthUnauthenticated(authenticate);
     } else if (event is UpdateCompany) {
       yield AuthLoading();
       dynamic result =
           await repos.updateCompany(event.company, event.imagePath);
       if (result is Company) {
-        event.authenticate.company = result;
-        yield AuthAuthenticated(event.authenticate, 'Company updated');
+        authenticate.company = result;
+        yield AuthAuthenticated(authenticate, 'Company updated');
       } else {
         yield AuthProblem(result, event.company);
       }
@@ -138,9 +143,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           " user ${event.user}");
       dynamic result = await repos.updateUser(event.user, event.imagePath);
       if (result is User) {
-        if (event.authenticate.user.partyId == result.partyId)
-          event.authenticate.user = result;
-        List<User> users = event.authenticate.company.employees;
+        if (event.user.partyId == result.partyId) authenticate.user = result;
+        List<User> users = authenticate.company.employees;
         if (event.user.partyId == null)
           users.add(result);
         else {
@@ -149,8 +153,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               users.indexWhere((user) => user.partyId == result.partyId);
           users.replaceRange(index, index + 1, [result]);
         }
-        await repos.persistAuthenticate(event.authenticate);
-        yield AuthAuthenticated(event.authenticate,
+        await repos.persistAuthenticate(authenticate);
+        yield AuthAuthenticated(authenticate,
             'User ' + (event.user?.partyId == null ? 'Added' : 'Updated'));
       } else {
         yield AuthProblem(result, null, event.user);
@@ -159,12 +163,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthLoading("Deleting user ${event.user}");
       dynamic result = await repos.deleteUser(event.user.partyId);
       if (result == event.user.partyId) {
-        List users = event.authenticate.company.employees;
+        List users = authenticate.company.employees;
         int index = users.indexWhere((user) => user.partyId == result);
         users.removeAt(index);
-        await repos.persistAuthenticate(event.authenticate);
-        yield AuthAuthenticated(
-            event.authenticate, 'User ${event.user} deleted');
+        await repos.persistAuthenticate(authenticate);
+        yield AuthAuthenticated(authenticate, 'User ${event.user} deleted');
       } else {
         yield AuthProblem(result);
       }
@@ -204,18 +207,16 @@ class UpdateCompany extends AuthEvent {
 }
 
 class UpdateEmployee extends AuthEvent {
-  final Authenticate authenticate;
   final User user;
   final String imagePath;
-  UpdateEmployee(this.authenticate, this.user, this.imagePath);
+  UpdateEmployee(this.user, this.imagePath);
   @override
   String toString() => (user?.partyId == null ? 'Add' : 'Update') + '$user';
 }
 
 class DeleteEmployee extends AuthEvent {
-  final Authenticate authenticate;
   final User user;
-  DeleteEmployee(this.authenticate, this.user);
+  DeleteEmployee(this.user);
   @override
   String toString() => 'Update User $user';
 }

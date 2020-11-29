@@ -71,6 +71,6 @@ class Product {
         "image": image != null ? base64.encode(image) : null,
       };
 
-  String toString() =>
-      'Product name: $productName price: $price category: $categoryName';
+  String toString() => 'Product name: $productName[$productId] price: $price '
+      'category: $categoryName[$categoryId]';
 }

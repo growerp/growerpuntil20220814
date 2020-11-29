@@ -184,7 +184,7 @@ class Ofbiz {
           'services/getCompanies100?inParams=' +
               Uri.encodeComponent(
                   '{"classificationId": "$classificationId" }'));
-      if (getResponseData(response) == '{}') return null;
+      if (getResponseData(response) == '{}') return List<Company>();
       return companiesFromJson(getResponseData(response));
     } catch (e) {
       return responseMessage(e);
@@ -416,16 +416,6 @@ class Ofbiz {
     }
   }
 
-  Future<dynamic> createOrder(Order order) async {
-    try {
-      Response response = await client.post('services/createOrder',
-          data: {'orderJson': orderToJson(order)});
-      return 'orderId' + response.data["orderId"];
-    } catch (e) {
-      return responseMessage(e);
-    }
-  }
-
   Future<dynamic> updateCategory(
       ProductCategory category, String imagePath) async {
     // no categoryId is add
@@ -499,6 +489,26 @@ class Ofbiz {
       Response response = await client
           .post('services/deleteProduct100', data: {'productId': '$productId'});
       return getResponseData(response, "productId");
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> createOrder(Order order) async {
+    try {
+      Response response = await client.post('services/createOrder100',
+          data: orderToJson(order));
+      return orderFromJson(getResponseData(response));
+    } catch (e) {
+      return responseMessage(e);
+    }
+  }
+
+  Future<dynamic> getOrders() async {
+    try {
+      Response response = await client.get('services/getOrders100?inParams={}');
+      if (getResponseData(response) == '{}') return List<Order>();
+      return ordersFromJson(getResponseData(response));
     } catch (e) {
       return responseMessage(e);
     }

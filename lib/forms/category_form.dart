@@ -257,7 +257,6 @@ class _MyCategoryState extends State<MyCategoryPage> {
                           );
                           BlocProvider.of<CatalogBloc>(context)
                               .add(UpdateCategory(
-                            catalog,
                             updatedCategory,
                             _imageFile?.path,
                           ));

@@ -26,35 +26,32 @@ class ProductsForm extends StatelessWidget {
   ProductsForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (ProductsFormHeader(
-        formArguments.message, formArguments.object, formArguments.detail));
-    return ShowNavigationRail(a(formArguments), 3, formArguments.object);
+    var a = (formArguments) => (ProductsFormHeader(formArguments.message));
+    return ShowNavigationRail(a(formArguments), 3);
   }
 }
 
 class ProductsFormHeader extends StatefulWidget {
   final String message;
-  final Authenticate authenticate;
-  final Catalog catalog;
-  const ProductsFormHeader(this.message, this.authenticate, this.catalog);
+  const ProductsFormHeader(this.message);
   @override
-  _ProductsFormStateHeader createState() =>
-      _ProductsFormStateHeader(message, authenticate, catalog);
+  _ProductsFormStateHeader createState() => _ProductsFormStateHeader(message);
 }
 
 class _ProductsFormStateHeader extends State<ProductsFormHeader> {
   final String message;
-  final Authenticate authenticate;
-  final Catalog catalog;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _ProductsFormStateHeader(this.message, this.authenticate, this.catalog) {
+
+  Authenticate authenticate;
+  Catalog catalog;
+  List<Product> products;
+
+  _ProductsFormStateHeader(this.message) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate = this.authenticate;
-    Catalog catalog = this.catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -91,14 +88,16 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                       HelperFunctions.showMessage(
                           context, '${state.message}', Colors.green);
                   }, builder: (context, state) {
-                    if (state is CatalogLoaded) catalog = state.catalog;
-                    return productList(catalog);
+                    if (state is CatalogLoaded) {
+                      catalog = state.catalog;
+                      products = catalog.products;
+                    }
+                    return productList();
                   }))));
     });
   }
 
-  Widget productList(catalog) {
-    List<Product> products = catalog?.products;
+  Widget productList() {
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(
@@ -141,7 +140,7 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                       "${products[index].productName}", "Delete this product?");
                   if (result) {
                     BlocProvider.of<CatalogBloc>(context)
-                        .add(DeleteProduct(catalog, products[index]));
+                        .add(DeleteProduct(products[index]));
                     Navigator.pushNamed(context, ProductsRoute,
                         arguments: FormArguments(
                             'product deleted', authenticate, catalog));

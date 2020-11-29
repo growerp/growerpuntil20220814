@@ -374,6 +374,7 @@ _addCustomerDialog(BuildContext context) async {
                             firstName: _firstNameController.text,
                             lastName: _lastNameController.text,
                             email: _emailController.text,
+                            name: _emailController.text,
                           );
                           Navigator.of(context).pop(updatedUser);
                         }

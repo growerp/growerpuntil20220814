@@ -317,7 +317,6 @@ class _MyUserState extends State<MyUserPage> {
                                 .toString(),
                           );
                           BlocProvider.of<AuthBloc>(context).add(UpdateEmployee(
-                            authenticate,
                             updatedUser,
                             _imageFile?.path,
                           ));

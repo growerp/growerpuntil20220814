@@ -19,7 +19,7 @@ class SplashForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Image.asset('assets/growerp.jpg'),
+        child: Image.asset('assets/images/growerp.jpg'),
       ),
     );
   }

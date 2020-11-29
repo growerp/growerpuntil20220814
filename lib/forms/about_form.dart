@@ -36,7 +36,7 @@ class AboutFormHeader extends StatelessWidget {
         title: Text('About GrowERP and this Admin app'),
         applicationVersion: 'Version $version, build #$build',
         applicationIcon: Image(
-          image: AssetImage('assets/growerp.png'),
+          image: AssetImage('assets/images/growerp.png'),
           height: 100,
           width: 200,
         ),

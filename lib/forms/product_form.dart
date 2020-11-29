@@ -150,9 +150,8 @@ class _MyProductState extends State<MyProductPage> {
                       listener: (context, state) {
                     if (state is CatalogProblem) {
                       loading = false;
-                      updatedProduct = state.newProduct;
                       HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.green);
+                          context, '${state.errorMessage}', Colors.red);
                     }
                     if (state is CatalogLoading) {
                       loading = true;
@@ -294,6 +293,7 @@ class _MyProductState extends State<MyProductPage> {
                       child: Text(
                           product?.productId == null ? 'Create' : 'Update'),
                       onPressed: () {
+                        print("====${_selectedCategory.categoryId}");
                         if (_formKey.currentState.validate() && !loading) {
                           updatedProduct = Product(
                             productId: product?.productId,
@@ -304,7 +304,6 @@ class _MyProductState extends State<MyProductPage> {
                           );
                           BlocProvider.of<CatalogBloc>(context)
                               .add(UpdateProduct(
-                            catalog,
                             updatedProduct,
                             _imageFile?.path,
                           ));
