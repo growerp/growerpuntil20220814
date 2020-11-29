@@ -67,7 +67,7 @@ abstract class CrmEvent extends Equatable {
 
 class LoadCrm extends CrmEvent {
   final String companyPartyId;
-  LoadCrm(this.companyPartyId);
+  LoadCrm([this.companyPartyId]);
   @override
   String toString() => 'LoadCrm using company: $companyPartyId';
 }

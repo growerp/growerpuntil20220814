@@ -12,38 +12,48 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'dart:ffi';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:dio/dio.dart';
 import 'package:admin/blocs/@blocs.dart';
 import 'package:admin/services/@services.dart';
 import '../data.dart';
 
 class MockReposRepository extends Mock implements Moqui {}
 
+class MockCatalogBloc extends MockBloc<CatalogState> implements CatalogBloc {}
+
+class MockCrmBloc extends MockBloc<CrmState> implements CrmBloc {}
+
 void main() {
   MockReposRepository mockReposRepository;
+  MockCatalogBloc catalogBloc;
+  MockCrmBloc crmBloc;
 
   setUp(() {
     mockReposRepository = MockReposRepository();
   });
 
+  tearDown(() {
+    catalogBloc?.close();
+    crmBloc?.close();
+  });
+
   group('Authbloc test>>>', () {
-    blocTest(
-      'check initial state',
-      build: () => AuthBloc(mockReposRepository),
-      expect: <AuthState>[],
-    );
+    blocTest('check initial state',
+        build: () => AuthBloc(mockReposRepository, catalogBloc, crmBloc),
+        expect: []);
 
     blocTest(
       'succesful connection and Unauthenticated',
-      build: () => AuthBloc(mockReposRepository),
+      build: () => AuthBloc(mockReposRepository, catalogBloc, crmBloc),
       act: (bloc) async {
         when(mockReposRepository.getConnected()).thenAnswer((_) async => true);
         when(mockReposRepository.getAuthenticate())
             .thenAnswer((_) async => authenticateNoKey);
-        bloc.add(LoadAuth());
+        bloc..add(LoadAuth());
       },
       expect: <AuthState>[
         AuthLoading(),
@@ -52,7 +62,7 @@ void main() {
     );
     blocTest(
       'failed connection with ConnectionProblem',
-      build: () => AuthBloc(mockReposRepository),
+      build: () => AuthBloc(mockReposRepository, catalogBloc, crmBloc),
       act: (bloc) async {
         when(mockReposRepository.getConnected())
             .thenAnswer((_) async => errorMessage);
@@ -65,8 +75,8 @@ void main() {
     );
 
     blocTest(
-      'succesfull connection and Authenticated',
-      build: () => AuthBloc(mockReposRepository),
+      '???succesfull connection and Authenticated',
+      build: () => AuthBloc(mockReposRepository, catalogBloc, crmBloc),
       act: (bloc) async {
         when(mockReposRepository.getConnected()).thenAnswer((_) async => true);
         when(mockReposRepository.getAuthenticate())
@@ -81,7 +91,7 @@ void main() {
     );
     blocTest(
       'connection and login and logout',
-      build: () => AuthBloc(mockReposRepository),
+      build: () => AuthBloc(mockReposRepository, catalogBloc, crmBloc),
       act: (bloc) async {
         when(mockReposRepository.getConnected()).thenAnswer((_) async => true);
         when(mockReposRepository.getAuthenticate())
@@ -103,7 +113,7 @@ void main() {
     );
     blocTest(
       'succesful connection and register',
-      build: () => AuthBloc(mockReposRepository),
+      build: () => AuthBloc(mockReposRepository, catalogBloc, crmBloc),
       act: (bloc) async {
         when(mockReposRepository.getConnected()).thenAnswer((_) async => true);
         when(mockReposRepository.getAuthenticate())
@@ -119,16 +129,15 @@ void main() {
       ],
     );
 
-    dynamic result = Response;
     blocTest(
       'succesful connection login screen and reset password',
-      build: () => AuthBloc(mockReposRepository),
+      build: () => AuthBloc(mockReposRepository, catalogBloc, crmBloc),
       act: (bloc) async {
         when(mockReposRepository.getConnected()).thenAnswer((_) async => true);
         when(mockReposRepository.getAuthenticate())
             .thenAnswer((_) async => authenticateNoKey);
         when(mockReposRepository.resetPassword(username: 'dummyEmail'))
-            .thenAnswer((_) async => result);
+            .thenAnswer((_) async => true);
         bloc.add(LoadAuth());
         await bloc.add(ResetPassword(username: 'dummyEmail'));
       },

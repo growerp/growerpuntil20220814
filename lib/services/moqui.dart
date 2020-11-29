@@ -212,7 +212,6 @@ class Moqui {
         'password': password,
         'moquiSessionToken': this.sessionToken
       });
-      print("======moqui repos: $response");
       dynamic result = jsonDecode(response.toString());
       if (result['passwordChange'] == 'true') return 'passwordChange';
       this.sessionToken = result['moquiSessionToken'];
