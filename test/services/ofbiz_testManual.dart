@@ -177,7 +177,7 @@ void main() async {
     });
   });
 
-/*  group('Company operations >>>>> ', () {
+  group('Company operations >>>>> ', () {
     test('confirm existing data', () async {
       try {
         authenticate.company.image = null; // fill when want to change
@@ -357,7 +357,7 @@ void main() async {
       }
     });
   });
-*/
+
   group('Product operations >>>>> ', () {
     test('create  product', () async {
       try {

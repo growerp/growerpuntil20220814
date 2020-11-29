@@ -303,10 +303,13 @@ class Ofbiz {
     try {
       Response response = await client.get('services/getUsers100?inParams=' +
           Uri.encodeComponent(
-              '{"userPartyId": "$userPartyId", "usergroupId"" "$userGroupId" }'));
-      if (userPartyId == null)
+              '{"userPartyId": "$userPartyId", "usergroupId": "$userGroupId" }'));
+      print("===repos get customer: $response");
+      if (userPartyId == null) {
+        if (getResponseData(response) == "{}") return List<User>();
         return usersFromJson(getResponseData(response));
-      else {
+      } else {
+        if (getResponseData(response) == "{}") return User();
         return userFromJson(getResponseData(response));
       }
     } catch (e) {

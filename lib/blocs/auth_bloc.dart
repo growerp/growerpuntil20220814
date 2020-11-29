@@ -13,8 +13,9 @@
  */
 
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' show Platform;
 import 'package:admin/blocs/@blocs.dart';
+import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -62,11 +63,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         dynamic result = await repos.checkApikey();
         if (result is bool && result) {
           //print("===11====");
-          if (!Platform.environment
-              .containsKey('FLUTTER_TEST')) //ignore when test
+          if (kIsWeb || !Platform.environment.containsKey('FLUTTER_TEST')) {
+            //ignore when test
             catalogBloc.add(LoadCatalog(authenticate.company.partyId));
-          if (!Platform.environment.containsKey('FLUTTER_TEST'))
             crmBloc.add(LoadCrm(authenticate.company.partyId));
+          }
           return AuthAuthenticated(authenticate);
         } else {
           //print("===12====");
@@ -74,7 +75,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           repos.setApikey(null);
           //print("===13====");
           await repos.persistAuthenticate(authenticate);
-          if (!Platform.environment.containsKey('FLUTTER_TEST'))
+          if (kIsWeb || !Platform.environment.containsKey('FLUTTER_TEST'))
             catalogBloc.add(LoadCatalog(authenticate.company.partyId));
           return AuthUnauthenticated(authenticate);
         }
@@ -110,7 +111,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       yield AuthLoading();
       await repos.persistAuthenticate(event.authenticate);
       // only load crmbloc when logged in
-      if (!Platform.environment.containsKey('FLUTTER_TEST'))
+      if (kIsWeb || !Platform.environment.containsKey('FLUTTER_TEST'))
         crmBloc.add(LoadCrm(authenticate.company.partyId));
       yield AuthAuthenticated(event.authenticate, "Successfully logged in");
     } else if (event is Logout) {
