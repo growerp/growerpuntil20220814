@@ -304,7 +304,6 @@ class Ofbiz {
       Response response = await client.get('services/getUsers100?inParams=' +
           Uri.encodeComponent(
               '{"userPartyId": "$userPartyId", "usergroupId": "$userGroupId" }'));
-      print("===repos get customer: $response");
       if (userPartyId == null) {
         if (getResponseData(response) == "{}") return List<User>();
         return usersFromJson(getResponseData(response));
@@ -382,7 +381,6 @@ class Ofbiz {
       String catProdJson = prefs.getString('categoriesAndProducts');
       if (catProdJson != null) return catalogFromJson(catProdJson);
 */
-      print("====get catalog $companyPartyId");
       Response response = await client.get('services/getCatalog100?inParams=' +
           Uri.encodeComponent('{"companyPartyId": "$companyPartyId"}'));
       Catalog result = catalogFromJson(getResponseData(response));

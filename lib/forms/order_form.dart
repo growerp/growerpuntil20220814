@@ -123,9 +123,9 @@ class _MyOrderState extends State<MyOrderPage> {
 
   Widget _orderItemList() {
     List<OrderItem> items = updatedOrder?.orderItems;
-    _selectedCustomer ??= updatedOrder?.customerPartyId != null
-        ? customers
-            ?.firstWhere((x) => updatedOrder.customerPartyId == x.partyId)
+    _selectedCustomer ??= updatedOrder?.customerPartyId != null &&
+            customers.length > 0
+        ? customers.firstWhere((x) => updatedOrder.customerPartyId == x.partyId)
         : null;
     loading = false;
     return Center(
