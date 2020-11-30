@@ -126,8 +126,6 @@ class Ofbiz {
     if (e.response != null && e.response.data != null) {
       print("=====e.response: ${e.response.toString()}");
       print("=====e.response.data: ${e.response.data}");
-      if (e.response is Response)
-        errorDescription = e.response.data["errorMessage"];
     }
     print('==ofbiz.dart: returning error message: $errorDescription');
     return errorDescription;
