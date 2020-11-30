@@ -50,8 +50,10 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     });
     crmBlocSubscription = crmBloc.listen((state) {
+      print("====crm bloc new state: $state");
       if (state is CrmLoaded) {
         crmUsers = state.crmUsers;
+        add(CartCrmUpdated((crmBloc.state as CrmLoaded).crmUsers));
       }
     });
   }
@@ -105,6 +107,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       } catch (e) {
         yield CartProblem(e.toString());
       }
+    } else if (event is CartCrmUpdated) {
+      yield CartLoading();
+      crmUsers = event.crmUsers;
+      yield CartLoaded(
+          authenticate, order, crmUsers, catalog?.products, "cart updated");
     }
   }
 }
@@ -147,9 +154,9 @@ class CatalogUpdated extends CartEvent {
   String toString() => 'Updating cart with catalog: $catalog';
 }
 
-class CrmUpdated extends CartEvent {
+class CartCrmUpdated extends CartEvent {
   final List<User> crmUsers;
-  CrmUpdated(this.crmUsers);
+  CartCrmUpdated(this.crmUsers);
   @override
   String toString() => 'Updating cart with crm users#: ${crmUsers?.length}';
 }
@@ -183,11 +190,11 @@ class CartLoading extends CartState {
 }
 
 class CartLoaded extends CartState {
+  final Authenticate authenticate;
   final Order order;
   final List customers;
   final List products;
   final String message;
-  final Authenticate authenticate;
   const CartLoaded(this.authenticate, this.order, this.customers, this.products,
       [this.message]);
   Decimal get totalPrice {

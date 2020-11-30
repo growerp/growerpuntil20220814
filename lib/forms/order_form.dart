@@ -111,7 +111,7 @@ class _MyOrderState extends State<MyOrderPage> {
                 }, builder: (context, state) {
                   if (state is CartLoading)
                     return Center(child: CircularProgressIndicator());
-                  else if (state is CartLoaded) {
+                  if (state is CartLoaded) {
                     authenticate = state.authenticate;
                     customers = state.customers;
                     products = state.products;
