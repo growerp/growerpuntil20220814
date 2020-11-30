@@ -50,7 +50,6 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     });
     crmBlocSubscription = crmBloc.listen((state) {
-      print("====crm bloc new state: $state");
       if (state is CrmLoaded) {
         crmUsers = state.crmUsers;
         add(CartCrmUpdated((crmBloc.state as CrmLoaded).crmUsers));

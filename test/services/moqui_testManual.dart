@@ -162,7 +162,7 @@ void main() {
     });
   });
 
-/*  group('Image upload tests>>>>>', () {
+  group('Image upload tests>>>>>', () {
     test('upload image company', () async {
       await client.post('s1/growerp/100/Image', data: {
         'type': 'company',
@@ -183,7 +183,7 @@ void main() {
         'moquiSessionToken': sessionToken,
       });
       dynamic response = await client.get('s1/growerp/100/User',
-          queryParameters: {'partyId': loginAuth.user.partyId});
+          queryParameters: {'userPartyId': loginAuth.user.partyId});
       User user = userFromJson(response.toString());
       expect(user.image, isNotEmpty);
     });
@@ -239,7 +239,7 @@ void main() {
           'A reset password was sent');
     });
   });
-*/
+
   group('Order >>>>>', () {
     test('create/get order ', () async {
       client.options.headers['api_key'] = apiKey;
@@ -257,16 +257,10 @@ void main() {
         order.orderItems[0].productId = productId;
         order.orderItems[1].productId = productId;
         // create/get order;
-        print("===ordertosjson: ${orderToJson(order)}");
-        print("sending order");
         response = await client.post('s1/growerp/100/Order', data: {
           'order': orderToJson(order),
           'moquiSessionToken': sessionToken
         });
-        print("==1==order received =========");
-        print("===response: $response");
-        print("===reply====${orderFromJson(response.toString())}");
-        print("==2==order received ====?? not showing!=====");
         expect(orderToJson(order),
             orderToJson(orderFromJson(response.toString())));
       } catch (e) {}
