@@ -61,6 +61,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    String classificationId = GlobalConfiguration().get("classificationId");
     return MaterialApp(
         builder: (context, widget) => ResponsiveWrapper.builder(
             BouncingScrollWrapper.builder(context, widget),
@@ -82,9 +83,19 @@ class MyApp extends StatelessWidget {
             if (state is AuthLoading || state is AuthInitial)
               return SplashForm();
             if (state is AuthUnauthenticated &&
-                state.authenticate?.company == null)
-              return RegisterForm('No companies found in system, create one?');
-            return AdminHome(FormArguments("Welcome"));
+                state.authenticate?.company == null) {
+              if (classificationId == 'AppAdmin')
+                return RegisterForm(
+                    'No companies found in system, create one?');
+              else
+                return FatalErrorForm(
+                    "No $classificationId company found in system\n"
+                    "Go to the admin app to create one!");
+            }
+            if (classificationId == 'AppAdmin')
+              return AdminHome(FormArguments("Welcome"));
+            else
+              return FatalErrorForm("specific home screen not defined");
           },
         ));
   }
