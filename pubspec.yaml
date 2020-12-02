@@ -19,6 +19,21 @@ dependencies:
   about: ^1.1.2
   animations: ^1.0.0+5
   responsive_framework: ^0.0.8
+  ofbiz:
+    git:
+      url: git@github.com:growerp/growerp
+      ref: packages
+      path: ofbiz
+  moqui:
+    git:
+      url: git@github.com:growerp/growerp
+      ref: packages
+      path: moqui
+  models:
+    git:
+      url: git@github.com:growerp/growerp
+      ref: packages
+      path: models
 
 dev_dependencies:
   flutter_test:
