@@ -19,7 +19,7 @@ import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../models/@models.dart';
+import 'package:models/models.dart';
 
 /// Authbloc controls the connection to the backend
 ///
@@ -41,7 +41,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     Future<void> findDefaultCompany() async {
       //print("===15==1==");
-      dynamic result = await repos.getCompanies();
+      dynamic result = await repos.getCompanies(null);
       if (result is List<Company> && result.length > 0) {
         //print("===15==2==");
         authenticate = Authenticate(company: result[0], user: null);

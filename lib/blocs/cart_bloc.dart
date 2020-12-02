@@ -18,7 +18,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import '../models/@models.dart';
+import 'package:models/models.dart';
 import '../blocs/@blocs.dart';
 
 class CartBloc extends Bloc<CartEvent, CartState> {

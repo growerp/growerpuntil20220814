@@ -13,7 +13,7 @@
  */
 
 import 'package:flutter/material.dart';
-import '../models/@models.dart';
+import 'package:models/models.dart';
 import '../routing_constants.dart';
 
 Widget companyLogo(context, authenticate, title) {

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import '../models/@models.dart';
+import 'package:models/models.dart';
 
 class CrmBloc extends Bloc<CrmEvent, CrmState> {
   final repos;

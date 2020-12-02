@@ -18,7 +18,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:admin/blocs/@blocs.dart';
-import 'package:admin/services/@services.dart';
+import 'package:moqui/moqui.dart';
 import 'package:admin/forms/@forms.dart';
 import '../data.dart';
 

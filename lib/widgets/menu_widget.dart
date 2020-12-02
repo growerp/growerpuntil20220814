@@ -14,7 +14,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import '../models/@models.dart';
+import 'package:models/models.dart';
 import '../routing_constants.dart';
 
 Widget myDrawer(BuildContext context, Authenticate authenticate) {

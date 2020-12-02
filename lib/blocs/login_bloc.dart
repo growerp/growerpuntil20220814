@@ -16,7 +16,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import '../models/@models.dart';
+import 'package:models/models.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final repos;
@@ -32,7 +32,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginLoading();
       if (event.authenticate?.company?.partyId == null) {
         // no company selected yet so select one
-        dynamic companies = await repos.getCompanies();
+        dynamic companies = await repos.getCompanies(null);
         if (companies is List) {
           yield LoginLoaded(event.authenticate, companies);
         } else {
