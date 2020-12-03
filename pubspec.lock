@@ -141,6 +141,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  core:
+    dependency: "direct main"
+    description:
+      path: core
+      ref: packages
+      resolved-ref: "95611663cf81f9e9030acd8241b9a5854df25ce3"
+      url: "git@github.com:growerp/growerp"
+    source: git
+    version: "0.0.1"
   coverage:
     dependency: transitive
     description:
@@ -408,7 +417,7 @@ packages:
     description:
       path: moqui
       ref: packages
-      resolved-ref: cce9bba119d606213d48f7fb07a489323b8cb607
+      resolved-ref: "6909939c39bb3fe8b3117c5fa77f7774a151e191"
       url: "git@github.com:growerp/growerp"
     source: git
     version: "0.0.1"
@@ -445,7 +454,7 @@ packages:
     description:
       path: ofbiz
       ref: packages
-      resolved-ref: e99fd3a2345fed25cceedfcb4e910f4094dd58bd
+      resolved-ref: "6909939c39bb3fe8b3117c5fa77f7774a151e191"
       url: "git@github.com:growerp/growerp"
     source: git
     version: "0.0.1"

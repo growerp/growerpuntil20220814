@@ -19,6 +19,16 @@ dependencies:
   about: ^1.1.2
   animations: ^1.0.0+5
   responsive_framework: ^0.0.8
+  models:
+    git:
+      url: git@github.com:growerp/growerp
+      ref: packages
+      path: models
+  core:
+    git:
+      url: git@github.com:growerp/growerp
+      ref: packages
+      path: core
   ofbiz:
     git:
       url: git@github.com:growerp/growerp
@@ -29,12 +39,6 @@ dependencies:
       url: git@github.com:growerp/growerp
       ref: packages
       path: moqui
-  models:
-    git:
-      url: git@github.com:growerp/growerp
-      ref: packages
-      path: models
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,13 +50,12 @@ dev_dependencies:
 flutter_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/growerp.jpg"
+  image_path: "assets/images/growerp.jpg"
 
 flutter:
   uses-material-design: true
 # from https://www.flaticon.com/
   assets:
-    - assets/cfg/
     - assets/images/
-    - assets/
+    - assets/cfg/
     - ./

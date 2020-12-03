@@ -18,12 +18,12 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'blocs/@blocs.dart';
+import 'package:core/blocs/@blocs.dart';
 import 'package:ofbiz/ofbiz.dart';
 import 'package:moqui/moqui.dart';
-import 'styles/themes.dart';
-import 'router.dart' as router;
-import 'forms/@forms.dart';
+import 'package:core/styles/themes.dart';
+import 'package:core/router.dart' as router;
+import 'package:core/forms/@forms.dart';
 import 'package:models/models.dart';
 
 void main() async {
