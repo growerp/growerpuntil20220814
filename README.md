@@ -10,35 +10,13 @@ The system is a true multicompany system and can support virtually any ERP backe
 The system is implemented with https://pub.dev/packages/flutter_bloc state management with the https://bloclibrary.dev documentation, data models, automated tests and a separated rest interface for the different systems. 
 
 The system configuration file is in /assets/cfg/app_settings.json.
+
 There you can configure which system, currently either the Moqui or Apache OFBiz system.
 
 For test purposes we can provide access to Moqui or OFBiz systems inn the cloud.
 
-This admin branch contains all basic functions:
-
-1. login
-2. logout
-3. registration of new company and admin user.
-4. registration new admin, employee existing company
-5. forgot password
-6. change pasword
-7. communication with the server containing Apache OFBiz or Moqui.org.
-8. tests of most functions. >50%
-9. switch between companies: ecommerce.
-10. 'About' form describing the App.
-11. routing between forms
-12. state management using flutter_bloc
-13. master of ALL models
-14. Fully multicompany.
-15. Image up/download for IOS,Android and the web.
-16. Interface to either OFBiz or Moqui ERP system.
-17. Central configuration file.
-18. All major entities have a picture upload.
-
-And applications:
-* Company & User management
-* Catalog and product management
-* Order management
+This admin branch is using the core package stored in the same repository in the 'packages' branch.
+This package contains all the basic ERP functions, see the [readme](https://github.com/growerp/growerp/blob/packages/core/README.md) file for more info.
 
 Other branches are under development:
   - Ecommerce : https://github.com/growerp/growerp/tree/ecommerce
