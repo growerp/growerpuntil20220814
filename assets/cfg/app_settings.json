@@ -2,7 +2,7 @@
     "version": 0.1, "build": 10,
     "_________________comment__backend": "moqui / ofbiz",
     "backend": "moqui",
-    "_________________comment__class": "AppAdmin, AppHotel, AppEcommerceShop etc",
+    "_________________comment__class": "AppHotel, AppEcommerceShop etc",
     "classificationId": "AppAdmin",
     "_________________comment__production url__": "https://rest.example.com",
     "prodUrl": "https://test.growerp.com",

@@ -2,7 +2,7 @@
 
 GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the beta version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started/web
 
-All screens work on all IOS/Anderoid/Web devices however a smaller screen will show less information but it is still usable.
+Although all screens work on IOS/Anderoid/Web devices however a smaller screen will show less information but it is still usable.
 
 It is a simplified frontend however with the ability to still use with, or in addition to the original ERP system screens.
 The system is a true multicompany system and can support virtually any ERP backend as long as it has a REST interface.

@@ -22,8 +22,9 @@ import 'package:core/blocs/@blocs.dart';
 import 'package:ofbiz/ofbiz.dart';
 import 'package:moqui/moqui.dart';
 import 'package:core/styles/themes.dart';
-import 'package:core/router.dart' as router;
-import 'package:core/forms/@forms.dart';
+import 'router.dart' as router;
+import 'package:core/forms/@forms.dart' as core;
+import 'forms/@forms.dart';
 import 'package:models/models.dart';
 
 void main() async {
@@ -82,21 +83,21 @@ class MyApp extends StatelessWidget {
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is AuthLoading || state is AuthInitial)
-              return SplashForm();
+              return core.SplashForm();
             if (state is AuthUnauthenticated &&
                 state.authenticate?.company == null) {
               if (classificationId == 'AppAdmin')
-                return RegisterForm(
+                return core.RegisterForm(
                     'No companies found in system, create one?');
               else
-                return FatalErrorForm(
+                return core.FatalErrorForm(
                     "No $classificationId company found in system\n"
                     "Go to the admin app to create one!");
             }
             if (classificationId == 'AppAdmin')
               return AdminHome(FormArguments("Welcome"));
             else
-              return FatalErrorForm("specific home screen not defined");
+              return core.FatalErrorForm("specific home screen not defined");
           },
         ));
   }
