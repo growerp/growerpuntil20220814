@@ -86,7 +86,7 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
   }
 
   Widget userList(authenticate) {
-    List<User> users = authenticate.company.employees;
+    List<User> users = authenticate?.company?.employees;
     return CustomScrollView(
       slivers: <Widget>[
         SliverToBoxAdapter(

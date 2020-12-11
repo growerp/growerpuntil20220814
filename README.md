@@ -9,9 +9,7 @@ The system is a true multicompany system and can support virtually any ERP backe
 
 The system is implemented with https://pub.dev/packages/flutter_bloc state management with the https://bloclibrary.dev documentation, data models, automated tests and a separated rest interface for the different systems. 
 
-The system configuration file is in /assets/cfg/app_settings.json.
-
-There you can configure which system, currently either the Moqui or Apache OFBiz system.
+The system configuration file is in /assets/cfg/app_settings.json. Select OFBiz or Moqui here.
 
 For test purposes we can provide access to Moqui or OFBiz systems inn the cloud.
 
@@ -22,7 +20,7 @@ Other branches are under development:
   - Ecommerce : https://github.com/growerp/growerp/tree/ecommerce
   - Hotel : https://github.com/growerp/growerp/tree/hotel
 
-For the backend you need the Moqui or OFBiz ERP framwork system
+For the backend you need the Moqui or OFBiz ERP framework ERP system
   with an extra component:
   - Moqui:  https://github.com/growerp/growerp-moqui
   - OFBiz:  https://github.com/growerp/growerp-ofbiz

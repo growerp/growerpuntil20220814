@@ -95,7 +95,7 @@ class MyApp extends StatelessWidget {
                     "Go to the admin app to create one!");
             }
             if (classificationId == 'AppAdmin')
-              return AdminHome(FormArguments("Welcome"));
+              return Home(FormArguments("Welcome"));
             else
               return core.FatalErrorForm("specific home screen not defined");
           },

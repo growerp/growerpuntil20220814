@@ -109,7 +109,6 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
       return CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(
-            // you could add any widget
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: Colors.transparent,
@@ -161,7 +160,10 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                     leading: CircleAvatar(
                       backgroundColor: Colors.green,
                       child: products[index]?.image != null
-                          ? Image.memory(products[index]?.image)
+                          ? Image.memory(
+                              products[index]?.image,
+                              height: 100,
+                            )
                           : Text(products[index]?.productName != null
                               ? products[index]?.productName[0]
                               : '?'),

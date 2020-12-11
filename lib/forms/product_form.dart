@@ -238,9 +238,12 @@ class _MyProductState extends State<MyProductPage> {
                         child: _imageFile != null
                             ? kIsWeb
                                 ? Image.network(_imageFile.path)
-                                : Image.file(File(_imageFile.path))
+                                : Image.file(File(_imageFile.path), height: 80)
                             : product?.image != null
-                                ? Image.memory(product?.image)
+                                ? Image.memory(
+                                    product?.image,
+                                    height: 80,
+                                  )
                                 : Text(
                                     product?.productName?.substring(0, 1) ?? '',
                                     style: TextStyle(

@@ -21,9 +21,9 @@ import 'package:core/routing_constants.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class AdminHome extends StatelessWidget {
+class Home extends StatelessWidget {
   final FormArguments formArguments;
-  AdminHome(this.formArguments);
+  Home(this.formArguments);
 
   @override
   Widget build(BuildContext context) {
@@ -52,49 +52,68 @@ class DashBoard extends StatelessWidget {
       }
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
-        return ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                appBar: AppBar(
-                    automaticallyImplyLeading:
-                        ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                    title: companyLogo(context, authenticate,
-                        authenticate?.company?.name ?? 'Company??'),
-                    actions: <Widget>[
-                      if (authenticate?.apiKey != null)
-                        IconButton(
-                            icon: Icon(Icons.do_not_disturb),
-                            tooltip: 'Logout',
-                            onPressed: () => {
-                                  BlocProvider.of<AuthBloc>(context)
-                                      .add(Logout()),
-                                  Navigator.pushNamed(context, HomeRoute,
-                                      arguments: FormArguments(
-                                          "Successfully logged out."))
-                                }),
-                    ]),
-                drawer: myDrawer(context, authenticate),
-                body: Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
-                  child: GridView.count(
-                    crossAxisCount:
-                        ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                            ? 2
-                            : 3,
-                    padding: EdgeInsets.all(3.0),
-                    children: <Widget>[
-                      makeDashboardItem("DashBoard1", Icons.bubble_chart),
-                      makeDashboardItem(
-                          "DashBoard2", Icons.bubble_chart_outlined),
-                      makeDashboardItem("DashBoard3", Icons.bubble_chart),
-                      makeDashboardItem("DashBoard4", Icons.bar_chart_rounded),
-                      makeDashboardItem("DashBoard5", Icons.bar_chart_outlined),
-                      makeDashboardItem("DashBoard6", Icons.bar_chart)
-                    ],
-                  ),
-                )));
+        Catalog catalog;
+        List<Order> orders;
+        return BlocBuilder<CatalogBloc, CatalogState>(
+            builder: (context, state) {
+          if (state is CatalogLoaded) catalog = state.catalog;
+          return BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
+            if (state is OrderLoaded) orders = state.orders;
+            return ScaffoldMessenger(
+                key: scaffoldMessengerKey,
+                child: Scaffold(
+                    appBar: AppBar(
+                        automaticallyImplyLeading:
+                            ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+                        title: companyLogo(context, authenticate,
+                            authenticate?.company?.name ?? 'Company??'),
+                        actions: <Widget>[
+                          if (authenticate?.apiKey != null)
+                            IconButton(
+                                icon: Icon(Icons.do_not_disturb),
+                                tooltip: 'Logout',
+                                onPressed: () => {
+                                      BlocProvider.of<AuthBloc>(context)
+                                          .add(Logout()),
+                                      Navigator.pushNamed(context, HomeRoute,
+                                          arguments: FormArguments(
+                                              "Successfully logged out."))
+                                    }),
+                        ]),
+                    drawer: myDrawer(context, authenticate),
+                    body: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
+                      child: GridView.count(
+                        crossAxisCount:
+                            ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                                ? 2
+                                : 3,
+                        padding: EdgeInsets.all(3.0),
+                        children: <Widget>[
+                          makeDashboardItem(
+                              "Employees",
+                              "${authenticate.company.employees.length}",
+                              Icons.bar_chart),
+                          makeDashboardItem(
+                              "Products",
+                              "${catalog?.products?.length ?? 0}",
+                              Icons.bar_chart),
+                          makeDashboardItem(
+                              "Categories",
+                              "${catalog?.categories?.length ?? 0}",
+                              Icons.bar_chart),
+                          makeDashboardItem("Orders", "${orders?.length ?? 0}",
+                              Icons.bar_chart),
+                          makeDashboardItem("Customers", "0", Icons.bar_chart),
+                          makeDashboardItem("Suppliers", "0", Icons.bar_chart)
+                        ],
+                      ),
+                    )));
+          });
+        });
       }
+
       if (state is AuthUnauthenticated) {
         Authenticate authenticate = state.authenticate;
         return ScaffoldMessenger(
@@ -131,12 +150,12 @@ class DashBoard extends StatelessWidget {
                   ),
                 ]))));
       }
-      return Container(child: Center(child: Text("Should never arrive here?")));
+      return LoadingIndicator();
     });
   }
 }
 
-Card makeDashboardItem(String title, IconData icon) {
+Card makeDashboardItem(String title, String subTitle, IconData icon) {
   return Card(
       elevation: 1.0,
       margin: new EdgeInsets.all(8.0),
@@ -157,9 +176,13 @@ Card makeDashboardItem(String title, IconData icon) {
                 color: Colors.black,
               )),
               SizedBox(height: 20.0),
-              new Center(
-                child: new Text(title,
-                    style: new TextStyle(fontSize: 18.0, color: Colors.black)),
+              Center(
+                child: Text(title,
+                    style: TextStyle(fontSize: 25.0, color: Colors.black)),
+              ),
+              Center(
+                child: Text(subTitle,
+                    style: TextStyle(fontSize: 20.0, color: Colors.black)),
               )
             ],
           ),
