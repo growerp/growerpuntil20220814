@@ -21,9 +21,9 @@ import 'package:core/routing_constants.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class Home extends StatelessWidget {
+class HomeForm extends StatelessWidget {
   final FormArguments formArguments;
-  Home(this.formArguments);
+  HomeForm(this.formArguments);
 
   @override
   Widget build(BuildContext context) {
@@ -91,22 +91,26 @@ class DashBoard extends StatelessWidget {
                                 : 3,
                         padding: EdgeInsets.all(3.0),
                         children: <Widget>[
+                          makeDashboardItem(context, menuItems[1],
+                              "${authenticate.company.employees.length}"),
+                          makeDashboardItem(context, menuItems[3],
+                              "${catalog?.products?.length ?? 0}"),
+                          makeDashboardItem(context, menuItems[4],
+                              "${catalog?.categories?.length ?? 0}"),
                           makeDashboardItem(
-                              "Employees",
-                              "${authenticate.company.employees.length}",
-                              Icons.bar_chart),
+                              context, menuItems[5], "${orders?.length ?? 0}"),
                           makeDashboardItem(
-                              "Products",
-                              "${catalog?.products?.length ?? 0}",
-                              Icons.bar_chart),
+                              context,
+                              MenuItem(
+                                  title: "Customers",
+                                  selectedImage: "assets/images/dashBoard.png"),
+                              ""),
                           makeDashboardItem(
-                              "Categories",
-                              "${catalog?.categories?.length ?? 0}",
-                              Icons.bar_chart),
-                          makeDashboardItem("Orders", "${orders?.length ?? 0}",
-                              Icons.bar_chart),
-                          makeDashboardItem("Customers", "0", Icons.bar_chart),
-                          makeDashboardItem("Suppliers", "0", Icons.bar_chart)
+                              context,
+                              MenuItem(
+                                  title: "Suppliers",
+                                  selectedImage: "assets/images/dashBoard.png"),
+                              "")
                         ],
                       ),
                     )));
@@ -155,29 +159,28 @@ class DashBoard extends StatelessWidget {
   }
 }
 
-Card makeDashboardItem(String title, String subTitle, IconData icon) {
+Card makeDashboardItem(
+    BuildContext context, MenuItem menuItem, String subTitle) {
   return Card(
       elevation: 1.0,
       margin: new EdgeInsets.all(8.0),
       child: Container(
         decoration: BoxDecoration(color: Color.fromRGBO(220, 220, 220, 1.0)),
         child: new InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.pushNamed(context, menuItem.route,
+                arguments: FormArguments());
+          },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             verticalDirection: VerticalDirection.down,
             children: <Widget>[
               SizedBox(height: 50.0),
-              Center(
-                  child: Icon(
-                icon,
-                size: 40.0,
-                color: Colors.black,
-              )),
+              Center(child: Image.asset(menuItem.selectedImage, height: 40.0)),
               SizedBox(height: 20.0),
               Center(
-                child: Text(title,
+                child: Text("${menuItem.title}",
                     style: TextStyle(fontSize: 25.0, color: Colors.black)),
               ),
               Center(

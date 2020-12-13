@@ -56,7 +56,7 @@ packages:
       name: bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.0"
+    version: "6.1.1"
   bloc_test:
     dependency: "direct dev"
     description:
@@ -144,9 +144,11 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: "../packages/core"
-      relative: true
-    source: path
+      path: core
+      ref: packages
+      resolved-ref: c2b04a2ae0ee9c94af052208b297dd62d971a819
+      url: "git@github.com:growerp/growerp"
+    source: git
     version: "0.0.1"
   coverage:
     dependency: transitive
@@ -309,7 +311,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7+14"
+    version: "0.6.7+15"
   image_picker_for_web:
     dependency: "direct main"
     description:
@@ -406,7 +408,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: "9479ec2b3d777e7255311ed23c1a83b0a1b96e2f"
+      resolved-ref: c2b04a2ae0ee9c94af052208b297dd62d971a819
       url: "git@github.com:growerp/growerp"
     source: git
     version: "0.0.1"
@@ -415,7 +417,7 @@ packages:
     description:
       path: moqui
       ref: packages
-      resolved-ref: "9d743b36a94e2a1064816fb5b24f1d556192b259"
+      resolved-ref: c2b04a2ae0ee9c94af052208b297dd62d971a819
       url: "git@github.com:growerp/growerp"
     source: git
     version: "0.0.1"
@@ -452,7 +454,7 @@ packages:
     description:
       path: ofbiz
       ref: packages
-      resolved-ref: "9d743b36a94e2a1064816fb5b24f1d556192b259"
+      resolved-ref: c2b04a2ae0ee9c94af052208b297dd62d971a819
       url: "git@github.com:growerp/growerp"
     source: git
     version: "0.0.1"

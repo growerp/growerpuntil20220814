@@ -98,6 +98,7 @@ class _MyProductState extends State<MyProductPage> {
   Widget build(BuildContext context) {
     Authenticate authenticate;
     Catalog catalog;
+    print("======image size: ${product?.image?.length}");
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -238,11 +239,10 @@ class _MyProductState extends State<MyProductPage> {
                         child: _imageFile != null
                             ? kIsWeb
                                 ? Image.network(_imageFile.path)
-                                : Image.file(File(_imageFile.path), height: 80)
+                                : Image.file(File(_imageFile.path))
                             : product?.image != null
                                 ? Image.memory(
                                     product?.image,
-                                    height: 80,
                                   )
                                 : Text(
                                     product?.productName?.substring(0, 1) ?? '',

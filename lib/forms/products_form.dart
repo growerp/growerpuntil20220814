@@ -116,15 +116,14 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
               title: Row(
                 children: <Widget>[
                   Expanded(
-                      child: Text("Product name [Id] ",
-                          textAlign: TextAlign.center)),
-                  Expanded(
-                      child: Text("Description", textAlign: TextAlign.center)),
-                  Expanded(child: Text("price", textAlign: TextAlign.center)),
+                      child: Text("Product name", textAlign: TextAlign.center)),
                   if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
                     Expanded(
                         child:
-                            Text("Category [id]", textAlign: TextAlign.center)),
+                            Text("Description", textAlign: TextAlign.center)),
+                  Expanded(child: Text("price", textAlign: TextAlign.center)),
+                  Expanded(
+                      child: Text("Category", textAlign: TextAlign.center)),
                 ],
               ),
             ),
@@ -170,19 +169,19 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
                     ),
                     title: Row(
                       children: <Widget>[
-                        Expanded(
-                            child: Text("${products[index].productName}, "
-                                "[${products[index].productId}]")),
-                        Expanded(
-                            child: Text("${products[index].description}",
-                                textAlign: TextAlign.center)),
-                        Expanded(
-                            child: Text("${products[index].price}",
-                                textAlign: TextAlign.center)),
+                        Expanded(child: Text("${products[index].productName}")),
+                        if (!ResponsiveWrapper.of(context)
+                            .isSmallerThan(TABLET))
+                          Expanded(
+                              child: Text("${products[index].description}",
+                                  textAlign: TextAlign.center)),
                         Expanded(
                             child: Text(
-                                "${products[index].categoryName}"
-                                "[${products[index].categoryId}]",
+                                "${authenticate.company.currencyId} "
+                                "${products[index].price}",
+                                textAlign: TextAlign.center)),
+                        Expanded(
+                            child: Text("${products[index].categoryName}",
                                 textAlign: TextAlign.center)),
                       ],
                     ),

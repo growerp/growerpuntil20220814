@@ -15,7 +15,7 @@ dependencies:
   flutter_bloc: ^6.1.0
   meta: ^1.1.6
   shared_preferences: ^0.5.12+2
-  image_picker: ^0.6.7+7
+  image_picker: ^0.6.7+15
   image_picker_for_web: ^0.1.0+2
   about: ^1.1.2
   animations: ^1.0.0+5
