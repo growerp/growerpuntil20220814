@@ -111,7 +111,9 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                 Expanded(
                     child: Text("Category Name", textAlign: TextAlign.center)),
                 Expanded(
-                    child: Text("categoryId", textAlign: TextAlign.center)),
+                    child: Text("Description", textAlign: TextAlign.center)),
+                Expanded(
+                    child: Text("nbrOfProducts", textAlign: TextAlign.center)),
               ],
             ),
           ),
@@ -156,10 +158,10 @@ class _CategoriesFormStateHeader extends State<CategoriesFormHeader> {
                   title: Row(
                     children: <Widget>[
                       Expanded(
-                          child: Text("${categories[index].categoryName}, "
-                              "[${categories[index].categoryId}]")),
+                          child: Text("${categories[index].categoryName}")),
+                      Expanded(child: Text("${categories[index].description}")),
                       Expanded(
-                          child: Text("${categories[index].categoryId}",
+                          child: Text("${categories[index].nbrOfProducts}",
                               textAlign: TextAlign.center)),
                     ],
                   ),

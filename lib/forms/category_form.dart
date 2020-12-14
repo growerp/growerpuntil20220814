@@ -49,6 +49,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
   final ProductCategory category;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
+  final _descrController = TextEditingController();
   bool loading = false;
   ProductCategory updatedCategory;
   PickedFile _imageFile;
@@ -198,6 +199,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
 
   Widget _showForm(Catalog catalog, ProductCategory updatedCategory) {
     _nameController..text = category?.categoryName;
+    _descrController..text = category?.description;
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
@@ -247,6 +249,17 @@ class _MyCategoryState extends State<MyCategoryPage> {
                       return null;
                     },
                   ),
+                  SizedBox(height: 30),
+                  TextFormField(
+                    key: Key('name'),
+                    decoration: InputDecoration(labelText: 'Description'),
+                    controller: _descrController,
+                    maxLines: 5,
+                    validator: (value) {
+                      if (value.isEmpty) return 'Please enter a category name?';
+                      return null;
+                    },
+                  ),
                   SizedBox(height: 20),
                   RaisedButton(
                       key: Key('update'),
@@ -257,6 +270,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
                           updatedCategory = ProductCategory(
                             categoryId: category?.categoryId,
                             categoryName: _nameController.text,
+                            description: _descrController.text,
                           );
                           BlocProvider.of<CatalogBloc>(context)
                               .add(UpdateCategory(

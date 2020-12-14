@@ -99,7 +99,7 @@ class _ProductsFormStateHeader extends State<ProductsFormHeader> {
   }
 
   Widget productList() {
-    if (catalog.categories.isEmpty)
+    if (catalog.categories == null)
       return FatalErrorForm(
           "No products yet, enter categories first\n "
               "they are mandatory on products",
