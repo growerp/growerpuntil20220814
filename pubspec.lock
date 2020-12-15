@@ -147,7 +147,7 @@ packages:
       path: core
       ref: packages
       resolved-ref: "67e24ff0a763a8a1b1dc72db2f5958c0ec3d58ed"
-      url: "git@github.com:growerp/growerp"
+      url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
   coverage:
