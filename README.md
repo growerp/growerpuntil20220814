@@ -1,6 +1,6 @@
 # GrowERP Admin App
 
-## Quick start: after installation of [Java 11](https://openjdk.java.net/install/): One backend is Enough!
+## Quick start: after installation of [Java 11](https://openjdk.java.net/install/):
 ### Moqui backend:
   - git clone https://github.com/growerp/moqui-framework.git moqui && cd moqui
   - ./gradlew getRuntime
@@ -13,7 +13,7 @@
   - ./gradlew load
   - java -jar moqui.war
 
-### Apache OFBiz backend:
+### OR...Apache OFBiz backend:
   https://github.com/growerp/growerp-ofbiz
 
 ### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
