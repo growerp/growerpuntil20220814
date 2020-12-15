@@ -1,5 +1,27 @@
 # GrowERP Admin App
 
+## Quick start: after installation of [Java 11](https://openjdk.java.net/install/): One backend is Enough!
+### Moqui backend:
+  - git clone https://github.com/growerp/moqui-framework.git moqui && cd moqui
+  - ./gradlew getRuntime
+  - git clone https://github.com/growerp/growerp-moqui.git runtime/component/growerp
+  - git clone https://github.com/growerp/PopCommerce.git runtime/component/PopCommerce
+  - git clone https://github.com/growerp/mantle-udm.git runtime/component/mantle-udm
+  - git clone https://github.com/growerp/mantle-usl.git runtime/component/mantle-usl
+  - git clone https://github.com/growerp/SimpleScreens.git runtime/component/SimpleScreens
+  - git clone https://github.com/growerp/moqui-fop.git runtime/component/moqui-fop
+  - ./gradlew load
+  - java -jar moqui.war
+
+### Apache OFBiz backend:
+  https://github.com/growerp/growerp-ofbiz
+
+### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
+  - git clone https://github.com/growerp/growerp/ admin
+  - cd admin
+  - flutter run -d chrome
+
+# Introduction.
 GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the beta version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started/web
 
 Although all screens work on IOS/Anderoid/Web devices however a smaller screen will show less information but it is still usable.
