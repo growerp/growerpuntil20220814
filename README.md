@@ -58,4 +58,4 @@ Functions coming up:
 
 
 
-![Download here a short movie to show the Adaptive App in action](screenPrints/responsive.mkv?raw=true)
+![Download here a short movie to show the Adaptive App in action](screenPrints/responsive.mp4?raw=true)
