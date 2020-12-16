@@ -56,20 +56,4 @@ Functions coming up:
 * Inventory
 * Purchasing.
 
-Screen prints of the current system:
-* mobile IPhone
-![IOS](screenPrints/mobile/iosMenu.png?raw=true "IOS menu")
-![IOS](screenPrints/mobile/iosList.png?raw=true "IOS List")
-![IOS](screenPrints/mobile/iosDetail.png?raw=true "IOS Detail")
-* mobile android.
-![Android](screenPrints/mobile/androidMenu.png?raw=true "Android menu")
-![Android](screenPrints/mobile/androidList.png?raw=true "Android list")
-![Android](screenPrints/mobile/androidDetail.png?raw=true "Android detail")
-* tablet IOS.
-![IOS](screenPrints/tablet/iosMenu.png?raw=true "IOS")
-![IOS](screenPrints/tablet/iosList.png?raw=true "IOS")
-* tablet Android.
-![Android](screenPrints/tablet/androidMenu.png?raw=true "Android")
-![Android](screenPrints/tablet/androidList.png?raw=true "Android")
-* web
-![Web](screenPrints/web-browser/webMenu.png?raw=true "Webbrowser menu")
+![Adaptive App in action](screenprints/responsive.mkv?raw=true)
