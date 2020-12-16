@@ -10,6 +10,7 @@
   - git clone https://github.com/growerp/mantle-usl.git runtime/component/mantle-usl
   - git clone https://github.com/growerp/SimpleScreens.git runtime/component/SimpleScreens
   - git clone https://github.com/growerp/moqui-fop.git runtime/component/moqui-fop
+  - ./gradlew downloadElasticSearch
   - ./gradlew load
   - java -jar moqui.war
 
