@@ -56,4 +56,4 @@ Functions coming up:
 * Inventory
 * Purchasing.
 
-![Adaptive App in action](screenprints/responsive.mkv?raw=true)
+![Adaptive App in action](screenPrints/responsive.mkv?raw=true)
