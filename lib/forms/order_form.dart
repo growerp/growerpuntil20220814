@@ -128,117 +128,133 @@ class _MyOrderState extends State<MyOrderPage> {
         ? customers.firstWhere((x) => updatedOrder.customerPartyId == x.partyId)
         : null;
     loading = false;
+    int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
+    double width = columns.toDouble() * 400;
     return Center(
         child: Column(children: [
       Container(
-          height: 400,
-          width: 400,
+          height: 450 / columns.toDouble(),
+          width: width,
           child: Form(
               key: _formKey,
-              child: ListView(children: <Widget>[
-                SizedBox(height: 30),
-                Row(
-                  children: [
-                    Container(
-                        width: 300,
-                        child: DropdownButtonFormField<User>(
-                          key: Key('dropDownCust'),
-                          hint: Text('Customer'),
-                          value: _selectedCustomer,
+              child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: GridView.count(
+                      // Create a grid with 2 columns. If you change the scrollDirection to
+                      // horizontal, this produces 2 rows.
+                      crossAxisCount: columns,
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      childAspectRatio: (7),
+                      children: <Widget>[
+                        Row(
+                          children: [
+                            Container(
+                                width: width / columns.toDouble() - 160,
+                                child: DropdownButtonFormField<User>(
+                                  key: Key('dropDownCust'),
+                                  hint: Text('Customer'),
+                                  value: _selectedCustomer,
+                                  validator: (value) =>
+                                      value == null ? 'field required' : null,
+                                  items: customers?.map((customer) {
+                                    return DropdownMenuItem<User>(
+                                        child: Text(
+                                            "${customer.lastName} ${customer.firstName}"),
+                                        value: customer);
+                                  })?.toList(),
+                                  onChanged: (User newValue) {
+                                    setState(() {
+                                      _selectedCustomer = newValue;
+                                    });
+                                  },
+                                  isExpanded: true,
+                                )),
+                            SizedBox(width: 10),
+                            RaisedButton(
+                              child: Text('Add New'),
+                              onPressed: () async {
+                                final User customer =
+                                    await _addCustomerDialog(context);
+                                if (customer != null) {
+                                  BlocProvider.of<CrmBloc>(context)
+                                      .add(UpdateCrmUser(customer));
+                                }
+                              },
+                            )
+                          ],
+                        ),
+                        DropdownButtonFormField<Product>(
+                          key: Key('dropDownProd'),
+                          hint: Text('Product'),
+                          value: _selectedProduct,
                           validator: (value) =>
                               value == null ? 'field required' : null,
-                          items: customers?.map((customer) {
-                            return DropdownMenuItem<User>(
-                                child: Text(
-                                    "${customer.lastName} ${customer.firstName}"),
-                                value: customer);
+                          items: products?.map((product) {
+                            return DropdownMenuItem<Product>(
+                                child: Text("${product?.productName}"),
+                                value: product);
                           })?.toList(),
-                          onChanged: (User newValue) {
+                          onChanged: (Product newValue) {
                             setState(() {
-                              _selectedCustomer = newValue;
+                              _priceController
+                                ..text = newValue.price.toString();
+                              _selectedProduct = newValue;
                             });
                           },
                           isExpanded: true,
-                        )),
-                    SizedBox(width: 10),
-                    RaisedButton(
-                      child: Text('Add New'),
-                      onPressed: () async {
-                        final User customer = await _addCustomerDialog(context);
-                        if (customer != null) {
-                          BlocProvider.of<CrmBloc>(context)
-                              .add(UpdateCrmUser(customer));
-                        }
-                      },
-                    )
-                  ],
-                ),
-                SizedBox(height: 10),
-                DropdownButtonFormField<Product>(
-                  key: Key('dropDownProd'),
-                  hint: Text('Product'),
-                  value: _selectedProduct,
-                  validator: (value) => value == null ? 'field required' : null,
-                  items: products?.map((product) {
-                    return DropdownMenuItem<Product>(
-                        child: Text("${product?.productName}"), value: product);
-                  })?.toList(),
-                  onChanged: (Product newValue) {
-                    setState(() {
-                      _priceController..text = newValue.price.toString();
-                      _selectedProduct = newValue;
-                    });
-                  },
-                  isExpanded: true,
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  key: Key('price'),
-                  decoration: InputDecoration(labelText: 'Price'),
-                  controller: _priceController,
-                  validator: (value) {
-                    if (value.isEmpty) return 'Price?';
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  key: Key('quantity'),
-                  decoration: InputDecoration(labelText: 'Quantity'),
-                  controller: _quantityController,
-                  validator: (value) {
-                    if (value.isEmpty) return 'Quantity?';
-                    return null;
-                  },
-                ),
-                SizedBox(height: 10),
-                RaisedButton(
-                    key: Key('add'),
-                    child: Text('Add'),
-                    onPressed: () {
-                      if (_formKey.currentState.validate() && !loading) {
-                        BlocProvider.of<CartBloc>(context).add(UpdateCart(Order(
-                            customerPartyId: _selectedCustomer.partyId,
-                            orderItems: [
-                              OrderItem(
-                                  productId: _selectedProduct?.productId,
-                                  price: Decimal.parse(_priceController.text),
-                                  quantity:
-                                      Decimal.parse(_quantityController.text))
-                            ])));
-                      }
-                    }),
-                SizedBox(height: 10),
-                RaisedButton(
-                    key: Key('Confirm Order'),
-                    child: Text('confirm'),
-                    onPressed: () {
-                      if (updatedOrder.orderItems.length > 0 && !loading) {
-                        BlocProvider.of<CartBloc>(context).add(ConfirmCart());
-                      }
-                    }),
+                        ),
+                        TextFormField(
+                          key: Key('price'),
+                          decoration: InputDecoration(labelText: 'Price'),
+                          controller: _priceController,
+                          validator: (value) {
+                            if (value.isEmpty) return 'Price?';
+                            return null;
+                          },
+                        ),
+                        TextFormField(
+                          key: Key('quantity'),
+                          decoration: InputDecoration(labelText: 'Quantity'),
+                          controller: _quantityController,
+                          validator: (value) {
+                            if (value.isEmpty) return 'Quantity?';
+                            return null;
+                          },
+                        ),
+                        RaisedButton(
+                            key: Key('Confirm Order'),
+                            child: Text('confirm'),
+                            onPressed: () {
+                              if (updatedOrder.orderItems.length > 0 &&
+                                  !loading) {
+                                BlocProvider.of<CartBloc>(context)
+                                    .add(ConfirmCart());
+                              }
+                            }),
+                        RaisedButton(
+                            key: Key('add'),
+                            child: Text('Add'),
+                            onPressed: () {
+                              if (_formKey.currentState.validate() &&
+                                  !loading) {
+                                BlocProvider.of<CartBloc>(context).add(
+                                    UpdateCart(Order(
+                                        customerPartyId:
+                                            _selectedCustomer.partyId,
+                                        orderItems: [
+                                      OrderItem(
+                                          productId:
+                                              _selectedProduct?.productId,
+                                          price: Decimal.parse(
+                                              _priceController.text),
+                                          quantity: Decimal.parse(
+                                              _quantityController.text))
+                                    ])));
+                              }
+                            }),
 //                Text("Grant total : ${order.grandTotal?.toString()}"),
-              ]))),
+                      ])))),
       Expanded(
           child: CustomScrollView(
         slivers: <Widget>[
