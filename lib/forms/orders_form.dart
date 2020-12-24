@@ -20,6 +20,7 @@ import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import 'package:core/routing_constants.dart';
 import 'package:core/widgets/@widgets.dart';
+import 'package:printing/printing.dart';
 
 class OrdersForm extends StatelessWidget {
   final FormArguments formArguments;
@@ -110,11 +111,11 @@ class _OrdersFormStateHeader extends State<OrdersFormHeader> {
             title: Row(
               children: <Widget>[
                 Expanded(child: Text("Customer", textAlign: TextAlign.center)),
-                Expanded(child: Text("Email", textAlign: TextAlign.center)),
+                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
+                  Expanded(child: Text("Email", textAlign: TextAlign.center)),
                 Expanded(child: Text("Date", textAlign: TextAlign.center)),
                 Expanded(child: Text("Total", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                  Expanded(child: Text("Status", textAlign: TextAlign.center)),
+                Expanded(child: Text("Status", textAlign: TextAlign.center)),
                 if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
                   Expanded(child: Text("#items", textAlign: TextAlign.center)),
               ],
@@ -152,20 +153,34 @@ class _OrdersFormStateHeader extends State<OrdersFormHeader> {
                   }
                 },
                 child: ListTile(
-                  //return  ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.green,
-                    child: Text(orders[index]?.orderStatusId[0]),
-                  ),
+                  leading: InkWell(
+                      onTap: () async {
+                        bool result = await confirmDialog(
+                            context,
+                            "${orders[index].orderStatusId} changes to ${nextOrderStatus[orders[index].orderStatusId]}",
+                            "Proceed?");
+                        if (result &&
+                            nextOrderStatus[orders[index].orderStatusId] !=
+                                "No Change") {
+                          BlocProvider.of<OrderBloc>(context)
+                              .add(NextStatButtonPressed(orders[index]));
+                        }
+                      },
+                      child: Tooltip(
+                          message: "click to go to next order status",
+                          child: CircleAvatar(
+                            backgroundColor: Colors.green,
+                            child: Text(orders[index]?.orderStatusId[0]),
+                          ))),
                   title: Row(
                     children: <Widget>[
                       Expanded(
                           child: Text("${orders[index].lastName}, "
-                              "${orders[index].firstName} "
-                              "[${orders[index].customerPartyId}]")),
-                      Expanded(
-                          child: Text("${orders[index].email}",
-                              textAlign: TextAlign.center)),
+                              "${orders[index].firstName}")),
+                      if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
+                        Expanded(
+                            child: Text("${orders[index].email}",
+                                textAlign: TextAlign.center)),
                       Expanded(
                           child: Text(
                               "${orders[index].placedDate.toString().substring(0, 11)}",
@@ -173,10 +188,9 @@ class _OrdersFormStateHeader extends State<OrdersFormHeader> {
                       Expanded(
                           child: Text("${orders[index].grandTotal}",
                               textAlign: TextAlign.center)),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                        Expanded(
-                            child: Text("${orders[index].orderStatusId}",
-                                textAlign: TextAlign.center)),
+                      Expanded(
+                          child: Text("${orders[index].orderStatusId}",
+                              textAlign: TextAlign.center)),
                       if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
                         Expanded(
                             child: Text("${orders[index].orderItems?.length}",

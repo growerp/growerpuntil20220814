@@ -5,6 +5,7 @@
   - git clone https://github.com/growerp/moqui-framework.git moqui && cd moqui
   - ./gradlew getRuntime
   - git clone https://github.com/growerp/growerp-moqui.git runtime/component/growerp
+  - git clone https://github.com/growerp/moqui-paypal.git runtime/component/paypal
   - git clone https://github.com/growerp/PopCommerce.git runtime/component/PopCommerce
   - git clone https://github.com/growerp/mantle-udm.git runtime/component/mantle-udm
   - git clone https://github.com/growerp/mantle-usl.git runtime/component/mantle-usl
