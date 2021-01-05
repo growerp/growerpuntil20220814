@@ -18,7 +18,6 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:models/models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/routing_constants.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:printing/printing.dart';
 
@@ -29,7 +28,7 @@ class OrdersForm extends StatelessWidget {
   Widget build(BuildContext context) {
     var a = (formArguments) =>
         (OrdersFormHeader(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 5, formArguments.object);
+    return ShowNavigationRail(a(formArguments), 4, formArguments.object);
   }
 }
 
@@ -66,7 +65,7 @@ class _OrdersFormStateHeader extends State<OrdersFormHeader> {
                       ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, OrderRoute,
+                  Navigator.pushNamed(context, '/order',
                       arguments: FormArguments('Enter a new Order...'));
                 },
                 tooltip: 'Add new order',
@@ -127,8 +126,7 @@ class _OrdersFormStateHeader extends State<OrdersFormHeader> {
             (context, index) {
               return InkWell(
                 onTap: () async {
-                  dynamic result = await Navigator.pushNamed(
-                      context, OrderRoute,
+                  dynamic result = await Navigator.pushNamed(context, '/order',
                       arguments: FormArguments(null, orders[index]));
                   setState(() {
                     if (result is List) orders = result;
@@ -147,9 +145,9 @@ class _OrdersFormStateHeader extends State<OrdersFormHeader> {
                   if (result) {
                     BlocProvider.of<OrderBloc>(context)
                         .add(CancelOrder(orders, orders[index].orderId));
-                    Navigator.pushNamed(context, OrdersRoute,
+                    Navigator.pushNamed(context, '/orders',
                         arguments:
-                            FormArguments('Order deleted', authenticate));
+                            FormArguments('Order deleted', 0, authenticate));
                   }
                 },
                 child: ListTile(

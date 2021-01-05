@@ -21,7 +21,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:models/models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/routing_constants.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -98,7 +97,6 @@ class _MyProductState extends State<MyProductPage> {
   Widget build(BuildContext context) {
     Authenticate authenticate;
     Catalog catalog;
-    print("======image size: ${product?.image?.length}");
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -111,7 +109,7 @@ class _MyProductState extends State<MyProductPage> {
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),
-                      onPressed: () => Navigator.pushNamed(context, HomeRoute,
+                      onPressed: () => Navigator.pushNamed(context, 'home',
                           arguments: FormArguments()))
                 ],
               ),
@@ -163,8 +161,7 @@ class _MyProductState extends State<MyProductPage> {
                           context, '${state.message}', Colors.green);
                     }
                     if (state is CatalogLoaded)
-                      Navigator.pushNamed(context, ProductsRoute,
-                          arguments: FormArguments(state.message));
+                      Navigator.of(context).pop(updatedProduct);
                   }, builder: (context, state) {
                     if (state is CatalogLoading)
                       return Center(child: CircularProgressIndicator());
@@ -313,6 +310,13 @@ class _MyProductState extends State<MyProductPage> {
                             _imageFile?.path,
                           ));
                         }
+                      }),
+                  SizedBox(height: 20),
+                  RaisedButton(
+                      key: Key('cancel'),
+                      child: Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
                       })
                 ]))));
   }

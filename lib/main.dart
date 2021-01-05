@@ -23,8 +23,8 @@ import 'package:ofbiz/ofbiz.dart';
 import 'package:moqui/moqui.dart';
 import 'package:core/styles/themes.dart';
 import 'router.dart' as router;
-import 'package:core/forms/@forms.dart' as core;
 import 'forms/@forms.dart';
+import 'package:core/forms/@forms.dart' as core;
 import 'package:models/models.dart';
 
 void main() async {

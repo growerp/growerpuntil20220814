@@ -20,7 +20,6 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:models/models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/routing_constants.dart';
 import 'package:core/widgets/@widgets.dart';
 
 class OrderForm extends StatelessWidget {
@@ -37,7 +36,7 @@ class OrderForm extends StatelessWidget {
             BlocProvider.of<CatalogBloc>(context),
             BlocProvider.of<CrmBloc>(context))
           ..add(LoadCart(formArguments.object)),
-        child: ShowNavigationRail(a(formArguments), 5));
+        child: ShowNavigationRail(a(formArguments), 4));
   }
 }
 
@@ -77,7 +76,7 @@ class _MyOrderState extends State<MyOrderPage> {
               actions: <Widget>[
                 IconButton(
                     icon: Icon(Icons.home),
-                    onPressed: () => Navigator.pushNamed(context, HomeRoute))
+                    onPressed: () => Navigator.pushNamed(context, '/home'))
               ],
             ),
             drawer: myDrawer(context, authenticate),
@@ -128,6 +127,7 @@ class _MyOrderState extends State<MyOrderPage> {
         ? customers.firstWhere((x) => updatedOrder.customerPartyId == x.partyId)
         : null;
     loading = false;
+    // phone has a singe column, tablet and larger 2
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
     double width = columns.toDouble() * 400;
     return Center(
@@ -140,8 +140,6 @@ class _MyOrderState extends State<MyOrderPage> {
               child: Padding(
                   padding: EdgeInsets.all(10),
                   child: GridView.count(
-                      // Create a grid with 2 columns. If you change the scrollDirection to
-                      // horizontal, this produces 2 rows.
                       crossAxisCount: columns,
                       crossAxisSpacing: 20,
                       mainAxisSpacing: 20,
@@ -178,7 +176,7 @@ class _MyOrderState extends State<MyOrderPage> {
                                     await _addCustomerDialog(context);
                                 if (customer != null) {
                                   BlocProvider.of<CrmBloc>(context)
-                                      .add(UpdateCrmUser(customer));
+                                      .add(UpdateCrmUser(customer, null));
                                 }
                               },
                             )
@@ -259,7 +257,6 @@ class _MyOrderState extends State<MyOrderPage> {
           child: CustomScrollView(
         slivers: <Widget>[
           SliverToBoxAdapter(
-            // you could add any widget
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: Colors.transparent,
@@ -283,9 +280,9 @@ class _MyOrderState extends State<MyOrderPage> {
                     onLongPress: () async {
                       BlocProvider.of<CartBloc>(context)
                           .add(DeleteItemCart(index));
-                      Navigator.pushNamed(context, OrderRoute,
+                      Navigator.pushNamed(context, '/order',
                           arguments:
-                              FormArguments('item deleted', updatedOrder));
+                              FormArguments('item deleted', 0, updatedOrder));
                     },
                     child: ListTile(
                       leading: CircleAvatar(

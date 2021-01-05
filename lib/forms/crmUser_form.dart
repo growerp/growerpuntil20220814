@@ -17,48 +17,50 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:models/models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
-class CategoryForm extends StatelessWidget {
+class CrmUserForm extends StatelessWidget {
   final FormArguments formArguments;
-  CategoryForm(this.formArguments);
+  CrmUserForm(this.formArguments);
 
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) =>
-        (MyCategoryPage(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 3);
+        (MyUserPage(formArguments.message, formArguments.object));
+    return ShowNavigationRail(a(formArguments), 0);
   }
 }
 
-class MyCategoryPage extends StatefulWidget {
+class MyUserPage extends StatefulWidget {
   final String message;
-  final ProductCategory category;
-  MyCategoryPage(this.message, this.category);
+  final User user;
+  MyUserPage(this.message, this.user);
   @override
-  _MyCategoryState createState() => _MyCategoryState(message, category);
+  _MyUserState createState() => _MyUserState(message, user);
 }
 
-class _MyCategoryState extends State<MyCategoryPage> {
+class _MyUserState extends State<MyUserPage> {
   final String message;
-  final ProductCategory category;
+  final User user;
   final _formKey = GlobalKey<FormState>();
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
   final _nameController = TextEditingController();
-  final _descrController = TextEditingController();
+  final _emailController = TextEditingController();
+  User updatedUser;
   bool loading = false;
-  ProductCategory updatedCategory;
+  UserGroup _selectedUserGroup;
   PickedFile _imageFile;
   dynamic _pickImageError;
   String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-
-  _MyCategoryState(this.message, this.category) {
+  _MyUserState([this.message, this.user]) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
@@ -94,7 +96,6 @@ class _MyCategoryState extends State<MyCategoryPage> {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    Catalog catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -103,7 +104,8 @@ class _MyCategoryState extends State<MyCategoryPage> {
               appBar: AppBar(
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(context, authenticate, 'Category detail'),
+                title: companyLogo(
+                    context, authenticate, '${user?.groupDescription} detail'),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),
@@ -139,35 +141,25 @@ class _MyCategoryState extends State<MyCategoryPage> {
                 ],
               ),
               drawer: myDrawer(context, authenticate),
-              body: BlocListener<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthProblem)
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                  },
-                  child: BlocConsumer<CatalogBloc, CatalogState>(
-                      listener: (context, state) {
-                    if (state is CatalogProblem) {
-                      loading = false;
-                      updatedCategory = state.newCategory;
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.green);
-                    }
-                    if (state is CatalogLoading) {
-                      loading = true;
-                      HelperFunctions.showMessage(
-                          context, '${state.message}', Colors.green);
-                    }
-                    if (state is CatalogLoaded)
-                      Navigator.of(context).pop(updatedCategory);
-                  }, builder: (context, state) {
-                    if (state is CatalogLoaded) {
-                      updatedCategory = state.category;
-                      catalog = state.catalog;
-                    }
-                    return Center(
-                      child: !kIsWeb &&
-                              defaultTargetPlatform == TargetPlatform.android
+              body: BlocListener<CrmBloc, CrmState>(
+                listener: (context, state) {
+                  if (state is CrmProblem) {
+                    loading = false;
+                    HelperFunctions.showMessage(
+                        context, '${state.errorMessage}', Colors.red);
+                  }
+                  if (state is CrmLoading) {
+                    loading = true;
+                    HelperFunctions.showMessage(
+                        context, '${state.message}', Colors.green);
+                  }
+                  if (state is CrmLoaded) {
+                    Navigator.of(context).pop(updatedUser);
+                  }
+                },
+                child: Center(
+                  child:
+                      !kIsWeb && defaultTargetPlatform == TargetPlatform.android
                           ? FutureBuilder<void>(
                               future: retrieveLostData(),
                               builder: (BuildContext context,
@@ -178,11 +170,11 @@ class _MyCategoryState extends State<MyCategoryPage> {
                                     textAlign: TextAlign.center,
                                   );
                                 }
-                                return _showForm(catalog, updatedCategory);
+                                return _showForm(authenticate, updatedUser);
                               })
-                          : _showForm(catalog, updatedCategory),
-                    );
-                  }))));
+                          : _showForm(authenticate, updatedUser),
+                ),
+              )));
     });
   }
 
@@ -195,10 +187,15 @@ class _MyCategoryState extends State<MyCategoryPage> {
     return null;
   }
 
-  Widget _showForm(Catalog catalog, ProductCategory updatedCategory) {
-    _nameController..text = category?.categoryName;
-    _descrController..text = category?.description;
+  Widget _showForm(authenticate, updatedUser) {
+    _firstNameController..text = user?.firstName;
+    _lastNameController..text = user?.lastName;
+    _nameController..text = user?.name;
+    _emailController..text = user?.email;
     final Text retrieveError = _getRetrieveErrorWidget();
+    if (_selectedUserGroup == null && user?.userGroupId != null)
+      _selectedUserGroup =
+          userGroups.firstWhere((a) => a.userGroupId == user?.userGroupId);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -219,8 +216,8 @@ class _MyCategoryState extends State<MyCategoryPage> {
                     onTap: () async {
                       PickedFile pickedFile =
                           await _picker.getImage(source: ImageSource.gallery);
-                      BlocProvider.of<AuthBloc>(context).add(
-                          UploadImage(category.categoryId, pickedFile.path));
+                      BlocProvider.of<AuthBloc>(context)
+                          .add(UploadImage(user.partyId, pickedFile.path));
                     },
                     child: CircleAvatar(
                         backgroundColor: Colors.green,
@@ -229,50 +226,97 @@ class _MyCategoryState extends State<MyCategoryPage> {
                             ? kIsWeb
                                 ? Image.network(_imageFile.path)
                                 : Image.file(File(_imageFile.path))
-                            : category?.image != null
-                                ? Image.memory(category?.image)
-                                : Text(
-                                    category?.categoryName?.substring(0, 1) ??
-                                        '',
+                            : user?.image != null
+                                ? Image.memory(user?.image, height: 150)
+                                : Text(user?.firstName?.substring(0, 1) ?? '',
                                     style: TextStyle(
                                         fontSize: 30, color: Colors.black))),
                   ),
                   SizedBox(height: 30),
                   TextFormField(
-                    key: Key('name'),
-                    decoration: InputDecoration(labelText: 'Category Name'),
-                    controller: _nameController,
+                    key: Key('firstName'),
+                    decoration: InputDecoration(labelText: 'First Name'),
+                    controller: _firstNameController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter a category name?';
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 30),
-                  TextFormField(
-                    key: Key('name'),
-                    decoration: InputDecoration(labelText: 'Description'),
-                    controller: _descrController,
-                    maxLines: 5,
-                    validator: (value) {
-                      if (value.isEmpty) return 'Please enter a category name?';
+                      if (value.isEmpty) return 'Please enter your first name?';
                       return null;
                     },
                   ),
                   SizedBox(height: 20),
+                  TextFormField(
+                    key: Key('lastName'),
+                    decoration: InputDecoration(labelText: 'Last Name'),
+                    controller: _lastNameController,
+                    validator: (value) {
+                      if (value.isEmpty) return 'Please enter your last name?';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 20),
+                  TextFormField(
+                    key: Key('name'),
+                    decoration: InputDecoration(labelText: 'User Login Name'),
+                    controller: _nameController,
+                    validator: (value) {
+                      if (value.isEmpty) return 'Please enter a login name?';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  TextFormField(
+                    key: Key('email'),
+                    decoration: InputDecoration(labelText: 'Email address'),
+                    controller: _emailController,
+                    validator: (String value) {
+                      if (value.isEmpty) return 'Please enter Email address?';
+                      if (!RegExp(
+                              r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                          .hasMatch(value)) {
+                        return 'This is not a valid email';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  Visibility(
+                      visible: user.userGroupId == null,
+                      child: DropdownButtonFormField<UserGroup>(
+                        key: Key('dropDown'),
+                        hint: Text('User Group'),
+                        value: _selectedUserGroup,
+                        validator: (value) =>
+                            value == null ? 'field required' : null,
+                        items: userGroups?.map((item) {
+                          return DropdownMenuItem<UserGroup>(
+                              child: Text(item.description), value: item);
+                        })?.toList(),
+                        onChanged: (UserGroup newValue) {
+                          setState(() {
+                            _selectedUserGroup = newValue;
+                          });
+                        },
+                        isExpanded: true,
+                      )),
+                  SizedBox(height: 20),
                   RaisedButton(
+                      disabledColor: Colors.grey,
                       key: Key('update'),
-                      child: Text(
-                          category?.categoryId == null ? 'Create' : 'Update'),
+                      child: Text(user?.partyId == null ? 'Create' : 'Update'),
                       onPressed: () {
                         if (_formKey.currentState.validate() && !loading) {
-                          updatedCategory = ProductCategory(
-                            categoryId: category?.categoryId,
-                            categoryName: _nameController.text,
-                            description: _descrController.text,
+                          updatedUser = User(
+                            partyId: user?.partyId,
+                            firstName: _firstNameController.text,
+                            lastName: _lastNameController.text,
+                            email: _emailController.text,
+                            name: _nameController.text,
+                            userGroupId: _selectedUserGroup.userGroupId,
+                            language: Localizations.localeOf(context)
+                                .languageCode
+                                .toString(),
                           );
-                          BlocProvider.of<CatalogBloc>(context)
-                              .add(UpdateCategory(
-                            updatedCategory,
+                          BlocProvider.of<CrmBloc>(context).add(UpdateCrmUser(
+                            updatedUser,
                             _imageFile?.path,
                           ));
                         }

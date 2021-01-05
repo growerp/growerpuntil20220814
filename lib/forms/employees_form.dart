@@ -18,35 +18,33 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:models/models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/routing_constants.dart';
 import 'package:core/widgets/@widgets.dart';
 
-class UsersForm extends StatelessWidget {
+class EmployeesForm extends StatelessWidget {
   final FormArguments formArguments;
-  UsersForm(this.formArguments);
+  EmployeesForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) =>
-        (UsersFormHeader(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 2, formArguments.object);
+        (EmployeesPage(formArguments.message, formArguments.object));
+    return ShowNavigationRail(a(formArguments), 1, formArguments.object);
   }
 }
 
-class UsersFormHeader extends StatefulWidget {
+class EmployeesPage extends StatefulWidget {
   final String message;
   final Authenticate authenticate;
-  const UsersFormHeader([this.message, this.authenticate]);
+  const EmployeesPage([this.message, this.authenticate]);
   @override
-  _UsersFormStateHeader createState() =>
-      _UsersFormStateHeader(message, authenticate);
+  _EmployeesState createState() => _EmployeesState(message, authenticate);
 }
 
-class _UsersFormStateHeader extends State<UsersFormHeader> {
+class _EmployeesState extends State<EmployeesPage> {
   final String message;
   final Authenticate authenticate;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _UsersFormStateHeader([this.message, this.authenticate]) {
+  _EmployeesState([this.message, this.authenticate]) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   @override
@@ -58,13 +56,12 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
           key: scaffoldMessengerKey,
           child: Scaffold(
               appBar: AppBar(
-                  title:
-                      companyLogo(context, authenticate, 'Company Users List'),
+                  title: companyLogo(context, authenticate, 'Employees'),
                   automaticallyImplyLeading:
                       ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, UserRoute,
+                  Navigator.pushNamed(context, '/employee',
                       arguments:
                           FormArguments('Enter new employee information...'));
                 },
@@ -107,7 +104,7 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
                   Expanded(
                       child: Text("Language", textAlign: TextAlign.center)),
                 if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(child: Text("Country", textAlign: TextAlign.center)),
+                  Expanded(child: Text("Company", textAlign: TextAlign.center)),
               ],
             ),
           ),
@@ -117,8 +114,9 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
             (context, index) {
               return InkWell(
                 onTap: () async {
-                  dynamic result = await Navigator.pushNamed(context, UserRoute,
-                      arguments: FormArguments(null, users[index]));
+                  dynamic result = await Navigator.pushNamed(
+                      context, '/employee',
+                      arguments: FormArguments(null, 0, users[index]));
                   setState(() {
                     if (result is Authenticate)
                       users = result.company.employees;
@@ -137,7 +135,7 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
                   if (result) {
                     BlocProvider.of<AuthBloc>(context)
                         .add(DeleteEmployee(users[index]));
-                    Navigator.pushNamed(context, UsersRoute,
+                    Navigator.pushNamed(context, '/employees',
                         arguments:
                             FormArguments('Employee deleted', authenticate));
                   }
@@ -172,7 +170,7 @@ class _UsersFormStateHeader extends State<UsersFormHeader> {
                                 textAlign: TextAlign.center)),
                       if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
                         Expanded(
-                            child: Text("${users[index].country}",
+                            child: Text("${users[index].companyName}",
                                 textAlign: TextAlign.center)),
                     ],
                   ),

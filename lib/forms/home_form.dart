@@ -17,7 +17,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:models/models.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/routing_constants.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -53,67 +52,91 @@ class DashBoard extends StatelessWidget {
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
         Catalog catalog;
+        Crm crm;
         List<Order> orders;
         return BlocBuilder<CatalogBloc, CatalogState>(
             builder: (context, state) {
           if (state is CatalogLoaded) catalog = state.catalog;
           return BlocBuilder<OrderBloc, OrderState>(builder: (context, state) {
             if (state is OrderLoaded) orders = state.orders;
-            return ScaffoldMessenger(
-                key: scaffoldMessengerKey,
-                child: Scaffold(
-                    appBar: AppBar(
-                        automaticallyImplyLeading:
-                            ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                        title: companyLogo(context, authenticate,
-                            authenticate?.company?.name ?? 'Company??'),
-                        actions: <Widget>[
-                          if (authenticate?.apiKey != null)
-                            IconButton(
-                                icon: Icon(Icons.do_not_disturb),
-                                tooltip: 'Logout',
-                                onPressed: () => {
-                                      BlocProvider.of<AuthBloc>(context)
-                                          .add(Logout()),
-                                      Navigator.pushNamed(context, HomeRoute,
-                                          arguments: FormArguments(
-                                              "Successfully logged out."))
-                                    }),
-                        ]),
-                    drawer: myDrawer(context, authenticate),
-                    body: Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
-                      child: GridView.count(
-                        crossAxisCount:
-                            ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                                ? 2
-                                : 3,
-                        padding: EdgeInsets.all(3.0),
-                        children: <Widget>[
-                          makeDashboardItem(context, menuItems[1],
-                              "${authenticate.company.employees.length}"),
-                          makeDashboardItem(context, menuItems[3],
-                              "${catalog?.products?.length ?? 0}"),
-                          makeDashboardItem(context, menuItems[4],
-                              "${catalog?.categories?.length ?? 0}"),
-                          makeDashboardItem(
-                              context, menuItems[5], "${orders?.length ?? 0}"),
-                          makeDashboardItem(
-                              context,
-                              MenuItem(
-                                  title: "Customers",
-                                  selectedImage: "assets/images/dashBoard.png"),
-                              ""),
-                          makeDashboardItem(
-                              context,
-                              MenuItem(
-                                  title: "Suppliers",
-                                  selectedImage: "assets/images/dashBoard.png"),
-                              "")
-                        ],
-                      ),
-                    )));
+            return BlocBuilder<CrmBloc, CrmState>(builder: (context, state) {
+              if (state is CrmLoaded) crm = state.crm;
+              return ScaffoldMessenger(
+                  key: scaffoldMessengerKey,
+                  child: Scaffold(
+                      appBar: AppBar(
+                          automaticallyImplyLeading:
+                              ResponsiveWrapper.of(context)
+                                  .isSmallerThan(TABLET),
+                          title: companyLogo(context, authenticate,
+                              authenticate?.company?.name ?? 'Company??'),
+                          actions: <Widget>[
+                            if (authenticate?.apiKey != null)
+                              IconButton(
+                                  icon: Icon(Icons.do_not_disturb),
+                                  tooltip: 'Logout',
+                                  onPressed: () => {
+                                        BlocProvider.of<AuthBloc>(context)
+                                            .add(Logout()),
+                                        Navigator.pushNamed(context, '/home',
+                                            arguments: FormArguments(
+                                                "Successfully logged out."))
+                                      }),
+                          ]),
+                      drawer: myDrawer(context, authenticate),
+                      body: Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 20.0, horizontal: 2.0),
+                        child: GridView.count(
+                          crossAxisCount: ResponsiveWrapper.of(context)
+                                  .isSmallerThan(TABLET)
+                              ? 2
+                              : 3,
+                          padding: EdgeInsets.all(3.0),
+                          children: <Widget>[
+                            makeDashboardItem(
+                                context,
+                                menuItems[1],
+                                "Current user: ${authenticate.user.firstName} "
+                                    "${authenticate.user.lastName} ",
+                                "Employees: ${authenticate.company.employees.length}",
+                                ""),
+                            makeDashboardItem(
+                                context,
+                                menuItems[2],
+                                "Opportunities: ${crm?.opportunities?.length ?? 0}",
+                                "Leads: ${crm?.leads?.length}",
+                                "Customers: ${crm?.customers?.length}"),
+                            makeDashboardItem(
+                                context,
+                                menuItems[3],
+                                "Categories: ${catalog?.categories?.length ?? 0}",
+                                "Products: ${catalog?.products?.length ?? 0}",
+                                ""),
+                            makeDashboardItem(context, menuItems[4],
+                                "${orders?.length ?? 0}", "", ""),
+                            makeDashboardItem(
+                                context,
+                                MenuItem(
+                                    title: "Accounting",
+                                    selectedImage:
+                                        "assets/images/dashBoard.png"),
+                                "",
+                                "",
+                                ""),
+                            makeDashboardItem(
+                                context,
+                                MenuItem(
+                                    title: "Purchasing",
+                                    selectedImage:
+                                        "assets/images/dashBoard.png"),
+                                "",
+                                "",
+                                "")
+                          ],
+                        ),
+                      )));
+            });
           });
         });
       }
@@ -135,9 +158,9 @@ class DashBoard extends StatelessWidget {
                     child: Text('Login'),
                     onPressed: () async {
                       dynamic result =
-                          await Navigator.pushNamed(context, LoginRoute);
+                          await Navigator.pushNamed(context, '/login');
                       if (result)
-                        Navigator.pushNamed(context, HomeRoute,
+                        Navigator.pushNamed(context, '/home',
                             arguments:
                                 FormArguments("Successfully logged in."));
                     },
@@ -149,7 +172,7 @@ class DashBoard extends StatelessWidget {
                     child: Text('Create a new company and admin'),
                     onPressed: () {
                       authenticate.company.partyId = null;
-                      Navigator.popAndPushNamed(context, RegisterRoute);
+                      Navigator.popAndPushNamed(context, '/register');
                     },
                   ),
                 ]))));
@@ -159,8 +182,8 @@ class DashBoard extends StatelessWidget {
   }
 }
 
-Card makeDashboardItem(
-    BuildContext context, MenuItem menuItem, String subTitle) {
+Card makeDashboardItem(BuildContext context, MenuItem menuItem, String subTitle,
+    String subTitle1, String subTitle2) {
   return Card(
       elevation: 1.0,
       margin: new EdgeInsets.all(8.0),
@@ -176,15 +199,23 @@ Card makeDashboardItem(
             mainAxisSize: MainAxisSize.min,
             verticalDirection: VerticalDirection.down,
             children: <Widget>[
-              SizedBox(height: 50.0),
-              Center(child: Image.asset(menuItem.selectedImage, height: 40.0)),
-              SizedBox(height: 20.0),
+              SizedBox(height: 10.0),
+              Center(child: Image.asset(menuItem.selectedImage, height: 80.0)),
+              SizedBox(height: 10.0),
               Center(
                 child: Text("${menuItem.title}",
                     style: TextStyle(fontSize: 25.0, color: Colors.black)),
               ),
               Center(
                 child: Text(subTitle,
+                    style: TextStyle(fontSize: 20.0, color: Colors.black)),
+              ),
+              Center(
+                child: Text(subTitle1,
+                    style: TextStyle(fontSize: 20.0, color: Colors.black)),
+              ),
+              Center(
+                child: Text(subTitle2,
                     style: TextStyle(fontSize: 20.0, color: Colors.black)),
               )
             ],

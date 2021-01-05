@@ -22,25 +22,25 @@ dependencies:
   responsive_framework: ^0.0.8
   printing: ^3.7.1
   core:
-#    path: ../packages/core
-    git:
-      url: https://github.com/growerp/growerp.git
-      ref: packages
-      path: core
+    path: ../packages/core
+#    git:
+#      url: https://github.com/growerp/growerp.git
+#      ref: packages
+#      path: core
   models:
-#    path: ../packages/models
-    git:
-      url: https://github.com/growerp/growerp.git
-      ref: packages
-      path: models
+    path: ../packages/models
+#    git:
+#      url: https://github.com/growerp/growerp.git
+#      ref: packages
+#      path: models
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   mockito: ^4.1.1
-  test_coverage: ^0.4.0
+  test_coverage: ^0.5.0
   bloc_test: ^7.1.0
-  flutter_launcher_icons: ^0.7.5
+  flutter_launcher_icons: ^0.8.1
 # to run icons: flutter pub run flutter_launcher_icons:main 
 flutter_icons:
   android: "launcher_icon"
