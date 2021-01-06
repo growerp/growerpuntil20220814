@@ -61,3 +61,15 @@ Functions coming up:
 
 
 ![Download here a short movie to show the Adaptive App in action](screenPrints/responsive.mp4?raw=true)
+
+![Phone Dashboard](screenprints/phoneDashBoard.png?raw=true)
+
+![Phone catalog with products and categories](screenprints/phoneCat.png?raw=true)
+
+![Phone menu](screenprints/phoneMenu.png?raw=true)
+
+![PC/Tablet Dashboard](screenprints/pcDashBoard.png?raw=true)
+
+![PC/Tablet catalog with products and categories](screenprints/pcCat.png?raw=true)
+
+
