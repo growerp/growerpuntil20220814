@@ -58,17 +58,12 @@ Functions coming up:
 * Inventory
 * Purchasing.
 
-
-![Download here a short movie to show the Adaptive App in action](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/responsive.mp4)
-
-![Phone Dashboard](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/phoneDashBoard.png)
-
-![Phone catalog with products and categories](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/phoneCat.png)
+Phone                                                                                         |  Tablet/PC
+:--------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:
+![](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/phoneDashboard.png) | ![](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/pcDashboard.png)
+![](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/phoneCat.png)       | ![](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/pcCat.png)
 
 ![Phone menu](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/phoneMenu.png)
 
-![PC/Tablet Dashboard](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/pcDashBoard.png)
-
-![PC/Tablet catalog with products and categories](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/pcCat.png)
-
+![Download here a short movie to show the Adaptive App in action](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/responsive.mp4)
 
