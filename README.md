@@ -59,17 +59,16 @@ Functions coming up:
 * Purchasing.
 
 
+![Download here a short movie to show the Adaptive App in action](https://github.com/growerp/growerp/blob/master/screenPrints/responsive.mp4?raw=true)
 
-![Download here a short movie to show the Adaptive App in action](screenPrints/responsive.mp4?raw=true)
+![Phone Dashboard](https://github.com/growerp/growerp/blob/master/screenprints/phoneDashBoard.png?raw=true)
 
-![Phone Dashboard](screenprints/phoneDashBoard.png?raw=true)
+![Phone catalog with products and categories](https://github.com/growerp/growerp/blob/master/screenprints/phoneCat.png?raw=true)
 
-![Phone catalog with products and categories](screenprints/phoneCat.png?raw=true)
+![Phone menu](https://github.com/growerp/growerp/blob/master/screenprints/phoneMenu.png?raw=true)
 
-![Phone menu](screenprints/phoneMenu.png?raw=true)
+![PC/Tablet Dashboard](https://github.com/growerp/growerp/blob/master/screenprints/pcDashBoard.png?raw=true)
 
-![PC/Tablet Dashboard](screenprints/pcDashBoard.png?raw=true)
-
-![PC/Tablet catalog with products and categories](screenprints/pcCat.png?raw=true)
+![PC/Tablet catalog with products and categories](https://github.com/growerp/growerp/blob/master/screenprints/pcCat.png?raw=true)
 
 
