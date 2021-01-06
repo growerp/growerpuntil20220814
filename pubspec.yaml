@@ -22,17 +22,17 @@ dependencies:
   responsive_framework: ^0.0.8
   printing: ^3.7.1
   core:
-    path: ../packages/core
-#    git:
-#      url: https://github.com/growerp/growerp.git
-#      ref: packages
-#      path: core
+#    path: ../packages/core
+    git:
+      url: https://github.com/growerp/growerp.git
+      ref: packages
+      path: core
   models:
-    path: ../packages/models
-#    git:
-#      url: https://github.com/growerp/growerp.git
-#      ref: packages
-#      path: models
+#    path: ../packages/models
+    git:
+      url: https://github.com/growerp/growerp.git
+      ref: packages
+      path: models
 
 dev_dependencies:
   flutter_test:
