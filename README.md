@@ -1,5 +1,8 @@
 # GrowERP Admin App
 
+A live version is now available at https://admin.growerp.org where you can create your own company
+
+# if you want to run the system locally.
 ## Quick start: after installation of [Java 11](https://openjdk.java.net/install/):
 ### Moqui backend:
   - git clone https://github.com/growerp/moqui-framework.git moqui && cd moqui
@@ -35,7 +38,7 @@ The system is implemented with https://pub.dev/packages/flutter_bloc state manag
 
 The system configuration file is in /assets/cfg/app_settings.json. Select OFBiz or Moqui here.
 
-For test purposes we can provide access to Moqui or OFBiz systems inn the cloud.
+For test purposes we can provide access to Moqui or OFBiz systems in the cloud.
 
 This admin branch is using the core package stored in the same repository in the 'packages' branch.
 This package contains all the basic ERP functions, see the [readme](https://github.com/growerp/growerp/blob/packages/core/README.md) file for more info.
@@ -53,7 +56,6 @@ Additional ERP systems can be added on request, A REST interface is required.
 The implementation time is 40+ hours.
 
 Functions coming up:
-* Customer & Lead management
 * Accounting
 * Inventory
 * Purchasing.
