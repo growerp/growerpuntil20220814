@@ -1,6 +1,7 @@
-# GrowERP Admin App
+# GrowERP Admin App 
 
-A live version is now available at https://admin.growerp.org where you can create your own company
+more info at https://www.growerp.org (be patient, also in flutter, needs to load first....) 
+A live version of admin is now available at https://admin.growerp.org where you can create your own company
 
 # if you want to run the system locally.
 ## Quick start: after installation of [Java 11](https://openjdk.java.net/install/):
