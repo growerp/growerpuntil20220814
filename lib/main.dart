@@ -46,7 +46,6 @@ void main() async {
         BlocProvider<CatalogBloc>(create: (context) => CatalogBloc(repos)),
         BlocProvider<CrmBloc>(create: (context) => CrmBloc(repos)),
         BlocProvider<AuthBloc>(
-            // will load catalogBloc and crmBloc
             create: (context) => AuthBloc(
                 repos,
                 BlocProvider.of<CatalogBloc>(context),
@@ -54,6 +53,8 @@ void main() async {
               ..add(LoadAuth())),
         BlocProvider<OrderBloc>(
             create: (context) => OrderBloc(repos)..add(LoadOrder())),
+        BlocProvider<AccntgBloc>(
+            create: (context) => AccntgBloc(repos)..add(LoadAccntg())),
       ],
       child: MyApp(),
     ),

@@ -53,6 +53,7 @@ class DashBoard extends StatelessWidget {
         Authenticate authenticate = state.authenticate;
         Catalog catalog;
         Crm crm;
+        BalanceSheet balanceSheet;
         List<Order> orders;
         return BlocBuilder<CatalogBloc, CatalogState>(
             builder: (context, state) {
@@ -61,81 +62,85 @@ class DashBoard extends StatelessWidget {
             if (state is OrderLoaded) orders = state.orders;
             return BlocBuilder<CrmBloc, CrmState>(builder: (context, state) {
               if (state is CrmLoaded) crm = state.crm;
-              return ScaffoldMessenger(
-                  key: scaffoldMessengerKey,
-                  child: Scaffold(
-                      appBar: AppBar(
-                          automaticallyImplyLeading:
-                              ResponsiveWrapper.of(context)
-                                  .isSmallerThan(TABLET),
-                          title: companyLogo(context, authenticate,
-                              authenticate?.company?.name ?? 'Company??'),
-                          actions: <Widget>[
-                            if (authenticate?.apiKey != null)
-                              IconButton(
-                                  icon: Icon(Icons.do_not_disturb),
-                                  tooltip: 'Logout',
-                                  onPressed: () => {
-                                        BlocProvider.of<AuthBloc>(context)
-                                            .add(Logout()),
-                                        Navigator.pushNamed(context, '/home',
-                                            arguments: FormArguments(
-                                                "Successfully logged out."))
-                                      }),
-                          ]),
-                      drawer: myDrawer(context, authenticate),
-                      body: Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 20.0, horizontal: 2.0),
-                        child: GridView.count(
-                          crossAxisCount: ResponsiveWrapper.of(context)
-                                  .isSmallerThan(TABLET)
-                              ? 2
-                              : 3,
-                          padding: EdgeInsets.all(3.0),
-                          children: <Widget>[
-                            makeDashboardItem(
-                                context,
-                                menuItems[1],
-                                "Current user: ${authenticate.user.firstName} "
-                                    "${authenticate.user.lastName} ",
-                                "Employees: ${authenticate.company.employees.length}",
-                                ""),
-                            makeDashboardItem(
-                                context,
-                                menuItems[2],
-                                "Opportunities: ${crm?.opportunities?.length ?? 0}",
-                                "Leads: ${crm?.leads?.length}",
-                                "Customers: ${crm?.customers?.length}"),
-                            makeDashboardItem(
-                                context,
-                                menuItems[3],
-                                "Categories: ${catalog?.categories?.length ?? 0}",
-                                "Products: ${catalog?.products?.length ?? 0}",
-                                ""),
-                            makeDashboardItem(context, menuItems[4],
-                                "${orders?.length ?? 0}", "", ""),
-                            makeDashboardItem(
-                                context,
-                                MenuItem(
-                                    title: "Accounting",
-                                    selectedImage:
-                                        "assets/images/dashBoard.png"),
-                                "",
-                                "",
-                                ""),
-                            makeDashboardItem(
-                                context,
-                                MenuItem(
-                                    title: "Purchasing",
-                                    selectedImage:
-                                        "assets/images/dashBoard.png"),
-                                "",
-                                "",
-                                "")
-                          ],
-                        ),
-                      )));
+              return BlocBuilder<AccntgBloc, AccntgState>(
+                  builder: (context, state) {
+                if (state is AccntgLoaded) balanceSheet = state.balanceSheet;
+                return ScaffoldMessenger(
+                    key: scaffoldMessengerKey,
+                    child: Scaffold(
+                        appBar: AppBar(
+                            automaticallyImplyLeading:
+                                ResponsiveWrapper.of(context)
+                                    .isSmallerThan(TABLET),
+                            title: companyLogo(context, authenticate,
+                                authenticate?.company?.name ?? 'Company??'),
+                            actions: <Widget>[
+                              if (authenticate?.apiKey != null)
+                                IconButton(
+                                    icon: Icon(Icons.do_not_disturb),
+                                    tooltip: 'Logout',
+                                    onPressed: () => {
+                                          BlocProvider.of<AuthBloc>(context)
+                                              .add(Logout()),
+                                          Navigator.pushNamed(context, '/home',
+                                              arguments: FormArguments(
+                                                  "Successfully logged out."))
+                                        }),
+                            ]),
+                        drawer: myDrawer(context, authenticate),
+                        body: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 20.0, horizontal: 2.0),
+                          child: GridView.count(
+                            crossAxisCount: ResponsiveWrapper.of(context)
+                                    .isSmallerThan(TABLET)
+                                ? 2
+                                : 3,
+                            padding: EdgeInsets.all(3.0),
+                            children: <Widget>[
+                              makeDashboardItem(
+                                  context,
+                                  menuItems[1],
+                                  "Current user: ${authenticate.user.firstName} "
+                                      "${authenticate.user.lastName} ",
+                                  "Employees: ${authenticate.company.employees.length}",
+                                  ""),
+                              makeDashboardItem(
+                                  context,
+                                  menuItems[2],
+                                  "Opportunities: ${crm?.opportunities?.length ?? 0}",
+                                  "Leads: ${crm?.leads?.length}",
+                                  "Customers: ${crm?.customers?.length}"),
+                              makeDashboardItem(
+                                  context,
+                                  menuItems[3],
+                                  "Categories: ${catalog?.categories?.length ?? 0}",
+                                  "Products: ${catalog?.products?.length ?? 0}",
+                                  ""),
+                              makeDashboardItem(context, menuItems[4],
+                                  "${orders?.length ?? 0}", "", ""),
+                              makeDashboardItem(
+                                  context,
+                                  MenuItem(
+                                      title: "Accounting",
+                                      selectedImage:
+                                          "assets/images/dashBoard.png"),
+                                  " Assets: ${balanceSheet?.classInfoById?.asset?.totalPostedByTimePeriod?.all}",
+                                  "",
+                                  ""),
+                              makeDashboardItem(
+                                  context,
+                                  MenuItem(
+                                      title: "Purchasing",
+                                      selectedImage:
+                                          "assets/images/dashBoard.png"),
+                                  "",
+                                  "",
+                                  "")
+                            ],
+                          ),
+                        )));
+              });
             });
           });
         });
