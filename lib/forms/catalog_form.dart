@@ -185,7 +185,7 @@ class _CatalogFormStateHeader extends State<CatalogFormHeader> {
   }
 
   Widget productList() {
-    if (catalog.categories == null)
+    if (catalog?.categories == null)
       return FatalErrorForm(
           "No products yet, enter categories first\n "
               "they are mandatory on products",
@@ -258,19 +258,20 @@ class _CatalogFormStateHeader extends State<CatalogFormHeader> {
                     ),
                     title: Row(
                       children: <Widget>[
-                        Expanded(child: Text("${products[index].productName}")),
+                        Expanded(
+                            child: Text("${products[index]?.productName}")),
                         if (!ResponsiveWrapper.of(context)
                             .isSmallerThan(TABLET))
                           Expanded(
-                              child: Text("${products[index].description}",
+                              child: Text("${products[index]?.description}",
                                   textAlign: TextAlign.center)),
                         Expanded(
                             child: Text(
                                 "${authenticate.company.currencyId} "
-                                "${products[index].price}",
+                                "${products[index]?.price}",
                                 textAlign: TextAlign.center)),
                         Expanded(
-                            child: Text("${products[index].categoryName}",
+                            child: Text("${products[index]?.categoryName}",
                                 textAlign: TextAlign.center)),
                       ],
                     ),

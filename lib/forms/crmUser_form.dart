@@ -31,7 +31,7 @@ class CrmUserForm extends StatelessWidget {
   Widget build(BuildContext context) {
     var a = (formArguments) =>
         (MyUserPage(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 0);
+    return ShowNavigationRail(a(formArguments), formArguments.tab);
   }
 }
 
@@ -238,7 +238,7 @@ class _MyUserState extends State<MyUserPage> {
                     decoration: InputDecoration(labelText: 'First Name'),
                     controller: _firstNameController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter your first name?';
+                      if (value.isEmpty) return 'Please enter a first name?';
                       return null;
                     },
                   ),
@@ -248,7 +248,7 @@ class _MyUserState extends State<MyUserPage> {
                     decoration: InputDecoration(labelText: 'Last Name'),
                     controller: _lastNameController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter your last name?';
+                      if (value.isEmpty) return 'Please enter a last name?';
                       return null;
                     },
                   ),

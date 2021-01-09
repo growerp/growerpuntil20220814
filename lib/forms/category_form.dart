@@ -254,7 +254,8 @@ class _MyCategoryState extends State<MyCategoryPage> {
                     controller: _descrController,
                     maxLines: 5,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter a category name?';
+                      if (value.isEmpty)
+                        return 'Please enter a category description?';
                       return null;
                     },
                   ),

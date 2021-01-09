@@ -28,7 +28,8 @@ class OrderForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) => (MyOrderPage(formArguments.message));
+    var a = (formArguments) =>
+        (MyOrderPage(formArguments.message, formArguments.object));
     return BlocProvider(
         create: (context) => CartBloc(
             BlocProvider.of<AuthBloc>(context),
@@ -36,96 +37,123 @@ class OrderForm extends StatelessWidget {
             BlocProvider.of<CatalogBloc>(context),
             BlocProvider.of<CrmBloc>(context))
           ..add(LoadCart(formArguments.object)),
-        child: ShowNavigationRail(a(formArguments), 4));
+        child: ShowNavigationRail(a(formArguments), formArguments.tab));
   }
 }
 
 class MyOrderPage extends StatefulWidget {
   final String message;
-  MyOrderPage(this.message);
+  final Order order;
+  MyOrderPage(this.message, this.order);
   @override
-  _MyOrderState createState() => _MyOrderState(message);
+  _MyOrderState createState() => _MyOrderState(message, order);
 }
 
 class _MyOrderState extends State<MyOrderPage> {
   final String message;
+  final Order orderIn;
   final _formKey = GlobalKey<FormState>();
   final _priceController = TextEditingController();
   final _quantityController = TextEditingController();
   bool loading = false;
-  Order updatedOrder;
+  Order order;
   Authenticate authenticate;
   List<Product> products;
-  List<User> customers;
+  Crm crm;
+  List<User> otherParties;
   Product _selectedProduct;
-  User _selectedCustomer;
+  User _selectedOtherParty;
+  bool sales;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _MyOrderState(this.message) {
+  _MyOrderState(this.message, this.orderIn) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
-        key: scaffoldMessengerKey,
-        child: Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading:
-                  ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-              title: companyLogo(context, authenticate, 'Order detail'),
-              actions: <Widget>[
-                IconButton(
-                    icon: Icon(Icons.home),
-                    onPressed: () => Navigator.pushNamed(context, '/home'))
-              ],
-            ),
-            drawer: myDrawer(context, authenticate),
-            body: BlocListener<AuthBloc, AuthState>(
-                listener: (context, state) {
-                  if (state is AuthProblem)
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                },
-                child: BlocConsumer<CartBloc, CartState>(
+    return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
+      if (state is CartLoaded) {
+        authenticate = state.authenticate;
+        if (orderIn.customerPartyId == authenticate.company.partyId)
+          sales = false;
+        if (orderIn.supplierPartyId == authenticate.company.partyId)
+          sales = true;
+        crm = state.crm;
+        otherParties = crm.suppliers;
+        if (sales) otherParties = crm.customers;
+        order = state.order;
+        products = state.catalog.products;
+        return ScaffoldMessenger(
+            key: scaffoldMessengerKey,
+            child: Scaffold(
+                appBar: AppBar(
+                  automaticallyImplyLeading:
+                      ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+                  title: companyLogo(context, authenticate,
+                      (sales ? 'Sales' : 'Purchase') + " Order detail"),
+                  actions: <Widget>[
+                    IconButton(
+                        icon: Icon(Icons.home),
+                        onPressed: () => Navigator.pushNamed(context, '/home'))
+                  ],
+                ),
+                drawer: myDrawer(context, authenticate),
+                body: BlocListener<AuthBloc, AuthState>(
                     listener: (context, state) {
-                  if (state is CartProblem) {
-                    loading = false;
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.green);
-                  } else if (state is CartLoading) {
-                    loading = true;
-                    HelperFunctions.showMessage(
-                        context, '${state.message}', Colors.green);
-                    return Center(child: CircularProgressIndicator());
-                  } else if (state is CartLoaded) {
-                    loading = true;
-                    HelperFunctions.showMessage(
-                        context, '${state.message}', Colors.green);
-                    setState(() {
-                      _selectedProduct = null;
-                      _priceController.clear();
-                      _quantityController.clear();
-                    });
-                  }
-                }, builder: (context, state) {
-                  if (state is CartLoading)
-                    return Center(child: CircularProgressIndicator());
-                  if (state is CartLoaded) {
-                    authenticate = state.authenticate;
-                    customers = state.customers;
-                    products = state.products;
-                    updatedOrder = state.order;
-                  }
-                  return _orderItemList();
-                }))));
+                      if (state is AuthProblem)
+                        HelperFunctions.showMessage(
+                            context, '${state.errorMessage}', Colors.red);
+                    },
+                    child: BlocListener<OrderBloc, OrderState>(
+                        listener: (context, state) {
+                          if (state is OrderProblem)
+                            HelperFunctions.showMessage(
+                                context, '${state.errorMessage}', Colors.red);
+                        },
+                        child: BlocConsumer<CartBloc, CartState>(
+                            listener: (context, state) {
+                          if (state is CartProblem) {
+                            loading = false;
+                            HelperFunctions.showMessage(
+                                context, '${state.errorMessage}', Colors.green);
+                          } else if (state is CartLoading) {
+                            loading = true;
+                            HelperFunctions.showMessage(
+                                context, '${state.message}', Colors.green);
+                            return Center(child: CircularProgressIndicator());
+                          } else if (state is CartLoaded) {
+                            loading = true;
+                            HelperFunctions.showMessage(
+                                context, '${state.message}', Colors.green);
+                            setState(() {
+                              _selectedProduct = null;
+                              _priceController.clear();
+                              _quantityController.clear();
+                            });
+                          }
+                        }, builder: (context, state) {
+                          if (state is CartLoading)
+                            return Center(child: CircularProgressIndicator());
+                          else
+                            return _orderItemList();
+                        })))));
+      }
+      return Center(child: CircularProgressIndicator());
+    });
   }
 
   Widget _orderItemList() {
-    List<OrderItem> items = updatedOrder?.orderItems;
-    _selectedCustomer ??= updatedOrder?.customerPartyId != null &&
-            customers.length > 0
-        ? customers.firstWhere((x) => updatedOrder.customerPartyId == x.partyId)
-        : null;
+    List<OrderItem> items = order?.orderItems;
+    if (sales)
+      _selectedOtherParty ??= order?.customerPartyId != null &&
+              otherParties != null
+          ? otherParties.firstWhere((x) => order.customerPartyId == x.partyId)
+          : null;
+    else
+      _selectedOtherParty ??= order?.supplierPartyId != null &&
+              otherParties != null
+          ? otherParties.firstWhere((x) => order.supplierPartyId == x.partyId)
+          : null;
     loading = false;
     // phone has a singe column, tablet and larger 2
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
@@ -150,20 +178,20 @@ class _MyOrderState extends State<MyOrderPage> {
                             Container(
                                 width: width / columns.toDouble() - 160,
                                 child: DropdownButtonFormField<User>(
-                                  key: Key('dropDownCust'),
-                                  hint: Text('Customer'),
-                                  value: _selectedCustomer,
+                                  key: Key('dropDownOtherParty'),
+                                  hint: Text(sales ? 'Customer' : 'Supplier'),
+                                  value: _selectedOtherParty,
                                   validator: (value) =>
                                       value == null ? 'field required' : null,
-                                  items: customers?.map((customer) {
+                                  items: otherParties?.map((x) {
                                     return DropdownMenuItem<User>(
                                         child: Text(
-                                            "${customer.lastName} ${customer.firstName}"),
-                                        value: customer);
+                                            "${x.lastName} ${x.firstName}"),
+                                        value: x);
                                   })?.toList(),
                                   onChanged: (User newValue) {
                                     setState(() {
-                                      _selectedCustomer = newValue;
+                                      _selectedOtherParty = newValue;
                                     });
                                   },
                                   isExpanded: true,
@@ -172,11 +200,11 @@ class _MyOrderState extends State<MyOrderPage> {
                             RaisedButton(
                               child: Text('Add New'),
                               onPressed: () async {
-                                final User customer =
-                                    await _addCustomerDialog(context);
-                                if (customer != null) {
+                                final User other =
+                                    await _addOtherPartyDialog(context, sales);
+                                if (other != null) {
                                   BlocProvider.of<CrmBloc>(context)
-                                      .add(UpdateCrmUser(customer, null));
+                                      .add(UpdateCrmUser(other, null));
                                 }
                               },
                             )
@@ -224,8 +252,7 @@ class _MyOrderState extends State<MyOrderPage> {
                             key: Key('Confirm Order'),
                             child: Text('confirm'),
                             onPressed: () {
-                              if (updatedOrder.orderItems.length > 0 &&
-                                  !loading) {
+                              if (order.orderItems.length > 0 && !loading) {
                                 BlocProvider.of<CartBloc>(context)
                                     .add(ConfirmCart());
                               }
@@ -238,8 +265,12 @@ class _MyOrderState extends State<MyOrderPage> {
                                   !loading) {
                                 BlocProvider.of<CartBloc>(context).add(
                                     UpdateCart(Order(
-                                        customerPartyId:
-                                            _selectedCustomer.partyId,
+                                        customerPartyId: sales
+                                            ? _selectedOtherParty.partyId
+                                            : authenticate.company.partyId,
+                                        supplierPartyId: sales
+                                            ? authenticate.company.partyId
+                                            : _selectedOtherParty.partyId,
                                         orderItems: [
                                       OrderItem(
                                           productId:
@@ -281,32 +312,29 @@ class _MyOrderState extends State<MyOrderPage> {
                       BlocProvider.of<CartBloc>(context)
                           .add(DeleteItemCart(index));
                       Navigator.pushNamed(context, '/order',
-                          arguments:
-                              FormArguments('item deleted', 0, updatedOrder));
+                          arguments: FormArguments('item deleted', 0, order));
                     },
                     child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.green,
                         child: Text(items[index]?.orderItemSeqId.toString()),
                       ),
-                      title: Row(
-                        children: <Widget>[
-                          Expanded(
-                              child: Text(
-                                  "${items[index].description}[${items[index].productId}]",
-                                  textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text("${items[index].quantity}",
-                                  textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text("${items[index].price}",
-                                  textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text(
-                                  "${(items[index].price * items[index].quantity).toString()}",
-                                  textAlign: TextAlign.center)),
-                        ],
-                      ),
+                      title: Row(children: <Widget>[
+                        Expanded(
+                            child: Text(
+                                "${items[index].description}[${items[index].productId}]",
+                                textAlign: TextAlign.center)),
+                        Expanded(
+                            child: Text("${items[index].quantity}",
+                                textAlign: TextAlign.center)),
+                        Expanded(
+                            child: Text("${items[index].price}",
+                                textAlign: TextAlign.center)),
+                        Expanded(
+                            child: Text(
+                                "${(items[index].price * items[index].quantity).toString()}",
+                                textAlign: TextAlign.center)),
+                      ]),
                     ));
               },
               childCount: items == null ? 0 : items?.length,
@@ -318,7 +346,7 @@ class _MyOrderState extends State<MyOrderPage> {
   }
 }
 
-_addCustomerDialog(BuildContext context) async {
+_addOtherPartyDialog(BuildContext context, bool sales) async {
   final _formKeyDialog = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -383,7 +411,9 @@ _addCustomerDialog(BuildContext context) async {
                         if (_formKeyDialog.currentState.validate()) {
                           //} && !loading) {
                           updatedUser = User(
-                            userGroupId: 'GROWERP_M_CUSTOMER',
+                            userGroupId: sales
+                                ? 'GROWERP_M_CUSTOMER'
+                                : 'GROWERP_M_SUPPLIER',
                             firstName: _firstNameController.text,
                             lastName: _lastNameController.text,
                             email: _emailController.text,

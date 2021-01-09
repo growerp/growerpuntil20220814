@@ -117,26 +117,27 @@ class DashBoard extends StatelessWidget {
                                   "Categories: ${catalog?.categories?.length ?? 0}",
                                   "Products: ${catalog?.products?.length ?? 0}",
                                   ""),
-                              makeDashboardItem(context, menuItems[4],
-                                  "${orders?.length ?? 0}", "", ""),
+                              makeDashboardItem(
+                                  context,
+                                  menuItems[4],
+                                  "Orders: ${(orders?.where((x) => x.supplierPartyId == authenticate.company.partyId))?.toList()?.length ?? 0}",
+                                  "Customers: ${crm?.customers?.length}",
+                                  ""),
                               makeDashboardItem(
                                   context,
                                   MenuItem(
                                       title: "Accounting",
                                       selectedImage:
-                                          "assets/images/dashBoard.png"),
+                                          "assets/images/accounting.png"),
                                   " Assets: ${balanceSheet?.classInfoById?.asset?.totalPostedByTimePeriod?.all}",
                                   "",
                                   ""),
                               makeDashboardItem(
                                   context,
-                                  MenuItem(
-                                      title: "Purchasing",
-                                      selectedImage:
-                                          "assets/images/dashBoard.png"),
-                                  "",
-                                  "",
-                                  "")
+                                  menuItems[5],
+                                  "Orders: ${(orders?.where((x) => x.customerPartyId == authenticate.company.partyId))?.toList()?.length ?? 0}",
+                                  "Suppliers: ${crm?.suppliers?.length}",
+                                  ""),
                             ],
                           ),
                         )));

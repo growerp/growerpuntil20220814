@@ -137,7 +137,7 @@ class _EmployeesState extends State<EmployeesPage> {
                         .add(DeleteEmployee(users[index]));
                     Navigator.pushNamed(context, '/employees',
                         arguments:
-                            FormArguments('Employee deleted', authenticate));
+                            FormArguments('Employee deleted', 0, authenticate));
                   }
                 },
                 child: ListTile(

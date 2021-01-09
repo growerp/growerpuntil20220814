@@ -53,9 +53,12 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/product':
       return MaterialPageRoute(
           builder: (context) => local.ProductForm(settings.arguments));
-    case '/orders':
+    case '/slsOrders':
       return MaterialPageRoute(
-          builder: (context) => local.OrdersForm(settings.arguments));
+          builder: (context) => local.SlsOrdersForm(settings.arguments));
+    case '/purOrders':
+      return MaterialPageRoute(
+          builder: (context) => local.PurOrdersForm(settings.arguments));
     case '/order':
       return MaterialPageRoute(
           builder: (context) => local.OrderForm(settings.arguments));
