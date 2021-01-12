@@ -10,3 +10,5 @@ export 'catalog_form.dart';
 export 'product_form.dart';
 export 'opportunity_form.dart';
 export 'crmUser_form.dart';
+export 'products_form.dart';
+export 'categories_form.dart';

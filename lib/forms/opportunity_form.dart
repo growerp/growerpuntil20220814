@@ -272,7 +272,6 @@ class _OpportunityState extends State<OpportunityPage> {
                                   ));
                                 }
                               }),
-                          SizedBox(height: 20),
                           RaisedButton(
                               key: Key('cancel'),
                               child: Text('Cancel'),

@@ -43,13 +43,17 @@ void main() async {
     create: (context) => repos,
     child: MultiBlocProvider(
       providers: [
-        BlocProvider<CatalogBloc>(create: (context) => CatalogBloc(repos)),
+        BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
+        BlocProvider<ProductBloc>(
+            create: (context) =>
+                ProductBloc(repos, BlocProvider.of<CategoryBloc>(context))),
         BlocProvider<CrmBloc>(create: (context) => CrmBloc(repos)),
         BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(
                 repos,
-                BlocProvider.of<CatalogBloc>(context),
-                BlocProvider.of<CrmBloc>(context))
+                BlocProvider.of<CategoryBloc>(context),
+                BlocProvider.of<CrmBloc>(context),
+                BlocProvider.of<ProductBloc>(context))
               ..add(LoadAuth())),
         BlocProvider<OrderBloc>(
             create: (context) => OrderBloc(repos)..add(LoadOrder())),

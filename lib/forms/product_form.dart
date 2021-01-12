@@ -53,6 +53,7 @@ class _MyProductState extends State<MyProductPage> {
   final _priceController = TextEditingController();
   Product updatedProduct;
   bool loading = false;
+  List<ProductCategory> categories = [];
   ProductCategory _selectedCategory;
   PickedFile _imageFile;
   dynamic _pickImageError;
@@ -96,7 +97,6 @@ class _MyProductState extends State<MyProductPage> {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    Catalog catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -148,26 +148,19 @@ class _MyProductState extends State<MyProductPage> {
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                   },
-                  child: BlocConsumer<CatalogBloc, CatalogState>(
+                  child: BlocConsumer<ProductBloc, ProductState>(
                       listener: (context, state) {
-                    if (state is CatalogProblem) {
+                    if (state is ProductProblem) {
                       loading = false;
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                     }
-                    if (state is CatalogLoading) {
-                      loading = true;
-                      HelperFunctions.showMessage(
-                          context, '${state.message}', Colors.green);
-                    }
-                    if (state is CatalogLoaded)
+                    if (state is ProductSuccess)
                       Navigator.of(context).pop(updatedProduct);
                   }, builder: (context, state) {
-                    if (state is CatalogLoading)
-                      return Center(child: CircularProgressIndicator());
-                    if (state is CatalogLoaded) {
+                    if (state is ProductSuccess) {
                       updatedProduct = state.product;
-                      catalog = state.catalog;
+                      categories = state.categories;
                     }
                     return Center(
                       child: !kIsWeb &&
@@ -182,9 +175,9 @@ class _MyProductState extends State<MyProductPage> {
                                     textAlign: TextAlign.center,
                                   );
                                 }
-                                return _showForm(catalog, updatedProduct);
+                                return _showForm();
                               })
-                          : _showForm(catalog, updatedProduct),
+                          : _showForm(),
                     );
                   }))));
     });
@@ -199,14 +192,14 @@ class _MyProductState extends State<MyProductPage> {
     return null;
   }
 
-  Widget _showForm(Catalog catalog, Product updatedProduct) {
+  Widget _showForm() {
     _nameController..text = product?.productName;
     _descriptionController..text = product?.description;
     _priceController..text = product?.price?.toString();
     final Text retrieveError = _getRetrieveErrorWidget();
     if (_selectedCategory == null && product?.categoryId != null)
-      _selectedCategory = catalog.categories
-          .firstWhere((a) => a.categoryId == product?.categoryId);
+      _selectedCategory =
+          categories?.firstWhere((a) => a.categoryId == product?.categoryId);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -223,29 +216,21 @@ class _MyProductState extends State<MyProductPage> {
                 key: _formKey,
                 child: ListView(children: <Widget>[
                   SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: () async {
-                      PickedFile pickedFile =
-                          await _picker.getImage(source: ImageSource.gallery);
-                      BlocProvider.of<AuthBloc>(context)
-                          .add(UploadImage(product.productId, pickedFile.path));
-                    },
-                    child: CircleAvatar(
-                        backgroundColor: Colors.green,
-                        radius: 80,
-                        child: _imageFile != null
-                            ? kIsWeb
-                                ? Image.network(_imageFile.path)
-                                : Image.file(File(_imageFile.path))
-                            : product?.image != null
-                                ? Image.memory(
-                                    product?.image,
-                                  )
-                                : Text(
-                                    product?.productName?.substring(0, 1) ?? '',
-                                    style: TextStyle(
-                                        fontSize: 30, color: Colors.black))),
-                  ),
+                  CircleAvatar(
+                      backgroundColor: Colors.green,
+                      radius: 80,
+                      child: _imageFile != null
+                          ? kIsWeb
+                              ? Image.network(_imageFile.path)
+                              : Image.file(File(_imageFile.path))
+                          : product?.image != null
+                              ? Image.memory(
+                                  product?.image,
+                                )
+                              : Text(
+                                  product?.productName?.substring(0, 1) ?? '',
+                                  style: TextStyle(
+                                      fontSize: 30, color: Colors.black))),
                   SizedBox(height: 30),
                   TextFormField(
                     key: Key('name'),
@@ -259,6 +244,7 @@ class _MyProductState extends State<MyProductPage> {
                   SizedBox(height: 20),
                   TextFormField(
                     key: Key('description'),
+                    maxLines: 5,
                     decoration: InputDecoration(labelText: 'Description'),
                     controller: _descriptionController,
                   ),
@@ -279,7 +265,7 @@ class _MyProductState extends State<MyProductPage> {
                     value: _selectedCategory,
                     validator: (value) =>
                         value == null ? 'field required' : null,
-                    items: catalog?.categories?.map((item) {
+                    items: categories?.map((item) {
                       return DropdownMenuItem<ProductCategory>(
                           child: Text(item?.categoryName ?? ''), value: item);
                     })?.toList(),
@@ -295,19 +281,19 @@ class _MyProductState extends State<MyProductPage> {
                       key: Key('update'),
                       child: Text(
                           product?.productId == null ? 'Create' : 'Update'),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState.validate() && !loading) {
                           updatedProduct = Product(
-                            productId: product?.productId,
-                            productName: _nameController.text,
-                            description: _descriptionController.text,
-                            price: Decimal.parse(_priceController.text),
-                            categoryId: _selectedCategory.categoryId,
-                          );
-                          BlocProvider.of<CatalogBloc>(context)
+                              productId: product?.productId,
+                              productName: _nameController.text,
+                              description: _descriptionController.text,
+                              price: Decimal.parse(_priceController.text),
+                              categoryId: _selectedCategory.categoryId,
+                              image: await HelperFunctions.getResizedImage(
+                                  _imageFile?.path));
+                          BlocProvider.of<ProductBloc>(context)
                               .add(UpdateProduct(
                             updatedProduct,
-                            _imageFile?.path,
                           ));
                         }
                       }),

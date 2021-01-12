@@ -34,7 +34,8 @@ class OrderForm extends StatelessWidget {
         create: (context) => CartBloc(
             BlocProvider.of<AuthBloc>(context),
             BlocProvider.of<OrderBloc>(context),
-            BlocProvider.of<CatalogBloc>(context),
+            BlocProvider.of<ProductBloc>(context),
+            BlocProvider.of<CategoryBloc>(context),
             BlocProvider.of<CrmBloc>(context))
           ..add(LoadCart(formArguments.object)),
         child: ShowNavigationRail(a(formArguments), formArguments.tab));
@@ -82,7 +83,7 @@ class _MyOrderState extends State<MyOrderPage> {
         otherParties = crm.suppliers;
         if (sales) otherParties = crm.customers;
         order = state.order;
-        products = state.catalog.products;
+        products = state.products;
         return ScaffoldMessenger(
             key: scaffoldMessengerKey,
             child: Scaffold(

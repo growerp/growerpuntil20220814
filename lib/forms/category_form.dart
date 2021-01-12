@@ -145,25 +145,18 @@ class _MyCategoryState extends State<MyCategoryPage> {
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                   },
-                  child: BlocConsumer<CatalogBloc, CatalogState>(
+                  child: BlocConsumer<CategoryBloc, CategoryState>(
                       listener: (context, state) {
-                    if (state is CatalogProblem) {
+                    if (state is CategoryProblem) {
                       loading = false;
-                      updatedCategory = state.newCategory;
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.green);
                     }
-                    if (state is CatalogLoading) {
-                      loading = true;
-                      HelperFunctions.showMessage(
-                          context, '${state.message}', Colors.green);
-                    }
-                    if (state is CatalogLoaded)
+                    if (state is CategorySuccess)
                       Navigator.of(context).pop(updatedCategory);
                   }, builder: (context, state) {
-                    if (state is CatalogLoaded) {
+                    if (state is CategorySuccess) {
                       updatedCategory = state.category;
-                      catalog = state.catalog;
                     }
                     return Center(
                       child: !kIsWeb &&
@@ -178,9 +171,9 @@ class _MyCategoryState extends State<MyCategoryPage> {
                                     textAlign: TextAlign.center,
                                   );
                                 }
-                                return _showForm(catalog, updatedCategory);
+                                return _showForm();
                               })
-                          : _showForm(catalog, updatedCategory),
+                          : _showForm(),
                     );
                   }))));
     });
@@ -195,7 +188,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
     return null;
   }
 
-  Widget _showForm(Catalog catalog, ProductCategory updatedCategory) {
+  Widget _showForm() {
     _nameController..text = category?.categoryName;
     _descrController..text = category?.description;
     final Text retrieveError = _getRetrieveErrorWidget();
@@ -215,28 +208,19 @@ class _MyCategoryState extends State<MyCategoryPage> {
                 key: _formKey,
                 child: ListView(children: <Widget>[
                   SizedBox(height: 30),
-                  GestureDetector(
-                    onTap: () async {
-                      PickedFile pickedFile =
-                          await _picker.getImage(source: ImageSource.gallery);
-                      BlocProvider.of<AuthBloc>(context).add(
-                          UploadImage(category.categoryId, pickedFile.path));
-                    },
-                    child: CircleAvatar(
-                        backgroundColor: Colors.green,
-                        radius: 80,
-                        child: _imageFile != null
-                            ? kIsWeb
-                                ? Image.network(_imageFile.path)
-                                : Image.file(File(_imageFile.path))
-                            : category?.image != null
-                                ? Image.memory(category?.image)
-                                : Text(
-                                    category?.categoryName?.substring(0, 1) ??
-                                        '',
-                                    style: TextStyle(
-                                        fontSize: 30, color: Colors.black))),
-                  ),
+                  CircleAvatar(
+                      backgroundColor: Colors.green,
+                      radius: 80,
+                      child: _imageFile != null
+                          ? kIsWeb
+                              ? Image.network(_imageFile.path)
+                              : Image.file(File(_imageFile.path))
+                          : category?.image != null
+                              ? Image.memory(category?.image)
+                              : Text(
+                                  category?.categoryName?.substring(0, 1) ?? '',
+                                  style: TextStyle(
+                                      fontSize: 30, color: Colors.black))),
                   SizedBox(height: 30),
                   TextFormField(
                     key: Key('name'),
@@ -249,7 +233,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
                   ),
                   SizedBox(height: 30),
                   TextFormField(
-                    key: Key('name'),
+                    key: Key('descr'),
                     decoration: InputDecoration(labelText: 'Description'),
                     controller: _descrController,
                     maxLines: 5,
@@ -264,17 +248,17 @@ class _MyCategoryState extends State<MyCategoryPage> {
                       key: Key('update'),
                       child: Text(
                           category?.categoryId == null ? 'Create' : 'Update'),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState.validate() && !loading) {
                           updatedCategory = ProductCategory(
-                            categoryId: category?.categoryId,
-                            categoryName: _nameController.text,
-                            description: _descrController.text,
-                          );
-                          BlocProvider.of<CatalogBloc>(context)
+                              categoryId: category?.categoryId,
+                              categoryName: _nameController.text,
+                              description: _descrController.text,
+                              image: await HelperFunctions.getResizedImage(
+                                  _imageFile?.path));
+                          BlocProvider.of<CategoryBloc>(context)
                               .add(UpdateCategory(
                             updatedCategory,
-                            _imageFile?.path,
                           ));
                         }
                       }),
