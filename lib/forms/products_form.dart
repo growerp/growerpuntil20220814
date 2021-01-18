@@ -28,9 +28,8 @@ class _ProductsState extends State<ProductsForm> {
 
   @override
   Widget build(BuildContext context) {
-    _scrollThreshold = MediaQuery.of(context).size.height;
     setState(() {
-      productLimit = (_scrollThreshold / 35).round();
+      productLimit = (MediaQuery.of(context).size.height / 35).round();
     });
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {

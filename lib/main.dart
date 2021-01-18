@@ -43,20 +43,29 @@ void main() async {
     create: (context) => repos,
     child: MultiBlocProvider(
       providers: [
+        BlocProvider<UserBloc>(create: (context) => UserBloc(repos)),
+        BlocProvider<EmployeeBloc>(create: (context) => EmployeeBloc(repos)),
+        BlocProvider<AdminBloc>(create: (context) => AdminBloc(repos)),
+        BlocProvider<LeadBloc>(create: (context) => LeadBloc(repos)),
+        BlocProvider<CustomerBloc>(create: (context) => CustomerBloc(repos)),
+        BlocProvider<SupplierBloc>(create: (context) => SupplierBloc(repos)),
         BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
         BlocProvider<ProductBloc>(
             create: (context) =>
                 ProductBloc(repos, BlocProvider.of<CategoryBloc>(context))),
-        BlocProvider<CrmBloc>(create: (context) => CrmBloc(repos)),
         BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(
                 repos,
                 BlocProvider.of<CategoryBloc>(context),
-                BlocProvider.of<CrmBloc>(context),
                 BlocProvider.of<ProductBloc>(context))
               ..add(LoadAuth())),
         BlocProvider<OrderBloc>(
             create: (context) => OrderBloc(repos)..add(LoadOrder())),
+        BlocProvider<OpportunityBloc>(
+            create: (context) => OpportunityBloc(
+                  repos,
+                  BlocProvider.of<LeadBloc>(context),
+                )..add(FetchOpportunity())),
         BlocProvider<AccntgBloc>(
             create: (context) => AccntgBloc(repos)..add(LoadAccntg())),
       ],

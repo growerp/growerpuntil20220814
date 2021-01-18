@@ -36,7 +36,8 @@ class OrderForm extends StatelessWidget {
             BlocProvider.of<OrderBloc>(context),
             BlocProvider.of<ProductBloc>(context),
             BlocProvider.of<CategoryBloc>(context),
-            BlocProvider.of<CrmBloc>(context))
+            BlocProvider.of<CustomerBloc>(context),
+            BlocProvider.of<SupplierBloc>(context))
           ..add(LoadCart(formArguments.object)),
         child: ShowNavigationRail(a(formArguments), formArguments.tab));
   }
@@ -60,7 +61,6 @@ class _MyOrderState extends State<MyOrderPage> {
   Order order;
   Authenticate authenticate;
   List<Product> products;
-  Crm crm;
   List<User> otherParties;
   Product _selectedProduct;
   User _selectedOtherParty;
@@ -79,9 +79,7 @@ class _MyOrderState extends State<MyOrderPage> {
           sales = false;
         if (orderIn.supplierPartyId == authenticate.company.partyId)
           sales = true;
-        crm = state.crm;
-        otherParties = crm.suppliers;
-        if (sales) otherParties = crm.customers;
+        otherParties = sales ? state.customers : state.suppliers;
         order = state.order;
         products = state.products;
         return ScaffoldMessenger(
@@ -204,8 +202,8 @@ class _MyOrderState extends State<MyOrderPage> {
                                 final User other =
                                     await _addOtherPartyDialog(context, sales);
                                 if (other != null) {
-                                  BlocProvider.of<CrmBloc>(context)
-                                      .add(UpdateCrmUser(other, null));
+                                  BlocProvider.of<UserBloc>(context)
+                                      .add(UpdateUser(other, null));
                                 }
                               },
                             )

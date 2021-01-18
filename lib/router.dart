@@ -30,9 +30,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/category':
       return MaterialPageRoute(
           builder: (context) => local.CategoryForm(settings.arguments));
-    case '/employee':
+    case '/company':
       return MaterialPageRoute(
-          builder: (context) => EmployeeForm(settings.arguments));
+          builder: (context) => local.CompanyForm(settings.arguments));
     case '/login':
       return MaterialPageRoute(
           builder: (context) => LoginForm(settings.arguments));
@@ -44,12 +44,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => ChangePwForm(changePwArgs: settings.arguments));
     case '/about':
       return MaterialPageRoute(builder: (context) => AboutForm());
-    case '/company':
+    case '/companyInfo':
       return MaterialPageRoute(
-          builder: (context) => CompanyForm(settings.arguments));
-    case '/employees':
-      return MaterialPageRoute(
-          builder: (context) => local.EmployeesForm(settings.arguments));
+          builder: (context) => CompanyInfoForm(settings.arguments));
     case '/product':
       return MaterialPageRoute(
           builder: (context) => local.ProductForm(settings.arguments));
@@ -68,9 +65,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/opportunity':
       return MaterialPageRoute(
           builder: (context) => local.OpportunityForm(settings.arguments));
-    case '/crmUser':
+    case '/user':
       return MaterialPageRoute(
-          builder: (context) => local.CrmUserForm(settings.arguments));
+          builder: (context) => local.UserForm(settings.arguments));
     default:
       return MaterialPageRoute(
           builder: (context) => FatalErrorForm(

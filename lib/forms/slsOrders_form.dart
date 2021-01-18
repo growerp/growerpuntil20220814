@@ -21,6 +21,8 @@ import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:printing/printing.dart';
 
+import '@forms.dart';
+
 class SlsOrdersForm extends StatelessWidget {
   final FormArguments formArguments;
   SlsOrdersForm(this.formArguments);
@@ -61,7 +63,7 @@ class _SlsOrdersFormStateHeader extends State<SlsOrdersFormHeader> {
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
     _selectedIndex = _selectedIndex ?? 0;
-    Crm crm;
+    List<User> customers;
     List<Order> orders;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
@@ -129,17 +131,16 @@ class _SlsOrdersFormStateHeader extends State<SlsOrdersFormHeader> {
                                   Order(
                                       supplierPartyId:
                                           authenticate.company.partyId)))
-                          : user = await Navigator.pushNamed(
-                              context, '/crmUser',
+                          : user = await Navigator.pushNamed(context, '/user',
                               arguments: FormArguments(
                                   'Enter new customer...',
-                                  2,
+                                  4,
                                   User(
                                       userGroupId: 'GROWERP_M_CUSTOMER',
                                       groupDescription: 'Customer')));
                       setState(() {
                         if (order != null) orders.add(order);
-                        if (user != null) crm.customers.add(user);
+                        if (user != null) customers.add(user);
                       });
                     },
                     tooltip: 'Add new',
@@ -172,31 +173,31 @@ class _SlsOrdersFormStateHeader extends State<SlsOrdersFormHeader> {
                                   x.supplierPartyId ==
                                   authenticate.company.partyId)
                               .toList();
-                        return BlocConsumer<CrmBloc, CrmState>(
+                        return BlocConsumer<CustomerBloc, UserState>(
                             listener: (context, state) {
-                          if (state is CrmProblem)
+                          if (state is UserProblem)
                             HelperFunctions.showMessage(
                                 context, '${state.errorMessage}', Colors.red);
-                          if (state is CrmLoaded)
+                          if (state is UserLoaded)
                             HelperFunctions.showMessage(
                                 context, '${state.message}', Colors.green);
-                          if (state is CrmLoading)
+                          if (state is UserLoading)
                             HelperFunctions.showMessage(
                                 context, '${state.message}', Colors.green);
                         }, builder: (context, state) {
-                          if (state is CrmLoaded) {
-                            crm = state.crm;
+                          if (state is UserLoaded) {
+//                            customers = state.user;
                           }
                           return ResponsiveWrapper.of(context)
                                   .isSmallerThan(TABLET)
                               ? Center(
                                   child: _selectedIndex == 0
                                       ? orderList(orders)
-                                      : crmList(crm?.customers))
+                                      : UsersForm("GROWERP_M_CUSTOMER", 4))
                               : TabBarView(
                                   children: [
                                     orderList(orders),
-                                    crmList(crm?.customers)
+                                    UsersForm("GROWERP_M_CUSTOMER", 4)
                                   ],
                                 );
                         });
@@ -305,107 +306,6 @@ class _SlsOrdersFormStateHeader extends State<SlsOrdersFormHeader> {
               );
             },
             childCount: orders == null ? 0 : orders?.length,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget crmList(users) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverToBoxAdapter(
-          // you could add any widget
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.transparent,
-            ),
-            title: Row(
-              children: <Widget>[
-                Expanded(child: Text("Name", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(
-                      child: Text("login name", textAlign: TextAlign.center)),
-                Expanded(child: Text("Email", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                  Expanded(
-                      child: Text("Language", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(child: Text("Company", textAlign: TextAlign.center)),
-              ],
-            ),
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return InkWell(
-                onTap: () async {
-                  dynamic result = await Navigator.pushNamed(
-                      context, '/crmUser',
-                      arguments: FormArguments(null, 0, users[index]));
-                  if (result is User)
-                    setState(() {
-                      HelperFunctions.showMessage(
-                          context,
-                          'User ${users[index].firstName} '
-                          '${users[index].lastName} modified',
-                          Colors.green);
-                    });
-                },
-                onLongPress: () async {
-                  bool result = await confirmDialog(
-                      context,
-                      "${users[index].firstName} ${users[index].lastName}",
-                      "Delete this ${_selectedIndex == 1 ? 'Lead' : 'Customer'}");
-                  if (result) {
-                    BlocProvider.of<CrmBloc>(context)
-                        .add(DeleteCrmUser(users[index]));
-                    setState(() {
-                      HelperFunctions.showMessage(
-                          context,
-                          "${_selectedIndex == 1 ? 'Lead' : 'Customer'} "
-                          "${users[index].firstName} ${users[index].lastName}"
-                          "deleted",
-                          Colors.green);
-                    });
-                  }
-                },
-                child: ListTile(
-                  //return  ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.green,
-                    child: users[index]?.image != null
-                        ? Image.memory(users[index]?.image)
-                        : Text(users[index]?.firstName[0]),
-                  ),
-                  title: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Text("${users[index].lastName}, "
-                              "${users[index].firstName} "
-                              "[${users[index].partyId}]")),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                        Expanded(
-                            child: Text("${users[index].name}",
-                                textAlign: TextAlign.center)),
-                      Expanded(
-                          child: Text("${users[index].email}",
-                              textAlign: TextAlign.center)),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                        Expanded(
-                            child: Text("${users[index].language}",
-                                textAlign: TextAlign.center)),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                        Expanded(
-                            child: Text("${users[index].companyName}",
-                                textAlign: TextAlign.center)),
-                    ],
-                  ),
-                ),
-              );
-            },
-            childCount: users == null ? 0 : users?.length,
           ),
         ),
       ],

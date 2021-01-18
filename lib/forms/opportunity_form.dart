@@ -56,6 +56,7 @@ class _OpportunityState extends State<OpportunityPage> {
   String _selectedStage;
   User _selectedAccount;
   User _selectedLead;
+  List<User> leads;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   _OpportunityState(this.message, this.opportunity) {
@@ -65,7 +66,7 @@ class _OpportunityState extends State<OpportunityPage> {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    Crm crm;
+    Opportunity opportunity;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -89,35 +90,30 @@ class _OpportunityState extends State<OpportunityPage> {
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                   },
-                  child: BlocConsumer<CrmBloc, CrmState>(
+                  child: BlocConsumer<OpportunityBloc, OpportunityState>(
                       listener: (context, state) {
-                    if (state is CrmProblem) {
+                    if (state is OpportunityProblem) {
                       loading = false;
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                     }
-                    if (state is CrmLoading) {
-                      loading = true;
-                      HelperFunctions.showMessage(
-                          context, '${state.message}', Colors.green);
-                    }
-                    if (state is CrmLoaded)
+                    if (state is OpportunitySuccess)
                       Navigator.of(context).pop(updatedOpportunity);
                   }, builder: (context, state) {
-                    if (state is CrmLoading)
-                      return Center(child: CircularProgressIndicator());
-                    if (state is CrmLoaded) {
-                      crm = state.crm;
+                    if (state is OpportunitySuccess) {
+                      opportunity = state.opportunity;
+                      leads = state.leads;
                     }
                     return Center(
-                      child: _showForm(updatedOpportunity, crm, authenticate),
+                      child: _showForm(
+                          updatedOpportunity, opportunity, authenticate),
                     );
                   }))));
     });
   }
 
-  Widget _showForm(
-      Opportunity updatedOpportunity, Crm crm, Authenticate authenticate) {
+  Widget _showForm(Opportunity updatedOpportunity, Opportunity opportunity,
+      Authenticate authenticate) {
     _nameController..text = opportunity?.opportunityName;
     _descriptionController..text = opportunity?.description;
     _estAmountController..text = opportunity?.estAmount?.toString();
@@ -215,7 +211,7 @@ class _OpportunityState extends State<OpportunityPage> {
                             value: _selectedLead,
 //                            validator: (value) =>
 //                                value == null ? 'field required' : null,
-                            items: crm?.leads?.map((item) {
+                            items: leads?.map((item) {
                               return DropdownMenuItem<User>(
                                   child: Text(
                                       "${item.firstName} ${item.lastName}"),
@@ -266,7 +262,7 @@ class _OpportunityState extends State<OpportunityPage> {
                                     accountPartyId: _selectedAccount?.partyId,
                                     leadPartyId: _selectedLead?.partyId,
                                   );
-                                  BlocProvider.of<CrmBloc>(context)
+                                  BlocProvider.of<OpportunityBloc>(context)
                                       .add(UpdateOpportunity(
                                     updatedOpportunity,
                                   ));

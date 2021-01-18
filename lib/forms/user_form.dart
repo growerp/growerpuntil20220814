@@ -23,9 +23,9 @@ import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class CrmUserForm extends StatelessWidget {
+class UserForm extends StatelessWidget {
   final FormArguments formArguments;
-  CrmUserForm(this.formArguments);
+  UserForm(this.formArguments);
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +96,7 @@ class _MyUserState extends State<MyUserPage> {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
+    updatedUser = widget.user;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -141,19 +142,19 @@ class _MyUserState extends State<MyUserPage> {
                 ],
               ),
               drawer: myDrawer(context, authenticate),
-              body: BlocListener<CrmBloc, CrmState>(
+              body: BlocListener<UserBloc, UserState>(
                 listener: (context, state) {
-                  if (state is CrmProblem) {
+                  if (state is UserProblem) {
                     loading = false;
                     HelperFunctions.showMessage(
                         context, '${state.errorMessage}', Colors.red);
                   }
-                  if (state is CrmLoading) {
+                  if (state is UserLoading) {
                     loading = true;
                     HelperFunctions.showMessage(
                         context, '${state.message}', Colors.green);
                   }
-                  if (state is CrmLoaded) {
+                  if (state is UserFetchSuccess) {
                     Navigator.of(context).pop(updatedUser);
                   }
                 },
@@ -307,7 +308,7 @@ class _MyUserState extends State<MyUserPage> {
                                 .languageCode
                                 .toString(),
                           );
-                          BlocProvider.of<CrmBloc>(context).add(UpdateCrmUser(
+                          BlocProvider.of<UserBloc>(context).add(UpdateUser(
                             updatedUser,
                             _imageFile?.path,
                           ));

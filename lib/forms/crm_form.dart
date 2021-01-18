@@ -20,6 +20,8 @@ import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
 
+import '@forms.dart';
+
 class CrmForm extends StatelessWidget {
   final FormArguments formArguments;
   CrmForm(this.formArguments);
@@ -59,7 +61,6 @@ class _CrmFormStateHeader extends State<CrmFormHeader> {
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
     _selectedIndex = _selectedIndex ?? 0;
-    Crm crm;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -131,27 +132,21 @@ class _CrmFormStateHeader extends State<CrmFormHeader> {
                                   FormArguments('Enter new opportunity...'))
                           : _selectedIndex == 1
                               ? userLead = await Navigator.pushNamed(
-                                  context, '/crmUser',
+                                  context, '/user',
                                   arguments: FormArguments(
                                       'Enter new Lead...',
-                                      0,
+                                      2,
                                       User(
                                           userGroupId: 'GROWERP_M_LEAD',
                                           groupDescription: 'New Lead')))
                               : userCust = await Navigator.pushNamed(
-                                  context, '/crmUser',
+                                  context, '/user',
                                   arguments: FormArguments(
                                       'Enter new custmer...',
-                                      0,
+                                      2,
                                       User(
                                           userGroupId: 'GROWERP_M_CUSTOMER',
                                           groupDescription: 'New Customer')));
-                      setState(() {
-                        if (opportunity != null)
-                          crm.opportunities.add(opportunity);
-                        if (userLead != null) crm.leads.add(userLead);
-                        if (userCust != null) crm.customers.add(userCust);
-                      });
                     },
                     tooltip: 'Add new',
                     child: Icon(Icons.add),
@@ -166,241 +161,20 @@ class _CrmFormStateHeader extends State<CrmFormHeader> {
                           HelperFunctions.showMessage(
                               context, '${state.message}', Colors.red);
                       },
-                      child: BlocConsumer<CrmBloc, CrmState>(
-                          listener: (context, state) {
-                        if (state is CrmProblem)
-                          HelperFunctions.showMessage(
-                              context, '${state.errorMessage}', Colors.red);
-                        if (state is CrmLoaded)
-                          HelperFunctions.showMessage(
-                              context, '${state.message}', Colors.green);
-                        if (state is CrmLoading)
-                          HelperFunctions.showMessage(
-                              context, '${state.message}', Colors.green);
-                      }, builder: (context, state) {
-                        if (state is CrmLoaded) {
-                          crm = state.crm;
-                        }
-                        return ResponsiveWrapper.of(context)
-                                .isSmallerThan(TABLET)
-                            ? Center(
-                                child: _selectedIndex == 0
-                                    ? opportunityList(crm?.opportunities)
-                                    : _selectedIndex == 1
-                                        ? crmList(crm?.leads)
-                                        : crmList(crm?.customers))
-                            : TabBarView(
-                                children: [
-                                  opportunityList(crm?.opportunities),
-                                  crmList(crm?.leads),
-                                  crmList(crm?.customers)
-                                ],
-                              );
-                      })))));
+                      child: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                          ? Center(
+                              child: _selectedIndex == 0
+                                  ? OpportunitiesForm()
+                                  : _selectedIndex == 1
+                                      ? UsersForm("GROWERP_M_LEAD", 2)
+                                      : UsersForm("GROWERP_M_CUSTOMER", 2))
+                          : TabBarView(
+                              children: [
+                                OpportunitiesForm(),
+                                UsersForm("GROWERP_M_LEAD", 2),
+                                UsersForm("GROWERP_M_CUSTOMER", 2)
+                              ],
+                            )))));
     });
-  }
-
-  Widget opportunityList(List<Opportunity> opportunities) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverToBoxAdapter(
-          // you could add any widget
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.transparent,
-            ),
-            title: Row(
-              children: <Widget>[
-                Expanded(child: Text("Oppt.Name", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(
-                      child: Text("Est. Amount", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(
-                      child: Text("Est. Probability %",
-                          textAlign: TextAlign.center)),
-                Expanded(child: Text("Lead Name", textAlign: TextAlign.center)),
-                Expanded(child: Text("Email", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                  Expanded(child: Text("Stage", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(
-                      child: Text("Next Step", textAlign: TextAlign.center)),
-              ],
-            ),
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return InkWell(
-                onTap: () async {
-                  dynamic result = await Navigator.pushNamed(
-                      context, '/opportunity',
-                      arguments:
-                          FormArguments(null, null, opportunities[index]));
-                  if (result is Opportunity)
-                    setState(() {
-                      HelperFunctions.showMessage(
-                          context,
-                          'Opportunity ${opportunities[index].opportunityName} '
-                          'modified',
-                          Colors.green);
-                    });
-                },
-                onLongPress: () async {
-                  bool result = await confirmDialog(
-                      context,
-                      "Opportunity: ${opportunities[index].opportunityName}\n",
-                      "Delete this Opportunity?");
-                  if (result) {
-                    BlocProvider.of<CrmBloc>(context)
-                        .add(DeleteOpportunity(opportunities[index]));
-                  }
-                },
-                child: ListTile(
-                  //return  ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.green,
-                    child: Text(""),
-                  ),
-                  title: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Text("${opportunities[index].opportunityName}",
-                              textAlign: TextAlign.center)),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                        Expanded(
-                            child: Text(
-                                "${opportunities[index].estAmount.toString()}",
-                                textAlign: TextAlign.center)),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                        Expanded(
-                            child: Text(
-                                "${opportunities[index].estProbability.toString()}",
-                                textAlign: TextAlign.center)),
-                      Expanded(
-                          child: Text("${opportunities[index].fullName}",
-                              textAlign: TextAlign.center)),
-                      Expanded(
-                          child: Text("${opportunities[index].email}",
-                              textAlign: TextAlign.center)),
-                      Text("${opportunities[index].stageId}",
-                          textAlign: TextAlign.center),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                        Expanded(
-                            child: Text("${opportunities[index].nextStep}",
-                                textAlign: TextAlign.center)),
-                    ],
-                  ),
-                ),
-              );
-            },
-            childCount: opportunities == null ? 0 : opportunities?.length,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget crmList(users) {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverToBoxAdapter(
-          // you could add any widget
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.transparent,
-            ),
-            title: Row(
-              children: <Widget>[
-                Expanded(child: Text("Name", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(
-                      child: Text("login name", textAlign: TextAlign.center)),
-                Expanded(child: Text("Email", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                  Expanded(
-                      child: Text("Language", textAlign: TextAlign.center)),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                  Expanded(child: Text("Company", textAlign: TextAlign.center)),
-              ],
-            ),
-          ),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return InkWell(
-                onTap: () async {
-                  dynamic result = await Navigator.pushNamed(
-                      context, '/crmUser',
-                      arguments: FormArguments(null, 0, users[index]));
-                  if (result is User)
-                    setState(() {
-                      HelperFunctions.showMessage(
-                          context,
-                          'User ${users[index].firstName} '
-                          '${users[index].lastName} modified',
-                          Colors.green);
-                    });
-                },
-                onLongPress: () async {
-                  bool result = await confirmDialog(
-                      context,
-                      "${users[index].firstName} ${users[index].lastName}",
-                      "Delete this ${_selectedIndex == 1 ? 'Lead' : 'Customer'}");
-                  if (result) {
-                    BlocProvider.of<CrmBloc>(context)
-                        .add(DeleteCrmUser(users[index]));
-                    setState(() {
-                      HelperFunctions.showMessage(
-                          context,
-                          "${_selectedIndex == 1 ? 'Lead' : 'Customer'} "
-                          "${users[index].firstName} ${users[index].lastName}"
-                          "deleted",
-                          Colors.green);
-                    });
-                  }
-                },
-                child: ListTile(
-                  //return  ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.green,
-                    child: users[index]?.image != null
-                        ? Image.memory(users[index]?.image)
-                        : Text(users[index]?.firstName[0]),
-                  ),
-                  title: Row(
-                    children: <Widget>[
-                      Expanded(
-                          child: Text("${users[index].lastName}, "
-                              "${users[index].firstName} "
-                              "[${users[index].partyId}]")),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                        Expanded(
-                            child: Text("${users[index].name}",
-                                textAlign: TextAlign.center)),
-                      Expanded(
-                          child: Text("${users[index].email}",
-                              textAlign: TextAlign.center)),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                        Expanded(
-                            child: Text("${users[index].language}",
-                                textAlign: TextAlign.center)),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(DESKTOP))
-                        Expanded(
-                            child: Text("${users[index].companyName}",
-                                textAlign: TextAlign.center)),
-                    ],
-                  ),
-                ),
-              );
-            },
-            childCount: users == null ? 0 : users?.length,
-          ),
-        ),
-      ],
-    );
   }
 }

@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/forms/@forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -19,40 +20,36 @@ import 'package:models/models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
+
 import '@forms.dart';
 
-class CatalogForm extends StatelessWidget {
+class CompanyForm extends StatelessWidget {
   final FormArguments formArguments;
-  CatalogForm(this.formArguments);
+  CompanyForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) =>
-        (CatalogFormHeader(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 3, formArguments.object);
+        (CompanyFormHeader(formArguments.message, formArguments.object));
+    return ShowNavigationRail(a(formArguments), 1, formArguments.object);
   }
 }
 
-class CatalogFormHeader extends StatefulWidget {
+class CompanyFormHeader extends StatefulWidget {
   final String message;
   final Authenticate authenticate;
-  const CatalogFormHeader([this.message, this.authenticate]);
+  const CompanyFormHeader([this.message, this.authenticate]);
   @override
-  _CatalogFormStateHeader createState() =>
-      _CatalogFormStateHeader(message, authenticate);
+  _CompanyFormStateHeader createState() =>
+      _CompanyFormStateHeader(message, authenticate);
 }
 
-class _CatalogFormStateHeader extends State<CatalogFormHeader> {
+class _CompanyFormStateHeader extends State<CompanyFormHeader> {
   final String message;
-  Authenticate authenticate;
-  List<Product> products;
-  List<ProductCategory> categories;
-
-  int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+  final Authenticate authenticate;
+  int _selectedIndex;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _CatalogFormStateHeader([this.message, this.authenticate]) {
+  _CompanyFormStateHeader([this.message, this.authenticate]) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
   void _onItemTapped(int index) {
@@ -61,16 +58,16 @@ class _CatalogFormStateHeader extends State<CatalogFormHeader> {
     });
   }
 
-  List<Widget> _tabScreens = <Widget>[ProductsForm(), CategoriesForm()];
-
   @override
   Widget build(BuildContext context) {
+    Authenticate authenticate = this.authenticate;
+    _selectedIndex = _selectedIndex ?? 0;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: DefaultTabController(
-              length: _tabScreens.length,
+              length: 3,
               child: Scaffold(
                   appBar: AppBar(
                       bottom:
@@ -91,21 +88,17 @@ class _CatalogFormStateHeader extends State<CatalogFormHeader> {
                                   tabs: [
                                     Align(
                                         alignment: Alignment.center,
-                                        child: Text(
-                                          "Products",
-                                          style: optionStyle,
-                                        )),
+                                        child: Text("Company Information")),
                                     Align(
                                         alignment: Alignment.center,
-                                        child: Text(
-                                          "Categories",
-                                          style: optionStyle,
-                                        )),
+                                        child: Text("Admins")),
+                                    Align(
+                                        alignment: Alignment.center,
+                                        child: Text("Employees")),
                                   ],
                                 )
                               : null,
-                      title: companyLogo(
-                          context, authenticate, 'Company Catalog.'),
+                      title: companyLogo(context, authenticate, 'Company List'),
                       automaticallyImplyLeading:
                           ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
                   bottomNavigationBar:
@@ -113,12 +106,16 @@ class _CatalogFormStateHeader extends State<CatalogFormHeader> {
                           ? BottomNavigationBar(
                               items: const <BottomNavigationBarItem>[
                                 BottomNavigationBarItem(
-                                  icon: Icon(Icons.home),
-                                  label: 'Products',
+                                  icon: Icon(Icons.business),
+                                  label: 'Company',
                                 ),
                                 BottomNavigationBarItem(
                                   icon: Icon(Icons.business),
-                                  label: 'Categories',
+                                  label: 'Admins',
+                                ),
+                                BottomNavigationBarItem(
+                                  icon: Icon(Icons.school),
+                                  label: 'Employees',
                                 ),
                               ],
                               currentIndex: _selectedIndex,
@@ -127,30 +124,53 @@ class _CatalogFormStateHeader extends State<CatalogFormHeader> {
                             )
                           : null,
                   floatingActionButton: FloatingActionButton(
-                      onPressed: () async {
-                        dynamic product, category;
-                        _selectedIndex == 0
-                            ? product = await Navigator.pushNamed(
-                                context, '/product',
-                                arguments: FormArguments(
-                                    'Enter the product information', 3))
-                            : category = Navigator.pushNamed(
-                                context, '/category',
-                                arguments: FormArguments(
-                                    'Enter the category information', 3));
-                        setState(() {
-                          if (product != null) products.add(product);
-                          if (category != null) categories.add(product);
-                        });
-                      },
-                      tooltip: 'Add New',
-                      child: Icon(Icons.add)),
+                    onPressed: () async {
+                      dynamic company, userAdmin, userEmployee;
+                      _selectedIndex == 1
+                          ? userAdmin = await Navigator.pushNamed(
+                              context, '/user',
+                              arguments: FormArguments(
+                                  'Enter new admin...',
+                                  1,
+                                  User(
+                                      userGroupId: 'GROWERP_M_ADMIN',
+                                      groupDescription: 'New Admin')))
+                          : userEmployee = await Navigator.pushNamed(
+                              context, '/user',
+                              arguments: FormArguments(
+                                  'Enter new employee...',
+                                  1,
+                                  User(
+                                      userGroupId: 'GROWERP_M_EMPLOYEE',
+                                      groupDescription: 'New Employee')));
+                    },
+                    tooltip: 'Add new',
+                    child: Icon(Icons.add),
+                  ),
                   drawer: myDrawer(context, authenticate),
-                  body: Builder(builder: (BuildContext context) {
-                    return ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                        ? Center(child: _tabScreens.elementAt(_selectedIndex))
-                        : TabBarView(children: _tabScreens);
-                  }))));
+                  body: BlocListener<AuthBloc, AuthState>(
+                      listener: (context, state) {
+                        if (state is AuthProblem)
+                          HelperFunctions.showMessage(
+                              context, '${state.errorMessage}', Colors.red);
+                        if (state is AuthLoading)
+                          HelperFunctions.showMessage(
+                              context, '${state.message}', Colors.red);
+                      },
+                      child: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                          ? Center(
+                              child: _selectedIndex == 0
+                                  ? CompanyPage(null, 1)
+                                  : _selectedIndex == 1
+                                      ? UsersForm("GROWERP_M_ADMIN", 1)
+                                      : UsersForm("GROWERP_M_EMPLOYEE", 1))
+                          : TabBarView(
+                              children: [
+                                CompanyPage(null, 1),
+                                UsersForm("GROWERP_M_ADMIN", 1),
+                                UsersForm("GROWERP_M_EMPLOYEE", 1)
+                              ],
+                            )))));
     });
   }
 }
