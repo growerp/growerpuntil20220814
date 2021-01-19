@@ -28,7 +28,7 @@ A live version of admin is now available at https://admin.growerp.org where you 
   - flutter run -d chrome
 
 # Introduction.
-GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the beta version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started/web
+GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the master version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started/web
 
 Although all screens work on IOS/Anderoid/Web devices however a smaller screen will show less information but it is still usable.
 
@@ -59,7 +59,6 @@ The implementation time is 40+ hours.
 Functions coming up:
 * Accounting
 * Inventory
-* Purchasing.
 
 Phone                                                                                         |  Tablet/PC
 :--------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:
