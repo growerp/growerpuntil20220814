@@ -51,103 +51,81 @@ class DashBoard extends StatelessWidget {
       }
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
-        List<ProductCategory> categories;
-        List<Product> products;
-        Crm user;
         BalanceSheet balanceSheet;
-        List<Order> orders;
-        return BlocBuilder<ProductBloc, ProductState>(
-            builder: (context, state) {
-          if (state is ProductSuccess) products = state.products;
-          return BlocBuilder<CategoryBloc, CategoryState>(
-              builder: (context, state) {
-            if (state is CategorySuccess) categories = state.categories;
-            return BlocBuilder<OrderBloc, OrderState>(
-                builder: (context, state) {
-              if (state is OrderLoaded) orders = state.orders;
-              return BlocBuilder<AccntgBloc, AccntgState>(
-                  builder: (context, state) {
-                if (state is AccntgLoaded) balanceSheet = state.balanceSheet;
-                return ScaffoldMessenger(
-                    key: scaffoldMessengerKey,
-                    child: Scaffold(
-                        appBar: AppBar(
-                            automaticallyImplyLeading:
-                                ResponsiveWrapper.of(context)
-                                    .isSmallerThan(TABLET),
-                            title: companyLogo(context, authenticate,
-                                authenticate?.company?.name ?? 'Company??'),
-                            actions: <Widget>[
-                              if (authenticate?.apiKey != null)
-                                IconButton(
-                                    icon: Icon(Icons.do_not_disturb),
-                                    tooltip: 'Logout',
-                                    onPressed: () => {
-                                          BlocProvider.of<AuthBloc>(context)
-                                              .add(Logout()),
-                                          Navigator.pushNamed(context, '/home',
-                                              arguments: FormArguments(
-                                                  "Successfully logged out."))
-                                        }),
-                            ]),
-                        drawer: myDrawer(context, authenticate),
-                        body: Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 20.0, horizontal: 2.0),
-                          child: GridView.count(
-                            crossAxisCount: ResponsiveWrapper.of(context)
-                                    .isSmallerThan(TABLET)
-                                ? 2
-                                : 3,
-                            padding: EdgeInsets.all(3.0),
-                            children: <Widget>[
-                              makeDashboardItem(
-                                  context,
-                                  menuItems[1],
-                                  "Current user: ${authenticate.user.firstName} "
-                                      "${authenticate.user.lastName} ",
-                                  "Employees: ${authenticate.company.employees.length}",
-                                  ""),
-                              makeDashboardItem(
-                                  context,
-                                  menuItems[2],
-                                  "Opportunities: ${user?.opportunities?.length ?? 0}",
-                                  "Leads: ${user?.leads?.length}",
-                                  "Customers: ${user?.customers?.length}"),
-                              makeDashboardItem(
-                                  context,
-                                  menuItems[3],
-                                  "Categories: ${categories?.length ?? 0}",
-                                  "Products: ${products?.length ?? 0}",
-                                  ""),
-                              makeDashboardItem(
-                                  context,
-                                  menuItems[4],
-                                  "Orders: ${(orders?.where((x) => x.supplierPartyId == authenticate.company.partyId))?.toList()?.length ?? 0}",
-                                  "Customers: ${user?.customers?.length}",
-                                  ""),
-                              makeDashboardItem(
-                                  context,
-                                  MenuItem(
-                                      title: "Accounting",
-                                      selectedImage:
-                                          "assets/images/accounting.png"),
-                                  " Assets: ${balanceSheet?.classInfoById?.asset?.totalPostedByTimePeriod?.all}",
-                                  "",
-                                  ""),
-                              makeDashboardItem(
-                                  context,
-                                  menuItems[5],
-                                  "Orders: ${(orders?.where((x) => x.customerPartyId == authenticate.company.partyId))?.toList()?.length ?? 0}",
-                                  "Suppliers: ${user?.suppliers?.length}",
-                                  ""),
-                            ],
-                          ),
-                        )));
-              });
-            });
-          });
-        });
+        return ScaffoldMessenger(
+            key: scaffoldMessengerKey,
+            child: Scaffold(
+                appBar: AppBar(
+                    automaticallyImplyLeading:
+                        ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+                    title: companyLogo(context, authenticate,
+                        authenticate?.company?.name ?? 'Company??'),
+                    actions: <Widget>[
+                      if (authenticate?.apiKey != null)
+                        IconButton(
+                            icon: Icon(Icons.do_not_disturb),
+                            tooltip: 'Logout',
+                            onPressed: () => {
+                                  BlocProvider.of<AuthBloc>(context)
+                                      .add(Logout()),
+                                  Navigator.pushNamed(context, '/home',
+                                      arguments: FormArguments(
+                                          "Successfully logged out."))
+                                }),
+                    ]),
+                drawer: myDrawer(context, authenticate),
+                body: Container(
+                  padding:
+                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
+                  child: GridView.count(
+                    crossAxisCount:
+                        ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                            ? 2
+                            : 3,
+                    padding: EdgeInsets.all(3.0),
+                    children: <Widget>[
+                      makeDashboardItem(
+                          context,
+                          menuItems[1],
+                          "Current user: ${authenticate.user.firstName} "
+                              "${authenticate.user.lastName} ",
+                          "Admins: ${authenticate.stats.admins}",
+                          "Employees: ${authenticate.stats.employees}"),
+                      makeDashboardItem(
+                          context,
+                          menuItems[2],
+                          "Opportunities: ${authenticate.stats.opportunities}",
+                          "Leads: ${authenticate.stats.leads}",
+                          "Customers: ${authenticate.stats.customers}"),
+                      makeDashboardItem(
+                          context,
+                          menuItems[3],
+                          "Categories: ${authenticate.stats.categories}",
+                          "Products: ${authenticate.stats.products}",
+                          ""),
+                      makeDashboardItem(
+                          context,
+                          menuItems[4],
+                          "Orders: ${authenticate.stats.openSlsOrders}",
+                          "Customers: ${authenticate.stats.customers}",
+                          ""),
+                      makeDashboardItem(
+                          context,
+                          MenuItem(
+                              title: "Accounting",
+                              selectedImage: "assets/images/accounting.png"),
+                          " Assets: ${balanceSheet?.classInfoById?.asset?.totalPostedByTimePeriod?.all}",
+                          "",
+                          ""),
+                      makeDashboardItem(
+                          context,
+                          menuItems[5],
+                          "Orders: ${authenticate.stats.openPurOrders}",
+                          "Suppliers: ${authenticate.stats.suppliers}",
+                          ""),
+                    ],
+                  ),
+                )));
       }
 
       if (state is AuthUnauthenticated) {

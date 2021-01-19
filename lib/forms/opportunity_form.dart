@@ -123,9 +123,9 @@ class _OpportunityState extends State<OpportunityPage> {
       _selectedLead =
           User(partyId: opportunity?.leadPartyId, email: opportunity?.email);
     if (_selectedAccount != null && opportunity?.accountPartyId != null)
-      _selectedAccount = authenticate.company.employees
-          .firstWhere((x) => x.partyId == opportunity?.accountPartyId);
-    _selectedStage = opportunity?.stageId ?? opportunityStages[0];
+//      _selectedAccount = authenticate.company.employees
+//          .firstWhere((x) => x.partyId == opportunity?.accountPartyId);
+      _selectedStage = opportunity?.stageId ?? opportunityStages[0];
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
     return Center(
         child: Container(
@@ -224,7 +224,7 @@ class _OpportunityState extends State<OpportunityPage> {
                             },
                             isExpanded: true,
                           ),
-                          DropdownButtonFormField<User>(
+                          /*                        DropdownButtonFormField<User>(
                             key: Key('dropDownAccount'),
                             hint: Text('Account'),
                             value: _selectedAccount,
@@ -241,6 +241,7 @@ class _OpportunityState extends State<OpportunityPage> {
                             },
                             isExpanded: true,
                           ),
+*/
                           RaisedButton(
                               key: Key('update'),
                               child: Text(opportunity?.opportunityId == null
