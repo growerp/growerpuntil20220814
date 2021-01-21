@@ -13,6 +13,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'generated/l10n.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,29 +45,41 @@ void main() async {
     create: (context) => repos,
     child: MultiBlocProvider(
       providers: [
-        BlocProvider<UserBloc>(create: (context) => UserBloc(repos)),
-        BlocProvider<EmployeeBloc>(create: (context) => EmployeeBloc(repos)),
-        BlocProvider<AdminBloc>(create: (context) => AdminBloc(repos)),
-        BlocProvider<LeadBloc>(create: (context) => LeadBloc(repos)),
-        BlocProvider<CustomerBloc>(create: (context) => CustomerBloc(repos)),
-        BlocProvider<SupplierBloc>(create: (context) => SupplierBloc(repos)),
+        BlocProvider<LeadBloc>(
+            create: (context) => UserBloc(repos, "GROWERP_M_LEAD")),
+        BlocProvider<CustomerBloc>(
+            create: (context) => UserBloc(repos, "GROWERP_M_CUSTOMER")),
+        BlocProvider<SupplierBloc>(
+            create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER")),
+        BlocProvider<AdminBloc>(
+            create: (context) => UserBloc(repos, "GROWERP_M_ADMIN")),
+        BlocProvider<EmployeeBloc>(
+            create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE")),
         BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
-        BlocProvider<ProductBloc>(
-            create: (context) =>
-                ProductBloc(repos, BlocProvider.of<CategoryBloc>(context))),
+        BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
         BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(
                 repos,
                 BlocProvider.of<CategoryBloc>(context),
                 BlocProvider.of<ProductBloc>(context))
               ..add(LoadAuth())),
-        BlocProvider<OrderBloc>(
-            create: (context) => OrderBloc(repos)..add(LoadOrder())),
+        BlocProvider<SalesOrderBloc>(
+            create: (context) => OrderBloc(repos, true)),
+        BlocProvider<PurchOrderBloc>(
+            create: (context) => OrderBloc(repos, false)),
+        BlocProvider<SalesCartBloc>(
+            create: (context) => CartBloc(
+                repos: repos,
+                sales: true,
+                orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
+        BlocProvider<PurchCartBloc>(
+            create: (context) => CartBloc(
+                repos: repos,
+                sales: false,
+                orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
         BlocProvider<OpportunityBloc>(
-            create: (context) => OpportunityBloc(
-                  repos,
-                  BlocProvider.of<LeadBloc>(context),
-                )..add(FetchOpportunity())),
+            create: (context) =>
+                OpportunityBloc(repos)..add(FetchOpportunity())),
         BlocProvider<AccntgBloc>(
             create: (context) => AccntgBloc(repos)..add(LoadAccntg())),
       ],
@@ -79,6 +93,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     String classificationId = GlobalConfiguration().get("classificationId");
     return MaterialApp(
+        localizationsDelegates: [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
         builder: (context, widget) => ResponsiveWrapper.builder(
             BouncingScrollWrapper.builder(context, widget),
             maxWidth: 2460,
@@ -96,22 +117,30 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: router.generateRoute,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
-            if (state is AuthLoading || state is AuthInitial)
-              return core.SplashForm();
-            if (state is AuthUnauthenticated &&
-                state.authenticate?.company == null) {
-              if (classificationId == 'AppAdmin')
-                return core.RegisterForm(
-                    'No companies found in system, create one?');
-              else
-                return core.FatalErrorForm(
-                    "No $classificationId company found in system\n"
-                    "Go to the admin app to create one!");
+            if (state is AuthUnauthenticated) {
+              if (state.authenticate?.company == null) {
+                if (classificationId == 'AppAdmin')
+                  return core.RegisterForm(
+                      'No companies found in system, create one?');
+                else
+                  return core.FatalErrorForm(
+                      S.of(context).classificationNotDefined(classificationId));
+              } else
+                return HomeForm(FormArguments(S
+                    .of(context)
+                    .pageHomeWelcome(state.authenticate.user?.firstName)));
             }
-            if (classificationId == 'AppAdmin')
-              return HomeForm(FormArguments("Welcome"));
-            else
-              return core.FatalErrorForm("specific home screen not defined");
+            if (state is AuthAuthenticated) {
+              if (classificationId == 'AppAdmin')
+                return HomeForm(FormArguments(S
+                    .of(context)
+                    .pageHomeWelcome(state.authenticate.user.firstName)));
+              else
+                return core.FatalErrorForm(S
+                    .of(context)
+                    .screenNotFound('for classification ' + classificationId));
+            }
+            return core.SplashForm();
           },
         ));
   }

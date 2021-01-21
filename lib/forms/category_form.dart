@@ -49,15 +49,16 @@ class _MyCategoryState extends State<MyCategoryPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descrController = TextEditingController();
+
   bool loading = false;
   ProductCategory updatedCategory;
   PickedFile _imageFile;
   dynamic _pickImageError;
   String _retrieveDataError;
+
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-
   _MyCategoryState(this.message, this.category) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
@@ -94,7 +95,6 @@ class _MyCategoryState extends State<MyCategoryPage> {
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate;
-    Catalog catalog;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -145,19 +145,15 @@ class _MyCategoryState extends State<MyCategoryPage> {
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                   },
-                  child: BlocConsumer<CategoryBloc, CategoryState>(
+                  child: BlocListener<CategoryBloc, CategoryState>(
                       listener: (context, state) {
                     if (state is CategoryProblem) {
                       loading = false;
                       HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.green);
+                          context, '${state.errorMessage}', Colors.red);
                     }
-                    if (state is CategorySuccess)
-                      Navigator.of(context).pop(updatedCategory);
-                  }, builder: (context, state) {
-                    if (state is CategorySuccess) {
-                      updatedCategory = state.category;
-                    }
+                    if (state is CategorySuccess) Navigator.of(context).pop();
+                  }, child: Builder(builder: (BuildContext context) {
                     return Center(
                       child: !kIsWeb &&
                               defaultTargetPlatform == TargetPlatform.android
@@ -175,7 +171,7 @@ class _MyCategoryState extends State<MyCategoryPage> {
                               })
                           : _showForm(),
                     );
-                  }))));
+                  })))));
     });
   }
 

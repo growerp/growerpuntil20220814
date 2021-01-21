@@ -13,6 +13,7 @@
  */
 
 import 'package:decimal/decimal.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,16 +31,13 @@ class OrderForm extends StatelessWidget {
   Widget build(BuildContext context) {
     var a = (formArguments) =>
         (MyOrderPage(formArguments.message, formArguments.object));
-    return BlocProvider(
-        create: (context) => CartBloc(
-            BlocProvider.of<AuthBloc>(context),
-            BlocProvider.of<OrderBloc>(context),
-            BlocProvider.of<ProductBloc>(context),
-            BlocProvider.of<CategoryBloc>(context),
-            BlocProvider.of<CustomerBloc>(context),
-            BlocProvider.of<SupplierBloc>(context))
-          ..add(LoadCart(formArguments.object)),
-        child: ShowNavigationRail(a(formArguments), formArguments.tab));
+    Order order = formArguments.object;
+    if (order.sales)
+      BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(order));
+    else
+      BlocProvider.of<PurchCartBloc>(context)..add(LoadCart(order));
+
+    return ShowNavigationRail(a(formArguments), formArguments.tab);
   }
 }
 
@@ -53,43 +51,54 @@ class MyOrderPage extends StatefulWidget {
 
 class _MyOrderState extends State<MyOrderPage> {
   final String message;
-  final Order orderIn;
+  final Order orderIn; // incoming existing order from list
   final _formKey = GlobalKey<FormState>();
   final _priceController = TextEditingController();
   final _quantityController = TextEditingController();
-  bool loading = false;
+  final _userSearchBoxController = TextEditingController();
+  final _productSearchBoxController = TextEditingController();
+  //ignore: close_sinks
+  CartBloc _cartBloc;
+  UserBloc _userBloc;
   Order order;
   Authenticate authenticate;
-  List<Product> products;
-  List<User> otherParties;
   Product _selectedProduct;
   User _selectedOtherParty;
-  bool sales;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   _MyOrderState(this.message, this.orderIn) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartBloc, CartState>(builder: (context, state) {
-      if (state is CartLoaded) {
-        authenticate = state.authenticate;
-        if (orderIn.customerPartyId == authenticate.company.partyId)
-          sales = false;
-        if (orderIn.supplierPartyId == authenticate.company.partyId)
-          sales = true;
-        otherParties = sales ? state.customers : state.suppliers;
-        order = state.order;
-        products = state.products;
+    if (orderIn.sales) {
+      _cartBloc = BlocProvider.of<SalesCartBloc>(context);
+      _userBloc = BlocProvider.of<CustomerBloc>(context);
+    } else {
+      _cartBloc = BlocProvider.of<PurchCartBloc>(context);
+      _userBloc = BlocProvider.of<SupplierBloc>(context);
+    }
+
+    order = orderIn;
+    _selectedOtherParty = order?.otherUser;
+    var repos = context.read<Object>();
+    if (orderIn.sales)
+      return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+        if (state is AuthAuthenticated) authenticate = state.authenticate;
         return ScaffoldMessenger(
             key: scaffoldMessengerKey,
             child: Scaffold(
                 appBar: AppBar(
                   automaticallyImplyLeading:
                       ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                  title: companyLogo(context, authenticate,
-                      (sales ? 'Sales' : 'Purchase') + " Order detail"),
+                  title: companyLogo(
+                      context,
+                      authenticate,
+                      "Sales Order " +
+                          (order.orderId != null
+                              ? "Order# ${order.orderId} St: ${order.orderStatusId}"
+                              : "New")),
                   actions: <Widget>[
                     IconButton(
                         icon: Icon(Icons.home),
@@ -103,64 +112,113 @@ class _MyOrderState extends State<MyOrderPage> {
                         HelperFunctions.showMessage(
                             context, '${state.errorMessage}', Colors.red);
                     },
-                    child: BlocListener<OrderBloc, OrderState>(
+                    child: BlocListener<SalesOrderBloc, OrderState>(
                         listener: (context, state) {
                           if (state is OrderProblem)
                             HelperFunctions.showMessage(
                                 context, '${state.errorMessage}', Colors.red);
                         },
-                        child: BlocConsumer<CartBloc, CartState>(
+                        child: BlocConsumer<SalesCartBloc, CartState>(
                             listener: (context, state) {
                           if (state is CartProblem) {
-                            loading = false;
                             HelperFunctions.showMessage(
                                 context, '${state.errorMessage}', Colors.green);
-                          } else if (state is CartLoading) {
-                            loading = true;
+                          }
+                          if (state is CartLoaded) {
                             HelperFunctions.showMessage(
                                 context, '${state.message}', Colors.green);
-                            return Center(child: CircularProgressIndicator());
-                          } else if (state is CartLoaded) {
-                            loading = true;
-                            HelperFunctions.showMessage(
-                                context, '${state.message}', Colors.green);
-                            setState(() {
-                              _selectedProduct = null;
-                              _priceController.clear();
-                              _quantityController.clear();
-                            });
                           }
                         }, builder: (context, state) {
                           if (state is CartLoading)
                             return Center(child: CircularProgressIndicator());
-                          else
-                            return _orderItemList();
+                          if (state is CartLoaded) {
+                            order = state.order;
+                            _selectedOtherParty = order?.otherUser;
+                          }
+                          return Column(children: [
+                            SizedBox(height: 20),
+                            _orderEntry(repos),
+                            _actionButtons(),
+                            Center(
+                                child: Text(
+                                    "Grant total : ${order.grandTotal?.toString()}")),
+                            _orderItemList(),
+                          ]);
                         })))));
-      }
-      return Center(child: CircularProgressIndicator());
+      });
+    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+      if (state is AuthAuthenticated) authenticate = state.authenticate;
+      return ScaffoldMessenger(
+          key: scaffoldMessengerKey,
+          child: Scaffold(
+              appBar: AppBar(
+                automaticallyImplyLeading:
+                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
+                title: companyLogo(
+                    context,
+                    authenticate,
+                    "Purchase Order " +
+                        (order.orderId != null
+                            ? "# ${order.orderId} ${order.orderStatusId}"
+                            : "New")),
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.home),
+                      onPressed: () => Navigator.pushNamed(context, '/home'))
+                ],
+              ),
+              drawer: myDrawer(context, authenticate),
+              body: BlocListener<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is AuthProblem)
+                      HelperFunctions.showMessage(
+                          context, '${state.errorMessage}', Colors.red);
+                  },
+                  child: BlocListener<PurchOrderBloc, OrderState>(
+                      listener: (context, state) {
+                        if (state is OrderProblem)
+                          HelperFunctions.showMessage(
+                              context, '${state.errorMessage}', Colors.red);
+                      },
+                      child: BlocConsumer<PurchCartBloc, CartState>(
+                          listener: (context, state) {
+                        if (state is CartProblem) {
+                          HelperFunctions.showMessage(
+                              context, '${state.errorMessage}', Colors.green);
+                        }
+                        if (state is CartLoaded) {
+                          setState(() {
+                            HelperFunctions.showMessage(
+                                context, '${state.message}', Colors.green);
+                          });
+                        }
+                      }, builder: (context, state) {
+                        if (state is CartLoading)
+                          return Center(child: CircularProgressIndicator());
+                        if (state is CartLoaded) {
+                          order = state.order;
+                          _selectedOtherParty = order.otherUser;
+                        }
+                        return Column(children: [
+                          SizedBox(height: 20),
+                          _orderEntry(repos),
+                          _actionButtons(),
+                          Center(
+                              child: Text(
+                                  "Grant total : ${order.grandTotal?.toString()}")),
+                          _orderItemList(),
+                        ]);
+                      })))));
     });
   }
 
-  Widget _orderItemList() {
-    List<OrderItem> items = order?.orderItems;
-    if (sales)
-      _selectedOtherParty ??= order?.customerPartyId != null &&
-              otherParties != null
-          ? otherParties.firstWhere((x) => order.customerPartyId == x.partyId)
-          : null;
-    else
-      _selectedOtherParty ??= order?.supplierPartyId != null &&
-              otherParties != null
-          ? otherParties.firstWhere((x) => order.supplierPartyId == x.partyId)
-          : null;
-    loading = false;
-    // phone has a singe column, tablet and larger 2
+  Widget _orderEntry(repos) {
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
     double width = columns.toDouble() * 400;
     return Center(
         child: Column(children: [
       Container(
-          height: 450 / columns.toDouble(),
+          height: 350 / columns.toDouble(),
           width: width,
           child: Form(
               key: _formKey,
@@ -175,59 +233,91 @@ class _MyOrderState extends State<MyOrderPage> {
                         Row(
                           children: [
                             Container(
-                                width: width / columns.toDouble() - 160,
-                                child: DropdownButtonFormField<User>(
-                                  key: Key('dropDownOtherParty'),
-                                  hint: Text(sales ? 'Customer' : 'Supplier'),
-                                  value: _selectedOtherParty,
-                                  validator: (value) =>
-                                      value == null ? 'field required' : null,
-                                  items: otherParties?.map((x) {
-                                    return DropdownMenuItem<User>(
-                                        child: Text(
-                                            "${x.lastName} ${x.firstName}"),
-                                        value: x);
-                                  })?.toList(),
-                                  onChanged: (User newValue) {
-                                    setState(() {
-                                      _selectedOtherParty = newValue;
-                                    });
-                                  },
-                                  isExpanded: true,
-                                )),
+                              width: width / columns.toDouble() - 160,
+                              child: DropdownSearch<User>(
+                                label: order.sales ? 'Customer' : 'Supplier',
+                                dialogMaxWidth: 300,
+                                autoFocusSearchBox: true,
+                                selectedItem: _selectedOtherParty,
+                                dropdownSearchDecoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(25.0)),
+                                ),
+                                searchBoxDecoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(25.0)),
+                                ),
+                                showSearchBox: true,
+                                searchBoxController: _userSearchBoxController,
+                                isFilteredOnline: true,
+                                key: Key('dropUser'),
+                                itemAsString: (User u) => "${u?.companyName}",
+                                onFind: (String filter) async {
+                                  var result = await repos.getUser(
+                                      userGroupId: 'GROWERP_M_CUSTOMER',
+                                      filter: _userSearchBoxController.text);
+                                  return result;
+                                },
+                                onChanged: (User newValue) {
+                                  setState(() {
+                                    _selectedOtherParty = newValue;
+                                  });
+                                },
+                                validator: (value) {
+                                  if (value == null)
+                                    return "Select ${order.sales ? 'Customer' : 'Supplier'}!";
+                                  return null;
+                                },
+                              ),
+                            ),
                             SizedBox(width: 10),
                             RaisedButton(
                               child: Text('Add New'),
                               onPressed: () async {
-                                final User other =
-                                    await _addOtherPartyDialog(context, sales);
+                                final User other = await _addOtherPartyDialog(
+                                    context, order.sales);
                                 if (other != null) {
-                                  BlocProvider.of<UserBloc>(context)
-                                      .add(UpdateUser(other, null));
+                                  _userBloc.add(UpdateUser(other));
                                 }
                               },
                             )
                           ],
                         ),
-                        DropdownButtonFormField<Product>(
-                          key: Key('dropDownProd'),
-                          hint: Text('Product'),
-                          value: _selectedProduct,
-                          validator: (value) =>
-                              value == null ? 'field required' : null,
-                          items: products?.map((product) {
-                            return DropdownMenuItem<Product>(
-                                child: Text("${product?.productName}"),
-                                value: product);
-                          })?.toList(),
+                        DropdownSearch<Product>(
+                          label: 'Product',
+                          dialogMaxWidth: 300,
+                          autoFocusSearchBox: true,
+                          selectedItem: _selectedProduct,
+                          dropdownSearchDecoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0)),
+                          ),
+                          searchBoxDecoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0)),
+                          ),
+                          showSearchBox: true,
+                          searchBoxController: _productSearchBoxController,
+                          isFilteredOnline: true,
+                          key: Key('dropDownLead'),
+                          itemAsString: (Product u) => "${u.productName}",
+                          onFind: (String filter) async {
+                            var result = await repos.getProduct(
+                                filter: _productSearchBoxController.text);
+                            return result;
+                          },
                           onChanged: (Product newValue) {
                             setState(() {
-                              _priceController
-                                ..text = newValue.price.toString();
                               _selectedProduct = newValue;
+                              _priceController.text = newValue.price.toString();
                             });
                           },
-                          isExpanded: true,
+                          validator: (value) {
+                            if (value == null) return "Select Product?";
+                            return null;
+                          },
                         ),
                         TextFormField(
                           key: Key('price'),
@@ -247,73 +337,90 @@ class _MyOrderState extends State<MyOrderPage> {
                             return null;
                           },
                         ),
-                        RaisedButton(
-                            key: Key('Confirm Order'),
-                            child: Text('confirm'),
-                            onPressed: () {
-                              if (order.orderItems.length > 0 && !loading) {
-                                BlocProvider.of<CartBloc>(context)
-                                    .add(ConfirmCart());
-                              }
-                            }),
-                        RaisedButton(
-                            key: Key('add'),
-                            child: Text('Add'),
-                            onPressed: () {
-                              if (_formKey.currentState.validate() &&
-                                  !loading) {
-                                BlocProvider.of<CartBloc>(context).add(
-                                    UpdateCart(Order(
-                                        customerPartyId: sales
-                                            ? _selectedOtherParty.partyId
-                                            : authenticate.company.partyId,
-                                        supplierPartyId: sales
-                                            ? authenticate.company.partyId
-                                            : _selectedOtherParty.partyId,
-                                        orderItems: [
-                                      OrderItem(
-                                          productId:
-                                              _selectedProduct?.productId,
-                                          price: Decimal.parse(
-                                              _priceController.text),
-                                          quantity: Decimal.parse(
-                                              _quantityController.text))
-                                    ])));
-                              }
-                            }),
-//                Text("Grant total : ${order.grandTotal?.toString()}"),
                       ])))),
-      Expanded(
-          child: CustomScrollView(
-        slivers: <Widget>[
-          SliverToBoxAdapter(
+    ]));
+  }
+
+  Widget _actionButtons() {
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          RaisedButton(
+              key: Key('cancel'),
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          RaisedButton(
+              key: Key('clearCart'),
+              child: Text('Clear Cart'),
+              onPressed: () {
+                if (order.orderItems.length > 0) {
+                  _cartBloc.add(DeleteFromCart());
+                }
+              }),
+          RaisedButton(
+              key: Key('updateOrder'),
+              child:
+                  Text(order.orderId == null ? 'Create Order' : 'Update order'),
+              onPressed: () {
+                if (order.orderItems.length > 0) {
+                  _cartBloc.add(CreateOrderFromCart());
+                }
+              }),
+          RaisedButton(
+              key: Key('add'),
+              child: Text('Add to Cart'),
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  _cartBloc.add(AddToCart(
+                      order: Order(
+                          sales: order.sales,
+                          otherUser: _selectedOtherParty,
+                          orderItems: order.orderItems),
+                      newItem: OrderItem(
+                          productId: _selectedProduct?.productId,
+                          description: _selectedProduct.productName,
+                          price: Decimal.parse(_priceController.text),
+                          quantity: Decimal.parse(_quantityController.text))));
+                  setState(() {
+                    _selectedProduct = null;
+                    _priceController.clear();
+                    _quantityController.clear();
+                  });
+                }
+              }),
+        ]);
+  }
+
+  Widget _orderItemList() {
+    List<OrderItem> items = order?.orderItems;
+
+    return Expanded(
+        child: CustomScrollView(
+      slivers: <Widget>[
+        SliverToBoxAdapter(
             child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.transparent,
-              ),
-              title: Row(
-                children: <Widget>[
-                  Expanded(child: Text("Product", textAlign: TextAlign.center)),
-                  Expanded(
-                      child: Text("Quantity", textAlign: TextAlign.center)),
-                  Expanded(child: Text("Price", textAlign: TextAlign.center)),
-                  Expanded(
-                      child: Text("SubTotal", textAlign: TextAlign.center)),
-                ],
-              ),
-            ),
+          leading: CircleAvatar(
+            backgroundColor: Colors.transparent,
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return InkWell(
-                    onLongPress: () async {
-                      BlocProvider.of<CartBloc>(context)
-                          .add(DeleteItemCart(index));
-                      Navigator.pushNamed(context, '/order',
-                          arguments: FormArguments('item deleted', 0, order));
-                    },
-                    child: ListTile(
+          title: Row(children: <Widget>[
+            Expanded(child: Text("Product", textAlign: TextAlign.center)),
+            Expanded(child: Text("Quantity", textAlign: TextAlign.center)),
+            Expanded(child: Text("Price", textAlign: TextAlign.center)),
+            Expanded(child: Text("SubTotal", textAlign: TextAlign.center)),
+          ]),
+        )),
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return InkWell(
+                  onLongPress: () async {
+                    _cartBloc.add(DeleteFromCart(index));
+                    Navigator.pushNamed(context, '/order',
+                        arguments: FormArguments('item deleted', 0, order));
+                  },
+                  child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.green,
                         child: Text(items[index]?.orderItemSeqId.toString()),
@@ -334,14 +441,18 @@ class _MyOrderState extends State<MyOrderPage> {
                                 "${(items[index].price * items[index].quantity).toString()}",
                                 textAlign: TextAlign.center)),
                       ]),
-                    ));
-              },
-              childCount: items == null ? 0 : items?.length,
-            ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete_forever),
+                        onPressed: () {
+                          _cartBloc.add(DeleteFromCart(index));
+                        },
+                      )));
+            },
+            childCount: items == null ? 0 : items?.length,
           ),
-        ],
-      )),
-    ]));
+        ),
+      ],
+    ));
   }
 }
 
@@ -418,7 +529,7 @@ _addOtherPartyDialog(BuildContext context, bool sales) async {
                             email: _emailController.text,
                             name: _emailController.text,
                           );
-                          Navigator.of(context).pop(updatedUser);
+                          Navigator.of(context).pop();
                         }
                       })
                 ]))),

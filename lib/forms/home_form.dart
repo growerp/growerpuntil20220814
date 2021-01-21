@@ -87,9 +87,8 @@ class DashBoard extends StatelessWidget {
                       makeDashboardItem(
                           context,
                           menuItems[1],
-                          "Current user: ${authenticate.user.firstName} "
-                              "${authenticate.user.lastName} ",
-                          "Admins: ${authenticate.stats.admins}",
+                          "${authenticate.company.name}",
+                          "Administrators: ${authenticate.stats.admins}",
                           "Employees: ${authenticate.stats.employees}"),
                       makeDashboardItem(
                           context,
@@ -171,6 +170,7 @@ class DashBoard extends StatelessWidget {
 
 Card makeDashboardItem(BuildContext context, MenuItem menuItem, String subTitle,
     String subTitle1, String subTitle2) {
+  bool phone = ResponsiveWrapper.of(context).isSmallerThan(DESKTOP);
   return Card(
       elevation: 1.0,
       margin: new EdgeInsets.all(8.0),
@@ -188,22 +188,28 @@ Card makeDashboardItem(BuildContext context, MenuItem menuItem, String subTitle,
             children: <Widget>[
               SizedBox(height: 10.0),
               Center(child: Image.asset(menuItem.selectedImage, height: 80.0)),
-              SizedBox(height: 10.0),
               Center(
                 child: Text("${menuItem.title}",
-                    style: TextStyle(fontSize: 25.0, color: Colors.black)),
+                    style: TextStyle(
+                        fontSize: phone ? 20 : 25, color: Colors.black)),
               ),
+              SizedBox(height: 10.0),
               Center(
                 child: Text(subTitle,
-                    style: TextStyle(fontSize: 20.0, color: Colors.black)),
+                    style: TextStyle(
+                        fontSize: phone ? 15 : 20, color: Colors.black)),
               ),
+              SizedBox(height: 10.0),
               Center(
                 child: Text(subTitle1,
-                    style: TextStyle(fontSize: 20.0, color: Colors.black)),
+                    style: TextStyle(
+                        fontSize: phone ? 15 : 20, color: Colors.black)),
               ),
+              SizedBox(height: 10.0),
               Center(
                 child: Text(subTitle2,
-                    style: TextStyle(fontSize: 20.0, color: Colors.black)),
+                    style: TextStyle(
+                        fontSize: phone ? 15 : 20, color: Colors.black)),
               )
             ],
           ),

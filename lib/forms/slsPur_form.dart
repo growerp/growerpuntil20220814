@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'package:core/forms/@forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -20,38 +19,42 @@ import 'package:models/models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
+import 'package:printing/printing.dart';
 
 import '@forms.dart';
 
-class CompanyForm extends StatelessWidget {
+class SlsPurForm extends StatelessWidget {
   final FormArguments formArguments;
-  CompanyForm(this.formArguments);
+  SlsPurForm(this.formArguments);
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) =>
-        (CompanyFormHeader(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 1, formArguments.object);
+        (SlsPurFormHeader(formArguments.message, formArguments.object));
+    return ShowNavigationRail(a(formArguments), 4, formArguments.object);
   }
 }
 
-class CompanyFormHeader extends StatefulWidget {
+class SlsPurFormHeader extends StatefulWidget {
   final String message;
-  final Authenticate authenticate;
-  const CompanyFormHeader([this.message, this.authenticate]);
+  final Order order;
+  const SlsPurFormHeader([this.message, this.order]);
   @override
-  _CompanyFormStateHeader createState() =>
-      _CompanyFormStateHeader(message, authenticate);
+  _SlsPurFormStateHeader createState() =>
+      _SlsPurFormStateHeader(message, order);
 }
 
-class _CompanyFormStateHeader extends State<CompanyFormHeader> {
+class _SlsPurFormStateHeader extends State<SlsPurFormHeader> {
   final String message;
-  final Authenticate authenticate;
-  int _selectedIndex;
+  final Order order;
+  int _selectedIndex = 0;
+  Authenticate authenticate;
+  bool sales = false;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _CompanyFormStateHeader([this.message, this.authenticate]) {
+  _SlsPurFormStateHeader([this.message, this.order]) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -60,14 +63,12 @@ class _CompanyFormStateHeader extends State<CompanyFormHeader> {
 
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate = this.authenticate;
-    _selectedIndex = _selectedIndex ?? 0;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: DefaultTabController(
-              length: 3,
+              length: 2,
               child: Scaffold(
                   appBar: AppBar(
                       bottom:
@@ -88,58 +89,53 @@ class _CompanyFormStateHeader extends State<CompanyFormHeader> {
                                   tabs: [
                                     Align(
                                         alignment: Alignment.center,
-                                        child: Text("Company Information")),
+                                        child: Text(sales
+                                            ? "Sales Orders"
+                                            : "Purchase orders")),
                                     Align(
                                         alignment: Alignment.center,
-                                        child: Text("Admins")),
-                                    Align(
-                                        alignment: Alignment.center,
-                                        child: Text("Employees")),
+                                        child: Text(
+                                            sales ? "Customers" : "Suppliers")),
                                   ],
                                 )
                               : null,
-                      title: companyLogo(context, authenticate, 'Company List'),
+                      title: companyLogo(
+                          context, authenticate, 'Sales Order List'),
                       automaticallyImplyLeading:
                           ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
-                  bottomNavigationBar:
-                      ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                          ? BottomNavigationBar(
-                              items: const <BottomNavigationBarItem>[
-                                BottomNavigationBarItem(
-                                  icon: Icon(Icons.business),
-                                  label: 'Company',
-                                ),
-                                BottomNavigationBarItem(
-                                  icon: Icon(Icons.business),
-                                  label: 'Admins',
-                                ),
-                                BottomNavigationBarItem(
-                                  icon: Icon(Icons.school),
-                                  label: 'Employees',
-                                ),
-                              ],
-                              currentIndex: _selectedIndex,
-                              selectedItemColor: Colors.amber[800],
-                              onTap: _onItemTapped,
-                            )
-                          : null,
+                  bottomNavigationBar: ResponsiveWrapper.of(context)
+                          .isSmallerThan(TABLET)
+                      ? BottomNavigationBar(
+                          items: const <BottomNavigationBarItem>[
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.home),
+                              label: "sales?'Sales Orders':'Purchase Orders'",
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.school),
+                              label: "sales?'Customers':'Suppliers'",
+                            ),
+                          ],
+                          currentIndex: _selectedIndex,
+                          selectedItemColor: Colors.amber[800],
+                          onTap: _onItemTapped,
+                        )
+                      : null,
                   floatingActionButton: FloatingActionButton(
                     onPressed: () async {
-                      _selectedIndex == 1
-                          ? await Navigator.pushNamed(context, '/user',
+                      _selectedIndex == 0
+                          ? await Navigator.pushNamed(context, '/order',
                               arguments: FormArguments(
-                                  'Enter new admin...',
-                                  1,
-                                  User(
-                                      userGroupId: 'GROWERP_M_ADMIN',
-                                      groupDescription: 'New Admin')))
+                                  'Enter a new sales order...',
+                                  4,
+                                  Order(sales: order.sales)))
                           : await Navigator.pushNamed(context, '/user',
                               arguments: FormArguments(
-                                  'Enter new employee...',
-                                  1,
+                                  'Enter a new customer...',
+                                  4,
                                   User(
-                                      userGroupId: 'GROWERP_M_EMPLOYEE',
-                                      groupDescription: 'New Employee')));
+                                      userGroupId: 'GROWERP_M_CUSTOMER',
+                                      groupDescription: 'Customer')));
                     },
                     tooltip: 'Add new',
                     child: Icon(Icons.add),
@@ -150,34 +146,19 @@ class _CompanyFormStateHeader extends State<CompanyFormHeader> {
                         if (state is AuthProblem)
                           HelperFunctions.showMessage(
                               context, '${state.errorMessage}', Colors.red);
-                        if (state is AuthLoading)
-                          HelperFunctions.showMessage(
-                              context, '${state.message}', Colors.red);
                       },
                       child: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
                           ? Center(
                               child: _selectedIndex == 0
-                                  ? CompanyPage(null, 1)
-                                  : _selectedIndex == 1
-                                      ? UsersForm(
-                                          key: UniqueKey(),
-                                          userGroupId: "GROWERP_M_ADMIN",
-                                          tab: 1)
-                                      : UsersForm(
-                                          key: UniqueKey(),
-                                          userGroupId: "GROWERP_M_EMPLOYEE",
-                                          tab: 1))
+                                  ? OrdersForm(sales: true)
+                                  : UsersForm(
+                                      userGroupId: "GROWERP_M_CUSTOMER",
+                                      tab: 4))
                           : TabBarView(
                               children: [
-                                CompanyPage(null, 1),
+                                OrdersForm(sales: true),
                                 UsersForm(
-                                    key: UniqueKey(),
-                                    userGroupId: "GROWERP_M_ADMIN",
-                                    tab: 1),
-                                UsersForm(
-                                    key: UniqueKey(),
-                                    userGroupId: "GROWERP_M_EMPLOYEE",
-                                    tab: 1)
+                                    userGroupId: "GROWERP_M_CUSTOMER", tab: 4)
                               ],
                             )))));
     });

@@ -14,8 +14,10 @@
 
 import 'dart:io';
 import 'package:decimal/decimal.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:models/models.dart';
@@ -31,37 +33,39 @@ class ProductForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var a = (formArguments) =>
-        (MyProductPage(formArguments.message, formArguments.object));
+        (ProductPage(formArguments.message, formArguments.object));
     return ShowNavigationRail(a(formArguments), 3);
   }
 }
 
-class MyProductPage extends StatefulWidget {
+class ProductPage extends StatefulWidget {
   final String message;
   final Product product;
-  MyProductPage(this.message, this.product);
+  ProductPage(this.message, this.product);
   @override
-  _MyProductState createState() => _MyProductState(message, product);
+  _ProductState createState() => _ProductState(message, product);
 }
 
-class _MyProductState extends State<MyProductPage> {
+class _ProductState extends State<ProductPage> {
   final String message;
   final Product product;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _priceController = TextEditingController();
-  Product updatedProduct;
+  final _categorySearchBoxController = TextEditingController();
+
   bool loading = false;
-  List<ProductCategory> categories = [];
+  Product updatedProduct;
   ProductCategory _selectedCategory;
   PickedFile _imageFile;
   dynamic _pickImageError;
   String _retrieveDataError;
+
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _MyProductState(this.message, this.product) {
+  _ProductState(this.message, this.product) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
@@ -96,6 +100,7 @@ class _MyProductState extends State<MyProductPage> {
 
   @override
   Widget build(BuildContext context) {
+    var repos = context.read<Object>();
     Authenticate authenticate;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
@@ -148,20 +153,15 @@ class _MyProductState extends State<MyProductPage> {
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                   },
-                  child: BlocConsumer<ProductBloc, ProductState>(
+                  child: BlocListener<ProductBloc, ProductState>(
                       listener: (context, state) {
                     if (state is ProductProblem) {
                       loading = false;
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                     }
-                    if (state is ProductSuccess)
-                      Navigator.of(context).pop(updatedProduct);
-                  }, builder: (context, state) {
-                    if (state is ProductSuccess) {
-                      updatedProduct = state.product;
-                      categories = state.categories;
-                    }
+                    if (state is ProductSuccess) Navigator.of(context).pop();
+                  }, child: Builder(builder: (BuildContext context) {
                     return Center(
                       child: !kIsWeb &&
                               defaultTargetPlatform == TargetPlatform.android
@@ -175,11 +175,12 @@ class _MyProductState extends State<MyProductPage> {
                                     textAlign: TextAlign.center,
                                   );
                                 }
-                                return _showForm();
+                                return _showForm(
+                                    repos, authenticate.company.partyId);
                               })
-                          : _showForm(),
+                          : _showForm(repos, authenticate.company.partyId),
                     );
-                  }))));
+                  })))));
     });
   }
 
@@ -192,14 +193,14 @@ class _MyProductState extends State<MyProductPage> {
     return null;
   }
 
-  Widget _showForm() {
+  Widget _showForm(repos, companyPartyId) {
     _nameController..text = product?.productName;
     _descriptionController..text = product?.description;
     _priceController..text = product?.price?.toString();
     final Text retrieveError = _getRetrieveErrorWidget();
     if (_selectedCategory == null && product?.categoryId != null)
-      _selectedCategory =
-          categories?.firstWhere((a) => a.categoryId == product?.categoryId);
+      _selectedCategory = ProductCategory(
+          categoryId: product.categoryId, categoryName: product.categoryName);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -252,6 +253,9 @@ class _MyProductState extends State<MyProductPage> {
                   TextFormField(
                     key: Key('price'),
                     decoration: InputDecoration(labelText: 'Product Price'),
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.allow(RegExp('[0-9.,]+'))
+                    ],
                     controller: _priceController,
                     validator: (value) {
                       if (value.isEmpty) return 'Please enter a price?';
@@ -259,22 +263,36 @@ class _MyProductState extends State<MyProductPage> {
                     },
                   ),
                   SizedBox(height: 10),
-                  DropdownButtonFormField<ProductCategory>(
-                    key: Key('dropDown'),
-                    hint: Text('Product Category'),
-                    value: _selectedCategory,
-                    validator: (value) =>
-                        value == null ? 'field required' : null,
-                    items: categories?.map((item) {
-                      return DropdownMenuItem<ProductCategory>(
-                          child: Text(item?.categoryName ?? ''), value: item);
-                    })?.toList(),
+                  DropdownSearch<ProductCategory>(
+                    label: 'Category',
+                    dialogMaxWidth: 300,
+                    autoFocusSearchBox: true,
+                    selectedItem: _selectedCategory,
+                    dropdownSearchDecoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0)),
+                    ),
+                    searchBoxDecoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0)),
+                    ),
+                    showSearchBox: true,
+                    searchBoxController: _categorySearchBoxController,
+                    isFilteredOnline: true,
+                    showClearButton: true,
+                    key: Key('dropDownCategory'),
+                    itemAsString: (ProductCategory u) => "${u.categoryName}",
+                    onFind: (String filter) async {
+                      var result = await repos.getCategory(
+                          companyPartyId: companyPartyId,
+                          filter: _categorySearchBoxController.text);
+                      return result;
+                    },
                     onChanged: (ProductCategory newValue) {
                       setState(() {
                         _selectedCategory = newValue;
                       });
                     },
-                    isExpanded: true,
                   ),
                   SizedBox(height: 20),
                   RaisedButton(

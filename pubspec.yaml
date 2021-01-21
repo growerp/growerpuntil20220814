@@ -6,8 +6,10 @@ environment:
   sdk: ">=2.6.2 <3.0.0"
 
 dependencies:
-  flutter: 
+  flutter:
     sdk: flutter
+  flutter_localizations:
+        sdk: flutter
   decimal: ^0.3.0
   global_configuration: ^1.6.0
   equatable: ^1.2.5
@@ -21,6 +23,7 @@ dependencies:
   animations: ^1.0.0+5
   responsive_framework: ^0.0.8
   printing: ^3.7.1
+  dropdown_search: ^0.4.8
   core:
 #    path: ../packages/core
     git:
@@ -33,7 +36,6 @@ dependencies:
 #      url: https://github.com/growerp/growerp.git
 #      ref: packages
 #      path: models
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -49,8 +51,10 @@ flutter_icons:
 
 flutter:
   uses-material-design: true
-# from https://www.flaticon.com/
+  # from https://www.flaticon.com/
   assets:
     - assets/images/
     - assets/cfg/
     - ./
+flutter_intl:
+  enabled: true

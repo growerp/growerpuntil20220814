@@ -45,22 +45,16 @@ class CrmFormHeader extends StatefulWidget {
 class _CrmFormStateHeader extends State<CrmFormHeader> {
   final String message;
   final Authenticate authenticate;
-  int _selectedIndex;
+  int _selectedIndex = 0;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   _CrmFormStateHeader([this.message, this.authenticate]) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     Authenticate authenticate = this.authenticate;
-    _selectedIndex = _selectedIndex ?? 0;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -87,7 +81,7 @@ class _CrmFormStateHeader extends State<CrmFormHeader> {
                                   tabs: [
                                     Align(
                                         alignment: Alignment.center,
-                                        child: Text("Opportunity")),
+                                        child: Text("My Opportunities")),
                                     Align(
                                         alignment: Alignment.center,
                                         child: Text("Leads")),
@@ -97,52 +91,51 @@ class _CrmFormStateHeader extends State<CrmFormHeader> {
                                   ],
                                 )
                               : null,
-                      title: companyLogo(context, authenticate, 'Crm List'),
+                      title: companyLogo(context, authenticate, 'CRM'),
                       automaticallyImplyLeading:
                           ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
                   bottomNavigationBar:
                       ResponsiveWrapper.of(context).isSmallerThan(TABLET)
                           ? BottomNavigationBar(
                               items: const <BottomNavigationBarItem>[
-                                BottomNavigationBarItem(
-                                  icon: Icon(Icons.home),
-                                  label: 'Opportunity',
-                                ),
-                                BottomNavigationBarItem(
-                                  icon: Icon(Icons.business),
-                                  label: 'Leads',
-                                ),
-                                BottomNavigationBarItem(
-                                  icon: Icon(Icons.school),
-                                  label: 'Customers',
-                                ),
-                              ],
+                                  BottomNavigationBarItem(
+                                    icon: Icon(Icons.home),
+                                    label: 'My Opportunities',
+                                  ),
+                                  BottomNavigationBarItem(
+                                    icon: Icon(Icons.business),
+                                    label: 'Leads',
+                                  ),
+                                  BottomNavigationBarItem(
+                                    icon: Icon(Icons.school),
+                                    label: 'Customers',
+                                  ),
+                                ],
                               currentIndex: _selectedIndex,
                               selectedItemColor: Colors.amber[800],
-                              onTap: _onItemTapped,
-                            )
+                              onTap: (index) {
+                                setState(() {
+                                  _selectedIndex = index;
+                                });
+                              })
                           : null,
                   floatingActionButton: FloatingActionButton(
                     onPressed: () async {
-                      dynamic opportunity, userLead, userCust;
                       _selectedIndex == 0
-                          ? opportunity = await Navigator.pushNamed(
-                              context, '/opportunity',
+                          ? await Navigator.pushNamed(context, '/opportunity',
                               arguments:
                                   FormArguments('Enter new opportunity...'))
                           : _selectedIndex == 1
-                              ? userLead = await Navigator.pushNamed(
-                                  context, '/user',
+                              ? await Navigator.pushNamed(context, '/user',
                                   arguments: FormArguments(
-                                      'Enter new Lead...',
+                                      'Enter a new Lead...',
                                       2,
                                       User(
                                           userGroupId: 'GROWERP_M_LEAD',
                                           groupDescription: 'New Lead')))
-                              : userCust = await Navigator.pushNamed(
-                                  context, '/user',
+                              : await Navigator.pushNamed(context, '/user',
                                   arguments: FormArguments(
-                                      'Enter new custmer...',
+                                      'Enter a new customer...',
                                       2,
                                       User(
                                           userGroupId: 'GROWERP_M_CUSTOMER',
@@ -159,20 +152,32 @@ class _CrmFormStateHeader extends State<CrmFormHeader> {
                               context, '${state.errorMessage}', Colors.red);
                         if (state is AuthLoading)
                           HelperFunctions.showMessage(
-                              context, '${state.message}', Colors.red);
+                              context, '${state.message}', Colors.green);
                       },
                       child: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
                           ? Center(
                               child: _selectedIndex == 0
                                   ? OpportunitiesForm()
                                   : _selectedIndex == 1
-                                      ? UsersForm("GROWERP_M_LEAD", 2)
-                                      : UsersForm("GROWERP_M_CUSTOMER", 2))
+                                      ? UsersForm(
+                                          key: UniqueKey(),
+                                          userGroupId: "GROWERP_M_LEAD",
+                                          tab: 2)
+                                      : UsersForm(
+                                          key: UniqueKey(),
+                                          userGroupId: "GROWERP_M_CUSTOMER",
+                                          tab: 2))
                           : TabBarView(
                               children: [
                                 OpportunitiesForm(),
-                                UsersForm("GROWERP_M_LEAD", 2),
-                                UsersForm("GROWERP_M_CUSTOMER", 2)
+                                UsersForm(
+                                    key: UniqueKey(),
+                                    userGroupId: "GROWERP_M_LEAD",
+                                    tab: 2),
+                                UsersForm(
+                                    key: UniqueKey(),
+                                    userGroupId: "GROWERP_M_CUSTOMER",
+                                    tab: 2)
                               ],
                             )))));
     });

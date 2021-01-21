@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/widgets/@widgets.dart';
+import 'package:core/helper_functions.dart';
 import 'package:models/models.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
@@ -34,10 +35,15 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
         authenticate = state?.authenticate;
-        return BlocBuilder<OpportunityBloc, OpportunityState>(
-            builder: (context, state) {
+        return BlocConsumer<OpportunityBloc, OpportunityState>(
+            listener: (context, state) {
           if (state is OpportunityProblem)
-            return Center(child: Text("${state.errorMessage}"));
+            HelperFunctions.showMessage(
+                context, '${state.errorMessage}', Colors.red);
+          if (state is OpportunitySuccess)
+            HelperFunctions.showMessage(
+                context, '${state.message}', Colors.green);
+        }, builder: (context, state) {
           if (state is OpportunitySuccess) {
             if (state.opportunities.isEmpty)
               return Center(child: Text('no opportunities'));
@@ -72,9 +78,11 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                           Expanded(
                               child: Text("Lead Name",
                                   textAlign: TextAlign.center)),
-                          Expanded(
-                              child:
-                                  Text("Email", textAlign: TextAlign.center)),
+                          if (!ResponsiveWrapper.of(context)
+                              .isSmallerThan(DESKTOP))
+                            Expanded(
+                                child: Text("Lead Email",
+                                    textAlign: TextAlign.center)),
                           if (!ResponsiveWrapper.of(context)
                               .isSmallerThan(TABLET))
                             Expanded(
@@ -121,13 +129,24 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                           textAlign: TextAlign.center)),
                                 Expanded(
                                     child: Text(
-                                        "${opportunities[index].fullName}",
+                                        opportunities[index].leadPartyId != null
+                                            ? "${opportunities[index].leadFirstName} "
+                                                "${opportunities[index].leadLastName}"
+                                            : "",
                                         textAlign: TextAlign.center)),
-                                Expanded(
-                                    child: Text("${opportunities[index].email}",
-                                        textAlign: TextAlign.center)),
-                                Text("${opportunities[index].stageId}",
-                                    textAlign: TextAlign.center),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(DESKTOP))
+                                  Expanded(
+                                      child: Text(
+                                          opportunities[index].leadPartyId !=
+                                                  null
+                                              ? "${opportunities[index].leadEmail}"
+                                              : "",
+                                          textAlign: TextAlign.center)),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(DESKTOP))
+                                  Text("${opportunities[index].stageId}",
+                                      textAlign: TextAlign.center),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
@@ -137,24 +156,14 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               ],
                             ),
                             onTap: () async {
-                              dynamic result = await Navigator.pushNamed(
-                                  context, '/opportunity',
+                              await Navigator.pushNamed(context, '/opportunity',
                                   arguments: FormArguments(
                                       null, 0, state.opportunities[index]));
-                              setState(() {
-                                if (result is Opportunity)
-                                  state.opportunities
-                                      .replaceRange(index, index + 1, [result]);
-                              });
                             },
                             trailing: IconButton(
                               icon: Icon(Icons.delete_forever),
                               onPressed: () {
-                                _opportunityBloc.add(DeleteOpportunity(
-                                    state.opportunities[index]));
-                                setState(() {
-                                  state.opportunities.removeAt(index);
-                                });
+                                _opportunityBloc.add(DeleteOpportunity(index));
                               },
                             )));
               },

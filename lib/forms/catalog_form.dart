@@ -128,20 +128,13 @@ class _CatalogFormStateHeader extends State<CatalogFormHeader> {
                           : null,
                   floatingActionButton: FloatingActionButton(
                       onPressed: () async {
-                        dynamic product, category;
                         _selectedIndex == 0
-                            ? product = await Navigator.pushNamed(
-                                context, '/product',
+                            ? await Navigator.pushNamed(context, '/product',
                                 arguments: FormArguments(
                                     'Enter the product information', 3))
-                            : category = Navigator.pushNamed(
-                                context, '/category',
+                            : Navigator.pushNamed(context, '/category',
                                 arguments: FormArguments(
                                     'Enter the category information', 3));
-                        setState(() {
-                          if (product != null) products.add(product);
-                          if (category != null) categories.add(product);
-                        });
                       },
                       tooltip: 'Add New',
                       child: Icon(Icons.add)),

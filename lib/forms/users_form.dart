@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/widgets/@widgets.dart';
+import 'package:core/helper_functions.dart';
 import 'package:models/models.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
 class UsersForm extends StatefulWidget {
   final String userGroupId;
   final int tab;
-  const UsersForm(this.userGroupId, this.tab);
+  final Key key;
+  const UsersForm({this.key, this.userGroupId, this.tab});
   @override
   _UsersState createState() => _UsersState(userGroupId, tab);
 }
@@ -34,33 +36,32 @@ class _UsersState extends State<UsersForm> {
 
   @override
   Widget build(BuildContext context) {
-    print("====usersform with userGroupId: $userGroupId");
     setState(() {
       limit = (MediaQuery.of(context).size.height / 35).round();
       switch (userGroupId) {
         case "GROWERP_M_ADMIN":
           _userBloc = BlocProvider.of<AdminBloc>(context)
-            ..add(FetchUser(userGroupId: userGroupId, limit: limit));
+            ..add(FetchUser(limit: limit));
           break;
         case "GROWERP_M_EMPLOYEE":
           _userBloc = BlocProvider.of<EmployeeBloc>(context)
-            ..add(FetchUser(userGroupId: userGroupId, limit: limit));
-          break;
-        case "GROWERP_M_LEAD":
-          _userBloc = BlocProvider.of<LeadBloc>(context)
-            ..add(FetchUser(userGroupId: userGroupId, limit: limit));
-          break;
-        case "GROWERP_M_CUSTOMER":
-          _userBloc = BlocProvider.of<CustomerBloc>(context)
-            ..add(FetchUser(userGroupId: userGroupId, limit: limit));
+            ..add(FetchUser(limit: limit));
           break;
         case "GROWERP_M_SUPPLIER":
           _userBloc = BlocProvider.of<SupplierBloc>(context)
-            ..add(FetchUser(userGroupId: userGroupId, limit: limit));
+            ..add(FetchUser(limit: limit));
+          break;
+        case "GROWERP_M_CUSTOMER":
+          _userBloc = BlocProvider.of<CustomerBloc>(context)
+            ..add(FetchUser(limit: limit));
+          break;
+        case "GROWERP_M_LEAD":
+          _userBloc = BlocProvider.of<LeadBloc>(context)
+            ..add(FetchUser(limit: limit));
+          break;
       }
     });
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      print("=======usersform state; $state");
       if (state is AuthAuthenticated) authenticate = state?.authenticate;
 
       Widget showForm() {
@@ -75,6 +76,7 @@ class _UsersState extends State<UsersForm> {
                   onTap: null,
                   leading: CircleAvatar(
                     backgroundColor: Colors.transparent,
+                    //Image.asset("images/search.png", height: 35),
                   ),
                   title: Column(children: [
                     Row(
@@ -94,7 +96,9 @@ class _UsersState extends State<UsersForm> {
                               child: Text("Language",
                                   textAlign: TextAlign.center)),
                         if (!ResponsiveWrapper.of(context)
-                            .isSmallerThan(DESKTOP))
+                                .isSmallerThan(DESKTOP) &&
+                            userGroupId != "GROWERP_M_EMPLOYEE" &&
+                            userGroupId != "GROWERP_M_ADMIN")
                           Expanded(
                               child:
                                   Text("Company", textAlign: TextAlign.center)),
@@ -119,9 +123,8 @@ class _UsersState extends State<UsersForm> {
                         title: Row(
                           children: <Widget>[
                             Expanded(
-                                child: Text("${users[index].lastName}, "
-                                    "${users[index].firstName} "
-                                    "[${users[index].partyId}]")),
+                                child: Text("${users[index].firstName}, "
+                                    "${users[index].lastName}")),
                             if (!ResponsiveWrapper.of(context)
                                 .isSmallerThan(DESKTOP))
                               Expanded(
@@ -136,80 +139,109 @@ class _UsersState extends State<UsersForm> {
                                   child: Text("${users[index].language}",
                                       textAlign: TextAlign.center)),
                             if (!ResponsiveWrapper.of(context)
-                                .isSmallerThan(DESKTOP))
+                                    .isSmallerThan(DESKTOP) &&
+                                userGroupId != "GROWERP_M_EMPLOYEE" &&
+                                userGroupId != "GROWERP_M_ADMIN")
                               Expanded(
                                   child: Text("${users[index].companyName}",
                                       textAlign: TextAlign.center)),
                           ],
                         ),
                         onTap: () async {
-                          dynamic result = await Navigator.pushNamed(
-                              context, '/user',
+                          await Navigator.pushNamed(context, '/user',
                               arguments:
                                   FormArguments(null, tab, users[index]));
-                          setState(() {
-                            if (result is User)
-                              users.replaceRange(index, index + 1, [result]);
-                          });
                         },
                         trailing: IconButton(
                           icon: Icon(Icons.delete_forever),
                           onPressed: () {
                             _userBloc.add(DeleteUser(users[index]));
-                            setState(() {
-                              users.removeAt(index);
-                            });
                           },
                         )));
           },
         );
       }
 
-      if (userGroupId == "GROWERP_M_ADMIN") {
-        return BlocBuilder<AdminBloc, UserState>(builder: (context, state) {
-          if (state is UserFetchSuccess) {
-            users = state.users;
-            hasReachedMax = state.hasReachedMax;
-          }
-          return showForm();
-        });
-      } else if (userGroupId == "GROWERP_M_EMPLOYEE") {
-        return BlocBuilder<EmployeeBloc, UserState>(builder: (context, state) {
-          if (state is UserFetchSuccess) {
-            users = state.users;
-            hasReachedMax = state.hasReachedMax;
-          }
-          return showForm();
-        });
-      } else if (userGroupId == "GROWERP_M_LEAD") {
-        return BlocBuilder<LeadBloc, UserState>(builder: (context, state) {
-          if (state is UserFetchSuccess) {
-            users = state.users;
-            hasReachedMax = state.hasReachedMax;
-          }
-          return showForm();
-        });
-      } else if (userGroupId == "GROWERP_M_CUSTOMER") {
-        return BlocBuilder<CustomerBloc, UserState>(builder: (context, state) {
-          if (state is UserFetchSuccess) {
-            users = state.users;
-            hasReachedMax = state.hasReachedMax;
-          }
-          return showForm();
-        });
-      } else if (userGroupId == "GROWERP_M_SUPPLIER") {
-        return BlocBuilder<SupplierBloc, UserState>(builder: (context, state) {
-          if (state is UserFetchSuccess) {
-            users = state.users;
-            hasReachedMax = state.hasReachedMax;
-          }
-          return showForm();
-        });
-      } else
-        return Container(
-            child: Center(
-          child: Text("????2222"),
-        ));
+      switch (userGroupId) {
+        case "GROWERP_M_LEAD":
+          return BlocConsumer<LeadBloc, UserState>(listener: (context, state) {
+            if (state is UserProblem)
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            if (state is UserSuccess)
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+          }, builder: (context, state) {
+            if (state is UserSuccess) {
+              users = state.users;
+              hasReachedMax = state.hasReachedMax;
+            }
+            return showForm();
+          });
+        case "GROWERP_M_CUSTOMER":
+          return BlocConsumer<CustomerBloc, UserState>(
+              listener: (context, state) {
+            if (state is UserProblem)
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            if (state is UserSuccess)
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+          }, builder: (context, state) {
+            if (state is UserSuccess) {
+              users = state.users;
+              hasReachedMax = state.hasReachedMax;
+            }
+            return showForm();
+          });
+        case "GROWERP_M_ADMIN":
+          return BlocConsumer<AdminBloc, UserState>(listener: (context, state) {
+            if (state is UserProblem)
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            if (state is UserSuccess)
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+          }, builder: (context, state) {
+            if (state is UserSuccess) {
+              users = state.users;
+              hasReachedMax = state.hasReachedMax;
+            }
+            return showForm();
+          });
+        case "GROWERP_M_EMPLOYEE":
+          return BlocConsumer<EmployeeBloc, UserState>(
+              listener: (context, state) {
+            if (state is UserProblem)
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            if (state is UserSuccess)
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+          }, builder: (context, state) {
+            if (state is UserSuccess) {
+              users = state.users;
+              hasReachedMax = state.hasReachedMax;
+            }
+            return showForm();
+          });
+        case "GROWERP_M_SUPPLIER":
+          return BlocConsumer<SupplierBloc, UserState>(
+              listener: (context, state) {
+            if (state is UserProblem)
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            if (state is UserSuccess)
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+          }, builder: (context, state) {
+            if (state is UserSuccess) {
+              users = state.users;
+              hasReachedMax = state.hasReachedMax;
+            }
+            return showForm();
+          });
+      }
     });
   }
 
@@ -222,10 +254,8 @@ class _UsersState extends State<UsersForm> {
   void _onScroll() {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-    print(
-        "=====onScrol cur: ${_scrollController.position.maxScrollExtent - _scrollController.position.pixels} treshold: _${_scrollThreshold}");
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _userBloc.add(FetchUser(userGroupId: userGroupId, limit: limit));
+      _userBloc.add(FetchUser(limit: limit));
     }
   }
 }

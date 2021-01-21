@@ -15,16 +15,18 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 
 class OpportunityForm extends StatelessWidget {
   final FormArguments formArguments;
-  OpportunityForm(this.formArguments);
+  const OpportunityForm(this.formArguments);
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +53,15 @@ class _OpportunityState extends State<OpportunityPage> {
   final _estAmountController = TextEditingController();
   final _estProbabilityController = TextEditingController();
   final _estNextStepController = TextEditingController();
+  final _leadSearchBoxController = TextEditingController();
+  final _accountSearchBoxController = TextEditingController();
+
   Opportunity updatedOpportunity;
   bool loading = false;
-  String _selectedStage;
+  String _selectedStageId;
   User _selectedAccount;
   User _selectedLead;
-  List<User> leads;
+
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   _OpportunityState(this.message, this.opportunity) {
@@ -65,8 +70,8 @@ class _OpportunityState extends State<OpportunityPage> {
 
   @override
   Widget build(BuildContext context) {
+    var repos = context.read<Object>();
     Authenticate authenticate;
-    Opportunity opportunity;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
       return ScaffoldMessenger(
@@ -90,42 +95,48 @@ class _OpportunityState extends State<OpportunityPage> {
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                   },
-                  child: BlocConsumer<OpportunityBloc, OpportunityState>(
+                  child: BlocListener<OpportunityBloc, OpportunityState>(
                       listener: (context, state) {
                     if (state is OpportunityProblem) {
                       loading = false;
                       HelperFunctions.showMessage(
                           context, '${state.errorMessage}', Colors.red);
                     }
+                    if (state is OpportunityLoading)
+                      HelperFunctions.showMessage(
+                          context, '${state.message}', Colors.green);
                     if (state is OpportunitySuccess)
                       Navigator.of(context).pop(updatedOpportunity);
-                  }, builder: (context, state) {
-                    if (state is OpportunitySuccess) {
-                      opportunity = state.opportunity;
-                      leads = state.leads;
-                    }
+                  }, child: Builder(builder: (BuildContext context) {
                     return Center(
-                      child: _showForm(
-                          updatedOpportunity, opportunity, authenticate),
+                      child: _showForm(repos),
                     );
-                  }))));
+                  })))));
     });
   }
 
-  Widget _showForm(Opportunity updatedOpportunity, Opportunity opportunity,
-      Authenticate authenticate) {
+  Widget _showForm(repos) {
     _nameController..text = opportunity?.opportunityName;
     _descriptionController..text = opportunity?.description;
     _estAmountController..text = opportunity?.estAmount?.toString();
     _estProbabilityController..text = opportunity?.estProbability?.toString();
     _estNextStepController..text = opportunity?.nextStep?.toString();
-    if (_selectedLead == null && opportunity?.leadPartyId != null)
-      _selectedLead =
-          User(partyId: opportunity?.leadPartyId, email: opportunity?.email);
-    if (_selectedAccount != null && opportunity?.accountPartyId != null)
-//      _selectedAccount = authenticate.company.employees
-//          .firstWhere((x) => x.partyId == opportunity?.accountPartyId);
-      _selectedStage = opportunity?.stageId ?? opportunityStages[0];
+    if (_selectedLead == null && opportunity?.leadPartyId != null) {
+      _selectedLead = User(
+          partyId: opportunity?.leadPartyId,
+          email: opportunity?.leadEmail,
+          firstName: opportunity.leadFirstName,
+          lastName: opportunity.leadLastName);
+    }
+    if (_selectedAccount == null && opportunity?.accountPartyId != null) {
+      _selectedAccount = User(
+          partyId: opportunity?.accountPartyId,
+          email: opportunity?.accountEmail,
+          firstName: opportunity.accountFirstName,
+          lastName: opportunity.accountLastName);
+    }
+    if (_selectedStageId == null && opportunity?.stageId != null)
+      _selectedStageId = opportunity.stageId ?? opportunityStages[0];
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
     return Center(
         child: Container(
@@ -159,8 +170,13 @@ class _OpportunityState extends State<OpportunityPage> {
                           ),
                           TextFormField(
                             key: Key('EstAmount'),
-                            decoration:
-                                InputDecoration(labelText: 'Expected Amount'),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp('[0-9.,]+'))
+                            ],
+                            decoration: InputDecoration(
+                                labelText: 'Expected revenue Amount'),
                             controller: _estAmountController,
                             validator: (value) {
                               if (value.isEmpty)
@@ -170,12 +186,17 @@ class _OpportunityState extends State<OpportunityPage> {
                           ),
                           TextFormField(
                             key: Key('EstProb'),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[1-100]"))
+                            ],
                             decoration: InputDecoration(
                                 labelText: 'Estimated Probabilty'),
                             controller: _estProbabilityController,
                             validator: (value) {
                               if (value.isEmpty)
-                                return 'Please enter a probability % ?';
+                                return 'Please enter a probability % (1-100)?';
                               return null;
                             },
                           ),
@@ -191,7 +212,7 @@ class _OpportunityState extends State<OpportunityPage> {
                           DropdownButtonFormField<String>(
                             key: Key('dropDownStage'),
                             hint: Text('Opportunity Stage'),
-                            value: _selectedStage,
+                            value: _selectedStageId,
                             validator: (value) =>
                                 value == null ? 'field required' : null,
                             items: opportunityStages.map((item) {
@@ -200,48 +221,80 @@ class _OpportunityState extends State<OpportunityPage> {
                             })?.toList(),
                             onChanged: (String newValue) {
                               setState(() {
-                                _selectedStage = newValue;
+                                _selectedStageId = newValue;
                               });
                             },
                             isExpanded: true,
                           ),
-                          DropdownButtonFormField<User>(
+                          DropdownSearch<User>(
+                            label: 'Lead',
+                            dialogMaxWidth: 300,
+                            autoFocusSearchBox: true,
+                            selectedItem: _selectedLead,
+                            dropdownSearchDecoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0)),
+                            ),
+                            searchBoxDecoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0)),
+                            ),
+                            showSearchBox: true,
+                            searchBoxController: _leadSearchBoxController,
+                            isFilteredOnline: true,
+                            showClearButton: true,
                             key: Key('dropDownLead'),
-                            hint: Text('Lead'),
-                            value: _selectedLead,
-//                            validator: (value) =>
-//                                value == null ? 'field required' : null,
-                            items: leads?.map((item) {
-                              return DropdownMenuItem<User>(
-                                  child: Text(
-                                      "${item.firstName} ${item.lastName}"),
-                                  value: item);
-                            })?.toList(),
+                            itemAsString: (User u) =>
+                                "${u.firstName},${u.lastName} ${u.companyName}",
+                            onFind: (String filter) async {
+                              var result = await repos.getUser(
+                                  userGroupId: 'GROWERP_M_LEAD',
+                                  filter: _leadSearchBoxController.text);
+                              return result;
+                            },
                             onChanged: (User newValue) {
                               setState(() {
                                 _selectedLead = newValue;
                               });
                             },
-                            isExpanded: true,
                           ),
-                          /*                        DropdownButtonFormField<User>(
-                            key: Key('dropDownAccount'),
-                            hint: Text('Account'),
-                            value: _selectedAccount,
-                            items: authenticate.company.employees.map((item) {
-                              return DropdownMenuItem<User>(
-                                  child: Text(
-                                      "${item.firstName} ${item.lastName}"),
-                                  value: item);
-                            })?.toList(),
-                            onChanged: (User newValue) {
-                              setState(() {
-                                _selectedAccount = newValue;
-                              });
-                            },
-                            isExpanded: true,
-                          ),
-*/
+                          Visibility(
+                              visible: opportunity?.opportunityId != null,
+                              child: DropdownSearch<User>(
+                                  label: 'Account Employee',
+                                  dialogMaxWidth: 300,
+                                  autoFocusSearchBox: true,
+                                  selectedItem: _selectedAccount,
+                                  dropdownSearchDecoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0)),
+                                  ),
+                                  searchBoxDecoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0)),
+                                  ),
+                                  showSearchBox: true,
+                                  searchBoxController:
+                                      _accountSearchBoxController,
+                                  isFilteredOnline: true,
+                                  showClearButton: true,
+                                  key: Key('dropDownAccount'),
+                                  itemAsString: (User u) =>
+                                      "${u.firstName} ${u.lastName} ${u.companyName}",
+                                  onFind: (String filter) async {
+                                    var result = await repos.getUser(
+                                        userGroupId: 'GROWERP_M_EMPLOYEE',
+                                        filter:
+                                            _accountSearchBoxController.text);
+                                    return result;
+                                  },
+                                  onChanged: (User newValue) {
+                                    setState(() {
+                                      _selectedAccount = newValue;
+                                    });
+                                  })),
                           RaisedButton(
                               key: Key('update'),
                               child: Text(opportunity?.opportunityId == null
@@ -251,22 +304,27 @@ class _OpportunityState extends State<OpportunityPage> {
                                 if (_formKey.currentState.validate() &&
                                     !loading) {
                                   updatedOpportunity = Opportunity(
-                                    opportunityId: opportunity?.opportunityId,
-                                    opportunityName: _nameController.text,
-                                    description: _descriptionController.text,
-                                    estAmount: Decimal.parse(
-                                        _estAmountController.text),
-                                    estProbability: int.parse(
-                                        _estProbabilityController.text),
-                                    stageId: _selectedStage,
-                                    nextStep: _estNextStepController.text,
-                                    accountPartyId: _selectedAccount?.partyId,
-                                    leadPartyId: _selectedLead?.partyId,
-                                  );
-                                  BlocProvider.of<OpportunityBloc>(context)
-                                      .add(UpdateOpportunity(
-                                    updatedOpportunity,
-                                  ));
+                                      opportunityId: opportunity?.opportunityId,
+                                      opportunityName: _nameController.text,
+                                      description: _descriptionController.text,
+                                      estAmount: Decimal.parse(
+                                          _estAmountController.text),
+                                      estProbability: int.parse(
+                                          _estProbabilityController.text),
+                                      stageId: _selectedStageId,
+                                      nextStep: _estNextStepController.text,
+                                      accountPartyId: _selectedAccount?.partyId,
+                                      accountFirstName:
+                                          _selectedAccount?.firstName,
+                                      accountLastName:
+                                          _selectedAccount?.lastName,
+                                      accountEmail: _selectedAccount?.email,
+                                      leadPartyId: _selectedLead?.partyId,
+                                      leadFirstName: _selectedLead?.firstName,
+                                      leadLastName: _selectedLead?.lastName,
+                                      leadEmail: _selectedLead?.email);
+                                  BlocProvider.of<OpportunityBloc>(context).add(
+                                      UpdateOpportunity(updatedOpportunity));
                                 }
                               }),
                           RaisedButton(

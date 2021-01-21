@@ -17,6 +17,7 @@ class _CategoriesState extends State<CategoriesForm> {
   CategoryBloc _categoryBloc;
   Authenticate authenticate;
   _CategoriesState();
+  int limit;
 
   @override
   void initState() {
@@ -27,6 +28,9 @@ class _CategoriesState extends State<CategoriesForm> {
 
   @override
   Widget build(BuildContext context) {
+    setState(() {
+      limit = (MediaQuery.of(context).size.height / 35).round();
+    });
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
         authenticate = state?.authenticate;
@@ -53,9 +57,11 @@ class _CategoriesState extends State<CategoriesForm> {
                         Row(children: <Widget>[
                           Expanded(
                               child: Text("Name", textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text("Description",
-                                  textAlign: TextAlign.center)),
+                          if (!ResponsiveWrapper.of(context)
+                              .isSmallerThan(TABLET))
+                            Expanded(
+                                child: Text("Description",
+                                    textAlign: TextAlign.center)),
                           Expanded(
                               child: Text("Nbr.of Products",
                                   textAlign: TextAlign.center)),
@@ -138,7 +144,8 @@ class _CategoriesState extends State<CategoriesForm> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _categoryBloc.add(CategoryFetched(authenticate.company.partyId));
+      _categoryBloc.add(FetchCategory(
+          companyPartyId: authenticate.company.partyId, limit: limit));
     }
   }
 }

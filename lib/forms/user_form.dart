@@ -51,6 +51,7 @@ class _MyUserState extends State<MyUserPage> {
   final _lastNameController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
+  final _companyController = TextEditingController();
   User updatedUser;
   bool loading = false;
   UserGroup _selectedUserGroup;
@@ -142,41 +143,70 @@ class _MyUserState extends State<MyUserPage> {
                 ],
               ),
               drawer: myDrawer(context, authenticate),
-              body: BlocListener<UserBloc, UserState>(
-                listener: (context, state) {
-                  if (state is UserProblem) {
-                    loading = false;
-                    HelperFunctions.showMessage(
-                        context, '${state.errorMessage}', Colors.red);
-                  }
-                  if (state is UserLoading) {
-                    loading = true;
-                    HelperFunctions.showMessage(
-                        context, '${state.message}', Colors.green);
-                  }
-                  if (state is UserFetchSuccess) {
-                    Navigator.of(context).pop(updatedUser);
-                  }
-                },
-                child: Center(
-                  child:
-                      !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-                          ? FutureBuilder<void>(
-                              future: retrieveLostData(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text(
-                                    'Pick image error: ${snapshot.error}}',
-                                    textAlign: TextAlign.center,
-                                  );
-                                }
-                                return _showForm(authenticate, updatedUser);
-                              })
-                          : _showForm(authenticate, updatedUser),
-                ),
-              )));
+              body: user.userGroupId == "GROWERP_M_EMPLOYEE"
+                  ? BlocListener<EmployeeBloc, UserState>(
+                      listener: (context, state) {
+                        listListener(state);
+                      },
+                      child: listChild(authenticate))
+                  : user.userGroupId == "GROWERP_M_ADMIN"
+                      ? BlocListener<AdminBloc, UserState>(
+                          listener: (context, state) {
+                            listListener(state);
+                          },
+                          child: listChild(authenticate))
+                      : user.userGroupId == "GROWERP_M_SUPPLIER"
+                          ? BlocListener<SupplierBloc, UserState>(
+                              listener: (context, state) {
+                                listListener(state);
+                              },
+                              child: listChild(authenticate))
+                          : user.userGroupId == "GROWERP_M_LEAD"
+                              ? BlocListener<LeadBloc, UserState>(
+                                  listener: (context, state) {
+                                    listListener(state);
+                                  },
+                                  child: listChild(authenticate))
+                              : BlocListener<CustomerBloc, UserState>(
+                                  listener: (context, state) {
+                                    listListener(state);
+                                  },
+                                  child: listChild(authenticate))));
     });
+  }
+
+  Widget listChild(authenticate) {
+    return Center(child: Builder(builder: (BuildContext context) {
+      return Center(
+        child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+            ? FutureBuilder<void>(
+                future: retrieveLostData(),
+                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                  if (snapshot.hasError) {
+                    return Text(
+                      'Pick image error: ${snapshot.error}}',
+                      textAlign: TextAlign.center,
+                    );
+                  }
+                  return _showForm(authenticate, updatedUser);
+                })
+            : _showForm(authenticate, updatedUser),
+      );
+    }));
+  }
+
+  listListener(state) {
+    if (state is UserProblem) {
+      loading = false;
+      HelperFunctions.showMessage(context, '${state.errorMessage}', Colors.red);
+    }
+    if (state is UserLoading) {
+      loading = true;
+      HelperFunctions.showMessage(context, '${state.message}', Colors.green);
+    }
+    if (state is UserSuccess) {
+      Navigator.of(context).pop();
+    }
   }
 
   Text _getRetrieveErrorWidget() {
@@ -193,6 +223,7 @@ class _MyUserState extends State<MyUserPage> {
     _lastNameController..text = user?.lastName;
     _nameController..text = user?.name;
     _emailController..text = user?.email;
+    _companyController..text = user?.companyName;
     final Text retrieveError = _getRetrieveErrorWidget();
     if (_selectedUserGroup == null && user?.userGroupId != null)
       _selectedUserGroup =
@@ -225,7 +256,7 @@ class _MyUserState extends State<MyUserPage> {
                               : Text(user?.firstName?.substring(0, 1) ?? '',
                                   style: TextStyle(
                                       fontSize: 30, color: Colors.black))),
-                  SizedBox(height: 30),
+                  SizedBox(height: 20),
                   TextFormField(
                     key: Key('firstName'),
                     decoration: InputDecoration(labelText: 'First Name'),
@@ -235,7 +266,7 @@ class _MyUserState extends State<MyUserPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     key: Key('lastName'),
                     decoration: InputDecoration(labelText: 'Last Name'),
@@ -245,7 +276,7 @@ class _MyUserState extends State<MyUserPage> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   TextFormField(
                     key: Key('name'),
                     decoration: InputDecoration(labelText: 'User Login Name'),
@@ -290,31 +321,68 @@ class _MyUserState extends State<MyUserPage> {
                         },
                         isExpanded: true,
                       )),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
+                  Visibility(
+                      visible: user.userGroupId != 'GROWERP_M_ADMIN' &&
+                          user.userGroupId != 'GROWERP_M_EMPLOYEE',
+                      child: TextFormField(
+                        key: Key('companyName'),
+                        decoration: InputDecoration(labelText: 'Company Name'),
+                        controller: _companyController,
+                        validator: (value) {
+                          if (value.isEmpty)
+                            return 'Please enter a company name?';
+                          return null;
+                        },
+                      )),
+                  SizedBox(height: 10),
                   RaisedButton(
                       disabledColor: Colors.grey,
                       key: Key('update'),
                       child: Text(user?.partyId == null ? 'Create' : 'Update'),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState.validate() && !loading) {
                           updatedUser = User(
-                            partyId: user?.partyId,
-                            firstName: _firstNameController.text,
-                            lastName: _lastNameController.text,
-                            email: _emailController.text,
-                            name: _nameController.text,
-                            userGroupId: _selectedUserGroup.userGroupId,
-                            language: Localizations.localeOf(context)
-                                .languageCode
-                                .toString(),
-                          );
-                          BlocProvider.of<UserBloc>(context).add(UpdateUser(
-                            updatedUser,
-                            _imageFile?.path,
-                          ));
+                              partyId: user?.partyId,
+                              firstName: _firstNameController.text,
+                              lastName: _lastNameController.text,
+                              email: _emailController.text,
+                              name: _nameController.text,
+                              userGroupId: _selectedUserGroup.userGroupId,
+                              language: Localizations.localeOf(context)
+                                  .languageCode
+                                  .toString(),
+                              companyName: _companyController.text,
+                              image: await HelperFunctions.getResizedImage(
+                                  _imageFile?.path));
+                          user.userGroupId == "GROWERP_M_EMPLOYEE"
+                              ? BlocProvider.of<EmployeeBloc>(context)
+                                  .add(UpdateUser(
+                                  updatedUser,
+                                ))
+                              : user.userGroupId == "GROWERP_M_ADMIN"
+                                  ? BlocProvider.of<AdminBloc>(context)
+                                      .add(UpdateUser(
+                                      updatedUser,
+                                    ))
+                                  : user.userGroupId == "GROWERP_M_SUPPLIER"
+                                      ? BlocProvider.of<SupplierBloc>(context)
+                                          .add(UpdateUser(
+                                          updatedUser,
+                                        ))
+                                      : user.userGroupId == "GROWERP_M_LEAD"
+                                          ? BlocProvider.of<LeadBloc>(context)
+                                              .add(UpdateUser(
+                                              updatedUser,
+                                            ))
+                                          : BlocProvider.of<CustomerBloc>(
+                                                  context)
+                                              .add(UpdateUser(
+                                              updatedUser,
+                                            ));
                         }
                       }),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   RaisedButton(
                       key: Key('cancel'),
                       child: Text('Cancel'),
