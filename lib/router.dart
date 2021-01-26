@@ -59,9 +59,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/order':
       return MaterialPageRoute(
           builder: (context) => local.OrderForm(settings.arguments));
-    case '/crm':
-      return MaterialPageRoute(
-          builder: (context) => local.CrmForm(settings.arguments));
     case '/opportunity':
       return MaterialPageRoute(
           builder: (context) => local.OpportunityForm(settings.arguments));

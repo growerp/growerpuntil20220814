@@ -18,7 +18,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:models/models.dart';
+import 'package:models/@models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
@@ -32,6 +32,7 @@ class OrderForm extends StatelessWidget {
     var a = (formArguments) =>
         (MyOrderPage(formArguments.message, formArguments.object));
     Order order = formArguments.object;
+    print("=====orderform input order: $order");
     if (order.sales)
       BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(order));
     else
@@ -79,7 +80,6 @@ class _MyOrderState extends State<MyOrderPage> {
       _cartBloc = BlocProvider.of<PurchCartBloc>(context);
       _userBloc = BlocProvider.of<SupplierBloc>(context);
     }
-
     order = orderIn;
     _selectedOtherParty = order?.otherUser;
     var repos = context.read<Object>();
@@ -117,6 +117,9 @@ class _MyOrderState extends State<MyOrderPage> {
                           if (state is OrderProblem)
                             HelperFunctions.showMessage(
                                 context, '${state.errorMessage}', Colors.red);
+                          if (state is OrderLoaded)
+                            HelperFunctions.showMessage(
+                                context, '${state.message}', Colors.green);
                         },
                         child: BlocConsumer<SalesCartBloc, CartState>(
                             listener: (context, state) {

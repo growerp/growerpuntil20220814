@@ -4,7 +4,6 @@ export 'order_form.dart';
 export 'slsOrders_form.dart';
 export 'purOrders_form.dart';
 export 'product_form.dart';
-export 'crm_form.dart';
 export 'catalog_form.dart';
 export 'product_form.dart';
 export 'opportunity_form.dart';

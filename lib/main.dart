@@ -27,7 +27,7 @@ import 'package:core/styles/themes.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
 import 'package:core/forms/@forms.dart' as core;
-import 'package:models/models.dart';
+import 'package:models/@models.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

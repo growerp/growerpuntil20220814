@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/widgets/@widgets.dart';
-import 'package:models/models.dart';
+import 'package:models/@models.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
 class CategoriesForm extends StatefulWidget {
