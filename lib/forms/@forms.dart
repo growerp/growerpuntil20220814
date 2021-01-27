@@ -15,3 +15,4 @@ export 'opportunities_form.dart';
 export 'company_form.dart';
 export 'orders_form.dart';
 export 'slsPur_form.dart';
+export 'crm_form.dart';
