@@ -85,43 +85,55 @@ class DashBoard extends StatelessWidget {
                     padding: EdgeInsets.all(3.0),
                     children: <Widget>[
                       makeDashboardItem(
-                          context,
-                          menuItems[1],
-                          "${authenticate.company.name}",
-                          "Administrators: ${authenticate.stats.admins}",
-                          "Employees: ${authenticate.stats.employees}"),
+                        context,
+                        menuItems[1],
+                        "${authenticate.company.name}",
+                        "Administrators: ${authenticate.stats.admins}",
+                        "Employees: ${authenticate.stats.employees}",
+                        "",
+                      ),
                       makeDashboardItem(
-                          context,
-                          menuItems[2],
-                          "Opportunities: ${authenticate.stats.opportunities}",
-                          "Leads: ${authenticate.stats.leads}",
-                          "Customers: ${authenticate.stats.customers}"),
+                        context,
+                        menuItems[2],
+                        "All Opportunities: ${authenticate.stats.opportunities}",
+                        "My Opportunities: ${authenticate.stats.myOpportunities}",
+                        "Leads: ${authenticate.stats.leads}",
+                        "Customers: ${authenticate.stats.customers}",
+                      ),
                       makeDashboardItem(
-                          context,
-                          menuItems[3],
-                          "Categories: ${authenticate.stats.categories}",
-                          "Products: ${authenticate.stats.products}",
-                          ""),
+                        context,
+                        menuItems[3],
+                        "Categories: ${authenticate.stats.categories}",
+                        "Products: ${authenticate.stats.products}",
+                        "",
+                        "",
+                      ),
                       makeDashboardItem(
-                          context,
-                          menuItems[4],
-                          "Orders: ${authenticate.stats.openSlsOrders}",
-                          "Customers: ${authenticate.stats.customers}",
-                          ""),
+                        context,
+                        menuItems[4],
+                        "Orders: ${authenticate.stats.openSlsOrders}",
+                        "Customers: ${authenticate.stats.customers}",
+                        "",
+                        "",
+                      ),
                       makeDashboardItem(
-                          context,
-                          MenuItem(
-                              title: "Accounting",
-                              selectedImage: "assets/images/accounting.png"),
-                          " Assets: ${balanceSheet?.classInfoById?.asset?.totalPostedByTimePeriod?.all}",
-                          "",
-                          ""),
+                        context,
+                        MenuItem(
+                            title: "Accounting",
+                            selectedImage: "assets/images/accounting.png"),
+                        " Assets: ${balanceSheet?.classInfoById?.asset?.totalPostedByTimePeriod?.all}",
+                        "",
+                        "",
+                        "",
+                      ),
                       makeDashboardItem(
-                          context,
-                          menuItems[5],
-                          "Orders: ${authenticate.stats.openPurOrders}",
-                          "Suppliers: ${authenticate.stats.suppliers}",
-                          ""),
+                        context,
+                        menuItems[5],
+                        "Orders: ${authenticate.stats.openPurOrders}",
+                        "Suppliers: ${authenticate.stats.suppliers}",
+                        "",
+                        "",
+                      ),
                     ],
                   ),
                 )));
@@ -169,7 +181,7 @@ class DashBoard extends StatelessWidget {
 }
 
 Card makeDashboardItem(BuildContext context, MenuItem menuItem, String subTitle,
-    String subTitle1, String subTitle2) {
+    String subTitle1, String subTitle2, String subTitle3) {
   bool phone = ResponsiveWrapper.of(context).isSmallerThan(DESKTOP);
   return Card(
       elevation: 1.0,
@@ -208,6 +220,12 @@ Card makeDashboardItem(BuildContext context, MenuItem menuItem, String subTitle,
               SizedBox(height: 10.0),
               Center(
                 child: Text(subTitle2,
+                    style: TextStyle(
+                        fontSize: phone ? 15 : 20, color: Colors.black)),
+              ),
+              SizedBox(height: 10.0),
+              Center(
+                child: Text(subTitle3,
                     style: TextStyle(
                         fontSize: phone ? 15 : 20, color: Colors.black)),
               )

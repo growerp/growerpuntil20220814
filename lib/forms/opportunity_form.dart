@@ -186,13 +186,12 @@ class _OpportunityState extends State<OpportunityPage> {
                           ),
                           TextFormField(
                             key: Key('EstProb'),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
+                            inputFormatters: [
                               FilteringTextInputFormatter.allow(
-                                  RegExp("[1-100]"))
+                                  RegExp(r'^\d+\.?\d{0,2}')),
                             ],
                             decoration: InputDecoration(
-                                labelText: 'Estimated Probabilty'),
+                                labelText: 'Estimated Probabilty %'),
                             controller: _estProbabilityController,
                             validator: (value) {
                               if (value.isEmpty)
@@ -296,6 +295,12 @@ class _OpportunityState extends State<OpportunityPage> {
                                     });
                                   })),
                           RaisedButton(
+                              key: Key('cancel'),
+                              child: Text('Cancel'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
+                          RaisedButton(
                               key: Key('update'),
                               child: Text(opportunity?.opportunityId == null
                                   ? 'Create'
@@ -327,12 +332,6 @@ class _OpportunityState extends State<OpportunityPage> {
                                       UpdateOpportunity(updatedOpportunity));
                                 }
                               }),
-                          RaisedButton(
-                              key: Key('cancel'),
-                              child: Text('Cancel'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              })
                         ])))));
   }
 }
