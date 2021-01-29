@@ -119,9 +119,6 @@ class _CategoriesState extends State<CategoriesForm> {
                               onPressed: () {
                                 _categoryBloc.add(
                                     DeleteCategory(state.categories[index]));
-                                setState(() {
-                                  state.categories.removeAt(index);
-                                });
                               },
                             )));
               },

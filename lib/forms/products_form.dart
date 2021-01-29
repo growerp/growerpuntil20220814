@@ -18,12 +18,15 @@ class _ProductsState extends State<ProductsForm> {
   ProductBloc _productBloc;
   Authenticate authenticate;
   int limit;
+  bool search;
+  String searchString;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
     _productBloc = BlocProvider.of<ProductBloc>(context);
+    search = false;
   }
 
   @override
@@ -44,8 +47,6 @@ class _ProductsState extends State<ProductsForm> {
                 context, '${state.message}', Colors.green);
         }, builder: (context, state) {
           if (state is ProductSuccess) {
-            if (state.products.isEmpty)
-              return Center(child: Text('no products'));
             List<Product> products = state.products;
             return ListView.builder(
               itemCount: state.hasReachedMax
@@ -55,30 +56,80 @@ class _ProductsState extends State<ProductsForm> {
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0)
                   return ListTile(
-                      onTap: null,
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.transparent,
+                      onTap: (() {
+                        setState(() {
+                          search = !search;
+                        });
+                      }),
+                      leading: Image.asset(
+                        'assets/images/search.png',
+                        height: 35,
                       ),
-                      title: Column(children: [
-                        Row(children: <Widget>[
-                          Expanded(
-                              child: Text("Name", textAlign: TextAlign.center)),
-                          if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(TABLET))
-                            Expanded(
-                                child: Text("Description",
-                                    textAlign: TextAlign.center)),
-                          Expanded(
-                              child:
-                                  Text("Price", textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text("Category",
-                                  textAlign: TextAlign.center)),
-                        ]),
-                        Divider(color: Colors.black),
-                      ]),
+                      title: search
+                          ? Row(children: <Widget>[
+                              SizedBox(
+                                  width: ResponsiveWrapper.of(context)
+                                          .isSmallerThan(TABLET)
+                                      ? MediaQuery.of(context).size.width - 200
+                                      : MediaQuery.of(context).size.width - 350,
+                                  child: TextField(
+                                    textInputAction: TextInputAction.go,
+                                    autofocus: true,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide:
+                                            BorderSide(color: Colors.white),
+                                      ),
+                                      hintText: "enter text to search for",
+                                    ),
+                                    onTap: (() {
+                                      setState(() {
+                                        search = !search;
+                                      });
+                                    }),
+                                    onChanged: ((value) {
+                                      searchString = value;
+                                    }),
+                                    onSubmitted: ((value) {
+                                      _productBloc.add(FetchProduct(
+                                          search: value, limit: limit));
+                                      setState(() {
+                                        search = !search;
+                                      });
+                                    }),
+                                  )),
+                              RaisedButton(
+                                  child: Text('Search'),
+                                  onPressed: () {
+                                    _productBloc.add(FetchProduct(
+                                        search: searchString, limit: limit));
+                                  })
+                            ])
+                          : Column(children: [
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Text("Name",
+                                        textAlign: TextAlign.center)),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(TABLET))
+                                  Expanded(
+                                      child: Text("Description",
+                                          textAlign: TextAlign.center)),
+                                Expanded(
+                                    child: Text("Price",
+                                        textAlign: TextAlign.center)),
+                                Expanded(
+                                    child: Text("Category",
+                                        textAlign: TextAlign.center)),
+                              ]),
+                              Divider(color: Colors.black),
+                            ]),
                       trailing: Text(' '));
                 index -= 1;
+/*                if (index == 1 && state.products.isEmpty)
+                  return Text('no products');
+                else
+*/
                 return index >= products.length
                     ? BottomLoader()
                     : Dismissible(
@@ -147,8 +198,6 @@ class _ProductsState extends State<ProductsForm> {
   void _onScroll() {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
-//    print(
-//        "=====onScrol cur: ${_scrollController.position.maxScrollExtent - _scrollController.position.pixels} treshold: _${_scrollThreshold}");
     if (maxScroll - currentScroll <= _scrollThreshold) {
       _productBloc.add(FetchProduct(
           companyPartyId: authenticate.company.partyId, limit: limit));
