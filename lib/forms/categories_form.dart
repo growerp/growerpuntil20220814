@@ -18,12 +18,15 @@ class _CategoriesState extends State<CategoriesForm> {
   Authenticate authenticate;
   _CategoriesState();
   int limit;
+  bool search;
+  String searchString;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
     _categoryBloc = BlocProvider.of<CategoryBloc>(context);
+    search = false;
   }
 
   @override
@@ -39,67 +42,117 @@ class _CategoriesState extends State<CategoriesForm> {
           if (state is CategoryProblem)
             return Center(child: Text("${state.errorMessage}"));
           if (state is CategorySuccess) {
-            if (state.categories.isEmpty)
-              return Center(child: Text('no categories'));
+            List<ProductCategory> categories = state.categories;
             return ListView.builder(
-              itemCount: state.hasReachedMax
-                  ? state.categories.length + 1
-                  : state.categories.length + 2,
+              itemCount: state.hasReachedMax && categories.isNotEmpty
+                  ? categories.length + 1
+                  : categories.length + 2,
               controller: _scrollController,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0)
                   return ListTile(
-                      onTap: null,
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                      ),
-                      title: Column(children: [
-                        Row(children: <Widget>[
-                          Expanded(
-                              child: Text("Name", textAlign: TextAlign.center)),
-                          if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(TABLET))
-                            Expanded(
-                                child: Text("Description",
-                                    textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text("Nbr.of Products",
-                                  textAlign: TextAlign.center)),
-                        ]),
-                        Divider(color: Colors.black),
-                      ]),
+                      onTap: (() {
+                        setState(() {
+                          search = !search;
+                        });
+                      }),
+                      leading:
+                          Image.asset('assets/images/search.png', height: 30),
+                      title: search
+                          ? Row(children: <Widget>[
+                              SizedBox(
+                                  width: ResponsiveWrapper.of(context)
+                                          .isSmallerThan(TABLET)
+                                      ? MediaQuery.of(context).size.width - 200
+                                      : MediaQuery.of(context).size.width - 350,
+                                  child: TextField(
+                                    textInputAction: TextInputAction.go,
+                                    autofocus: true,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                      ),
+                                      hintText:
+                                          "search in ID, name and description...",
+                                    ),
+                                    onTap: (() {
+                                      setState(() {
+                                        search = !search;
+                                      });
+                                    }),
+                                    onChanged: ((value) {
+                                      searchString = value;
+                                    }),
+                                    onSubmitted: ((value) {
+                                      _categoryBloc.add(FetchCategory(
+                                          search: value, limit: limit));
+                                      setState(() {
+                                        search = !search;
+                                      });
+                                    }),
+                                  )),
+                              RaisedButton(
+                                  child: Text('Search'),
+                                  onPressed: () {
+                                    _categoryBloc.add(FetchCategory(
+                                        search: searchString, limit: limit));
+                                  })
+                            ])
+                          : Column(children: [
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Text("Name[ID]",
+                                        textAlign: TextAlign.center)),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(TABLET))
+                                  Expanded(
+                                      child: Text("Description",
+                                          textAlign: TextAlign.center)),
+                                Expanded(
+                                    child: Text("Nbr.of Products",
+                                        textAlign: TextAlign.center)),
+                              ]),
+                              Divider(color: Colors.black),
+                            ]),
                       trailing: Text(' '));
+                if (index == 1 && categories.isEmpty)
+                  return Center(
+                      heightFactor: 20,
+                      child: Text("no records found!",
+                          textAlign: TextAlign.center));
                 index -= 1;
-                return index >= state.categories.length
+                return index >= categories.length
                     ? BottomLoader()
                     : Dismissible(
-                        key: Key(state.categories[index].categoryId),
+                        key: Key(categories[index].categoryId),
                         direction: DismissDirection.startToEnd,
                         child: ListTile(
                             leading: CircleAvatar(
                               backgroundColor: Colors.green,
-                              child: state.categories[index].image != null
+                              child: categories[index].image != null
                                   ? Image.memory(
-                                      state.categories[index]?.image,
+                                      categories[index]?.image,
                                       height: 100,
                                     )
                                   : Text(
-                                      "${state.categories[index]?.categoryName}"),
+                                      "${categories[index]?.categoryName[0]}"),
                             ),
                             title: Row(
                               children: <Widget>[
                                 Expanded(
                                     child: Text(
-                                        "${state.categories[index]?.categoryName}")),
+                                        "${categories[index]?.categoryName}"
+                                        "[${categories[index]?.categoryId}]")),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(TABLET))
                                   Expanded(
                                       child: Text(
-                                          "${state.categories[index]?.description}",
+                                          "${categories[index]?.description}",
                                           textAlign: TextAlign.center)),
                                 Expanded(
                                     child: Text(
-                                        "${state.categories[index].nbrOfProducts} ",
+                                        "${categories[index].nbrOfProducts} ",
                                         textAlign: TextAlign.center)),
                               ],
                             ),
@@ -107,18 +160,18 @@ class _CategoriesState extends State<CategoriesForm> {
                               dynamic result = await Navigator.pushNamed(
                                   context, '/category',
                                   arguments: FormArguments(
-                                      null, 0, state.categories[index]));
+                                      null, 0, categories[index]));
                               setState(() {
                                 if (result is ProductCategory)
-                                  state.categories
+                                  categories
                                       .replaceRange(index, index + 1, [result]);
                               });
                             },
                             trailing: IconButton(
                               icon: Icon(Icons.delete_forever),
                               onPressed: () {
-                                _categoryBloc.add(
-                                    DeleteCategory(state.categories[index]));
+                                _categoryBloc
+                                    .add(DeleteCategory(categories[index]));
                               },
                             )));
               },
@@ -142,7 +195,9 @@ class _CategoriesState extends State<CategoriesForm> {
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
       _categoryBloc.add(FetchCategory(
-          companyPartyId: authenticate.company.partyId, limit: limit));
+          companyPartyId: authenticate.company.partyId,
+          limit: limit,
+          search: searchString));
     }
   }
 }

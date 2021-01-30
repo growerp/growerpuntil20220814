@@ -20,8 +20,9 @@ class _OrdersState extends State<OrdersForm> {
   OrderBloc _orderBloc;
   Authenticate authenticate;
   int tab;
-
-  int limit;
+  int limit = 20;
+  bool search;
+  String searchString;
 
   _OrdersState(this.sales);
 
@@ -29,6 +30,7 @@ class _OrdersState extends State<OrdersForm> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    search = false;
   }
 
   @override
@@ -38,10 +40,10 @@ class _OrdersState extends State<OrdersForm> {
       limit = (MediaQuery.of(context).size.height / 35).round();
       if (sales)
         _orderBloc = BlocProvider.of<SalesOrderBloc>(context)
-          ..add(FetchOrder(limit));
+          ..add(FetchOrder(limit: limit));
       else
         _orderBloc = BlocProvider.of<PurchOrderBloc>(context)
-          ..add(FetchOrder(limit));
+          ..add(FetchOrder(limit: limit));
     });
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
@@ -77,42 +79,91 @@ class _OrdersState extends State<OrdersForm> {
 
   Widget orderPage(state) {
     if (state is OrderSuccess) {
-      if (state.orders.isEmpty)
-        return Center(child: Text('no ${sales ? 'Sales' : 'Purchase'} orders'));
       List<Order> orders = state.orders;
       return ListView.builder(
-        itemCount: state.hasReachedMax
+        itemCount: state.hasReachedMax && orders.isNotEmpty
             ? state.orders.length + 1
             : state.orders.length + 2,
         controller: _scrollController,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0)
             return ListTile(
-                onTap: () async {
-                  await Navigator.pushNamed(context, '/user',
-                      arguments: FormArguments(null, tab, orders[index]));
-                },
-                leading: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                ),
-                title: Column(children: [
-                  Row(children: <Widget>[
-                    Expanded(
-                        child: Text(sales ? "Customer" : "Supplier",
-                            textAlign: TextAlign.center)),
-                    if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                      Expanded(
-                          child: Text("Email", textAlign: TextAlign.center)),
-                    Expanded(child: Text("Date", textAlign: TextAlign.center)),
-                    Expanded(child: Text("Total", textAlign: TextAlign.center)),
-                    Expanded(
-                        child: Text("Status", textAlign: TextAlign.center)),
-                    if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                      Expanded(
-                          child: Text("#items", textAlign: TextAlign.center)),
-                  ]),
-                  Divider(color: Colors.black),
-                ]),
+                onTap: (() {
+                  setState(() {
+                    search = !search;
+                  });
+                }),
+                leading: Image.asset('assets/images/search.png', height: 30),
+                title: search
+                    ? Row(children: <Widget>[
+                        SizedBox(
+                            width: ResponsiveWrapper.of(context)
+                                    .isSmallerThan(TABLET)
+                                ? MediaQuery.of(context).size.width - 200
+                                : MediaQuery.of(context).size.width - 350,
+                            child: TextField(
+                              textInputAction: TextInputAction.go,
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
+                                hintText: "search in ID, " +
+                                    (sales ? "customer" : "supplier"),
+                              ),
+                              onTap: (() {
+                                setState(() {
+                                  search = !search;
+                                });
+                              }),
+                              onChanged: ((value) {
+                                searchString = value;
+                              }),
+                              onSubmitted: ((value) {
+                                _orderBloc.add(
+                                    FetchOrder(search: value, limit: limit));
+                                setState(() {
+                                  search = !search;
+                                });
+                              }),
+                            )),
+                        RaisedButton(
+                            child: Text('Search'),
+                            onPressed: () {
+                              _orderBloc.add(FetchOrder(
+                                  search: searchString, limit: limit));
+                            })
+                      ])
+                    : Column(children: [
+                        Row(children: <Widget>[
+                          Expanded(
+                              child: Text("Order ID",
+                                  textAlign: TextAlign.center)),
+                          Expanded(
+                              child: Text(sales ? "Customer" : "Supplier",
+                                  textAlign: TextAlign.center)),
+                          if (!ResponsiveWrapper.of(context)
+                              .isSmallerThan(TABLET))
+                            Expanded(
+                                child:
+                                    Text("Email", textAlign: TextAlign.center)),
+                          Expanded(
+                              child: Text("Date", textAlign: TextAlign.center)),
+                          Expanded(
+                              child:
+                                  Text("Total", textAlign: TextAlign.center)),
+                          Expanded(
+                              child:
+                                  Text("Status", textAlign: TextAlign.center)),
+                          if (!ResponsiveWrapper.of(context)
+                              .isSmallerThan(TABLET))
+                            Expanded(
+                                child: Text("#items",
+                                    textAlign: TextAlign.center)),
+                        ]),
+                        Divider(color: Colors.black),
+                      ]),
                 trailing: Text(' '));
           index -= 1;
           return index >= state.orders.length
@@ -127,6 +178,7 @@ class _OrdersState extends State<OrdersForm> {
                       ),
                       title: Row(
                         children: <Widget>[
+                          Expanded(child: Text("${orders[index].orderId}")),
                           Expanded(
                               child:
                                   Text("${orders[index].otherUser.firstName}, "
@@ -181,7 +233,7 @@ class _OrdersState extends State<OrdersForm> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _orderBloc.add(FetchOrder(limit));
+      _orderBloc.add(FetchOrder(limit: limit, search: searchString));
     }
   }
 }

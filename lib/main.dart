@@ -78,8 +78,7 @@ void main() async {
                 sales: false,
                 orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
         BlocProvider<OpportunityBloc>(
-            create: (context) =>
-                OpportunityBloc(repos)..add(FetchOpportunity())),
+            create: (context) => OpportunityBloc(repos)),
         BlocProvider<AccntgBloc>(
             create: (context) => AccntgBloc(repos)..add(LoadAccntg())),
       ],

@@ -80,7 +80,8 @@ class _OpportunityState extends State<OpportunityPage> {
               appBar: AppBar(
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(context, authenticate, 'Opportunity detail'),
+                title: companyLogo(context, authenticate,
+                    'Opportunity detail ID: ${opportunity.opportunityId}'),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),

@@ -49,7 +49,7 @@ class _ProductsState extends State<ProductsForm> {
           if (state is ProductSuccess) {
             List<Product> products = state.products;
             return ListView.builder(
-              itemCount: state.hasReachedMax
+              itemCount: state.hasReachedMax && products.isNotEmpty
                   ? products.length + 1
                   : products.length + 2,
               controller: _scrollController,
@@ -61,10 +61,8 @@ class _ProductsState extends State<ProductsForm> {
                           search = !search;
                         });
                       }),
-                      leading: Image.asset(
-                        'assets/images/search.png',
-                        height: 35,
-                      ),
+                      leading:
+                          Image.asset('assets/images/search.png', height: 30),
                       title: search
                           ? Row(children: <Widget>[
                               SizedBox(
@@ -77,10 +75,11 @@ class _ProductsState extends State<ProductsForm> {
                                     autofocus: true,
                                     decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide:
-                                            BorderSide(color: Colors.white),
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
                                       ),
-                                      hintText: "enter text to search for",
+                                      hintText:
+                                          "search in ID, name and description...",
                                     ),
                                     onTap: (() {
                                       setState(() {
@@ -108,7 +107,7 @@ class _ProductsState extends State<ProductsForm> {
                           : Column(children: [
                               Row(children: <Widget>[
                                 Expanded(
-                                    child: Text("Name",
+                                    child: Text("Name[ID]",
                                         textAlign: TextAlign.center)),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(TABLET))
@@ -125,11 +124,12 @@ class _ProductsState extends State<ProductsForm> {
                               Divider(color: Colors.black),
                             ]),
                       trailing: Text(' '));
+                if (index == 1 && products.isEmpty)
+                  return Center(
+                      heightFactor: 20,
+                      child: Text("no records found!",
+                          textAlign: TextAlign.center));
                 index -= 1;
-/*                if (index == 1 && state.products.isEmpty)
-                  return Text('no products');
-                else
-*/
                 return index >= products.length
                     ? BottomLoader()
                     : Dismissible(
@@ -148,8 +148,9 @@ class _ProductsState extends State<ProductsForm> {
                             title: Row(
                               children: <Widget>[
                                 Expanded(
-                                    child: Text(
-                                        "${products[index]?.productName}")),
+                                    child:
+                                        Text("${products[index]?.productName}"
+                                            "[${products[index]?.productId}]")),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(TABLET))
                                   Expanded(
@@ -200,7 +201,9 @@ class _ProductsState extends State<ProductsForm> {
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
       _productBloc.add(FetchProduct(
-          companyPartyId: authenticate.company.partyId, limit: limit));
+          companyPartyId: authenticate.company.partyId,
+          limit: limit,
+          search: searchString));
     }
   }
 }

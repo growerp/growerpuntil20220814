@@ -160,10 +160,13 @@ class _MyOrderState extends State<MyOrderPage> {
                 title: companyLogo(
                     context,
                     authenticate,
-                    "Purchase Order " +
-                        (order.orderId != null
-                            ? "# ${order.orderId} ${order.orderStatusId}"
-                            : "New")),
+                    order.sales
+                        ? "Sales"
+                        : "Purchase" +
+                            " Order " +
+                            (order.orderId != null
+                                ? "# ${order.orderId} ${order.orderStatusId}"
+                                : "New")),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),

@@ -110,7 +110,8 @@ class _ProductState extends State<ProductPage> {
               appBar: AppBar(
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(context, authenticate, 'Product detail'),
+                title: companyLogo(context, authenticate,
+                    'Product detail #${product.productId}'),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),

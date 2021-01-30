@@ -17,14 +17,17 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
   final _scrollThreshold = 200.0;
   OpportunityBloc _opportunityBloc;
   Authenticate authenticate;
-
-  int limit;
+  int limit = 20;
+  bool search;
+  String searchString;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _opportunityBloc = BlocProvider.of<OpportunityBloc>(context);
+    _opportunityBloc = BlocProvider.of<OpportunityBloc>(context)
+      ..add(FetchOpportunity(limit: limit));
+    search = false;
   }
 
   @override
@@ -45,58 +48,105 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                 context, '${state.message}', Colors.green);
         }, builder: (context, state) {
           if (state is OpportunitySuccess) {
-            if (state.opportunities.isEmpty)
-              return Center(child: Text('no opportunities'));
             List<Opportunity> opportunities = state.opportunities;
             return ListView.builder(
-              itemCount: state.hasReachedMax
+              itemCount: state.hasReachedMax && opportunities.isNotEmpty
                   ? state.opportunities.length + 1
                   : state.opportunities.length + 2,
               controller: _scrollController,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0)
                   return ListTile(
-                      onTap: null,
-                      leading: CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                      ),
-                      title: Column(children: [
-                        Row(children: <Widget>[
-                          Expanded(
-                              child: Text("Oppt.Name",
-                                  textAlign: TextAlign.center)),
-                          if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(DESKTOP))
-                            Expanded(
-                                child: Text("Est. Amount",
-                                    textAlign: TextAlign.center)),
-                          if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(DESKTOP))
-                            Expanded(
-                                child: Text("Est. Probability %",
-                                    textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text("Lead Name",
-                                  textAlign: TextAlign.center)),
-                          if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(DESKTOP))
-                            Expanded(
-                                child: Text("Lead Email",
-                                    textAlign: TextAlign.center)),
-                          if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(TABLET))
-                            Expanded(
-                                child:
-                                    Text("Stage", textAlign: TextAlign.center)),
-                          if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(DESKTOP))
-                            Expanded(
-                                child: Text("Next Step",
-                                    textAlign: TextAlign.center)),
-                        ]),
-                        Divider(color: Colors.black),
-                      ]),
+                      onTap: (() {
+                        setState(() {
+                          search = !search;
+                        });
+                      }),
+                      leading:
+                          Image.asset('assets/images/search.png', height: 30),
+                      title: search
+                          ? Row(children: <Widget>[
+                              SizedBox(
+                                  width: ResponsiveWrapper.of(context)
+                                          .isSmallerThan(TABLET)
+                                      ? MediaQuery.of(context).size.width - 200
+                                      : MediaQuery.of(context).size.width - 350,
+                                  child: TextField(
+                                    textInputAction: TextInputAction.go,
+                                    autofocus: true,
+                                    decoration: InputDecoration(
+                                      focusedBorder: OutlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: Colors.transparent),
+                                      ),
+                                      hintText:
+                                          "search in ID, name and description...",
+                                    ),
+                                    onTap: (() {
+                                      setState(() {
+                                        search = !search;
+                                      });
+                                    }),
+                                    onChanged: ((value) {
+                                      searchString = value;
+                                    }),
+                                    onSubmitted: ((value) {
+                                      _opportunityBloc.add(FetchOpportunity(
+                                          search: value, limit: limit));
+                                      setState(() {
+                                        search = !search;
+                                      });
+                                    }),
+                                  )),
+                              RaisedButton(
+                                  child: Text('Search'),
+                                  onPressed: () {
+                                    _opportunityBloc.add(FetchOpportunity(
+                                        search: searchString, limit: limit));
+                                  })
+                            ])
+                          : Column(children: [
+                              Row(children: <Widget>[
+                                Expanded(
+                                    child: Text("Opportunity.Name[ID]",
+                                        textAlign: TextAlign.center)),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(DESKTOP))
+                                  Expanded(
+                                      child: Text("Est. Amount",
+                                          textAlign: TextAlign.center)),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(DESKTOP))
+                                  Expanded(
+                                      child: Text("Est. Probability %",
+                                          textAlign: TextAlign.center)),
+                                Expanded(
+                                    child: Text("Lead Name",
+                                        textAlign: TextAlign.center)),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(DESKTOP))
+                                  Expanded(
+                                      child: Text("Lead Email",
+                                          textAlign: TextAlign.center)),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(TABLET))
+                                  Expanded(
+                                      child: Text("Stage",
+                                          textAlign: TextAlign.center)),
+                                if (!ResponsiveWrapper.of(context)
+                                    .isSmallerThan(DESKTOP))
+                                  Expanded(
+                                      child: Text("Next Step",
+                                          textAlign: TextAlign.center)),
+                              ]),
+                              Divider(color: Colors.black),
+                            ]),
                       trailing: Text(' '));
+                if (index == 1 && opportunities.isEmpty)
+                  return Center(
+                      heightFactor: 20,
+                      child: Text("no records found!",
+                          textAlign: TextAlign.center));
                 index -= 1;
                 return index >= state.opportunities.length
                     ? BottomLoader()
@@ -113,7 +163,8 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               children: <Widget>[
                                 Expanded(
                                     child: Text(
-                                        "${opportunities[index].opportunityName}",
+                                        "${opportunities[index].opportunityName}"
+                                        "[${opportunities[index].opportunityId}]",
                                         textAlign: TextAlign.center)),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
@@ -144,7 +195,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                               : "",
                                           textAlign: TextAlign.center)),
                                 if (!ResponsiveWrapper.of(context)
-                                    .isSmallerThan(DESKTOP))
+                                    .isSmallerThan(TABLET))
                                   Text("${opportunities[index].stageId}",
                                       textAlign: TextAlign.center),
                                 if (!ResponsiveWrapper.of(context)
@@ -186,7 +237,8 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _opportunityBloc.add(FetchOpportunity(limit));
+      _opportunityBloc
+          .add(FetchOpportunity(limit: limit, search: searchString));
     }
   }
 }

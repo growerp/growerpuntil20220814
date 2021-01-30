@@ -106,8 +106,8 @@ class _MyUserState extends State<MyUserPage> {
               appBar: AppBar(
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(
-                    context, authenticate, '${user?.groupDescription} detail'),
+                title: companyLogo(context, authenticate,
+                    '${user?.groupDescription} detail #${user.partyId}'),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),

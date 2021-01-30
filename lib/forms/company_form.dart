@@ -98,7 +98,8 @@ class _CompanyFormStateHeader extends State<CompanyFormHeader> {
                                   ],
                                 )
                               : null,
-                      title: companyLogo(context, authenticate, 'Company List'),
+                      title:
+                          companyLogo(context, authenticate, 'Owner Company'),
                       automaticallyImplyLeading:
                           ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
                   bottomNavigationBar:
