@@ -161,22 +161,22 @@ class _CompanyFormStateHeader extends State<CompanyFormHeader> {
                                   ? CompanyPage(null, 1)
                                   : _selectedIndex == 1
                                       ? UsersForm(
-                                          key: UniqueKey(),
+                                          key: ValueKey("GROWERP_M_ADMIN"),
                                           userGroupId: "GROWERP_M_ADMIN",
                                           tab: 1)
                                       : UsersForm(
-                                          key: UniqueKey(),
+                                          key: ValueKey("GROWERP_M_EMPLOYEE"),
                                           userGroupId: "GROWERP_M_EMPLOYEE",
                                           tab: 1))
                           : TabBarView(
                               children: [
                                 CompanyPage(null, 1),
                                 UsersForm(
-                                    key: UniqueKey(),
+                                    key: ValueKey("GROWERP_M_ADMIN"),
                                     userGroupId: "GROWERP_M_ADMIN",
                                     tab: 1),
                                 UsersForm(
-                                    key: UniqueKey(),
+                                    key: ValueKey("GROWERP_M_EMPLOYEE"),
                                     userGroupId: "GROWERP_M_EMPLOYEE",
                                     tab: 1)
                               ],

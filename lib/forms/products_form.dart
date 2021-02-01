@@ -68,7 +68,7 @@ class _ProductsState extends State<ProductsForm> {
                               SizedBox(
                                   width: ResponsiveWrapper.of(context)
                                           .isSmallerThan(TABLET)
-                                      ? MediaQuery.of(context).size.width - 200
+                                      ? MediaQuery.of(context).size.width - 250
                                       : MediaQuery.of(context).size.width - 350,
                                   child: TextField(
                                     textInputAction: TextInputAction.go,
@@ -81,11 +81,6 @@ class _ProductsState extends State<ProductsForm> {
                                       hintText:
                                           "search in ID, name and description...",
                                     ),
-                                    onTap: (() {
-                                      setState(() {
-                                        search = !search;
-                                      });
-                                    }),
                                     onChanged: ((value) {
                                       searchString = value;
                                     }),

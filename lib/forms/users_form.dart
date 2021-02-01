@@ -12,58 +12,48 @@ class UsersForm extends StatefulWidget {
   final Key key;
   const UsersForm({this.key, this.userGroupId, this.tab});
   @override
-  _UsersState createState() => _UsersState(userGroupId, tab);
+  _UsersState createState() => _UsersState();
 }
 
 class _UsersState extends State<UsersForm> {
-  final String userGroupId;
-  final int tab;
-  final _scrollController = ScrollController();
+  ScrollController _scrollController = ScrollController();
   double _scrollThreshold = 200.0;
   UserBloc _userBloc;
   var blocName;
   Authenticate authenticate;
   List<User> users;
   bool hasReachedMax;
-  int limit = 20;
-  bool search;
+  int limit;
+  bool showSearchField = false;
   String searchString;
-  _UsersState(this.userGroupId, this.tab);
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    search = false;
-    switch (userGroupId) {
+    switch (widget.userGroupId) {
       case "GROWERP_M_ADMIN":
-        _userBloc = BlocProvider.of<AdminBloc>(context)
-          ..add(FetchUser(limit: limit));
+        _userBloc = BlocProvider.of<AdminBloc>(context)..add(FetchUser());
         break;
       case "GROWERP_M_EMPLOYEE":
-        _userBloc = BlocProvider.of<EmployeeBloc>(context)
-          ..add(FetchUser(limit: limit));
+        _userBloc = BlocProvider.of<EmployeeBloc>(context)..add(FetchUser());
         break;
       case "GROWERP_M_SUPPLIER":
-        _userBloc = BlocProvider.of<SupplierBloc>(context)
-          ..add(FetchUser(limit: limit));
+        _userBloc = BlocProvider.of<SupplierBloc>(context)..add(FetchUser());
         break;
       case "GROWERP_M_CUSTOMER":
-        _userBloc = BlocProvider.of<CustomerBloc>(context)
-          ..add(FetchUser(limit: limit));
+        _userBloc = BlocProvider.of<CustomerBloc>(context)..add(FetchUser());
         break;
       case "GROWERP_M_LEAD":
-        _userBloc = BlocProvider.of<LeadBloc>(context)
-          ..add(FetchUser(limit: limit));
+        _userBloc = BlocProvider.of<LeadBloc>(context)..add(FetchUser());
         break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    setState(() {
-      limit = (MediaQuery.of(context).size.height / 35).round();
-    });
+    limit = (MediaQuery.of(context).size.height / 45).round();
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state?.authenticate;
 
@@ -79,53 +69,51 @@ class _UsersState extends State<UsersForm> {
               return ListTile(
                   onTap: (() {
                     setState(() {
-                      search = !search;
+                      showSearchField = !showSearchField;
                     });
                   }),
                   leading: Image.asset('assets/images/search.png', height: 30),
-                  title: search
-                      ? Row(children: <Widget>[
-                          SizedBox(
-                              width: ResponsiveWrapper.of(context)
-                                      .isSmallerThan(TABLET)
-                                  ? MediaQuery.of(context).size.width - 200
-                                  : MediaQuery.of(context).size.width - 350,
-                              child: TextField(
-                                textInputAction: TextInputAction.go,
-                                autofocus: true,
-                                decoration: InputDecoration(
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: Colors.transparent),
+                  title: Column(children: [
+                    showSearchField
+                        ? Row(children: <Widget>[
+                            SizedBox(
+                                width: ResponsiveWrapper.of(context)
+                                        .isSmallerThan(TABLET)
+                                    ? MediaQuery.of(context).size.width - 250
+                                    : MediaQuery.of(context).size.width - 350,
+                                child: TextField(
+                                  autofocus: true,
+                                  decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderSide:
+                                          BorderSide(color: Colors.transparent),
+                                    ),
+                                    hintText:
+                                        "search in ID, first and lastname...",
                                   ),
-                                  hintText:
-                                      "search in ID, first and lastname...",
-                                ),
-                                onTap: (() {
+                                  onChanged: ((value) {
+                                    searchString = value;
+                                  }),
+                                  onSubmitted: ((value) {
+                                    _userBloc.add(FetchUser(
+                                        searchString: value, limit: limit));
+                                    setState(() {
+                                      showSearchField = false;
+                                    });
+                                  }),
+                                )),
+                            RaisedButton(
+                                child: Text('Search'),
+                                onPressed: () {
+                                  _userBloc.add(FetchUser(
+                                      searchString: searchString,
+                                      limit: limit));
                                   setState(() {
-                                    search = !search;
+                                    showSearchField = false;
                                   });
-                                }),
-                                onChanged: ((value) {
-                                  searchString = value;
-                                }),
-                                onSubmitted: ((value) {
-                                  _userBloc.add(
-                                      FetchUser(search: value, limit: limit));
-                                  setState(() {
-                                    search = !search;
-                                  });
-                                }),
-                              )),
-                          RaisedButton(
-                              child: Text('Search'),
-                              onPressed: () {
-                                _userBloc.add(FetchUser(
-                                    search: searchString, limit: limit));
-                              })
-                        ])
-                      : Column(children: [
-                          Row(
+                                })
+                          ])
+                        : Row(
                             children: <Widget>[
                               Expanded(
                                   child: Text("Name",
@@ -145,15 +133,15 @@ class _UsersState extends State<UsersForm> {
                                         textAlign: TextAlign.center)),
                               if (!ResponsiveWrapper.of(context)
                                       .isSmallerThan(DESKTOP) &&
-                                  userGroupId != "GROWERP_M_EMPLOYEE" &&
-                                  userGroupId != "GROWERP_M_ADMIN")
+                                  widget.userGroupId != "GROWERP_M_EMPLOYEE" &&
+                                  widget.userGroupId != "GROWERP_M_ADMIN")
                                 Expanded(
                                     child: Text("Company",
                                         textAlign: TextAlign.center)),
                             ],
                           ),
-                          Divider(color: Colors.black),
-                        ]),
+                    Divider(color: Colors.black),
+                  ]),
                   trailing: Text(' '));
             if (index == 1 && users.isEmpty)
               return Center(
@@ -194,8 +182,8 @@ class _UsersState extends State<UsersForm> {
                                       textAlign: TextAlign.center)),
                             if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP) &&
-                                userGroupId != "GROWERP_M_EMPLOYEE" &&
-                                userGroupId != "GROWERP_M_ADMIN")
+                                widget.userGroupId != "GROWERP_M_EMPLOYEE" &&
+                                widget.userGroupId != "GROWERP_M_ADMIN")
                               Expanded(
                                   child: Text("${users[index].companyName}",
                                       textAlign: TextAlign.center)),
@@ -203,8 +191,8 @@ class _UsersState extends State<UsersForm> {
                         ),
                         onTap: () async {
                           await Navigator.pushNamed(context, '/user',
-                              arguments:
-                                  FormArguments(null, tab, users[index]));
+                              arguments: FormArguments(
+                                  null, widget.tab, users[index]));
                         },
                         trailing: IconButton(
                           icon: Icon(Icons.delete_forever),
@@ -216,7 +204,7 @@ class _UsersState extends State<UsersForm> {
         );
       }
 
-      switch (userGroupId) {
+      switch (widget.userGroupId) {
         case "GROWERP_M_LEAD":
           return BlocConsumer<LeadBloc, UserState>(listener: (context, state) {
             if (state is UserProblem)
@@ -226,11 +214,14 @@ class _UsersState extends State<UsersForm> {
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
+            if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
+              isLoading = false;
               users = state.users;
               hasReachedMax = state.hasReachedMax;
             }
-            return showForm();
+            return Stack(
+                children: [showForm(), if (isLoading) LoadingIndicator()]);
           });
         case "GROWERP_M_CUSTOMER":
           return BlocConsumer<CustomerBloc, UserState>(
@@ -242,11 +233,14 @@ class _UsersState extends State<UsersForm> {
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
+            if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
+              isLoading = false;
               users = state.users;
               hasReachedMax = state.hasReachedMax;
             }
-            return showForm();
+            return Stack(
+                children: [showForm(), if (isLoading) LoadingIndicator()]);
           });
         case "GROWERP_M_ADMIN":
           return BlocConsumer<AdminBloc, UserState>(listener: (context, state) {
@@ -257,11 +251,14 @@ class _UsersState extends State<UsersForm> {
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
+            if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
+              isLoading = false;
               users = state.users;
               hasReachedMax = state.hasReachedMax;
             }
-            return showForm();
+            return Stack(
+                children: [showForm(), if (isLoading) LoadingIndicator()]);
           });
         case "GROWERP_M_EMPLOYEE":
           return BlocConsumer<EmployeeBloc, UserState>(
@@ -273,11 +270,14 @@ class _UsersState extends State<UsersForm> {
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
+            if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
+              isLoading = false;
               users = state.users;
               hasReachedMax = state.hasReachedMax;
             }
-            return showForm();
+            return Stack(
+                children: [showForm(), if (isLoading) LoadingIndicator()]);
           });
         case "GROWERP_M_SUPPLIER":
           return BlocConsumer<SupplierBloc, UserState>(
@@ -289,15 +289,19 @@ class _UsersState extends State<UsersForm> {
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
+            if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
+              isLoading = false;
               users = state.users;
               hasReachedMax = state.hasReachedMax;
             }
-            return showForm();
+            return Stack(
+                children: [showForm(), if (isLoading) LoadingIndicator()]);
           });
         default:
           return Center(
-              child: Text("should NOT show this for userGroup: $userGroupId"));
+              child: Text(
+                  "should NOT show this for userGroup: ${widget.userGroupId}"));
       }
     });
   }
@@ -312,7 +316,7 @@ class _UsersState extends State<UsersForm> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      _userBloc.add(FetchUser(limit: limit, search: searchString));
+      _userBloc.add(FetchUser(limit: limit, searchString: searchString));
     }
   }
 }

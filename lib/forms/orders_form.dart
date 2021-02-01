@@ -21,8 +21,9 @@ class _OrdersState extends State<OrdersForm> {
   Authenticate authenticate;
   int tab;
   int limit = 20;
-  bool search;
+  bool showSearchField;
   String searchString;
+  bool isLoading = false;
 
   _OrdersState(this.sales);
 
@@ -30,7 +31,7 @@ class _OrdersState extends State<OrdersForm> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    search = false;
+    showSearchField = false;
   }
 
   @override
@@ -70,7 +71,12 @@ class _OrdersState extends State<OrdersForm> {
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
-            return orderPage(state);
+            if (state is OrderLoading) isLoading = true;
+            if (state is OrderSuccess) isLoading = false;
+            return Stack(children: [
+              if (isLoading) LoadingIndicator(),
+              orderPage(state),
+            ]);
           });
       }
       return Container(child: Center(child: Text("Not Authorized!")));
@@ -90,16 +96,16 @@ class _OrdersState extends State<OrdersForm> {
             return ListTile(
                 onTap: (() {
                   setState(() {
-                    search = !search;
+                    showSearchField = !showSearchField;
                   });
                 }),
                 leading: Image.asset('assets/images/search.png', height: 30),
-                title: search
+                title: showSearchField
                     ? Row(children: <Widget>[
                         SizedBox(
                             width: ResponsiveWrapper.of(context)
                                     .isSmallerThan(TABLET)
-                                ? MediaQuery.of(context).size.width - 200
+                                ? MediaQuery.of(context).size.width - 250
                                 : MediaQuery.of(context).size.width - 350,
                             child: TextField(
                               textInputAction: TextInputAction.go,
@@ -112,11 +118,6 @@ class _OrdersState extends State<OrdersForm> {
                                 hintText: "search in ID, " +
                                     (sales ? "customer" : "supplier"),
                               ),
-                              onTap: (() {
-                                setState(() {
-                                  search = !search;
-                                });
-                              }),
                               onChanged: ((value) {
                                 searchString = value;
                               }),
@@ -124,7 +125,7 @@ class _OrdersState extends State<OrdersForm> {
                                 _orderBloc.add(
                                     FetchOrder(search: value, limit: limit));
                                 setState(() {
-                                  search = !search;
+                                  showSearchField = !showSearchField;
                                 });
                               }),
                             )),
@@ -150,9 +151,11 @@ class _OrdersState extends State<OrdersForm> {
                                     Text("Email", textAlign: TextAlign.center)),
                           Expanded(
                               child: Text("Date", textAlign: TextAlign.center)),
-                          Expanded(
-                              child:
-                                  Text("Total", textAlign: TextAlign.center)),
+                          if (!ResponsiveWrapper.of(context)
+                              .isSmallerThan(TABLET))
+                            Expanded(
+                                child:
+                                    Text("Total", textAlign: TextAlign.center)),
                           Expanded(
                               child:
                                   Text("Status", textAlign: TextAlign.center)),
@@ -192,11 +195,14 @@ class _OrdersState extends State<OrdersForm> {
                               child: Text(
                                   "${orders[index].placedDate.toString().substring(0, 11)}",
                                   textAlign: TextAlign.center)),
+                          if (!ResponsiveWrapper.of(context)
+                              .isSmallerThan(TABLET))
+                            Expanded(
+                                child: Text("${orders[index].grandTotal}",
+                                    textAlign: TextAlign.center)),
                           Expanded(
-                              child: Text("${orders[index].grandTotal}",
-                                  textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text("${orders[index].orderStatusId}",
+                              child: Text(
+                                  "${orders[index].orderStatusId.substring(5)}",
                                   textAlign: TextAlign.center)),
                           if (!ResponsiveWrapper.of(context)
                               .isSmallerThan(TABLET))

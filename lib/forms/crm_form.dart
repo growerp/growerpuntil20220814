@@ -160,22 +160,22 @@ class _CrmFormStateHeader extends State<CrmFormHeader> {
                                   ? OpportunitiesForm()
                                   : _selectedIndex == 1
                                       ? UsersForm(
-                                          key: UniqueKey(),
+                                          key: ValueKey("GROWERP_M_LEAD"),
                                           userGroupId: "GROWERP_M_LEAD",
                                           tab: 2)
                                       : UsersForm(
-                                          key: UniqueKey(),
+                                          key: ValueKey("GROWERP_M_CUSTOMER"),
                                           userGroupId: "GROWERP_M_CUSTOMER",
                                           tab: 2))
                           : TabBarView(
                               children: [
                                 OpportunitiesForm(),
                                 UsersForm(
-                                    key: UniqueKey(),
+                                    key: ValueKey("GROWERP_M_LEAD"),
                                     userGroupId: "GROWERP_M_LEAD",
                                     tab: 2),
                                 UsersForm(
-                                    key: UniqueKey(),
+                                    key: ValueKey("GROWERP_M_CUSTOMER"),
                                     userGroupId: "GROWERP_M_CUSTOMER",
                                     tab: 2)
                               ],

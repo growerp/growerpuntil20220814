@@ -87,7 +87,9 @@ class DashBoard extends StatelessWidget {
                       makeDashboardItem(
                         context,
                         menuItems[1],
-                        "${authenticate.company.name}",
+                        authenticate.company.name.length > 20
+                            ? "${authenticate.company.name.substring(0, 20)}..."
+                            : "${authenticate.company.name}",
                         "Administrators: ${authenticate.stats.admins}",
                         "Employees: ${authenticate.stats.employees}",
                         "",
@@ -198,32 +200,32 @@ Card makeDashboardItem(BuildContext context, MenuItem menuItem, String subTitle,
             mainAxisSize: MainAxisSize.min,
             verticalDirection: VerticalDirection.down,
             children: <Widget>[
-              SizedBox(height: 10.0),
+              SizedBox(height: 5.0),
               Center(child: Image.asset(menuItem.selectedImage, height: 80.0)),
               Center(
                 child: Text("${menuItem.title}",
                     style: TextStyle(
                         fontSize: phone ? 20 : 25, color: Colors.black)),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 5.0),
               Center(
                 child: Text(subTitle,
                     style: TextStyle(
                         fontSize: phone ? 15 : 20, color: Colors.black)),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 5.0),
               Center(
                 child: Text(subTitle1,
                     style: TextStyle(
                         fontSize: phone ? 15 : 20, color: Colors.black)),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 5.0),
               Center(
                 child: Text(subTitle2,
                     style: TextStyle(
                         fontSize: phone ? 15 : 20, color: Colors.black)),
               ),
-              SizedBox(height: 10.0),
+              SizedBox(height: 5.0),
               Center(
                 child: Text(subTitle3,
                     style: TextStyle(

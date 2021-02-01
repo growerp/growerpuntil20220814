@@ -63,10 +63,9 @@ class _CategoriesState extends State<CategoriesForm> {
                               SizedBox(
                                   width: ResponsiveWrapper.of(context)
                                           .isSmallerThan(TABLET)
-                                      ? MediaQuery.of(context).size.width - 200
+                                      ? MediaQuery.of(context).size.width - 250
                                       : MediaQuery.of(context).size.width - 350,
                                   child: TextField(
-                                    textInputAction: TextInputAction.go,
                                     autofocus: true,
                                     decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -76,11 +75,6 @@ class _CategoriesState extends State<CategoriesForm> {
                                       hintText:
                                           "search in ID, name and description...",
                                     ),
-                                    onTap: (() {
-                                      setState(() {
-                                        search = !search;
-                                      });
-                                    }),
                                     onChanged: ((value) {
                                       searchString = value;
                                     }),

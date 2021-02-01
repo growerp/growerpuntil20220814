@@ -104,8 +104,8 @@ class _CatalogFormStateHeader extends State<CatalogFormHeader> {
                                   ],
                                 )
                               : null,
-                      title: companyLogo(
-                          context, authenticate, 'Company Catalog.'),
+                      title: companyLogo(context, authenticate,
+                          'Catalog: Products & Categories.'),
                       automaticallyImplyLeading:
                           ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
                   bottomNavigationBar:

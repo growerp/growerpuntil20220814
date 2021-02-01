@@ -13,21 +13,22 @@ class OpportunitiesForm extends StatefulWidget {
 }
 
 class _OpportunitiesState extends State<OpportunitiesForm> {
-  final _scrollController = ScrollController();
-  final _scrollThreshold = 200.0;
+  ScrollController _scrollController = ScrollController();
+  double _scrollThreshold = 200.0;
   OpportunityBloc _opportunityBloc;
   Authenticate authenticate;
   int limit = 20;
   bool search;
   String searchString;
+  bool isLoading;
 
   @override
   void initState() {
     super.initState();
+    search = false;
     _scrollController.addListener(_onScroll);
     _opportunityBloc = BlocProvider.of<OpportunityBloc>(context)
-      ..add(FetchOpportunity(limit: limit));
-    search = false;
+      ..add(FetchOpportunity());
   }
 
   @override
@@ -47,7 +48,9 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
             HelperFunctions.showMessage(
                 context, '${state.message}', Colors.green);
         }, builder: (context, state) {
+          if (state is UserLoading) isLoading = true;
           if (state is OpportunitySuccess) {
+            isLoading = false;
             List<Opportunity> opportunities = state.opportunities;
             return ListView.builder(
               itemCount: state.hasReachedMax && opportunities.isNotEmpty
@@ -69,10 +72,9 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               SizedBox(
                                   width: ResponsiveWrapper.of(context)
                                           .isSmallerThan(TABLET)
-                                      ? MediaQuery.of(context).size.width - 200
+                                      ? MediaQuery.of(context).size.width - 250
                                       : MediaQuery.of(context).size.width - 350,
                                   child: TextField(
-                                    textInputAction: TextInputAction.go,
                                     autofocus: true,
                                     decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -80,13 +82,8 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                             color: Colors.transparent),
                                       ),
                                       hintText:
-                                          "search in ID, name and description...",
+                                          "search in ID, name and lead...",
                                     ),
-                                    onTap: (() {
-                                      setState(() {
-                                        search = !search;
-                                      });
-                                    }),
                                     onChanged: ((value) {
                                       searchString = value;
                                     }),
@@ -103,6 +100,9 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                   onPressed: () {
                                     _opportunityBloc.add(FetchOpportunity(
                                         search: searchString, limit: limit));
+                                    setState(() {
+                                      search = !search;
+                                    });
                                   })
                             ])
                           : Column(children: [

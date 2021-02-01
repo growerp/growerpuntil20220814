@@ -97,7 +97,7 @@ class _SlsOrdersFormStateHeader extends State<SlsOrdersFormHeader> {
                                 )
                               : null,
                       title: companyLogo(
-                          context, authenticate, 'Sales Order List'),
+                          context, authenticate, 'Sales Orders & Customers'),
                       automaticallyImplyLeading:
                           ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
                   bottomNavigationBar:

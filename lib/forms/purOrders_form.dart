@@ -96,7 +96,8 @@ class _PurOrdersFormStateHeader extends State<PurOrdersFormHeader> {
                                   ],
                                 )
                               : null,
-                      title: companyLogo(context, authenticate, 'Purchasing'),
+                      title: companyLogo(
+                          context, authenticate, 'Purchase Orders & Suppliers'),
                       automaticallyImplyLeading:
                           ResponsiveWrapper.of(context).isSmallerThan(TABLET)),
                   bottomNavigationBar:

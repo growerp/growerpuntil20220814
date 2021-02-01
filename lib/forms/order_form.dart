@@ -376,7 +376,7 @@ class _MyOrderState extends State<MyOrderPage> {
               }),
           RaisedButton(
               key: Key('add'),
-              child: Text('Add to Cart'),
+              child: Text('Add Cart'),
               onPressed: () {
                 if (_formKey.currentState.validate()) {
                   _cartBloc.add(AddToCart(
