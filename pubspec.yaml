@@ -21,7 +21,7 @@ dependencies:
   image_picker_for_web: ^0.1.0+2
   about: ^1.1.2
   animations: ^1.0.0+5
-  responsive_framework: ^0.0.8
+  responsive_framework: ^0.0.14
   printing: ^3.7.1
   dropdown_search: ^0.4.8
   core:

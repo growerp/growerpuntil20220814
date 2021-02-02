@@ -27,6 +27,8 @@ class _UsersState extends State<UsersForm> {
   bool showSearchField = false;
   String searchString;
   bool isLoading = false;
+  bool isDeskTop;
+  bool isPhone;
 
   @override
   void initState() {
@@ -54,6 +56,8 @@ class _UsersState extends State<UsersForm> {
   @override
   Widget build(BuildContext context) {
     limit = (MediaQuery.of(context).size.height / 45).round();
+    isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
+    isDeskTop = ResponsiveWrapper.of(context).isLargerThan(TABLET);
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state?.authenticate;
 
@@ -66,15 +70,19 @@ class _UsersState extends State<UsersForm> {
           controller: _scrollController,
           itemBuilder: (BuildContext context, int index) {
             if (index == 0)
-              return ListTile(
-                  onTap: (() {
-                    setState(() {
-                      showSearchField = !showSearchField;
-                    });
-                  }),
-                  leading: Image.asset('assets/images/search.png', height: 30),
-                  title: Column(children: [
-                    showSearchField
+              return Column(children: [
+                ListTile(
+                    onTap: (() {
+                      setState(() {
+                        showSearchField = !showSearchField;
+                      });
+                    }),
+                    leading:
+                        Image.asset('assets/images/search.png', height: 30),
+                    subtitle: isPhone && !showSearchField
+                        ? Text("emailAddress")
+                        : null,
+                    title: showSearchField
                         ? Row(children: <Widget>[
                             SizedBox(
                                 width: ResponsiveWrapper.of(context)
@@ -115,34 +123,26 @@ class _UsersState extends State<UsersForm> {
                           ])
                         : Row(
                             children: <Widget>[
-                              Expanded(
-                                  child: Text("Name",
-                                      textAlign: TextAlign.center)),
-                              if (!ResponsiveWrapper.of(context)
-                                  .isSmallerThan(DESKTOP))
-                                Expanded(
-                                    child: Text("login name",
-                                        textAlign: TextAlign.center)),
-                              Expanded(
-                                  child: Text("Email",
-                                      textAlign: TextAlign.center)),
-                              if (!ResponsiveWrapper.of(context)
-                                  .isSmallerThan(TABLET))
-                                Expanded(
-                                    child: Text("Language",
-                                        textAlign: TextAlign.center)),
-                              if (!ResponsiveWrapper.of(context)
-                                      .isSmallerThan(DESKTOP) &&
+                              Expanded(child: Text("Name")),
+                              if (isDeskTop)
+                                Expanded(child: Text("login name")),
+                              if (!isPhone) Expanded(child: Text("Email")),
+                              if (isDeskTop) Expanded(child: Text("Language")),
+                              if (isDeskTop &&
                                   widget.userGroupId != "GROWERP_M_EMPLOYEE" &&
                                   widget.userGroupId != "GROWERP_M_ADMIN")
                                 Expanded(
                                     child: Text("Company",
                                         textAlign: TextAlign.center)),
+                              if (isPhone &&
+                                  widget.userGroupId != "GROWERP_M_EMPLOYEE" &&
+                                  widget.userGroupId != "GROWERP_M_ADMIN")
+                                Expanded(child: Text("Company"))
                             ],
                           ),
-                    Divider(color: Colors.black),
-                  ]),
-                  trailing: Text(' '));
+                    trailing: Text(' ')),
+                Divider(color: Colors.black),
+              ]);
             if (index == 1 && users.isEmpty)
               return Center(
                   heightFactor: 20,
@@ -161,32 +161,32 @@ class _UsersState extends State<UsersForm> {
                               ? Image.memory(users[index]?.image)
                               : Text(users[index]?.firstName[0]),
                         ),
+                        subtitle:
+                            isPhone ? Text("${users[index].email}") : null,
                         title: Row(
                           children: <Widget>[
                             Expanded(
                                 child: Text("${users[index].firstName}, "
                                     "${users[index].lastName}"
                                     "[${users[index].partyId}]")),
-                            if (!ResponsiveWrapper.of(context)
-                                .isSmallerThan(DESKTOP))
-                              Expanded(
-                                  child: Text("${users[index].name}",
-                                      textAlign: TextAlign.center)),
-                            Expanded(
-                                child: Text("${users[index].email}",
-                                    textAlign: TextAlign.center)),
-                            if (!ResponsiveWrapper.of(context)
-                                .isSmallerThan(TABLET))
-                              Expanded(
-                                  child: Text("${users[index].language}",
-                                      textAlign: TextAlign.center)),
-                            if (!ResponsiveWrapper.of(context)
-                                    .isSmallerThan(DESKTOP) &&
+                            if (isDeskTop)
+                              Expanded(child: Text("${users[index].name}")),
+                            if (!isPhone)
+                              Expanded(child: Text("${users[index].email}")),
+                            if (isDeskTop)
+                              Expanded(child: Text("${users[index].language}")),
+                            if (isDeskTop &&
                                 widget.userGroupId != "GROWERP_M_EMPLOYEE" &&
                                 widget.userGroupId != "GROWERP_M_ADMIN")
                               Expanded(
                                   child: Text("${users[index].companyName}",
                                       textAlign: TextAlign.center)),
+                            if (isPhone &&
+                                widget.userGroupId != "GROWERP_M_EMPLOYEE" &&
+                                widget.userGroupId != "GROWERP_M_ADMIN")
+                              Expanded(
+                                  child: Text("${users[index].companyName}",
+                                      textAlign: TextAlign.center))
                           ],
                         ),
                         onTap: () async {
