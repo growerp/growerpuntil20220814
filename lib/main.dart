@@ -41,50 +41,65 @@ void main() async {
           ? Ofbiz(client: Dio())
           : null;
 
-  runApp(RepositoryProvider(
-    create: (context) => repos,
-    child: MultiBlocProvider(
-      providers: [
-        BlocProvider<LeadBloc>(
-            create: (context) => UserBloc(repos, "GROWERP_M_LEAD")),
-        BlocProvider<CustomerBloc>(
-            create: (context) => UserBloc(repos, "GROWERP_M_CUSTOMER")),
-        BlocProvider<SupplierBloc>(
-            create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER")),
-        BlocProvider<AdminBloc>(
-            create: (context) => UserBloc(repos, "GROWERP_M_ADMIN")),
-        BlocProvider<EmployeeBloc>(
-            create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE")),
-        BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
-        BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
-        BlocProvider<AuthBloc>(
-            create: (context) => AuthBloc(
-                repos,
-                BlocProvider.of<CategoryBloc>(context),
-                BlocProvider.of<ProductBloc>(context))
-              ..add(LoadAuth())),
-        BlocProvider<SalesOrderBloc>(
-            create: (context) => OrderBloc(repos, true)),
-        BlocProvider<PurchOrderBloc>(
-            create: (context) => OrderBloc(repos, false)),
-        BlocProvider<SalesCartBloc>(
-            create: (context) => CartBloc(
-                repos: repos,
-                sales: true,
-                orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
-        BlocProvider<PurchCartBloc>(
-            create: (context) => CartBloc(
-                repos: repos,
-                sales: false,
-                orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
-        BlocProvider<OpportunityBloc>(
-            create: (context) => OpportunityBloc(repos)),
-        BlocProvider<AccntgBloc>(
-            create: (context) => AccntgBloc(repos)..add(LoadAccntg())),
-      ],
-      child: MyApp(),
-    ),
-  ));
+  runApp(AdminApp(repos: repos));
+}
+
+class AdminApp extends StatelessWidget {
+  const AdminApp({
+    Key key,
+    @required this.repos,
+  })  : assert(repos != null),
+        super(key: key);
+
+  final Object repos;
+
+  @override
+  Widget build(BuildContext context) {
+    return RepositoryProvider.value(
+      value: repos,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<LeadBloc>(
+              create: (context) => UserBloc(repos, "GROWERP_M_LEAD")),
+          BlocProvider<CustomerBloc>(
+              create: (context) => UserBloc(repos, "GROWERP_M_CUSTOMER")),
+          BlocProvider<SupplierBloc>(
+              create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER")),
+          BlocProvider<AdminBloc>(
+              create: (context) => UserBloc(repos, "GROWERP_M_ADMIN")),
+          BlocProvider<EmployeeBloc>(
+              create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE")),
+          BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
+          BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
+          BlocProvider<AuthBloc>(
+              create: (context) => AuthBloc(
+                  repos,
+                  BlocProvider.of<CategoryBloc>(context),
+                  BlocProvider.of<ProductBloc>(context))
+                ..add(LoadAuth())),
+          BlocProvider<SalesOrderBloc>(
+              create: (context) => OrderBloc(repos, true)),
+          BlocProvider<PurchOrderBloc>(
+              create: (context) => OrderBloc(repos, false)),
+          BlocProvider<SalesCartBloc>(
+              create: (context) => CartBloc(
+                  repos: repos,
+                  sales: true,
+                  orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
+          BlocProvider<PurchCartBloc>(
+              create: (context) => CartBloc(
+                  repos: repos,
+                  sales: false,
+                  orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
+          BlocProvider<OpportunityBloc>(
+              create: (context) => OpportunityBloc(repos)),
+          BlocProvider<AccntgBloc>(
+              create: (context) => AccntgBloc(repos)..add(LoadAccntg())),
+        ],
+        child: MyApp(),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
