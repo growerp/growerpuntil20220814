@@ -1,0 +1,4 @@
+to run integration test in the root directory:
+
+flutter drive   --driver=test_driver/integration_test.dart   --target=integration_test/topLevel_test.dart
+

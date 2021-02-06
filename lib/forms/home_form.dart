@@ -56,6 +56,7 @@ class DashBoard extends StatelessWidget {
             key: scaffoldMessengerKey,
             child: Scaffold(
                 appBar: AppBar(
+                    key: Key('DashBoardAuth'),
                     automaticallyImplyLeading:
                         ResponsiveWrapper.of(context).isSmallerThan(TABLET),
                     title: companyLogo(context, authenticate,
@@ -63,14 +64,12 @@ class DashBoard extends StatelessWidget {
                     actions: <Widget>[
                       if (authenticate?.apiKey != null)
                         IconButton(
+                            key: Key('logoutButton'),
                             icon: Icon(Icons.do_not_disturb),
                             tooltip: 'Logout',
                             onPressed: () => {
                                   BlocProvider.of<AuthBloc>(context)
                                       .add(Logout()),
-                                  Navigator.pushNamed(context, '/home',
-                                      arguments: FormArguments(
-                                          "Successfully logged out."))
                                 }),
                     ]),
                 drawer: myDrawer(context, authenticate),
@@ -147,6 +146,7 @@ class DashBoard extends StatelessWidget {
             key: scaffoldMessengerKey,
             child: Scaffold(
                 appBar: AppBar(
+                    key: Key('DashBoardUnAuth'),
                     title: companyLogo(context, authenticate,
                         authenticate?.company?.name ?? 'Company??')),
                 body: Center(
@@ -154,6 +154,7 @@ class DashBoard extends StatelessWidget {
                   SizedBox(height: 150),
                   Text("Login with an existing Id"),
                   RaisedButton(
+                    key: Key('loginButton'),
                     autofocus: true,
                     child: Text('Login'),
                     onPressed: () async {
@@ -169,6 +170,7 @@ class DashBoard extends StatelessWidget {
                   Text(
                       "Or create a new company and you being the administrator"),
                   RaisedButton(
+                    key: Key('newCompButton'),
                     child: Text('Create a new company and admin'),
                     onPressed: () {
                       authenticate.company.partyId = null;
