@@ -75,7 +75,7 @@ class DashBoard extends StatelessWidget {
                 drawer: myDrawer(context, authenticate),
                 body: Container(
                   padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 2.0),
+                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
                   child: GridView.count(
                     crossAxisCount:
                         ResponsiveWrapper.of(context).isSmallerThan(TABLET)
@@ -207,31 +207,31 @@ Card makeDashboardItem(BuildContext context, MenuItem menuItem, String subTitle,
               Center(
                 child: Text("${menuItem.title}",
                     style: TextStyle(
-                        fontSize: phone ? 20 : 25, color: Colors.black)),
+                        fontSize: phone ? 12 : 25, color: Colors.black)),
               ),
               SizedBox(height: 5.0),
               Center(
                 child: Text(subTitle,
                     style: TextStyle(
-                        fontSize: phone ? 15 : 20, color: Colors.black)),
+                        fontSize: phone ? 12 : 20, color: Colors.black)),
               ),
               SizedBox(height: 5.0),
               Center(
                 child: Text(subTitle1,
                     style: TextStyle(
-                        fontSize: phone ? 15 : 20, color: Colors.black)),
+                        fontSize: phone ? 12 : 20, color: Colors.black)),
               ),
               SizedBox(height: 5.0),
               Center(
                 child: Text(subTitle2,
                     style: TextStyle(
-                        fontSize: phone ? 15 : 20, color: Colors.black)),
+                        fontSize: phone ? 12 : 20, color: Colors.black)),
               ),
               SizedBox(height: 5.0),
               Center(
                 child: Text(subTitle3,
                     style: TextStyle(
-                        fontSize: phone ? 15 : 20, color: Colors.black)),
+                        fontSize: phone ? 12 : 20, color: Colors.black)),
               )
             ],
           ),
