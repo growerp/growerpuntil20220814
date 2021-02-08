@@ -4,7 +4,7 @@
     "backend": "moqui",
     "_________________comment__class": "AppHotel, AppEcommerceShop etc",
     "classificationId": "AppAdmin",
-    "_________________comment__production url _end backslash!": "https://rest.example.com/",
+    "_________________comment__production url _end forwardslash!": "https://rest.example.com/",
     "prodUrl": "https://test.growerp.org/",
     "_________________comment__time outs on rest interface connect, receive___": "in seconds for development and production",
     "connectTimeoutProd": 10,
