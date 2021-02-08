@@ -43,10 +43,12 @@ class ProductPage extends StatefulWidget {
   final Product product;
   ProductPage(this.message, this.product);
   @override
-  _ProductState createState() => _ProductState();
+  _ProductState createState() => _ProductState(message, product);
 }
 
 class _ProductState extends State<ProductPage> {
+  final String message;
+  final Product product;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
@@ -63,8 +65,8 @@ class _ProductState extends State<ProductPage> {
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _ProductState() {
-    HelperFunctions.showTopMessage(scaffoldMessengerKey, widget.message);
+  _ProductState(this.message, this.product) {
+    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
@@ -109,7 +111,7 @@ class _ProductState extends State<ProductPage> {
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
                 title: companyLogo(context, authenticate,
-                    'Product detail #${widget.product.productId}'),
+                    'Product detail #${product.productId}'),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),
@@ -193,7 +195,6 @@ class _ProductState extends State<ProductPage> {
   }
 
   Widget _showForm(repos, companyPartyId) {
-    Product product = widget.product;
     _nameController..text = product?.productName;
     _descriptionController..text = product?.description;
     _priceController..text = product?.price?.toString();

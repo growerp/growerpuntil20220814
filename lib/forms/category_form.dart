@@ -40,10 +40,12 @@ class CategoryPage extends StatefulWidget {
   final ProductCategory category;
   CategoryPage(this.message, this.category);
   @override
-  _MyCategoryState createState() => _MyCategoryState();
+  _CategoryState createState() => _CategoryState(message, category);
 }
 
-class _MyCategoryState extends State<CategoryPage> {
+class _CategoryState extends State<CategoryPage> {
+  final message;
+  final category;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descrController = TextEditingController();
@@ -57,8 +59,8 @@ class _MyCategoryState extends State<CategoryPage> {
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _MyCategoryState() {
-    HelperFunctions.showTopMessage(scaffoldMessengerKey, widget.message);
+  _CategoryState(this.message, this.category) {
+    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
@@ -102,7 +104,7 @@ class _MyCategoryState extends State<CategoryPage> {
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
                 title: companyLogo(context, authenticate,
-                    'Category detail #${widget.category.categoryId}'),
+                    'Category detail #${category.categoryId}'),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),
@@ -184,8 +186,8 @@ class _MyCategoryState extends State<CategoryPage> {
   }
 
   Widget _showForm() {
-    _nameController..text = widget.category?.categoryName;
-    _descrController..text = widget.category?.description;
+    _nameController..text = category?.categoryName;
+    _descrController..text = category?.description;
     final Text retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
@@ -210,12 +212,10 @@ class _MyCategoryState extends State<CategoryPage> {
                           ? kIsWeb
                               ? Image.network(_imageFile.path)
                               : Image.file(File(_imageFile.path))
-                          : widget.category?.image != null
-                              ? Image.memory(widget.category?.image)
+                          : category?.image != null
+                              ? Image.memory(category?.image)
                               : Text(
-                                  widget.category?.categoryName
-                                          ?.substring(0, 1) ??
-                                      '',
+                                  category?.categoryName?.substring(0, 1) ?? '',
                                   style: TextStyle(
                                       fontSize: 30, color: Colors.black))),
                   SizedBox(height: 30),
@@ -243,13 +243,12 @@ class _MyCategoryState extends State<CategoryPage> {
                   SizedBox(height: 20),
                   RaisedButton(
                       key: Key('update'),
-                      child: Text(widget.category?.categoryId == null
-                          ? 'Create'
-                          : 'Update'),
+                      child: Text(
+                          category?.categoryId == null ? 'Create' : 'Update'),
                       onPressed: () async {
                         if (_formKey.currentState.validate() && !loading) {
                           updatedCategory = ProductCategory(
-                              categoryId: widget.category?.categoryId,
+                              categoryId: category?.categoryId,
                               categoryName: _nameController.text,
                               description: _descrController.text,
                               image: await HelperFunctions.getResizedImage(
