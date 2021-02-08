@@ -7,7 +7,7 @@ A live version of admin is now available at https://admin.growerp.org where you 
 ## Quick start: after installation of [Java 11](https://openjdk.java.net/install/):
 ### Moqui backend:
   - git clone https://github.com/growerp/moqui-framework.git moqui && cd moqui
-  - ./gradlew getRuntime
+  - git clone https://github.com/growerp/moqui-runtime.git runtime
   - git clone https://github.com/growerp/growerp-moqui.git runtime/component/growerp
   - git clone https://github.com/growerp/moqui-paypal.git runtime/component/paypal
   - git clone https://github.com/growerp/PopCommerce.git runtime/component/PopCommerce
