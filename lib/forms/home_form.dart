@@ -122,8 +122,14 @@ class DashBoard extends StatelessWidget {
                         MenuItem(
                             title: "Accounting",
                             selectedImage: "assets/images/accounting.png"),
-                        " Assets: ${balanceSheet?.classInfoById?.asset?.totalPostedByTimePeriod?.all}",
-                        "",
+                        "Sls open inv: "
+                            "${authenticate.company.currencyId} "
+                            "${authenticate.stats.salesInvoicesNotPaidAmount}"
+                            "(${authenticate.stats.salesInvoicesNotPaidCount})",
+                        "Pur unp inv: "
+                            "${authenticate.company.currencyId} "
+                            "${authenticate.stats.purchInvoicesNotPaidAmount}"
+                            "(${authenticate.stats.purchInvoicesNotPaidCount})",
                         "",
                         "",
                       ),
