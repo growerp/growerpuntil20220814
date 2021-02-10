@@ -23,7 +23,6 @@ class _OrdersState extends State<OrdersForm> {
   int limit = 20;
   bool showSearchField;
   String searchString;
-  bool isLoading = false;
 
   _OrdersState(this.sales);
 
@@ -59,7 +58,11 @@ class _OrdersState extends State<OrdersForm> {
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
-            return orderPage(state);
+            if (state is OrderSuccess) {
+              print("========hsReachedmx ${state.hasReachedMax}");
+              return orderPage(state.orders, state.hasReachedMax);
+            }
+            return Center(child: CircularProgressIndicator());
           });
         else
           return BlocConsumer<PurchOrderBloc, OrderState>(
@@ -67,29 +70,36 @@ class _OrdersState extends State<OrdersForm> {
             if (state is OrderProblem)
               HelperFunctions.showMessage(
                   context, '${state.errorMessage}', Colors.red);
-            if (state is OrderSuccess)
+            if (state is OrderSuccess) {
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            }
+            if (state is OrderLoading)
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
-            if (state is OrderLoading) isLoading = true;
-            if (state is OrderSuccess) isLoading = false;
-            return Stack(children: [
-              if (isLoading) LoadingIndicator(),
-              orderPage(state),
-            ]);
+            List<Order> orders = [];
+            bool hasReachedMax = true;
+            if (state is OrderSuccess) {
+              orders = state.orders;
+              hasReachedMax = state.hasReachedMax;
+            }
+            if (state is OrderLoading)
+              return Center(child: CircularProgressIndicator());
+            return orderPage(orders, hasReachedMax);
           });
       }
       return Container(child: Center(child: Text("Not Authorized!")));
     });
   }
 
-  Widget orderPage(state) {
-    if (state is OrderSuccess) {
-      List<Order> orders = state.orders;
-      return ListView.builder(
-        itemCount: state.hasReachedMax && orders.isNotEmpty
-            ? state.orders.length + 1
-            : state.orders.length + 2,
+  Widget orderPage(orders, hasReachedMax) {
+    return ListView.builder(
+        itemCount: hasReachedMax && orders.isNotEmpty
+            ? orders.length + 1
+            : orders.length + 2,
         controller: _scrollController,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0)
@@ -138,24 +148,16 @@ class _OrdersState extends State<OrdersForm> {
                       ])
                     : Column(children: [
                         Row(children: <Widget>[
+                          Expanded(child: Text("Order ID")),
                           Expanded(
-                              child: Text("Order ID",
-                                  textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text(sales ? "Customer" : "Supplier",
-                                  textAlign: TextAlign.center)),
+                              child: Text(sales ? "Customer" : "Supplier")),
                           if (!ResponsiveWrapper.of(context)
                               .isSmallerThan(TABLET))
-                            Expanded(
-                                child:
-                                    Text("Email", textAlign: TextAlign.center)),
-                          Expanded(
-                              child: Text("Date", textAlign: TextAlign.center)),
+                            Expanded(child: Text("Email")),
+                          Expanded(child: Text("Date")),
                           if (!ResponsiveWrapper.of(context)
                               .isSmallerThan(TABLET))
-                            Expanded(
-                                child:
-                                    Text("Total", textAlign: TextAlign.center)),
+                            Expanded(child: Text("Total")),
                           Expanded(
                               child:
                                   Text("Status", textAlign: TextAlign.center)),
@@ -167,12 +169,16 @@ class _OrdersState extends State<OrdersForm> {
                         ]),
                         Divider(color: Colors.black),
                       ]),
-                trailing: Text(' '));
+                trailing: Text('                     '));
+          if (index == 1 && orders.isEmpty && searchString != null)
+            return Center(
+                heightFactor: 20,
+                child: Text("no records found!", textAlign: TextAlign.center));
           index -= 1;
-          return index >= state.orders.length
+          return index >= orders.length
               ? BottomLoader()
               : Dismissible(
-                  key: Key(state.orders[index].orderId),
+                  key: Key(orders[index].orderId),
                   direction: DismissDirection.startToEnd,
                   child: ListTile(
                       leading: CircleAvatar(
@@ -189,12 +195,13 @@ class _OrdersState extends State<OrdersForm> {
                           if (!ResponsiveWrapper.of(context)
                               .isSmallerThan(TABLET))
                             Expanded(
-                                child: Text("${orders[index].otherUser.email}",
-                                    textAlign: TextAlign.center)),
+                                child: Text(
+                              "${orders[index].otherUser.email}",
+                            )),
                           Expanded(
                               child: Text(
-                                  "${orders[index].placedDate.toString().substring(0, 11)}",
-                                  textAlign: TextAlign.center)),
+                            "${orders[index].placedDate.toString().substring(0, 11)}",
+                          )),
                           if (!ResponsiveWrapper.of(context)
                               .isSmallerThan(TABLET))
                             Expanded(
@@ -214,19 +221,43 @@ class _OrdersState extends State<OrdersForm> {
                       ),
                       onTap: () async {
                         await Navigator.pushNamed(context, '/order',
-                            arguments:
-                                FormArguments(null, tab, state.orders[index]));
+                            arguments: FormArguments(null, tab, orders[index]));
                       },
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete_forever),
-                        onPressed: () {
-                          _orderBloc.add(DeleteOrder(index));
-                        },
-                      )));
-        },
-      );
-    }
-    return Center(child: CircularProgressIndicator());
+                      trailing: Container(
+                          width: 100,
+                          child: Visibility(
+                              visible: orders[index].orderStatusId !=
+                                      'OrderCancelled' &&
+                                  orders[index].orderStatusId !=
+                                      'OrderCompleted',
+                              child: Row(children: [
+                                IconButton(
+                                  icon: Icon(Icons.delete_forever),
+                                  tooltip: 'Cancel Order',
+                                  onPressed: () {
+                                    orders[index].orderStatusId =
+                                        'OrderCancelled';
+                                    _orderBloc.add(UpdateOrder(orders[index]));
+                                  },
+                                ),
+                                IconButton(
+                                    icon: Icon(Icons.arrow_upward),
+                                    tooltip: orders[index].orderStatusId ==
+                                            'OrderOpen'
+                                        ? 'Place Order'
+                                        : orders[index].orderStatusId ==
+                                                'OrderPlaced'
+                                            ? 'Approve order'
+                                            : 'Complete order',
+                                    onPressed: () {
+                                      orders[index].orderStatusId =
+                                          nextOrderStatus[
+                                              orders[index].orderStatusId];
+                                      _orderBloc
+                                          .add(UpdateOrder(orders[index]));
+                                    })
+                              ])))));
+        });
   }
 
   @override

@@ -95,9 +95,10 @@ class _MyOrderState extends State<MyOrderPage> {
                   title: companyLogo(
                       context,
                       authenticate,
-                      "Sales Order " +
+                      (order.sales ? "Sales" : "Purchase") +
+                          " Order " +
                           (order.orderId != null
-                              ? "Order# ${order.orderId} St: ${order.orderStatusId}"
+                              ? "# ${order.orderId} ${order.orderStatusId.substring(5)}"
                               : "New")),
                   actions: <Widget>[
                     IconButton(
@@ -117,7 +118,7 @@ class _MyOrderState extends State<MyOrderPage> {
                           if (state is OrderProblem)
                             HelperFunctions.showMessage(
                                 context, '${state.errorMessage}', Colors.red);
-                          if (state is OrderLoaded)
+                          if (state is OrderSuccess)
                             HelperFunctions.showMessage(
                                 context, '${state.message}', Colors.green);
                         },
@@ -160,13 +161,11 @@ class _MyOrderState extends State<MyOrderPage> {
                 title: companyLogo(
                     context,
                     authenticate,
-                    order.sales
-                        ? "Sales"
-                        : "Purchase" +
-                            " Order " +
-                            (order.orderId != null
-                                ? "# ${order.orderId} ${order.orderStatusId}"
-                                : "New")),
+                    (order.sales ? "Sales" : "Purchase") +
+                        " Order " +
+                        (order.orderId != null
+                            ? "# ${order.orderId} ${order.orderStatusId.substring(5)}"
+                            : "New")),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),
