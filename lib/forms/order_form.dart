@@ -64,7 +64,6 @@ class _MyOrderState extends State<MyOrderPage> {
   Order order;
   Authenticate authenticate;
   Product _selectedProduct;
-  User _selectedOtherParty;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   _MyOrderState(this.message, this.orderIn) {
@@ -81,7 +80,6 @@ class _MyOrderState extends State<MyOrderPage> {
       _userBloc = BlocProvider.of<SupplierBloc>(context);
     }
     order = orderIn;
-    _selectedOtherParty = order?.otherUser;
     var repos = context.read<Object>();
     if (orderIn.sales)
       return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
@@ -137,7 +135,6 @@ class _MyOrderState extends State<MyOrderPage> {
                             return Center(child: CircularProgressIndicator());
                           if (state is CartLoaded) {
                             order = state.order;
-                            _selectedOtherParty = order?.otherUser;
                           }
                           return Column(children: [
                             SizedBox(height: 20),
@@ -202,7 +199,6 @@ class _MyOrderState extends State<MyOrderPage> {
                           return Center(child: CircularProgressIndicator());
                         if (state is CartLoaded) {
                           order = state.order;
-                          _selectedOtherParty = order.otherUser;
                         }
                         return Column(children: [
                           SizedBox(height: 20),
@@ -243,7 +239,7 @@ class _MyOrderState extends State<MyOrderPage> {
                                 label: order.sales ? 'Customer' : 'Supplier',
                                 dialogMaxWidth: 300,
                                 autoFocusSearchBox: true,
-                                selectedItem: _selectedOtherParty,
+                                selectedItem: order.otherUser,
                                 dropdownSearchDecoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -267,7 +263,7 @@ class _MyOrderState extends State<MyOrderPage> {
                                 },
                                 onChanged: (User newValue) {
                                   setState(() {
-                                    _selectedOtherParty = newValue;
+                                    order.otherUser = newValue;
                                   });
                                 },
                                 validator: (value) {
@@ -365,7 +361,7 @@ class _MyOrderState extends State<MyOrderPage> {
                 }
               }),
           RaisedButton(
-              key: Key('updateOrder'),
+              key: Key('createOrder'),
               child:
                   Text(order.orderId == null ? 'Create Order' : 'Update order'),
               onPressed: () {
@@ -381,7 +377,7 @@ class _MyOrderState extends State<MyOrderPage> {
                   _cartBloc.add(AddToCart(
                       order: Order(
                           sales: order.sales,
-                          otherUser: _selectedOtherParty,
+                          otherUser: order.otherUser,
                           orderItems: order.orderItems),
                       newItem: OrderItem(
                           productId: _selectedProduct?.productId,

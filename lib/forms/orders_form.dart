@@ -58,10 +58,8 @@ class _OrdersState extends State<OrdersForm> {
               HelperFunctions.showMessage(
                   context, '${state.message}', Colors.green);
           }, builder: (context, state) {
-            if (state is OrderSuccess) {
-              print("========hsReachedmx ${state.hasReachedMax}");
+            if (state is OrderSuccess)
               return orderPage(state.orders, state.hasReachedMax);
-            }
             return Center(child: CircularProgressIndicator());
           });
         else
