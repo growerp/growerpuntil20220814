@@ -103,8 +103,11 @@ class _CategoryState extends State<CategoryPage> {
               appBar: AppBar(
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(context, authenticate,
-                    'Category detail #${category.categoryId}'),
+                title: companyLogo(
+                    context,
+                    authenticate,
+                    "Category detail "
+                    "#${category != null ? category.categoryId : 'New'}"),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),

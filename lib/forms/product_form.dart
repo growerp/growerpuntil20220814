@@ -111,7 +111,7 @@ class _ProductState extends State<ProductPage> {
                 automaticallyImplyLeading:
                     ResponsiveWrapper.of(context).isSmallerThan(TABLET),
                 title: companyLogo(context, authenticate,
-                    'Product detail #${product.productId}'),
+                    "Product detail #${product != null ? product.productId : 'New'}"),
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.home),
