@@ -51,7 +51,6 @@ class DashBoard extends StatelessWidget {
       }
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
-        BalanceSheet balanceSheet;
         return ScaffoldMessenger(
             key: scaffoldMessengerKey,
             child: Scaffold(
@@ -62,6 +61,13 @@ class DashBoard extends StatelessWidget {
                     title: companyLogo(context, authenticate,
                         authenticate?.company?.name ?? 'Company??'),
                     actions: <Widget>[
+                      IconButton(
+                          key: Key('aboutButton'),
+                          icon: Image.asset('assets/images/about.png'),
+                          tooltip: 'About',
+                          onPressed: () => {
+                                Navigator.pushNamed(context, '/about'),
+                              }),
                       if (authenticate?.apiKey != null)
                         IconButton(
                             key: Key('logoutButton'),
