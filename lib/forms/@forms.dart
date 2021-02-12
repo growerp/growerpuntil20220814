@@ -16,3 +16,4 @@ export 'company_form.dart';
 export 'orders_form.dart';
 export 'slsPur_form.dart';
 export 'crm_form.dart';
+export 'accnt_form.dart';
