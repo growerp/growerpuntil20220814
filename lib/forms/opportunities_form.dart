@@ -5,6 +5,7 @@ import 'package:core/widgets/@widgets.dart';
 import 'package:core/helper_functions.dart';
 import 'package:models/@models.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
+import 'package:core/forms/@forms.dart';
 
 class OpportunitiesForm extends StatefulWidget {
   const OpportunitiesForm();
@@ -51,7 +52,8 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                 context, '${state.errorMessage}', Colors.red);
           }
         }, builder: (context, state) {
-          if (state is UserLoading) isLoading = true;
+          if (state is OpportunityProblem)
+            return FatalErrorForm("Could not load opportunities!");
           if (state is OpportunitySuccess) {
             isLoading = false;
             List<Opportunity> opportunities = state.opportunities;
@@ -226,6 +228,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
               },
             );
           }
+          isLoading = true;
           return Center(child: CircularProgressIndicator());
         });
       }
