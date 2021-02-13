@@ -44,9 +44,12 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
           if (state is OpportunityProblem)
             HelperFunctions.showMessage(
                 context, '${state.errorMessage}', Colors.red);
-          if (state is OpportunitySuccess)
+          if (state is OpportunitySuccess) {
             HelperFunctions.showMessage(
                 context, '${state.message}', Colors.green);
+            HelperFunctions.showMessage(
+                context, '${state.errorMessage}', Colors.red);
+          }
         }, builder: (context, state) {
           if (state is UserLoading) isLoading = true;
           if (state is OpportunitySuccess) {
@@ -95,7 +98,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                       });
                                     }),
                                   )),
-                              RaisedButton(
+                              ElevatedButton(
                                   child: Text('Search'),
                                   onPressed: () {
                                     _opportunityBloc.add(FetchOpportunity(
@@ -108,8 +111,9 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                           : Column(children: [
                               Row(children: <Widget>[
                                 Expanded(
-                                    child: Text("Opportunity.Name[ID]",
-                                        textAlign: TextAlign.center)),
+                                    child: Text(
+                                  "Opportunity Name[ID]",
+                                )),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
@@ -121,13 +125,13 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                       child: Text("Est. Probability %",
                                           textAlign: TextAlign.center)),
                                 Expanded(
-                                    child: Text("Lead Name",
-                                        textAlign: TextAlign.center)),
+                                    child: Text("Lead Name[ID]",
+                                        textAlign: TextAlign.right)),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
                                       child: Text("Lead Email",
-                                          textAlign: TextAlign.center)),
+                                          textAlign: TextAlign.right)),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(TABLET))
                                   Expanded(
@@ -163,9 +167,9 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               children: <Widget>[
                                 Expanded(
                                     child: Text(
-                                        "${opportunities[index].opportunityName}"
-                                        "[${opportunities[index].opportunityId}]",
-                                        textAlign: TextAlign.center)),
+                                  "${opportunities[index].opportunityName}"
+                                  "[${opportunities[index].opportunityId}]",
+                                )),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
@@ -180,20 +184,20 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                           textAlign: TextAlign.center)),
                                 Expanded(
                                     child: Text(
-                                        opportunities[index].leadPartyId != null
-                                            ? "${opportunities[index].leadFirstName} "
-                                                "${opportunities[index].leadLastName}"
-                                            : "",
-                                        textAlign: TextAlign.center)),
+                                  (opportunities[index].leadPartyId != null
+                                      ? "${opportunities[index].leadFirstName} "
+                                          "${opportunities[index].leadLastName}"
+                                          "[${opportunities[index].leadPartyId}]"
+                                      : ""),
+                                )),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
                                       child: Text(
-                                          opportunities[index].leadPartyId !=
-                                                  null
-                                              ? "${opportunities[index].leadEmail}"
-                                              : "",
-                                          textAlign: TextAlign.center)),
+                                    opportunities[index].leadPartyId != null
+                                        ? "${opportunities[index].leadEmail}"
+                                        : "",
+                                  )),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(TABLET))
                                   Text("${opportunities[index].stageId}",
@@ -202,7 +206,9 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
                                       child: Text(
-                                          "${opportunities[index].nextStep}",
+                                          opportunities[index].nextStep != null
+                                              ? "${opportunities[index].nextStep}"
+                                              : "",
                                           textAlign: TextAlign.center)),
                               ],
                             ),
