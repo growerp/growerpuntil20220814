@@ -1,7 +1,11 @@
 # GrowERP Admin App 
 
-more info at https://www.growerp.org (be patient, also in flutter, needs to load first....) 
-A live version of admin is now available at https://admin.growerp.org where you can create your own company
+more info at https://www.growerp.org (be patient, also in flutter, needs to load first....)
+
+Online versions available, where you can add your own company, demo data will be provided:
+web: https://admin.growerp.org
+mobile playstore: https://play.google.com/store/apps/details?id=org.growerp.admin
+mobile appstore: in progress...
 
 # if you want to run the system locally.
 ## Quick start: after installation of [Java 11](https://openjdk.java.net/install/):
@@ -16,7 +20,8 @@ A live version of admin is now available at https://admin.growerp.org where you 
   - git clone https://github.com/growerp/SimpleScreens.git runtime/component/SimpleScreens
   - git clone https://github.com/growerp/moqui-fop.git runtime/component/moqui-fop
   - ./gradlew downloadElasticSearch
-  - ./gradlew load
+  - ./gradlew build
+  - java -jar moqui.war load types=seed,seed-initial,install
   - java -jar moqui.war
 
 ### OR...Apache OFBiz backend:
