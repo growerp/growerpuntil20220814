@@ -130,6 +130,8 @@ class MyApp extends StatelessWidget {
         onGenerateRoute: router.generateRoute,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
+            if (state is AuthProblem)
+              return core.FatalErrorForm("Internet or server problem?");
             if (state is AuthUnauthenticated) {
               if (state.authenticate?.company == null) {
                 if (classificationId == 'AppAdmin')
