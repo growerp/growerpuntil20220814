@@ -12,150 +12,114 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/templates/companyLogo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:models/@models.dart';
-import 'package:core/helper_functions.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-
-import '@forms.dart';
+import 'package:core/templates/mainTemplate.dart';
 
 class HomeForm extends StatelessWidget {
-  final FormArguments formArguments;
-  HomeForm(this.formArguments);
-
-  @override
-  Widget build(BuildContext context) {
-    var a = (formArguments) => (DashBoard(formArguments?.message));
-    return ShowNavigationRail(a(formArguments), 0);
-  }
-}
-
-class DashBoard extends StatelessWidget {
-  final String message;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-  DashBoard([this.message]) {
-    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthProblem) {
-        return Container(
-            child: Center(
-                child: Text("${state.errorMessage}",
-                    style:
-                        new TextStyle(fontSize: 18.0, color: Colors.black))));
-      }
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
-        return ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                appBar: AppBar(
-                    key: Key('DashBoardAuth'),
-                    automaticallyImplyLeading:
-                        ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                    title: companyLogo(context, authenticate,
-                        authenticate?.company?.name ?? 'Company??'),
-                    actions: <Widget>[
-                      IconButton(
-                          key: Key('aboutButton'),
-                          icon: Image.asset('assets/images/about.png'),
-                          tooltip: 'About',
-                          onPressed: () => {
-                                Navigator.pushNamed(context, '/about'),
-                              }),
-                      if (authenticate?.apiKey != null)
-                        IconButton(
-                            key: Key('logoutButton'),
-                            icon: Icon(Icons.do_not_disturb),
-                            tooltip: 'Logout',
-                            onPressed: () => {
-                                  BlocProvider.of<AuthBloc>(context)
-                                      .add(Logout()),
-                                }),
-                    ]),
-                drawer: myDrawer(context, authenticate),
-                body: Container(
-                  padding:
-                      EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                  child: GridView.count(
-                    crossAxisCount:
-                        ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                            ? 2
-                            : 3,
-                    padding: EdgeInsets.all(3.0),
-                    children: <Widget>[
-                      makeDashboardItem(
-                        context,
-                        menuItems[1],
-                        authenticate.company.name.length > 20
-                            ? "${authenticate.company.name.substring(0, 20)}..."
-                            : "${authenticate.company.name}",
-                        "Administrators: ${authenticate.stats.admins}",
-                        "Employees: ${authenticate.stats.employees}",
-                        "",
-                      ),
-                      makeDashboardItem(
-                        context,
-                        menuItems[2],
-                        "All Opportunities: ${authenticate.stats.opportunities}",
-                        "My Opportunities: ${authenticate.stats.myOpportunities}",
-                        "Leads: ${authenticate.stats.leads}",
-                        "Customers: ${authenticate.stats.customers}",
-                      ),
-                      makeDashboardItem(
-                        context,
-                        menuItems[3],
-                        "Categories: ${authenticate.stats.categories}",
-                        "Products: ${authenticate.stats.products}",
-                        "",
-                        "",
-                      ),
-                      makeDashboardItem(
-                        context,
-                        menuItems[4],
-                        "Orders: ${authenticate.stats.openSlsOrders}",
-                        "Customers: ${authenticate.stats.customers}",
-                        "",
-                        "",
-                      ),
-                      makeDashboardItem(
-                        context,
-                        MenuItem(
-                            title: "Accounting",
-                            selectedImage: "assets/images/accounting.png",
-                            route: "/accounting"),
-                        "Sls open inv: "
-                            "${authenticate.company.currencyId} "
-                            "${authenticate.stats.salesInvoicesNotPaidAmount}"
-                            "(${authenticate.stats.salesInvoicesNotPaidCount})",
-                        "Pur unp inv: "
-                            "${authenticate.company.currencyId} "
-                            "${authenticate.stats.purchInvoicesNotPaidAmount}"
-                            "(${authenticate.stats.purchInvoicesNotPaidCount})",
-                        "",
-                        "",
-                      ),
-                      makeDashboardItem(
-                        context,
-                        menuItems[5],
-                        "Orders: ${authenticate.stats.openPurOrders}",
-                        "Suppliers: ${authenticate.stats.suppliers}",
-                        "",
-                        "",
-                      ),
-                    ],
+        return MainTemplate(
+            menuIndex: 0,
+            actions: <Widget>[
+              IconButton(
+                  key: Key('aboutButton'),
+                  icon: Image.asset('assets/images/about.png'),
+                  tooltip: 'About',
+                  onPressed: () => {
+                        Navigator.pushNamed(context, '/about'),
+                      }),
+              if (authenticate?.apiKey != null)
+                IconButton(
+                    key: Key('logoutButton'),
+                    icon: Icon(Icons.do_not_disturb),
+                    tooltip: 'Logout',
+                    onPressed: () => {
+                          BlocProvider.of<AuthBloc>(context).add(Logout()),
+                        }),
+            ],
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+              child: GridView.count(
+                crossAxisCount:
+                    ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 2 : 3,
+                padding: EdgeInsets.all(3.0),
+                children: <Widget>[
+                  makeDashboardItem(
+                    context,
+                    menuItems[1],
+                    authenticate.company.name.length > 20
+                        ? "${authenticate.company.name.substring(0, 20)}..."
+                        : "${authenticate.company.name}",
+                    "Administrators: ${authenticate.stats.admins}",
+                    "Employees: ${authenticate.stats.employees}",
+                    "",
                   ),
-                )));
+                  makeDashboardItem(
+                    context,
+                    menuItems[2],
+                    "All Opportunities: ${authenticate.stats.opportunities}",
+                    "My Opportunities: ${authenticate.stats.myOpportunities}",
+                    "Leads: ${authenticate.stats.leads}",
+                    "Customers: ${authenticate.stats.customers}",
+                  ),
+                  makeDashboardItem(
+                    context,
+                    menuItems[3],
+                    "Categories: ${authenticate.stats.categories}",
+                    "Products: ${authenticate.stats.products}",
+                    "",
+                    "",
+                  ),
+                  makeDashboardItem(
+                    context,
+                    menuItems[4],
+                    "Orders: ${authenticate.stats.openSlsOrders}",
+                    "Customers: ${authenticate.stats.customers}",
+                    "",
+                    "",
+                  ),
+                  makeDashboardItem(
+                    context,
+                    MenuItem(
+                        title: "Accounting",
+                        selectedImage: "assets/images/accounting.png",
+                        route: "/accounting"),
+                    "Sls open inv: "
+                        "${authenticate.company.currencyId} "
+                        "${authenticate.stats.salesInvoicesNotPaidAmount}"
+                        "(${authenticate.stats.salesInvoicesNotPaidCount})",
+                    "Pur unp inv: "
+                        "${authenticate.company.currencyId} "
+                        "${authenticate.stats.purchInvoicesNotPaidAmount}"
+                        "(${authenticate.stats.purchInvoicesNotPaidCount})",
+                    "",
+                    "",
+                  ),
+                  makeDashboardItem(
+                    context,
+                    menuItems[5],
+                    "Orders: ${authenticate.stats.openPurOrders}",
+                    "Suppliers: ${authenticate.stats.suppliers}",
+                    "",
+                    "",
+                  ),
+                ],
+              ),
+            ));
       }
 
       if (state is AuthUnauthenticated) {
+        final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+            GlobalKey<ScaffoldMessengerState>();
         Authenticate authenticate = state.authenticate;
         return ScaffoldMessenger(
             key: scaffoldMessengerKey,
@@ -168,7 +132,7 @@ class DashBoard extends StatelessWidget {
                     child: Column(children: <Widget>[
                   SizedBox(height: 150),
                   Text("Login with an existing Id"),
-                  RaisedButton(
+                  ElevatedButton(
                     key: Key('loginButton'),
                     autofocus: true,
                     child: Text('Login'),
@@ -176,15 +140,15 @@ class DashBoard extends StatelessWidget {
                       dynamic result =
                           await Navigator.pushNamed(context, '/login');
                       if (result)
-                        Navigator.pushNamed(context, '/home',
-                            arguments:
-                                FormArguments("Successfully logged in."));
+                        Navigator.pushNamed(context, '/',
+                            arguments: FormArguments(
+                                message: "Successfully logged in."));
                     },
                   ),
                   SizedBox(height: 50),
                   Text(
                       "Or create a new company and you being the administrator"),
-                  RaisedButton(
+                  ElevatedButton(
                     key: Key('newCompButton'),
                     child: Text('Create a new company and admin'),
                     onPressed: () {

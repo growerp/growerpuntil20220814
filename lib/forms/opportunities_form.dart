@@ -1,3 +1,17 @@
+/*
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
@@ -19,14 +33,14 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
   OpportunityBloc _opportunityBloc;
   Authenticate authenticate;
   int limit = 20;
-  bool search;
+  bool searchField;
   String searchString;
   bool isLoading;
 
   @override
   void initState() {
     super.initState();
-    search = false;
+    searchField = false;
     _scrollController.addListener(_onScroll);
     _opportunityBloc = BlocProvider.of<OpportunityBloc>(context)
       ..add(FetchOpportunity());
@@ -46,19 +60,18 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
             HelperFunctions.showMessage(
                 context, '${state.errorMessage}', Colors.red);
           if (state is OpportunitySuccess) {
-            HelperFunctions.showMessage(
-                context, '${state.message}', Colors.green);
-            HelperFunctions.showMessage(
-                context, '${state.errorMessage}', Colors.red);
+            HelperFunctions.showMessage(context, '${state.message}',
+                state.error ? Colors.red : Colors.green);
           }
         }, builder: (context, state) {
           if (state is OpportunityProblem)
             return FatalErrorForm("Could not load opportunities!");
           if (state is OpportunitySuccess) {
             isLoading = false;
+            bool hasReachedMax = state.hasReachedMax;
             List<Opportunity> opportunities = state.opportunities;
             return ListView.builder(
-              itemCount: state.hasReachedMax && opportunities.isNotEmpty
+              itemCount: hasReachedMax && opportunities.isNotEmpty
                   ? state.opportunities.length + 1
                   : state.opportunities.length + 2,
               controller: _scrollController,
@@ -67,12 +80,12 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                   return ListTile(
                       onTap: (() {
                         setState(() {
-                          search = !search;
+                          searchField = !searchField;
                         });
                       }),
                       leading:
                           Image.asset('assets/images/search.png', height: 30),
-                      title: search
+                      title: searchField
                           ? Row(children: <Widget>[
                               SizedBox(
                                   width: ResponsiveWrapper.of(context)
@@ -96,7 +109,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                       _opportunityBloc.add(FetchOpportunity(
                                           search: value, limit: limit));
                                       setState(() {
-                                        search = !search;
+                                        searchField = !searchField;
                                       });
                                     }),
                                   )),
@@ -106,7 +119,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                     _opportunityBloc.add(FetchOpportunity(
                                         search: searchString, limit: limit));
                                     setState(() {
-                                      search = !search;
+                                      searchField = !searchField;
                                     });
                                   })
                             ])
@@ -216,8 +229,9 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                             ),
                             onTap: () async {
                               await Navigator.pushNamed(context, '/opportunity',
-                                  arguments: FormArguments(
-                                      null, 0, state.opportunities[index]));
+                                  arguments: state.opportunities[index]);
+                              BlocProvider.of<OpportunityBloc>(context)
+                                  .add(FetchOpportunity());
                             },
                             trailing: IconButton(
                               icon: Icon(Icons.delete_forever),

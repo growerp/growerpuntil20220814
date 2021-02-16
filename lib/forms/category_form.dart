@@ -13,25 +13,32 @@
  */
 
 import 'dart:io';
+import 'package:core/templates/@templates.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:models/@models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/widgets/@widgets.dart';
+import '@forms.dart';
 
 class CategoryForm extends StatelessWidget {
   final FormArguments formArguments;
-  CategoryForm(this.formArguments);
+  const CategoryForm({Key key, this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (CategoryPage(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 3);
+    ProductCategory category = formArguments.object;
+    catalogMap[1] = MapItem(
+        form: CategoryPage(formArguments.message, category),
+        label: "Category #${category != null ? category.categoryId : 'New'}",
+        icon: Icon(Icons.home));
+    return MainTemplate(
+      mapItems: catalogMap,
+      menuIndex: MENU_CATALOG,
+      tabIndex: 1,
+    );
   }
 }
 
@@ -94,89 +101,37 @@ class _CategoryState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    Authenticate authenticate;
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return ScaffoldMessenger(
-          key: scaffoldMessengerKey,
-          child: Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(
-                    context,
-                    authenticate,
-                    "Category detail "
-                    "#${category != null ? category.categoryId : 'New'}"),
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.home),
-                      onPressed: () => Navigator.pushNamed(context, '/home'))
-                ],
-              ),
-              floatingActionButton: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(height: 100),
-                  FloatingActionButton(
-                    onPressed: () {
-                      _onImageButtonPressed(ImageSource.gallery,
-                          context: context);
-                    },
-                    heroTag: 'image0',
-                    tooltip: 'Pick Image from gallery',
-                    child: const Icon(Icons.photo_library),
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                    visible: !kIsWeb,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        _onImageButtonPressed(ImageSource.camera,
-                            context: context);
-                      },
-                      heroTag: 'image1',
-                      tooltip: 'Take a Photo',
-                      child: const Icon(Icons.camera_alt),
-                    ),
-                  )
-                ],
-              ),
-              drawer: myDrawer(context, authenticate),
-              body: BlocListener<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthProblem)
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                  },
-                  child: BlocListener<CategoryBloc, CategoryState>(
-                      listener: (context, state) {
-                    if (state is CategoryProblem) {
-                      loading = false;
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                    }
-                    if (state is CategorySuccess) Navigator.of(context).pop();
-                  }, child: Builder(builder: (BuildContext context) {
-                    return Center(
-                      child: !kIsWeb &&
-                              defaultTargetPlatform == TargetPlatform.android
-                          ? FutureBuilder<void>(
-                              future: retrieveLostData(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text(
-                                    'Pick image error: ${snapshot.error}}',
-                                    textAlign: TextAlign.center,
-                                  );
-                                }
-                                return _showForm();
-                              })
-                          : _showForm(),
-                    );
-                  })))));
-    });
+    return ScaffoldMessenger(
+        key: scaffoldMessengerKey,
+        child: Scaffold(
+            floatingActionButton: imageButtons(context, _onImageButtonPressed),
+            body: BlocListener<CategoryBloc, CategoryState>(
+                listener: (context, state) {
+              if (state is CategoryProblem) {
+                loading = false;
+                HelperFunctions.showMessage(
+                    context, '${state.errorMessage}', Colors.red);
+              }
+              if (state is CategorySuccess) Navigator.of(context).pop();
+            }, child: Builder(builder: (BuildContext context) {
+              return Center(
+                child:
+                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                        ? FutureBuilder<void>(
+                            future: retrieveLostData(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<void> snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                  'Pick image error: ${snapshot.error}}',
+                                  textAlign: TextAlign.center,
+                                );
+                              }
+                              return _showForm();
+                            })
+                        : _showForm(),
+              );
+            }))));
   }
 
   Text _getRetrieveErrorWidget() {
@@ -244,7 +199,7 @@ class _CategoryState extends State<CategoryPage> {
                     },
                   ),
                   SizedBox(height: 20),
-                  RaisedButton(
+                  ElevatedButton(
                       key: Key('update'),
                       child: Text(
                           category?.categoryId == null ? 'Create' : 'Update'),
@@ -263,7 +218,7 @@ class _CategoryState extends State<CategoryPage> {
                         }
                       }),
                   SizedBox(height: 20),
-                  RaisedButton(
+                  ElevatedButton(
                       key: Key('cancel'),
                       child: Text('Cancel'),
                       onPressed: () {

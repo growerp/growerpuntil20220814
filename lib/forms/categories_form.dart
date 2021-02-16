@@ -86,7 +86,7 @@ class _CategoriesState extends State<CategoriesForm> {
                                       });
                                     }),
                                   )),
-                              RaisedButton(
+                              ElevatedButton(
                                   child: Text('Search'),
                                   onPressed: () {
                                     _categoryBloc.add(FetchCategory(
@@ -154,7 +154,7 @@ class _CategoriesState extends State<CategoriesForm> {
                               dynamic result = await Navigator.pushNamed(
                                   context, '/category',
                                   arguments: FormArguments(
-                                      null, 0, categories[index]));
+                                      menuIndex: 0, object: categories[index]));
                               setState(() {
                                 if (result is ProductCategory)
                                   categories

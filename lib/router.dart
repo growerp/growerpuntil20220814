@@ -21,21 +21,20 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   print(">>>NavigateTo { ${settings.name} " +
       "with: ${settings.arguments.toString()} }");
   switch (settings.name) {
+    case '/':
+      return MaterialPageRoute(builder: (context) => local.HomeForm());
     case '/home':
-      return MaterialPageRoute(
-          builder: (context) => local.HomeForm(settings.arguments));
+      return MaterialPageRoute(builder: (context) => local.HomeForm());
     case '/accounting':
-      return MaterialPageRoute(
-          builder: (context) => local.AccntForm(settings.arguments));
+      return MaterialPageRoute(builder: (context) => local.AccountingForm());
     case '/catalog':
-      return MaterialPageRoute(
-          builder: (context) => local.CatalogForm(settings.arguments));
+      return MaterialPageRoute(builder: (context) => local.CatalogForm());
     case '/category':
       return MaterialPageRoute(
-          builder: (context) => local.CategoryForm(settings.arguments));
+          builder: (context) =>
+              local.CategoryForm(formArguments: settings.arguments));
     case '/company':
-      return MaterialPageRoute(
-          builder: (context) => local.CompanyForm(settings.arguments));
+      return MaterialPageRoute(builder: (context) => local.CompanyForm());
     case '/login':
       return MaterialPageRoute(
           builder: (context) => LoginForm(settings.arguments));
@@ -47,30 +46,28 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) => ChangePwForm(changePwArgs: settings.arguments));
     case '/about':
       return MaterialPageRoute(builder: (context) => AboutForm());
-    case '/companyInfo':
-      return MaterialPageRoute(
-          builder: (context) => CompanyInfoForm(settings.arguments));
     case '/product':
       return MaterialPageRoute(
-          builder: (context) => local.ProductForm(settings.arguments));
-    case '/slsOrders':
-      return MaterialPageRoute(
-          builder: (context) => local.SlsOrdersForm(settings.arguments));
-    case '/purOrders':
-      return MaterialPageRoute(
-          builder: (context) => local.PurOrdersForm(settings.arguments));
+          builder: (context) =>
+              local.ProductForm(formArguments: settings.arguments));
+    case '/sales':
+      return MaterialPageRoute(builder: (context) => local.SalesForm());
+    case '/purchase':
+      return MaterialPageRoute(builder: (context) => local.PurchaseForm());
     case '/order':
       return MaterialPageRoute(
-          builder: (context) => local.OrderForm(settings.arguments));
+          builder: (context) =>
+              local.OrderForm(formArguments: settings.arguments));
     case '/crm':
-      return MaterialPageRoute(
-          builder: (context) => local.CrmForm(settings.arguments));
+      return MaterialPageRoute(builder: (context) => local.CrmForm());
     case '/opportunity':
       return MaterialPageRoute(
-          builder: (context) => local.OpportunityForm(settings.arguments));
+          builder: (context) =>
+              local.OpportunityForm(opportunity: settings.arguments));
     case '/user':
       return MaterialPageRoute(
-          builder: (context) => local.UserForm(settings.arguments));
+          builder: (context) =>
+              local.UserForm(formArguments: settings.arguments));
     default:
       return MaterialPageRoute(
           builder: (context) => FatalErrorForm(

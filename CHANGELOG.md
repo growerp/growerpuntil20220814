@@ -1,8 +1,9 @@
 # Change log GrowERP Admin
 
-* 2010/02/12    first version of accounting dashboard
+* 2021/02/20    Major refactoring now using a template for all screens
+* 2021/02/12    first version of accounting dashboard
 * 2021/02/09    add accounting info to general dashboard
-* 2021/02/08    first upload to appstore
+* 2021/02/08    first upload to appstore/playstore
 * 2021/02/06    first integration test 
 * 2021/01/19    add statistics to dasboard
 * 2021/01/09    add purchase orders

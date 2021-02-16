@@ -92,7 +92,7 @@ class _ProductsState extends State<ProductsForm> {
                                       });
                                     }),
                                   )),
-                              RaisedButton(
+                              ElevatedButton(
                                   child: Text('Search'),
                                   onPressed: () {
                                     _productBloc.add(FetchProduct(
@@ -165,8 +165,8 @@ class _ProductsState extends State<ProductsForm> {
                             ),
                             onTap: () async {
                               await Navigator.pushNamed(context, '/product',
-                                  arguments:
-                                      FormArguments(null, 0, products[index]));
+                                  arguments: FormArguments(
+                                      menuIndex: 0, object: products[index]));
                             },
                             trailing: IconButton(
                               icon: Icon(Icons.delete_forever),

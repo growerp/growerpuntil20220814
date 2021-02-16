@@ -137,7 +137,7 @@ class _OrdersState extends State<OrdersForm> {
                                 });
                               }),
                             )),
-                        RaisedButton(
+                        ElevatedButton(
                             child: Text('Search'),
                             onPressed: () {
                               _orderBloc.add(FetchOrder(
@@ -219,7 +219,8 @@ class _OrdersState extends State<OrdersForm> {
                       ),
                       onTap: () async {
                         await Navigator.pushNamed(context, '/order',
-                            arguments: FormArguments(null, tab, orders[index]));
+                            arguments: FormArguments(
+                                menuIndex: tab, object: orders[index]));
                       },
                       trailing: Container(
                           width: 100,

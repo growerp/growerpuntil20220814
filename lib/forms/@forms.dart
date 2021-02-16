@@ -1,8 +1,8 @@
 export 'category_form.dart';
 export 'home_form.dart';
 export 'order_form.dart';
-export 'slsOrders_form.dart';
-export 'purOrders_form.dart';
+export 'sales_form.dart';
+export 'purchase_form.dart';
 export 'product_form.dart';
 export 'catalog_form.dart';
 export 'product_form.dart';
@@ -14,6 +14,5 @@ export 'users_form.dart';
 export 'opportunities_form.dart';
 export 'company_form.dart';
 export 'orders_form.dart';
-export 'slsPur_form.dart';
 export 'crm_form.dart';
-export 'accnt_form.dart';
+export 'accounting_form.dart';

@@ -23,18 +23,25 @@ import 'package:image_picker/image_picker.dart';
 import 'package:models/@models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/widgets/@widgets.dart';
-import 'package:responsive_framework/responsive_framework.dart';
+import 'package:core/templates/@templates.dart';
+import '@forms.dart';
 
 class ProductForm extends StatelessWidget {
   final FormArguments formArguments;
-  ProductForm(this.formArguments);
+  const ProductForm({Key key, this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (ProductPage(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 3);
+    Product product = formArguments.object;
+    catalogMap[0] = MapItem(
+        form: ProductPage(formArguments.message, product),
+        label: "product #${product != null ? product.productId : 'New'}",
+        icon: Icon(Icons.home));
+    return MainTemplate(
+      mapItems: catalogMap,
+      menuIndex: 3,
+      tabIndex: 0,
+    );
   }
 }
 
@@ -101,88 +108,37 @@ class _ProductState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     var repos = context.read<Object>();
-    Authenticate authenticate;
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return ScaffoldMessenger(
-          key: scaffoldMessengerKey,
-          child: Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(context, authenticate,
-                    "Product detail #${product != null ? product.productId : 'New'}"),
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.home),
-                      onPressed: () => Navigator.pushNamed(context, 'home',
-                          arguments: FormArguments()))
-                ],
-              ),
-              floatingActionButton: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(height: 100),
-                  FloatingActionButton(
-                    onPressed: () {
-                      _onImageButtonPressed(ImageSource.gallery,
-                          context: context);
-                    },
-                    heroTag: 'image0',
-                    tooltip: 'Pick Image from gallery',
-                    child: const Icon(Icons.photo_library),
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                    visible: !kIsWeb,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        _onImageButtonPressed(ImageSource.camera,
-                            context: context);
-                      },
-                      heroTag: 'image1',
-                      tooltip: 'Take a Photo',
-                      child: const Icon(Icons.camera_alt),
-                    ),
-                  )
-                ],
-              ),
-              drawer: myDrawer(context, authenticate),
-              body: BlocListener<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthProblem)
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                  },
-                  child: BlocListener<ProductBloc, ProductState>(
-                      listener: (context, state) {
-                    if (state is ProductProblem) {
-                      loading = false;
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                    }
-                    if (state is ProductSuccess) Navigator.of(context).pop();
-                  }, child: Builder(builder: (BuildContext context) {
-                    return Center(
-                      child: !kIsWeb &&
-                              defaultTargetPlatform == TargetPlatform.android
-                          ? FutureBuilder<void>(
-                              future: retrieveLostData(),
-                              builder: (BuildContext context,
-                                  AsyncSnapshot<void> snapshot) {
-                                if (snapshot.hasError) {
-                                  return Text(
-                                    'Pick image error: ${snapshot.error}}',
-                                    textAlign: TextAlign.center,
-                                  );
-                                }
-                                return _showForm(
-                                    repos, authenticate.company.partyId);
-                              })
-                          : _showForm(repos, authenticate.company.partyId),
-                    );
-                  })))));
-    });
+    return ScaffoldMessenger(
+        key: scaffoldMessengerKey,
+        child: Scaffold(
+            floatingActionButton: imageButtons(context, _onImageButtonPressed),
+            body: BlocListener<ProductBloc, ProductState>(
+                listener: (context, state) {
+              if (state is ProductProblem) {
+                loading = false;
+                HelperFunctions.showMessage(
+                    context, '${state.errorMessage}', Colors.red);
+              }
+              if (state is ProductSuccess) Navigator.of(context).pop();
+            }, child: Builder(builder: (BuildContext context) {
+              return Center(
+                child:
+                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                        ? FutureBuilder<void>(
+                            future: retrieveLostData(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<void> snapshot) {
+                              if (snapshot.hasError) {
+                                return Text(
+                                  'Pick image error: ${snapshot.error}}',
+                                  textAlign: TextAlign.center,
+                                );
+                              }
+                              return _showForm(repos);
+                            })
+                        : _showForm(repos),
+              );
+            }))));
   }
 
   Text _getRetrieveErrorWidget() {
@@ -194,7 +150,7 @@ class _ProductState extends State<ProductPage> {
     return null;
   }
 
-  Widget _showForm(repos, companyPartyId) {
+  Widget _showForm(repos) {
     _nameController..text = product?.productName;
     _descriptionController..text = product?.description;
     _priceController..text = product?.price?.toString();
@@ -285,7 +241,6 @@ class _ProductState extends State<ProductPage> {
                     itemAsString: (ProductCategory u) => "${u.categoryName}",
                     onFind: (String filter) async {
                       var result = await repos.getCategory(
-                          companyPartyId: companyPartyId,
                           filter: _categorySearchBoxController.text);
                       return result;
                     },
@@ -296,7 +251,7 @@ class _ProductState extends State<ProductPage> {
                     },
                   ),
                   SizedBox(height: 20),
-                  RaisedButton(
+                  ElevatedButton(
                       key: Key('update'),
                       child: Text(
                           product?.productId == null ? 'Create' : 'Update'),
@@ -317,7 +272,7 @@ class _ProductState extends State<ProductPage> {
                         }
                       }),
                   SizedBox(height: 20),
-                  RaisedButton(
+                  ElevatedButton(
                       key: Key('cancel'),
                       child: Text('Cancel'),
                       onPressed: () {

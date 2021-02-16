@@ -17,42 +17,32 @@ import 'package:core/templates/@templates.dart';
 import 'package:models/@models.dart';
 import '@forms.dart';
 
-class CrmForm extends StatelessWidget {
+class SalesForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
-      mapItems: crmMap,
-      menuIndex: 2,
+      mapItems: salesMap,
+      menuIndex: 4,
     );
   }
 }
 
-List<MapItem> crmMap = [
+List<MapItem> salesMap = [
   MapItem(
-    form: OpportunitiesForm(),
-    label: "My Opportunities",
+    form: OrdersForm(sales: true),
+    label: "Sales orders",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/opportunity",
+    floatButtonRoute: "/slsOrder",
   ),
-  MapItem(
-      form: UsersForm(
-          key: ValueKey("GROWERP_M_LEAD"),
-          userGroupId: "GROWERP_M_LEAD",
-          menuIndex: MENU_CRM),
-      label: "Leads",
-      icon: Icon(Icons.business),
-      floatButtonRoute: "/user",
-      floatButtonArgs: FormArguments(
-          object: User(userGroupId: "GROWERP_M_LEAD"), menuIndex: MENU_CRM)),
   MapItem(
       form: UsersForm(
           key: ValueKey("GROWERP_M_CUSTOMER"),
           userGroupId: "GROWERP_M_CUSTOMER",
-          menuIndex: MENU_CRM),
+          menuIndex: MENU_SALES),
       label: "Customers",
-      icon: Icon(Icons.school),
+      icon: Icon(Icons.business),
       floatButtonRoute: "/user",
       floatButtonArgs: FormArguments(
           object: User(userGroupId: "GROWERP_M_CUSTOMER"),
-          menuIndex: MENU_CRM)),
+          menuIndex: MENU_SALES)),
 ];

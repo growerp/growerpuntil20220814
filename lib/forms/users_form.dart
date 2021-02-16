@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
+import 'package:core/forms/@forms.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:core/helper_functions.dart';
 import 'package:models/@models.dart';
@@ -8,9 +9,9 @@ import 'package:responsive_framework/responsive_wrapper.dart';
 
 class UsersForm extends StatefulWidget {
   final String userGroupId;
-  final int tab;
+  final int menuIndex;
   final Key key;
-  const UsersForm({this.key, this.userGroupId, this.tab});
+  const UsersForm({this.key, this.userGroupId, this.menuIndex});
   @override
   _UsersState createState() => _UsersState();
 }
@@ -110,7 +111,7 @@ class _UsersState extends State<UsersForm> {
                                     });
                                   }),
                                 )),
-                            RaisedButton(
+                            ElevatedButton(
                                 child: Text('Search'),
                                 onPressed: () {
                                   _userBloc.add(FetchUser(
@@ -192,7 +193,9 @@ class _UsersState extends State<UsersForm> {
                         onTap: () async {
                           await Navigator.pushNamed(context, '/user',
                               arguments: FormArguments(
-                                  null, widget.tab, users[index]));
+                                  object: users[index],
+                                  menuIndex: widget.menuIndex));
+                          //                        BlocProvider.of<LeadBloc>(context).add(FetchUser());
                         },
                         trailing: IconButton(
                           icon: Icon(Icons.delete_forever),
@@ -210,10 +213,13 @@ class _UsersState extends State<UsersForm> {
             if (state is UserProblem)
               HelperFunctions.showMessage(
                   context, '${state.errorMessage}', Colors.red);
-            if (state is UserSuccess)
-              HelperFunctions.showMessage(
-                  context, '${state.message}', Colors.green);
+            if (state is UserSuccess) {
+              HelperFunctions.showMessage(context, '${state.message}',
+                  state.error ? Colors.red : Colors.green);
+            }
           }, builder: (context, state) {
+            if (state is UserProblem)
+              return FatalErrorForm("Could not load leads!");
             if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
               isLoading = false;
@@ -229,10 +235,13 @@ class _UsersState extends State<UsersForm> {
             if (state is UserProblem)
               HelperFunctions.showMessage(
                   context, '${state.errorMessage}', Colors.red);
-            if (state is UserSuccess)
-              HelperFunctions.showMessage(
-                  context, '${state.message}', Colors.green);
+            if (state is UserSuccess) {
+              HelperFunctions.showMessage(context, '${state.message}',
+                  state.error ? Colors.red : Colors.green);
+            }
           }, builder: (context, state) {
+            if (state is UserProblem)
+              return FatalErrorForm("Could not load customers!");
             if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
               isLoading = false;
@@ -247,10 +256,13 @@ class _UsersState extends State<UsersForm> {
             if (state is UserProblem)
               HelperFunctions.showMessage(
                   context, '${state.errorMessage}', Colors.red);
-            if (state is UserSuccess)
-              HelperFunctions.showMessage(
-                  context, '${state.message}', Colors.green);
+            if (state is UserSuccess) {
+              HelperFunctions.showMessage(context, '${state.message}',
+                  state.error ? Colors.red : Colors.green);
+            }
           }, builder: (context, state) {
+            if (state is UserProblem)
+              return FatalErrorForm("Could not load administrators!");
             if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
               isLoading = false;
@@ -266,10 +278,13 @@ class _UsersState extends State<UsersForm> {
             if (state is UserProblem)
               HelperFunctions.showMessage(
                   context, '${state.errorMessage}', Colors.red);
-            if (state is UserSuccess)
-              HelperFunctions.showMessage(
-                  context, '${state.message}', Colors.green);
+            if (state is UserSuccess) {
+              HelperFunctions.showMessage(context, '${state.message}',
+                  state.error ? Colors.red : Colors.green);
+            }
           }, builder: (context, state) {
+            if (state is UserProblem)
+              return FatalErrorForm("Could not load employees!");
             if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
               isLoading = false;
@@ -285,10 +300,13 @@ class _UsersState extends State<UsersForm> {
             if (state is UserProblem)
               HelperFunctions.showMessage(
                   context, '${state.errorMessage}', Colors.red);
-            if (state is UserSuccess)
-              HelperFunctions.showMessage(
-                  context, '${state.message}', Colors.green);
+            if (state is UserSuccess) {
+              HelperFunctions.showMessage(context, '${state.message}',
+                  state.error ? Colors.red : Colors.green);
+            }
           }, builder: (context, state) {
+            if (state is UserProblem)
+              return FatalErrorForm("Could not load suppliers!");
             if (state is UserLoading) isLoading = true;
             if (state is UserSuccess) {
               isLoading = false;

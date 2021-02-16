@@ -20,38 +20,96 @@ import 'package:image_picker/image_picker.dart';
 import 'package:models/@models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:core/templates/@templates.dart';
+import '@forms.dart';
 
 class UserForm extends StatelessWidget {
   final FormArguments formArguments;
-  UserForm(this.formArguments);
+  const UserForm({Key key, this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (MyUserPage(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), formArguments.tab);
+    int tab;
+    User user = formArguments.object;
+    int menuIndex = formArguments.menuIndex;
+    String userType;
+    List<MapItem> mapItems;
+    switch (menuIndex) {
+      case MENU_COMPANY:
+        if (user.userGroupId == "GROWERP_M_ADMIN") {
+          tab = 1;
+          userType = 'Admin';
+        } else {
+          tab = 2;
+          userType = 'Employee';
+        }
+        companyMap[tab] = MapItem(
+            form: UserPage(user),
+            label: "$userType #${user != null ? user.partyId : 'New'}",
+            icon: Icon(Icons.home));
+        mapItems = companyMap;
+        break;
+      case MENU_CRM:
+        if (user.userGroupId == "GROWERP_M_LEAD") {
+          tab = 1;
+          userType = 'Lead';
+        } else {
+          tab = 2;
+          userType = 'Customer';
+        }
+        crmMap[tab] = MapItem(
+            form: UserPage(user),
+            label: "$userType #${user != null ? user.partyId : 'New'}",
+            icon: Icon(Icons.home));
+        mapItems = crmMap;
+        break;
+      case MENU_SALES:
+        if (user.userGroupId == "GROWERP_M_CUSTOMER") {
+          tab = 1;
+          userType = 'Customer';
+        }
+        salesMap[tab] = MapItem(
+            form: UserPage(user),
+            label: "$userType #${user != null ? user.partyId : 'New'}",
+            icon: Icon(Icons.home));
+        mapItems = salesMap;
+        break;
+      case MENU_PURCHASE:
+        if (user.userGroupId == "GROWERP_M_SUPPLIER") {
+          tab = 1;
+          userType = 'Supplier';
+        }
+        purchaseMap[tab] = MapItem(
+            form: UserPage(user),
+            label: "$userType #${user != null ? user.partyId : 'New'}",
+            icon: Icon(Icons.home));
+        mapItems = purchaseMap;
+        break;
+    }
+    return MainTemplate(
+      mapItems: mapItems,
+      menuIndex: menuIndex,
+      tabIndex: tab,
+    );
   }
 }
 
-class MyUserPage extends StatefulWidget {
-  final String message;
+class UserPage extends StatefulWidget {
   final User user;
-  MyUserPage(this.message, this.user);
+  UserPage(this.user);
   @override
-  _MyUserState createState() => _MyUserState(message, user);
+  _UserState createState() => _UserState();
 }
 
-class _MyUserState extends State<MyUserPage> {
-  final String message;
-  final User user;
+class _UserState extends State<UserPage> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _companyController = TextEditingController();
+
   User updatedUser;
   bool loading = false;
   UserGroup _selectedUserGroup;
@@ -61,9 +119,6 @@ class _MyUserState extends State<MyUserPage> {
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _MyUserState([this.message, this.user]) {
-    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
-  }
 
   void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
     try {
@@ -96,6 +151,8 @@ class _MyUserState extends State<MyUserPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
+    User user = widget.user;
     Authenticate authenticate;
     updatedUser = widget.user;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
@@ -103,46 +160,9 @@ class _MyUserState extends State<MyUserPage> {
       return ScaffoldMessenger(
           key: scaffoldMessengerKey,
           child: Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(context, authenticate,
-                    '${user?.groupDescription} detail #${user.partyId}'),
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.home),
-                      onPressed: () => Navigator.pushNamed(context, '/home'))
-                ],
-              ),
-              floatingActionButton: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(height: 100),
-                  FloatingActionButton(
-                    onPressed: () {
-                      _onImageButtonPressed(ImageSource.gallery,
-                          context: context);
-                    },
-                    heroTag: 'image0',
-                    tooltip: 'Pick Image from gallery',
-                    child: const Icon(Icons.photo_library),
-                  ),
-                  SizedBox(height: 20),
-                  Visibility(
-                    visible: !kIsWeb,
-                    child: FloatingActionButton(
-                      onPressed: () {
-                        _onImageButtonPressed(ImageSource.camera,
-                            context: context);
-                      },
-                      heroTag: 'image1',
-                      tooltip: 'Take a Photo',
-                      child: const Icon(Icons.camera_alt),
-                    ),
-                  )
-                ],
-              ),
-              drawer: myDrawer(context, authenticate),
+              floatingActionButton:
+                  imageButtons(context, _onImageButtonPressed),
+              drawer: myDrawer(context, authenticate, isPhone),
               body: user.userGroupId == "GROWERP_M_EMPLOYEE"
                   ? BlocListener<EmployeeBloc, UserState>(
                       listener: (context, state) {
@@ -219,6 +239,7 @@ class _MyUserState extends State<MyUserPage> {
   }
 
   Widget _showForm(authenticate, updatedUser) {
+    User user = widget.user;
     _firstNameController..text = user?.firstName;
     _lastNameController..text = user?.lastName;
     _nameController..text = user?.name;
@@ -336,8 +357,7 @@ class _MyUserState extends State<MyUserPage> {
                         },
                       )),
                   SizedBox(height: 10),
-                  RaisedButton(
-                      disabledColor: Colors.grey,
+                  ElevatedButton(
                       key: Key('update'),
                       child: Text(user?.partyId == null ? 'Create' : 'Update'),
                       onPressed: () async {
@@ -352,6 +372,7 @@ class _MyUserState extends State<MyUserPage> {
                               language: Localizations.localeOf(context)
                                   .languageCode
                                   .toString(),
+                              companyPartyId: user.companyPartyId,
                               companyName: _companyController.text,
                               image: await HelperFunctions.getResizedImage(
                                   _imageFile?.path));
@@ -383,7 +404,7 @@ class _MyUserState extends State<MyUserPage> {
                         }
                       }),
                   SizedBox(height: 10),
-                  RaisedButton(
+                  ElevatedButton(
                       key: Key('cancel'),
                       child: Text('Cancel'),
                       onPressed: () {

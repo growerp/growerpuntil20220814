@@ -22,7 +22,7 @@ dependencies:
   about: ^1.1.2
   animations: ^1.0.0+5
   responsive_framework: ^0.0.14
-  printing: ^3.7.1
+#  printing: ^3.7.1
   dropdown_search: ^0.4.8
   core:
 #    path: ../packages/core

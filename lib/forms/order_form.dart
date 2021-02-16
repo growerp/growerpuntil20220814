@@ -12,6 +12,8 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/templates/@templates.dart';
+import 'package:core/templates/mainTemplate.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
@@ -21,36 +23,50 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:models/@models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/widgets/@widgets.dart';
+import '@forms.dart';
 
 class OrderForm extends StatelessWidget {
   final FormArguments formArguments;
-  OrderForm(this.formArguments);
+  const OrderForm({Key key, this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (MyOrderPage(formArguments.message, formArguments.object));
     Order order = formArguments.object;
-    print("=====orderform input order: $order");
-    if (order.sales)
+    if (order.sales) {
+      salesMap[0] = MapItem(
+          form: OrderPage(formArguments.message, order),
+          label: "Sales Order #${order != null ? order.orderId : 'New'}",
+          icon: Icon(Icons.home));
       BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(order));
-    else
+      return MainTemplate(
+        mapItems: salesMap,
+        menuIndex: MENU_SALES,
+        tabIndex: 0,
+      );
+    } else {
+      purchaseMap[0] = MapItem(
+          form: OrderPage(formArguments.message, order),
+          label: "Purchase Order #${order != null ? order.orderId : 'New'}",
+          icon: Icon(Icons.home));
       BlocProvider.of<PurchCartBloc>(context)..add(LoadCart(order));
-
-    return ShowNavigationRail(a(formArguments), formArguments.tab);
+      return MainTemplate(
+        mapItems: purchaseMap,
+        menuIndex: MENU_PURCHASE,
+        tabIndex: 0,
+      );
+    }
   }
 }
 
-class MyOrderPage extends StatefulWidget {
+class OrderPage extends StatefulWidget {
   final String message;
   final Order order;
-  MyOrderPage(this.message, this.order);
+  OrderPage(this.message, this.order);
   @override
   _MyOrderState createState() => _MyOrderState(message, order);
 }
 
-class _MyOrderState extends State<MyOrderPage> {
+class _MyOrderState extends State<OrderPage> {
   final String message;
   final Order orderIn; // incoming existing order from list
   final _formKey = GlobalKey<FormState>();
@@ -82,135 +98,73 @@ class _MyOrderState extends State<MyOrderPage> {
     order = orderIn;
     var repos = context.read<Object>();
     if (orderIn.sales)
-      return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-        if (state is AuthAuthenticated) authenticate = state.authenticate;
-        return ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                appBar: AppBar(
-                  automaticallyImplyLeading:
-                      ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                  title: companyLogo(
-                      context,
-                      authenticate,
-                      (order.sales ? "Sales" : "Purchase") +
-                          " Order " +
-                          (order.orderId != null
-                              ? "# ${order.orderId} ${order.orderStatusId.substring(5)}"
-                              : "New")),
-                  actions: <Widget>[
-                    IconButton(
-                        icon: Icon(Icons.home),
-                        onPressed: () => Navigator.pushNamed(context, '/home'))
-                  ],
-                ),
-                drawer: myDrawer(context, authenticate),
-                body: BlocListener<AuthBloc, AuthState>(
-                    listener: (context, state) {
-                      if (state is AuthProblem)
-                        HelperFunctions.showMessage(
-                            context, '${state.errorMessage}', Colors.red);
-                    },
-                    child: BlocListener<SalesOrderBloc, OrderState>(
-                        listener: (context, state) {
-                          if (state is OrderProblem)
-                            HelperFunctions.showMessage(
-                                context, '${state.errorMessage}', Colors.red);
-                          if (state is OrderSuccess)
-                            HelperFunctions.showMessage(
-                                context, '${state.message}', Colors.green);
-                        },
-                        child: BlocConsumer<SalesCartBloc, CartState>(
-                            listener: (context, state) {
-                          if (state is CartProblem) {
-                            HelperFunctions.showMessage(
-                                context, '${state.errorMessage}', Colors.green);
-                          }
-                          if (state is CartLoaded) {
-                            HelperFunctions.showMessage(
-                                context, '${state.message}', Colors.green);
-                          }
-                        }, builder: (context, state) {
-                          if (state is CartLoading)
-                            return Center(child: CircularProgressIndicator());
-                          if (state is CartLoaded) {
-                            order = state.order;
-                          }
-                          return Column(children: [
-                            SizedBox(height: 20),
-                            _orderEntry(repos),
-                            _actionButtons(),
-                            Center(
-                                child: Text(
-                                    "Grant total : ${order.grandTotal?.toString()}")),
-                            _orderItemList(),
-                          ]);
-                        })))));
-      });
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return ScaffoldMessenger(
-          key: scaffoldMessengerKey,
-          child: Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(
-                    context,
-                    authenticate,
-                    (order.sales ? "Sales" : "Purchase") +
-                        " Order " +
-                        (order.orderId != null
-                            ? "# ${order.orderId} ${order.orderStatusId.substring(5)}"
-                            : "New")),
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.home),
-                      onPressed: () => Navigator.pushNamed(context, '/home'))
-                ],
-              ),
-              drawer: myDrawer(context, authenticate),
-              body: BlocListener<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthProblem)
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                  },
-                  child: BlocListener<PurchOrderBloc, OrderState>(
-                      listener: (context, state) {
-                        if (state is OrderProblem)
-                          HelperFunctions.showMessage(
-                              context, '${state.errorMessage}', Colors.red);
-                      },
-                      child: BlocConsumer<PurchCartBloc, CartState>(
-                          listener: (context, state) {
-                        if (state is CartProblem) {
-                          HelperFunctions.showMessage(
-                              context, '${state.errorMessage}', Colors.green);
-                        }
-                        if (state is CartLoaded) {
-                          setState(() {
-                            HelperFunctions.showMessage(
-                                context, '${state.message}', Colors.green);
-                          });
-                        }
-                      }, builder: (context, state) {
-                        if (state is CartLoading)
-                          return Center(child: CircularProgressIndicator());
-                        if (state is CartLoaded) {
-                          order = state.order;
-                        }
-                        return Column(children: [
-                          SizedBox(height: 20),
-                          _orderEntry(repos),
-                          _actionButtons(),
-                          Center(
-                              child: Text(
-                                  "Grant total : ${order.grandTotal?.toString()}")),
-                          _orderItemList(),
-                        ]);
-                      })))));
-    });
+      return BlocListener<SalesOrderBloc, OrderState>(
+          listener: (context, state) {
+            if (state is OrderProblem)
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            if (state is OrderSuccess)
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+          },
+          child: BlocConsumer<SalesCartBloc, CartState>(
+              listener: (context, state) {
+            if (state is CartProblem) {
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.green);
+            }
+            if (state is CartLoaded) {
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+            }
+          }, builder: (context, state) {
+            if (state is CartLoading)
+              return Center(child: CircularProgressIndicator());
+            if (state is CartLoaded) {
+              order = state.order;
+            }
+            return Column(children: [
+              SizedBox(height: 20),
+              _orderEntry(repos),
+              _actionButtons(),
+              Center(
+                  child: Text("Grant total : ${order.grandTotal?.toString()}")),
+              _orderItemList(),
+            ]);
+          }));
+    return BlocListener<PurchOrderBloc, OrderState>(
+        listener: (context, state) {
+          if (state is OrderProblem)
+            HelperFunctions.showMessage(
+                context, '${state.errorMessage}', Colors.red);
+        },
+        child:
+            BlocConsumer<PurchCartBloc, CartState>(listener: (context, state) {
+          if (state is CartProblem) {
+            HelperFunctions.showMessage(
+                context, '${state.errorMessage}', Colors.green);
+          }
+          if (state is CartLoaded) {
+            setState(() {
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+            });
+          }
+        }, builder: (context, state) {
+          if (state is CartLoading)
+            return Center(child: CircularProgressIndicator());
+          if (state is CartLoaded) {
+            order = state.order;
+          }
+          return Column(children: [
+            SizedBox(height: 20),
+            _orderEntry(repos),
+            _actionButtons(),
+            Center(
+                child: Text("Grant total : ${order.grandTotal?.toString()}")),
+            _orderItemList(),
+          ]);
+        }));
   }
 
   Widget _orderEntry(repos) {
@@ -274,7 +228,7 @@ class _MyOrderState extends State<MyOrderPage> {
                               ),
                             ),
                             SizedBox(width: 10),
-                            RaisedButton(
+                            ElevatedButton(
                               child: Text('Add New'),
                               onPressed: () async {
                                 final User other = await _addOtherPartyDialog(
@@ -346,13 +300,13 @@ class _MyOrderState extends State<MyOrderPage> {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
-          RaisedButton(
+          ElevatedButton(
               key: Key('cancel'),
               child: Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               }),
-          RaisedButton(
+          ElevatedButton(
               key: Key('clearCart'),
               child: Text('Clear Cart'),
               onPressed: () {
@@ -360,7 +314,7 @@ class _MyOrderState extends State<MyOrderPage> {
                   _cartBloc.add(DeleteFromCart());
                 }
               }),
-          RaisedButton(
+          ElevatedButton(
               key: Key('createOrder'),
               child:
                   Text(order.orderId == null ? 'Create Order' : 'Update order'),
@@ -369,7 +323,7 @@ class _MyOrderState extends State<MyOrderPage> {
                   _cartBloc.add(CreateOrderFromCart());
                 }
               }),
-          RaisedButton(
+          ElevatedButton(
               key: Key('add'),
               child: Text('Add Cart'),
               onPressed: () {
@@ -419,7 +373,10 @@ class _MyOrderState extends State<MyOrderPage> {
                   onLongPress: () async {
                     _cartBloc.add(DeleteFromCart(index));
                     Navigator.pushNamed(context, '/order',
-                        arguments: FormArguments('item deleted', 0, order));
+                        arguments: FormArguments(
+                            message: 'item deleted',
+                            menuIndex: 0,
+                            object: order));
                   },
                   child: ListTile(
                       leading: CircleAvatar(
@@ -514,8 +471,7 @@ _addOtherPartyDialog(BuildContext context, bool sales) async {
                     },
                   ),
                   SizedBox(height: 20),
-                  RaisedButton(
-                      disabledColor: Colors.grey,
+                  ElevatedButton(
                       key: Key('update'),
                       child: Text('Create'),
                       onPressed: () {

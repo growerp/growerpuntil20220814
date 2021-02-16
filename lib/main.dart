@@ -27,7 +27,6 @@ import 'package:core/styles/themes.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
 import 'package:core/forms/@forms.dart' as core;
-import 'package:models/@models.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -141,16 +140,12 @@ class MyApp extends StatelessWidget {
                   return core.FatalErrorForm(
                       S.of(context).classificationNotDefined(classificationId));
               } else
-                return HomeForm(FormArguments(S
-                    .of(context)
-                    .pageHomeWelcome(state.authenticate.user?.firstName)));
+                return HomeForm();
             }
             if (state is AuthAuthenticated) {
-              if (classificationId == 'AppAdmin')
-                return HomeForm(FormArguments(S
-                    .of(context)
-                    .pageHomeWelcome(state.authenticate.user.firstName)));
-              else
+              if (classificationId == 'AppAdmin') {
+                return HomeForm();
+              } else
                 return core.FatalErrorForm(S
                     .of(context)
                     .screenNotFound('for classification ' + classificationId));

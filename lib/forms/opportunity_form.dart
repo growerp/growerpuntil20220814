@@ -20,33 +20,38 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:models/@models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:core/templates/@templates.dart';
+import '@forms.dart';
 
 class OpportunityForm extends StatelessWidget {
-  final FormArguments formArguments;
-  const OpportunityForm(this.formArguments);
+  final Opportunity opportunity;
+
+  const OpportunityForm({Key key, this.opportunity}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var a = (formArguments) =>
-        (OpportunityPage(formArguments.message, formArguments.object));
-    return ShowNavigationRail(a(formArguments), 2);
+    crmMap[0] = MapItem(
+        form: OpportunityPage(opportunity),
+        label:
+            "Opportunity #${opportunity != null ? opportunity.opportunityId : 'New'}",
+        icon: Icon(Icons.home));
+    return MainTemplate(
+      mapItems: crmMap,
+      menuIndex: 2,
+    );
   }
 }
 
 class OpportunityPage extends StatefulWidget {
-  final String message;
   final Opportunity opportunity;
-  OpportunityPage(this.message, this.opportunity);
+  const OpportunityPage(this.opportunity);
   @override
-  _OpportunityState createState() => _OpportunityState(message, opportunity);
+  _OpportunityState createState() => _OpportunityState();
 }
 
 class _OpportunityState extends State<OpportunityPage> {
-  final String message;
-  final Opportunity opportunity;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
@@ -62,64 +67,28 @@ class _OpportunityState extends State<OpportunityPage> {
   User _selectedAccount;
   User _selectedLead;
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-  _OpportunityState(this.message, this.opportunity) {
-    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
-  }
-
   @override
   Widget build(BuildContext context) {
     var repos = context.read<Object>();
-    Authenticate authenticate;
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) authenticate = state.authenticate;
-      return ScaffoldMessenger(
-          key: scaffoldMessengerKey,
-          child: Scaffold(
-              appBar: AppBar(
-                automaticallyImplyLeading:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET),
-                title: companyLogo(
-                    context,
-                    authenticate,
-                    'Opportunity detail ID: '
-                    '${opportunity != null ? opportunity.opportunityId : 'New'}'),
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.home),
-                      onPressed: () => Navigator.pushNamed(context, 'home',
-                          arguments: FormArguments()))
-                ],
-              ),
-              drawer: myDrawer(context, authenticate),
-              body: BlocListener<AuthBloc, AuthState>(
-                  listener: (context, state) {
-                    if (state is AuthProblem)
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                  },
-                  child: BlocListener<OpportunityBloc, OpportunityState>(
-                      listener: (context, state) {
-                    if (state is OpportunityProblem) {
-                      loading = false;
-                      HelperFunctions.showMessage(
-                          context, '${state.errorMessage}', Colors.red);
-                    }
-                    if (state is OpportunityLoading)
-                      HelperFunctions.showMessage(
-                          context, '${state.message}', Colors.green);
-                    if (state is OpportunitySuccess)
-                      Navigator.of(context).pop(updatedOpportunity);
-                  }, child: Builder(builder: (BuildContext context) {
-                    return Center(
-                      child: _showForm(repos),
-                    );
-                  })))));
-    });
+    return BlocListener<OpportunityBloc, OpportunityState>(
+        listener: (context, state) {
+      if (state is OpportunityProblem) {
+        loading = false;
+        HelperFunctions.showMessage(
+            context, '${state.errorMessage}', Colors.red);
+      }
+      if (state is OpportunityLoading)
+        HelperFunctions.showMessage(context, '${state.message}', Colors.green);
+      if (state is OpportunitySuccess) Navigator.of(context).pop();
+    }, child: Builder(builder: (BuildContext context) {
+      return Center(
+        child: _showForm(repos),
+      );
+    }));
   }
 
   Widget _showForm(repos) {
+    Opportunity opportunity = widget.opportunity;
     _nameController..text = opportunity?.opportunityName;
     _descriptionController..text = opportunity?.description;
     _estAmountController..text = opportunity?.estAmount?.toString();
@@ -298,13 +267,13 @@ class _OpportunityState extends State<OpportunityPage> {
                                       _selectedAccount = newValue;
                                     });
                                   })),
-                          RaisedButton(
+                          ElevatedButton(
                               key: Key('cancel'),
                               child: Text('Cancel'),
                               onPressed: () {
                                 Navigator.of(context).pop();
                               }),
-                          RaisedButton(
+                          ElevatedButton(
                               key: Key('update'),
                               child: Text(opportunity?.opportunityId == null
                                   ? 'Create'
