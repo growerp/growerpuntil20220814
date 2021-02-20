@@ -40,7 +40,8 @@ class UserForm extends StatelessWidget {
         if (user.userGroupId == "GROWERP_M_ADMIN") {
           tab = 1;
           userType = 'Admin';
-        } else {
+        }
+        if (user.userGroupId == "GROWERP_M_EMPLOYEE") {
           tab = 2;
           userType = 'Employee';
         }
@@ -54,7 +55,8 @@ class UserForm extends StatelessWidget {
         if (user.userGroupId == "GROWERP_M_LEAD") {
           tab = 1;
           userType = 'Lead';
-        } else {
+        }
+        if (user.userGroupId == "GROWERP_M_CUSTOMER") {
           tab = 2;
           userType = 'Customer';
         }

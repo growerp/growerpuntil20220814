@@ -28,15 +28,15 @@ class CatalogForm extends StatelessWidget {
 
 List<MapItem> catalogMap = [
   MapItem(
-    form: ProductsForm(),
-    label: "Products",
-    icon: Icon(Icons.home),
-    floatButtonRoute: "/product",
-  ),
+      form: ProductsForm(),
+      label: "Products",
+      icon: Icon(Icons.home),
+      floatButtonRoute: "/product",
+      floatButtonArgs: FormArguments()),
   MapItem(
-    form: CategoriesForm(),
-    label: "Categories",
-    icon: Icon(Icons.business),
-    floatButtonRoute: "/category",
-  ),
+      form: CategoriesForm(),
+      label: "Categories",
+      icon: Icon(Icons.business),
+      floatButtonRoute: "/category",
+      floatButtonArgs: FormArguments()),
 ];

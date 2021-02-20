@@ -35,7 +35,8 @@ class OrderForm extends StatelessWidget {
     if (order.sales) {
       salesMap[0] = MapItem(
           form: OrderPage(formArguments.message, order),
-          label: "Sales Order #${order != null ? order.orderId : 'New'}",
+          label:
+              "Sales Order #${order.orderId != null ? order.orderId : 'New'}",
           icon: Icon(Icons.home));
       BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(order));
       return MainTemplate(
@@ -46,7 +47,8 @@ class OrderForm extends StatelessWidget {
     } else {
       purchaseMap[0] = MapItem(
           form: OrderPage(formArguments.message, order),
-          label: "Purchase Order #${order != null ? order.orderId : 'New'}",
+          label:
+              "Purchase Order #${order.orderId != null ? order.orderId : 'New'}",
           icon: Icon(Icons.home));
       BlocProvider.of<PurchCartBloc>(context)..add(LoadCart(order));
       return MainTemplate(
@@ -88,6 +90,7 @@ class _MyOrderState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("======================order form");
     if (orderIn.sales) {
       _cartBloc = BlocProvider.of<SalesCartBloc>(context);
       _userBloc = BlocProvider.of<CustomerBloc>(context);

@@ -22,7 +22,8 @@ class SalesForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return MainTemplate(
       mapItems: salesMap,
-      menuIndex: 4,
+      menuIndex: MENU_SALES,
+      tabIndex: 0,
     );
   }
 }
@@ -32,7 +33,9 @@ List<MapItem> salesMap = [
     form: OrdersForm(sales: true),
     label: "Sales orders",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/slsOrder",
+    floatButtonRoute: "/order",
+    floatButtonArgs: FormArguments(
+        object: Order(sales: true, orderItems: []), menuIndex: MENU_SALES),
   ),
   MapItem(
       form: UsersForm(

@@ -42,16 +42,18 @@ List<MapItem> companyMap = [
     label: "Admins",
     icon: Icon(Icons.business),
     floatButtonRoute: "/user",
-    floatButtonArgs: User(userGroupId: "GROWERP_M_ADMIN"),
+    floatButtonArgs: FormArguments(
+        object: User(userGroupId: "GROWERP_M_ADMIN"), menuIndex: MENU_COMPANY),
   ),
   MapItem(
-    form: UsersForm(
-        key: ValueKey("GROWERP_M_EMPLOYEE"),
-        userGroupId: "GROWERP_M_EMPLOYEE",
-        menuIndex: MENU_COMPANY),
-    label: "Employees",
-    icon: Icon(Icons.school),
-    floatButtonRoute: "/user",
-    floatButtonArgs: User(userGroupId: "GROWERP_M_EMPLOYEE"),
-  ),
+      form: UsersForm(
+          key: ValueKey("GROWERP_M_EMPLOYEE"),
+          userGroupId: "GROWERP_M_EMPLOYEE",
+          menuIndex: MENU_COMPANY),
+      label: "Employees",
+      icon: Icon(Icons.school),
+      floatButtonRoute: "/user",
+      floatButtonArgs: FormArguments(
+          object: User(userGroupId: "GROWERP_M_EMPLOYEE"),
+          menuIndex: MENU_COMPANY)),
 ];
