@@ -25,7 +25,8 @@ class _CategoriesState extends State<CategoriesForm> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _categoryBloc = BlocProvider.of<CategoryBloc>(context);
+    _categoryBloc = BlocProvider.of<CategoryBloc>(context)
+      ..add(FetchCategory());
     search = false;
   }
 

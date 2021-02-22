@@ -25,8 +25,9 @@ class _ProductsState extends State<ProductsForm> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    _productBloc = BlocProvider.of<ProductBloc>(context);
+    _productBloc = BlocProvider.of<ProductBloc>(context)..add(FetchProduct());
     search = false;
+    limit = 20;
   }
 
   @override

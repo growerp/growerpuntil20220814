@@ -71,11 +71,7 @@ class AdminApp extends StatelessWidget {
           BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
           BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
           BlocProvider<AuthBloc>(
-              create: (context) => AuthBloc(
-                  repos,
-                  BlocProvider.of<CategoryBloc>(context),
-                  BlocProvider.of<ProductBloc>(context))
-                ..add(LoadAuth())),
+              create: (context) => AuthBloc(repos)..add(LoadAuth())),
           BlocProvider<SalesOrderBloc>(
               create: (context) => OrderBloc(repos, true)),
           BlocProvider<PurchOrderBloc>(
