@@ -122,7 +122,7 @@ class _OpportunityState extends State<OpportunityPage> {
                         crossAxisCount: columns,
                         crossAxisSpacing: 20,
                         mainAxisSpacing: 20,
-                        childAspectRatio: (7),
+                        childAspectRatio: (5.5),
                         children: <Widget>[
                           TextFormField(
                             key: Key('name'),
