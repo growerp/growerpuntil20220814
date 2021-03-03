@@ -20,7 +20,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:models/@models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/templates/@templates.dart';
 import '@forms.dart';
 
@@ -153,7 +152,6 @@ class _UserState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
-    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     User user = widget.user;
     Authenticate authenticate;
     updatedUser = widget.user;
@@ -164,7 +162,6 @@ class _UserState extends State<UserPage> {
           child: Scaffold(
               floatingActionButton:
                   imageButtons(context, _onImageButtonPressed),
-              drawer: myDrawer(context, authenticate, isPhone),
               body: user.userGroupId == "GROWERP_M_EMPLOYEE"
                   ? BlocListener<EmployeeBloc, UserState>(
                       listener: (context, state) {
