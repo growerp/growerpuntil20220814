@@ -38,6 +38,7 @@ class OpportunityForm extends StatelessWidget {
             "Opportunity #${opportunity != null ? opportunity.opportunityId : 'New'}",
         icon: Icon(Icons.home));
     return MainTemplate(
+      menu: menuItems,
       mapItems: crmMap,
       menuIndex: 2,
     );

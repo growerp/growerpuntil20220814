@@ -72,20 +72,28 @@ class AdminApp extends StatelessWidget {
           BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
           BlocProvider<AuthBloc>(
               create: (context) => AuthBloc(repos)..add(LoadAuth())),
-          BlocProvider<SalesOrderBloc>(
-              create: (context) => OrderBloc(repos, true)),
-          BlocProvider<PurchOrderBloc>(
-              create: (context) => OrderBloc(repos, false)),
+          BlocProvider<SalesFinDocBloc>(
+              create: (context) => FinDocBloc(repos, true, 'order')),
+          BlocProvider<PurchFinDocBloc>(
+              create: (context) => FinDocBloc(repos, false, 'order')),
+          BlocProvider<SalesInvoiceBloc>(
+              create: (context) => FinDocBloc(repos, true, 'invoice')),
+          BlocProvider<PurchInvoiceBloc>(
+              create: (context) => FinDocBloc(repos, false, 'invoice')),
+          BlocProvider<SalesPaymentBloc>(
+              create: (context) => FinDocBloc(repos, true, 'payment')),
+          BlocProvider<PurchPaymentBloc>(
+              create: (context) => FinDocBloc(repos, false, 'payment')),
           BlocProvider<SalesCartBloc>(
               create: (context) => CartBloc(
                   repos: repos,
                   sales: true,
-                  orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
+                  finDocBloc: BlocProvider.of<SalesFinDocBloc>(context))),
           BlocProvider<PurchCartBloc>(
               create: (context) => CartBloc(
                   repos: repos,
                   sales: false,
-                  orderBloc: BlocProvider.of<SalesOrderBloc>(context))),
+                  finDocBloc: BlocProvider.of<SalesFinDocBloc>(context))),
           BlocProvider<OpportunityBloc>(
               create: (context) => OpportunityBloc(repos)),
           BlocProvider<AccntgBloc>(

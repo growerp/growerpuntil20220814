@@ -22,6 +22,7 @@ class CompanyForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
+      menu: menuItems,
       mapItems: companyMap,
       menuIndex: 1,
     );

@@ -21,6 +21,7 @@ class PurchaseForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
+      menu: menuItems,
       mapItems: purchaseMap,
       menuIndex: MENU_PURCHASE,
       tabIndex: 0,
@@ -30,11 +31,12 @@ class PurchaseForm extends StatelessWidget {
 
 List<MapItem> purchaseMap = [
   MapItem(
-    form: OrdersForm(sales: false),
+    form: FinDocsForm(sales: false, docType: 'order'),
     label: "Purchase orders",
     icon: Icon(Icons.home),
     floatButtonRoute: "/order",
-    floatButtonArgs: FormArguments(object: Order(sales: false, orderItems: [])),
+    floatButtonArgs: FormArguments(
+        object: FinDoc(sales: false, docType: 'purchase', items: [])),
   ),
   MapItem(
       form: UsersForm(

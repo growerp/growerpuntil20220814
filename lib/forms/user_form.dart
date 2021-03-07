@@ -89,6 +89,7 @@ class UserForm extends StatelessWidget {
         break;
     }
     return MainTemplate(
+      menu: menuItems,
       mapItems: mapItems,
       menuIndex: menuIndex,
       tabIndex: tab,

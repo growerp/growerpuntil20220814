@@ -20,6 +20,7 @@ class CatalogForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
+      menu: menuItems,
       mapItems: catalogMap,
       menuIndex: MENU_CATALOG,
     );

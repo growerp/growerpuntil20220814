@@ -35,6 +35,7 @@ class CategoryForm extends StatelessWidget {
         label: "Category #${category != null ? category.categoryId : 'New'}",
         icon: Icon(Icons.home));
     return MainTemplate(
+      menu: menuItems,
       mapItems: catalogMap,
       menuIndex: MENU_CATALOG,
       tabIndex: 1,

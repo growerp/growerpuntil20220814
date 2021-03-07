@@ -38,6 +38,7 @@ class ProductForm extends StatelessWidget {
         label: "product #${product != null ? product.productId : 'New'}",
         icon: Icon(Icons.home));
     return MainTemplate(
+      menu: menuItems,
       mapItems: catalogMap,
       menuIndex: 3,
       tabIndex: 0,

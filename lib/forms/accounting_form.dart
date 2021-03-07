@@ -27,7 +27,8 @@ class AccountingForm extends StatelessWidget {
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
         return MainTemplate(
-            menuIndex: 0,
+            menu: accntMenuItems,
+            menuIndex: 1,
             actions: <Widget>[
               IconButton(
                   key: Key('aboutButton'),
@@ -54,9 +55,7 @@ class AccountingForm extends StatelessWidget {
                 children: <Widget>[
                   makeDashboardItem(
                     context,
-                    MenuItem(
-                        title: "Open Sales Invoices",
-                        selectedImage: "assets/images/accounting.png"),
+                    accntMenuItems[2],
                     "Sls open inv: "
                         "${authenticate.company.currencyId} "
                         "${authenticate.stats.salesInvoicesNotPaidAmount}"
@@ -67,9 +66,7 @@ class AccountingForm extends StatelessWidget {
                   ),
                   makeDashboardItem(
                     context,
-                    MenuItem(
-                        title: "Open purchase invoices",
-                        selectedImage: "assets/images/accounting.png"),
+                    accntMenuItems[3],
                     "Pur unp inv: "
                         "${authenticate.company.currencyId} "
                         "${authenticate.stats.purchInvoicesNotPaidAmount}"

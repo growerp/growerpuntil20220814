@@ -17,37 +17,35 @@ import 'package:core/templates/@templates.dart';
 import 'package:models/@models.dart';
 import '@forms.dart';
 
-class SalesForm extends StatelessWidget {
+class AccntSalesForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
-      menu: menuItems,
-      mapItems: salesMap,
-      menuIndex: MENU_SALES,
+      menu: accntMenuItems,
+      mapItems: invoicesMap,
+      menuIndex: MENU_ACCTSALES,
       tabIndex: 0,
     );
   }
 }
 
-List<MapItem> salesMap = [
+List<MapItem> invoicesMap = [
   MapItem(
-    form: FinDocsForm(sales: true, docType: 'order'),
-    label: "Sales orders",
+    form: FinDocsForm(sales: true, docType: 'invoice'),
+    label: "Sales invoices",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/order",
+    floatButtonRoute: "/invoice",
     floatButtonArgs: FormArguments(
-        object: FinDoc(sales: true, docType: 'order', items: []),
-        menuIndex: MENU_SALES),
+        object: FinDoc(sales: true, docType: 'invoice', items: []),
+        menuIndex: MENU_ACCTSALES),
   ),
   MapItem(
-      form: UsersForm(
-          key: ValueKey("GROWERP_M_CUSTOMER"),
-          userGroupId: "GROWERP_M_CUSTOMER",
-          menuIndex: MENU_SALES),
-      label: "Customers",
-      icon: Icon(Icons.business),
-      floatButtonRoute: "/user",
-      floatButtonArgs: FormArguments(
-          object: User(userGroupId: "GROWERP_M_CUSTOMER"),
-          menuIndex: MENU_SALES)),
+    form: FinDocsForm(sales: true, docType: 'payment'),
+    label: "Sales payments(Receipts)",
+    icon: Icon(Icons.home),
+    floatButtonRoute: "/payment",
+    floatButtonArgs: FormArguments(
+        object: FinDoc(sales: true, docType: 'payment', items: []),
+        menuIndex: MENU_ACCTSALES),
+  ),
 ];

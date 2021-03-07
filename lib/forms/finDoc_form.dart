@@ -13,7 +13,6 @@
  */
 
 import 'package:core/templates/@templates.dart';
-import 'package:core/templates/mainTemplate.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
@@ -25,33 +24,35 @@ import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import '@forms.dart';
 
-class OrderForm extends StatelessWidget {
+class FinDocForm extends StatelessWidget {
   final FormArguments formArguments;
-  const OrderForm({Key key, this.formArguments}) : super(key: key);
+  const FinDocForm({Key key, this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Order order = formArguments.object;
-    if (order.sales) {
+    FinDoc finDoc = formArguments.object;
+    if (finDoc.sales) {
       salesMap[0] = MapItem(
-          form: OrderPage(formArguments.message, order),
+          form: OrderPage(formArguments.message, finDoc),
           label:
-              "Sales Order #${order.orderId != null ? order.orderId : 'New'}",
+              "Sales ${finDoc.docType} #${finDoc.orderId != null ? finDoc.orderId : 'New'}",
           icon: Icon(Icons.home));
-      BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(order));
+      BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(finDoc));
       return MainTemplate(
+        menu: menuItems,
         mapItems: salesMap,
         menuIndex: MENU_SALES,
         tabIndex: 0,
       );
     } else {
       purchaseMap[0] = MapItem(
-          form: OrderPage(formArguments.message, order),
+          form: OrderPage(formArguments.message, finDoc),
           label:
-              "Purchase Order #${order.orderId != null ? order.orderId : 'New'}",
+              "Purchase FinDoc #${finDoc.orderId != null ? finDoc.orderId : 'New'}",
           icon: Icon(Icons.home));
-      BlocProvider.of<PurchCartBloc>(context)..add(LoadCart(order));
+      BlocProvider.of<PurchCartBloc>(context)..add(LoadCart(finDoc));
       return MainTemplate(
+        menu: menuItems,
         mapItems: purchaseMap,
         menuIndex: MENU_PURCHASE,
         tabIndex: 0,
@@ -62,15 +63,15 @@ class OrderForm extends StatelessWidget {
 
 class OrderPage extends StatefulWidget {
   final String message;
-  final Order order;
-  OrderPage(this.message, this.order);
+  final FinDoc finDoc;
+  OrderPage(this.message, this.finDoc);
   @override
-  _MyOrderState createState() => _MyOrderState(message, order);
+  _MyFinDocState createState() => _MyFinDocState(message, finDoc);
 }
 
-class _MyOrderState extends State<OrderPage> {
+class _MyFinDocState extends State<OrderPage> {
   final String message;
-  final Order orderIn; // incoming existing order from list
+  final FinDoc finDocIn; // incoming existing finDoc from list
   final _formKeyHeader = GlobalKey<FormState>();
   final _formKeyItems = GlobalKey<FormState>();
   final _priceController = TextEditingController();
@@ -82,38 +83,38 @@ class _MyOrderState extends State<OrderPage> {
   //ignore: close_sinks
   CartBloc _cartBloc;
   UserBloc _userBloc;
-  Order order;
+  FinDoc finDoc;
   List<ItemType> itemTypes;
   Product _selectedProduct;
   ItemType _selectedItemType;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _MyOrderState(this.message, this.orderIn) {
+  _MyFinDocState(this.message, this.finDocIn) {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
   @override
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    if (orderIn.sales) {
+    if (finDocIn.sales) {
       _cartBloc = BlocProvider.of<SalesCartBloc>(context);
       _userBloc = BlocProvider.of<CustomerBloc>(context);
     } else {
       _cartBloc = BlocProvider.of<PurchCartBloc>(context);
       _userBloc = BlocProvider.of<SupplierBloc>(context);
     }
-    order = orderIn;
+    finDoc = finDocIn;
     var repos = context.read<Object>();
-    if (orderIn.sales)
+    if (finDocIn.sales)
       return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         if (state is AuthAuthenticated)
           itemTypes = state.authenticate.company.itemTypes.sales;
-        return BlocListener<SalesOrderBloc, OrderState>(
+        return BlocListener<SalesFinDocBloc, FinDocState>(
             listener: (context, state) {
-              if (state is OrderProblem)
+              if (state is FinDocProblem)
                 HelperFunctions.showMessage(
                     context, '${state.errorMessage}', Colors.red);
-              if (state is OrderSuccess)
+              if (state is FinDocSuccess)
                 HelperFunctions.showMessage(
                     context, '${state.message}', Colors.green);
             },
@@ -131,7 +132,7 @@ class _MyOrderState extends State<OrderPage> {
               if (state is CartLoading)
                 return Center(child: CircularProgressIndicator());
               if (state is CartLoaded) {
-                order = state.order;
+                finDoc = state.finDoc;
               }
               return Column(children: [
                 SizedBox(height: 20),
@@ -140,18 +141,18 @@ class _MyOrderState extends State<OrderPage> {
                 _actionButtons(),
                 Center(
                     child:
-                        Text("Grant total : ${order.grandTotal?.toString()}")),
-                _orderItemList(),
+                        Text("Grant total : ${finDoc.grandTotal?.toString()}")),
+                _finDocItemList(),
               ]);
             }));
       });
-    // purchase order
+    // purchase finDoc
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated)
         itemTypes = state.authenticate.company.itemTypes.purchase;
-      return BlocListener<PurchOrderBloc, OrderState>(
+      return BlocListener<PurchFinDocBloc, FinDocState>(
           listener: (context, state) {
-            if (state is OrderProblem)
+            if (state is FinDocProblem)
               HelperFunctions.showMessage(
                   context, '${state.errorMessage}', Colors.red);
           },
@@ -171,7 +172,7 @@ class _MyOrderState extends State<OrderPage> {
             if (state is CartLoading)
               return Center(child: CircularProgressIndicator());
             if (state is CartLoaded) {
-              order = state.order;
+              finDoc = state.finDoc;
             }
             return Column(children: [
               SizedBox(height: 20),
@@ -179,8 +180,9 @@ class _MyOrderState extends State<OrderPage> {
               _itemEntry(repos, isPhone),
               _actionButtons(),
               Center(
-                  child: Text("Grant total : ${order.grandTotal?.toString()}")),
-              _orderItemList(),
+                  child:
+                      Text("Grant total : ${finDoc.grandTotal?.toString()}")),
+              _finDocItemList(),
             ]);
           }));
     });
@@ -209,10 +211,10 @@ class _MyOrderState extends State<OrderPage> {
                             Container(
                               width: width / columns.toDouble() - 160,
                               child: DropdownSearch<User>(
-                                label: order.sales ? 'Customer' : 'Supplier',
+                                label: finDoc.sales ? 'Customer' : 'Supplier',
                                 dialogMaxWidth: 300,
                                 autoFocusSearchBox: true,
-                                selectedItem: order.otherUser,
+                                selectedItem: finDoc.otherUser,
                                 dropdownSearchDecoration: InputDecoration(
                                   border: OutlineInputBorder(
                                       borderRadius:
@@ -236,12 +238,12 @@ class _MyOrderState extends State<OrderPage> {
                                 },
                                 onChanged: (User newValue) {
                                   setState(() {
-                                    order.otherUser = newValue;
+                                    finDoc.otherUser = newValue;
                                   });
                                 },
                                 validator: (value) {
                                   if (value == null)
-                                    return "Select ${order.sales ? 'Customer' : 'Supplier'}!";
+                                    return "Select ${finDoc.sales ? 'Customer' : 'Supplier'}!";
                                   return null;
                                 },
                               ),
@@ -251,7 +253,7 @@ class _MyOrderState extends State<OrderPage> {
                               child: Text('Add New'),
                               onPressed: () async {
                                 final User other = await _addOtherPartyDialog(
-                                    context, order.sales);
+                                    context, finDoc.sales);
                                 if (other != null) {
                                   _userBloc.add(UpdateUser(other));
                                 }
@@ -262,7 +264,7 @@ class _MyOrderState extends State<OrderPage> {
                         TextFormField(
                           key: Key('description'),
                           decoration:
-                              InputDecoration(labelText: 'Order Description'),
+                              InputDecoration(labelText: 'FinDoc Description'),
                           controller: _descriptionController,
                         ),
                       ])))),
@@ -369,64 +371,70 @@ class _MyOrderState extends State<OrderPage> {
   }
 
   Widget _actionButtons() {
-    return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <
-        Widget>[
-      ElevatedButton(
-          key: Key('cancel'),
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          }),
-      ElevatedButton(
-          key: Key('clear'),
-          child: Text('Clear'),
-          onPressed: () {
-            if (order.orderItems.length > 0) {
-              _cartBloc.add(DeleteFromCart());
-            }
-          }),
-      ElevatedButton(
-          key: Key('createOrder'),
-          child: Text(order.orderId == null ? 'Create Order' : 'Update order'),
-          onPressed: () {
-            if (order.orderItems.length > 0) {
-              _cartBloc.add(CreateOrderFromCart());
-            }
-          }),
-      ElevatedButton(
-          key: Key('addItem'),
-          child: Text('Add Item'),
-          onPressed: () {
-            if (_formKeyHeader.currentState.validate() &&
-                _formKeyItems.currentState.validate()) {
-              _cartBloc.add(AddToCart(
-                  order: Order(
-                      sales: orderIn.sales,
-                      otherUser: order.otherUser,
-                      description: _descriptionController.text,
-                      orderItems: order.orderItems),
-                  newItem: OrderItem(
-                      itemTypeId: _selectedItemType.itemTypeId,
-                      productId: _selectedProduct?.productId,
-                      description: _itemDescriptionController.text,
-                      price: Decimal.parse(_priceController.text),
-                      quantity: Decimal.parse(_quantityController.text.isEmpty
-                          ? "1"
-                          : _quantityController.text))));
-              setState(() {
-                _selectedProduct = null;
-                _priceController.clear();
-                _quantityController.clear();
-                _itemDescriptionController.clear();
-                _selectedItemType = null;
-              });
-            }
-          }),
-    ]);
+    return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          ElevatedButton(
+              key: Key('cancel'),
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          ElevatedButton(
+              key: Key('clear'),
+              child: Text('Clear'),
+              onPressed: () {
+                if (finDoc.items.length > 0) {
+                  _cartBloc.add(DeleteFromCart());
+                }
+              }),
+          ElevatedButton(
+              child: Text(finDoc.orderId == null &&
+                      finDoc.invoiceId == null &&
+                      finDoc.paymentId == null
+                  ? 'Create '
+                  : 'Update ' + '${finDoc.docType}'),
+              onPressed: () {
+                if (finDoc.items.length > 0) {
+                  _cartBloc.add(CreateFinDocFromCart());
+                }
+              }),
+          ElevatedButton(
+              key: Key('addItem'),
+              child: Text('Add Item'),
+              onPressed: () {
+                if (_formKeyHeader.currentState.validate() &&
+                    _formKeyItems.currentState.validate()) {
+                  _cartBloc.add(AddToCart(
+                      finDoc: FinDoc(
+                          docType: finDocIn.docType,
+                          sales: finDocIn.sales,
+                          otherUser: finDoc.otherUser,
+                          description: _descriptionController.text,
+                          items: finDoc.items),
+                      newItem: FinDocItem(
+                          itemTypeId: _selectedItemType.itemTypeId,
+                          productId: _selectedProduct?.productId,
+                          description: _itemDescriptionController.text,
+                          price: Decimal.parse(_priceController.text),
+                          quantity: Decimal.parse(
+                              _quantityController.text.isEmpty
+                                  ? "1"
+                                  : _quantityController.text))));
+                  setState(() {
+                    _selectedProduct = null;
+                    _priceController.clear();
+                    _quantityController.clear();
+                    _itemDescriptionController.clear();
+                    _selectedItemType = null;
+                  });
+                }
+              }),
+        ]);
   }
 
-  Widget _orderItemList() {
-    List<OrderItem> items = order?.orderItems;
+  Widget _finDocItemList() {
+    List<FinDocItem> items = finDoc?.items;
 
     return Expanded(
         child: CustomScrollView(
@@ -453,16 +461,16 @@ class _MyOrderState extends State<OrderPage> {
               return InkWell(
                   onLongPress: () async {
                     _cartBloc.add(DeleteFromCart(index));
-                    Navigator.pushNamed(context, '/order',
+                    Navigator.pushNamed(context, '/finDoc',
                         arguments: FormArguments(
                             message: 'item deleted',
                             menuIndex: 0,
-                            object: order));
+                            object: finDoc));
                   },
                   child: ListTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.green,
-                        child: Text(items[index]?.orderItemSeqId.toString()),
+                        child: Text(items[index]?.itemSeqId.toString()),
                       ),
                       title: Row(children: <Widget>[
                         Expanded(

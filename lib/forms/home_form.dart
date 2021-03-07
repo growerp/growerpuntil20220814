@@ -28,6 +28,7 @@ class HomeForm extends StatelessWidget {
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate;
         return MainTemplate(
+            menu: menuItems,
             menuIndex: 0,
             actions: <Widget>[
               IconButton(
@@ -89,10 +90,7 @@ class HomeForm extends StatelessWidget {
                   ),
                   makeDashboardItem(
                     context,
-                    MenuItem(
-                        title: "Accounting",
-                        selectedImage: "assets/images/accounting.png",
-                        route: "/accounting"),
+                    menuItems[6],
                     "Sls open inv: "
                         "${authenticate.company.currencyId} "
                         "${authenticate.stats.salesInvoicesNotPaidAmount}"
@@ -132,6 +130,7 @@ class HomeForm extends StatelessWidget {
                     child: Column(children: <Widget>[
                   SizedBox(height: 150),
                   Text("Login with an existing Id"),
+                  SizedBox(height: 20),
                   ElevatedButton(
                     key: Key('loginButton'),
                     autofocus: true,
@@ -148,6 +147,7 @@ class HomeForm extends StatelessWidget {
                   SizedBox(height: 50),
                   Text(
                       "Or create a new company and you being the administrator"),
+                  SizedBox(height: 20),
                   ElevatedButton(
                     key: Key('newCompButton'),
                     child: Text('Create a new company and admin'),
