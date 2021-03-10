@@ -31,33 +31,56 @@ class FinDocForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FinDoc finDoc = formArguments.object;
-    if (finDoc.sales) {
-      salesMap[0] = MapItem(
-          form: OrderPage(formArguments.message, finDoc),
-          label:
-              "Sales ${finDoc.docType} #${finDoc.orderId != null ? finDoc.orderId : 'New'}",
-          icon: Icon(Icons.home));
-      BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(finDoc));
-      return MainTemplate(
-        menu: menuItems,
-        mapItems: salesMap,
-        menuIndex: MENU_SALES,
-        tabIndex: 0,
-      );
-    } else {
-      purchaseMap[0] = MapItem(
-          form: OrderPage(formArguments.message, finDoc),
-          label:
-              "Purchase FinDoc #${finDoc.orderId != null ? finDoc.orderId : 'New'}",
-          icon: Icon(Icons.home));
-      BlocProvider.of<PurchCartBloc>(context)..add(LoadCart(finDoc));
-      return MainTemplate(
-        menu: menuItems,
-        mapItems: purchaseMap,
-        menuIndex: MENU_PURCHASE,
-        tabIndex: 0,
-      );
-    }
+
+    MapItem finDocItem = MapItem(
+        form: OrderPage(formArguments.message, finDoc),
+        label:
+            "${finDoc.salesString()} Sales ${finDoc.docType} #${finDoc.id()}",
+        icon: Icon(Icons.home));
+
+    if (finDoc.docType == 'invoice' || finDoc.docType == 'payment') {
+      if (finDoc.sales) {
+        acctSalesMap[finDoc.docType == 'invoice' ? 0 : 1] = finDocItem;
+        BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(finDoc));
+        return MainTemplate(
+          menu: acctMenuItems,
+          mapItems: acctSalesMap,
+          menuIndex: MENU_ACCTSALES,
+          tabIndex: finDoc.docType == 'invoice' ? 0 : 1,
+        );
+      } else {
+        acctPurchaseMap[finDoc.docType == 'invoice' ? 0 : 1] = finDocItem;
+        BlocProvider.of<PurchCartBloc>(context)..add(LoadCart(finDoc));
+        return MainTemplate(
+          menu: acctMenuItems,
+          mapItems: acctPurchaseMap,
+          menuIndex: MENU_ACCTPURCHASE,
+          tabIndex: finDoc.docType == 'invoice' ? 0 : 1,
+        );
+      }
+    } // orders
+    else if (finDoc.docType == 'order') {
+      if (finDoc.sales) {
+        salesMap[0] = finDocItem;
+        BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(finDoc));
+        return MainTemplate(
+          menu: menuItems,
+          mapItems: salesMap,
+          menuIndex: MENU_SALES,
+          tabIndex: 0,
+        );
+      } else {
+        purchaseMap[0] = finDocItem;
+        BlocProvider.of<PurchCartBloc>(context)..add(LoadCart(finDoc));
+        return MainTemplate(
+          menu: menuItems,
+          mapItems: purchaseMap,
+          menuIndex: MENU_PURCHASE,
+          tabIndex: 0,
+        );
+      }
+    } else
+      return Container();
   }
 }
 

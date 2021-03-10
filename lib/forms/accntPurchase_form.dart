@@ -21,7 +21,7 @@ class AccntPurchaseForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
-      menu: accntMenuItems,
+      menu: acctMenuItems,
       mapItems: acctPurchaseMap,
       menuIndex: MENU_ACCTPURCHASE,
       tabIndex: 0,
@@ -45,7 +45,7 @@ List<MapItem> acctPurchaseMap = [
     icon: Icon(Icons.home),
     floatButtonRoute: "/payment",
     floatButtonArgs: FormArguments(
-        object: FinDoc(sales: true, docType: 'payment', items: []),
-        menuIndex: MENU_SALES),
+        object: FinDoc(sales: false, docType: 'payment', items: []),
+        menuIndex: MENU_ACCTPURCHASE),
   ),
 ];

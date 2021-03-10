@@ -21,15 +21,15 @@ class AccntSalesForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
-      menu: accntMenuItems,
-      mapItems: invoicesMap,
+      menu: acctMenuItems,
+      mapItems: acctSalesMap,
       menuIndex: MENU_ACCTSALES,
       tabIndex: 0,
     );
   }
 }
 
-List<MapItem> invoicesMap = [
+List<MapItem> acctSalesMap = [
   MapItem(
     form: FinDocsForm(sales: true, docType: 'invoice'),
     label: "Sales invoices",

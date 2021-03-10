@@ -339,7 +339,8 @@ class _OrdersState extends State<FinDocsForm> {
                           width: 100,
                           child: Visibility(
                               visible:
-                                  finDocStatusFixed[finDocs[index].statusId],
+                                  finDocStatusFixed[finDocs[index].statusId] ??
+                                      true,
                               child: Row(children: [
                                 IconButton(
                                   icon: Icon(Icons.delete_forever),
