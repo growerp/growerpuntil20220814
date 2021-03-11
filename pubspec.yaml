@@ -22,14 +22,15 @@ dependencies:
   about: ^1.1.2
   animations: ^1.0.0+5
   responsive_framework: ^0.0.14
+  flutter_simple_treeview: ^2.0.2
 #  printing: ^3.7.1
   dropdown_search: ^0.4.8
   core:
-#    path: ../packages/core
-    git:
-      url: https://github.com/growerp/growerp.git
-      ref: packages
-      path: core
+    path: ../packages/core
+#    git:
+#      url: https://github.com/growerp/growerp.git
+#      ref: packages
+#      path: core
 dev_dependencies:
   flutter_test:
     sdk: flutter

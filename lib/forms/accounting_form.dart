@@ -18,7 +18,7 @@ import 'package:core/blocs/@blocs.dart';
 import 'package:models/@models.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:core/templates/mainTemplate.dart';
+import 'package:core/templates/@templates.dart';
 
 class AccountingForm extends StatelessWidget {
   @override
@@ -28,7 +28,7 @@ class AccountingForm extends StatelessWidget {
         Authenticate authenticate = state.authenticate;
         return MainTemplate(
             menu: acctMenuItems,
-            menuIndex: 1,
+            menuIndex: 0,
             actions: <Widget>[
               IconButton(
                   key: Key('aboutButton'),
@@ -55,7 +55,7 @@ class AccountingForm extends StatelessWidget {
                 children: <Widget>[
                   makeDashboardItem(
                     context,
-                    acctMenuItems[2],
+                    acctMenuItems[1],
                     "Sls open inv: "
                         "${authenticate.company.currencyId} "
                         "${authenticate.stats.salesInvoicesNotPaidAmount}"
@@ -66,7 +66,7 @@ class AccountingForm extends StatelessWidget {
                   ),
                   makeDashboardItem(
                     context,
-                    acctMenuItems[3],
+                    acctMenuItems[2],
                     "Pur unp inv: "
                         "${authenticate.company.currencyId} "
                         "${authenticate.stats.purchInvoicesNotPaidAmount}"
@@ -77,39 +77,7 @@ class AccountingForm extends StatelessWidget {
                   ),
                   makeDashboardItem(
                     context,
-                    MenuItem(
-                        title: "Profit/Loss",
-                        selectedImage: "assets/images/accounting.png"),
-                    "Income",
-                    "Spending",
-                    "",
-                    "",
-                  ),
-                  makeDashboardItem(
-                    context,
-                    MenuItem(
-                        title: "Bank accounts",
-                        selectedImage: "assets/images/accounting.png"),
-                    "Bank1",
-                    "Bank2",
-                    "",
-                    "",
-                  ),
-                  makeDashboardItem(
-                    context,
-                    MenuItem(
-                        title: "Balance Sheet",
-                        selectedImage: "assets/images/accounting.png"),
-                    "Assets",
-                    "Liabilities",
-                    "Expenses",
-                    "Owners Equity",
-                  ),
-                  makeDashboardItem(
-                    context,
-                    MenuItem(
-                        title: "Ledger",
-                        selectedImage: "assets/images/accounting.png"),
+                    acctMenuItems[3],
                     "Accounts",
                     "Transactions",
                     "",
