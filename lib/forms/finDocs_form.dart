@@ -69,6 +69,11 @@ class _OrdersState extends State<FinDocsForm> {
             ..add(FetchFinDoc(limit: limit));
         }
       }
+      if (widget.docType == 'transaction') {
+        tab = 1;
+        _finDocBloc = BlocProvider.of<TransactionBloc>(context)
+          ..add(FetchFinDoc(limit: limit));
+      }
     });
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
@@ -199,6 +204,21 @@ class _OrdersState extends State<FinDocsForm> {
               return finDocPage(finDocs, hasReachedMax);
             });
         }
+        if (widget.docType == 'transaction') {
+          return BlocConsumer<TransactionBloc, FinDocState>(
+              listener: (context, state) {
+            if (state is FinDocProblem)
+              HelperFunctions.showMessage(
+                  context, '${state.errorMessage}', Colors.red);
+            if (state is FinDocSuccess)
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+          }, builder: (context, state) {
+            if (state is FinDocSuccess)
+              return finDocPage(state.finDocs, state.hasReachedMax);
+            return Center(child: CircularProgressIndicator());
+          });
+        }
       }
       return Container(
           child: Center(
@@ -261,8 +281,11 @@ class _OrdersState extends State<FinDocsForm> {
                         Row(children: <Widget>[
                           Expanded(child: Text("${widget.docType} ID")),
                           Expanded(
-                              child:
-                                  Text(widget.sales ? "Customer" : "Supplier")),
+                              child: Text(widget.sales == null
+                                  ? 'Other User'
+                                  : widget.sales
+                                      ? "Customer"
+                                      : "Supplier")),
                           if (!ResponsiveWrapper.of(context)
                               .isSmallerThan(TABLET))
                             Expanded(child: Text("Email")),
@@ -299,7 +322,7 @@ class _OrdersState extends State<FinDocsForm> {
                       ),
                       title: Row(
                         children: <Widget>[
-                          Expanded(child: Text("${finDocs[index].orderId}")),
+                          Expanded(child: Text("${finDocs[index].id()}")),
                           Expanded(
                               child:
                                   Text("${finDocs[index].otherUser.firstName}, "

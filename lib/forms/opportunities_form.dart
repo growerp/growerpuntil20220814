@@ -42,8 +42,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
     super.initState();
     searchField = false;
     _scrollController.addListener(_onScroll);
-    _opportunityBloc = BlocProvider.of<OpportunityBloc>(context)
-      ..add(FetchOpportunity());
+    BlocProvider.of<OpportunityBloc>(context)..add(FetchOpportunity());
   }
 
   @override

@@ -20,4 +20,6 @@ export 'accntSales_form.dart';
 export 'accntPurchase_form.dart';
 export 'ledger_form.dart';
 export 'ledgerTree_form.dart';
-export 'ledgerTrans_form.dart';
+export 'balanceSheet_form.dart';
+export 'incomeStatement_form.dart';
+export 'reports_form.dart';

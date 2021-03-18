@@ -96,8 +96,9 @@ class AdminApp extends StatelessWidget {
                   finDocBloc: BlocProvider.of<SalesFinDocBloc>(context))),
           BlocProvider<OpportunityBloc>(
               create: (context) => OpportunityBloc(repos)),
-          BlocProvider<AccntgBloc>(
-              create: (context) => AccntgBloc(repos)..add(LoadAccntg())),
+          BlocProvider<AccntBloc>(create: (context) => AccntBloc(repos)),
+          BlocProvider<TransactionBloc>(
+              create: (context) => FinDocBloc(repos, false, 'transaction')),
         ],
         child: MyApp(),
       ),

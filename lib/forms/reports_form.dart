@@ -17,31 +17,29 @@ import 'package:core/templates/@templates.dart';
 import 'package:models/@models.dart';
 import '@forms.dart';
 
-class LedgerForm extends StatelessWidget {
+class ReportsForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
       menu: acctMenuItems,
-      mapItems: ledgerMap,
+      mapItems: reportsMap,
       menuIndex: MENU_ACCTLEDGER,
     );
   }
 }
 
-List<MapItem> ledgerMap = [
+List<MapItem> reportsMap = [
   MapItem(
-    form: LedgerTreeForm(),
-    label: "Ledger Tree",
+    form: BalanceSheetForm(),
+    label: "Balance Sheet",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/ledgerTree",
+    floatButtonRoute: "/balanceSheet",
   ),
   MapItem(
-    form: FinDocsForm(docType: 'transaction'),
-    label: "Transactions",
-    icon: Icon(Icons.home),
-    floatButtonRoute: "/transaction",
-    floatButtonArgs: FormArguments(
-        object: FinDoc(docType: 'transaction', items: []),
-        menuIndex: MENU_ACCTLEDGER),
+    form: IncomeStatementForm(),
+    label: "Income Statement",
+    icon: Icon(Icons.business),
+    floatButtonRoute: "/incomeStatement",
+    floatButtonArgs: FormArguments(),
   ),
 ];

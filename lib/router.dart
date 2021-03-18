@@ -62,8 +62,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => local.LedgerForm());
     case '/ledgerTree':
       return MaterialPageRoute(builder: (context) => local.LedgerTreeForm());
-    case '/ledgerTrans':
-      return MaterialPageRoute(builder: (context) => local.LedgerTransForm());
+    case '/balanceSheet':
+      return MaterialPageRoute(builder: (context) => local.BalanceSheetForm());
+    case '/reports':
+      return MaterialPageRoute(builder: (context) => local.ReportsForm());
     case '/order':
       return MaterialPageRoute(
           builder: (context) =>
