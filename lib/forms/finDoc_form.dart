@@ -132,7 +132,7 @@ class _MyFinDocState extends State<OrderPage> {
       return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         if (state is AuthAuthenticated)
           itemTypes = state.authenticate.company.itemTypes.sales;
-        return BlocListener<SalesFinDocBloc, FinDocState>(
+        return BlocListener<SalesOrderBloc, FinDocState>(
             listener: (context, state) {
               if (state is FinDocProblem)
                 HelperFunctions.showMessage(
@@ -173,7 +173,7 @@ class _MyFinDocState extends State<OrderPage> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated)
         itemTypes = state.authenticate.company.itemTypes.purchase;
-      return BlocListener<PurchFinDocBloc, FinDocState>(
+      return BlocListener<PurchaseOrderBloc, FinDocState>(
           listener: (context, state) {
             if (state is FinDocProblem)
               HelperFunctions.showMessage(

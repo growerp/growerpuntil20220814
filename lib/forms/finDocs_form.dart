@@ -1,3 +1,4 @@
+import 'package:core/forms/@forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
@@ -18,10 +19,13 @@ class _OrdersState extends State<FinDocsForm> {
   final _scrollThreshold = 200.0;
   FinDocBloc _finDocBloc;
   Authenticate authenticate;
+  List<FinDoc> finDocs = [];
   int tab;
   int limit = 20;
   bool showSearchField;
   String searchString;
+  bool isLoading = true;
+  bool hasReachedMax = false;
 
   _OrdersState();
 
@@ -39,11 +43,11 @@ class _OrdersState extends State<FinDocsForm> {
       if (widget.docType == 'order') {
         if (widget.sales) {
           tab = 4;
-          _finDocBloc = BlocProvider.of<SalesFinDocBloc>(context)
+          _finDocBloc = BlocProvider.of<SalesOrderBloc>(context)
             ..add(FetchFinDoc(limit: limit));
         } else {
           tab = 5;
-          _finDocBloc = BlocProvider.of<PurchFinDocBloc>(context)
+          _finDocBloc = BlocProvider.of<PurchaseOrderBloc>(context)
             ..add(FetchFinDoc(limit: limit));
         }
       }
@@ -75,149 +79,63 @@ class _OrdersState extends State<FinDocsForm> {
           ..add(FetchFinDoc(limit: limit));
       }
     });
+
+    dynamic blocConsumerListener = (context, state) {
+      if (state is FinDocProblem)
+        HelperFunctions.showMessage(
+            context, '${state.errorMessage}', Colors.red);
+      if (state is FinDocSuccess) {
+        HelperFunctions.showMessage(context, '${state.message}', Colors.green);
+      }
+      if (state is FinDocLoading)
+        HelperFunctions.showMessage(context, '${state.message}', Colors.green);
+    };
+
+    dynamic blocConsumerBuilder = (context, state) {
+      if (state is FinDocProblem)
+        return FatalErrorForm("Could not load documents!");
+      if (state is FinDocLoading) {
+        isLoading = true;
+        return LoadingIndicator();
+      }
+      if (state is FinDocSuccess) {
+        isLoading = false;
+        finDocs = state.finDocs;
+        hasReachedMax = state.hasReachedMax;
+      }
+      return finDocsPage();
+    };
+
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
         authenticate = state?.authenticate;
         if (widget.docType == 'order') {
           if (widget.sales)
-            return BlocConsumer<SalesFinDocBloc, FinDocState>(
-                listener: (context, state) {
-              if (state is FinDocProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              if (state is FinDocSuccess)
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-            }, builder: (context, state) {
-              if (state is FinDocSuccess)
-                return finDocPage(state.finDocs, state.hasReachedMax);
-              return Center(child: CircularProgressIndicator());
-            });
+            return BlocConsumer<SalesOrderBloc, FinDocState>(
+                listener: blocConsumerListener, builder: blocConsumerBuilder);
           else
-            return BlocConsumer<PurchFinDocBloc, FinDocState>(
-                listener: (context, state) {
-              if (state is FinDocProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              if (state is FinDocSuccess) {
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              }
-              if (state is FinDocLoading)
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-            }, builder: (context, state) {
-              List<FinDoc> finDocs = [];
-              bool hasReachedMax = true;
-              if (state is FinDocSuccess) {
-                finDocs = state.finDocs;
-                hasReachedMax = state.hasReachedMax;
-              }
-              if (state is FinDocLoading)
-                return Center(child: CircularProgressIndicator());
-              return finDocPage(finDocs, hasReachedMax);
-            });
+            return BlocConsumer<PurchaseOrderBloc, FinDocState>(
+                listener: blocConsumerListener, builder: blocConsumerBuilder);
         }
         if (widget.docType == 'invoice') {
           if (widget.sales)
             return BlocConsumer<SalesInvoiceBloc, FinDocState>(
-                listener: (context, state) {
-              if (state is FinDocProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              if (state is FinDocSuccess)
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-            }, builder: (context, state) {
-              if (state is FinDocSuccess)
-                return finDocPage(state.finDocs, state.hasReachedMax);
-              return Center(child: CircularProgressIndicator());
-            });
+                listener: blocConsumerListener, builder: blocConsumerBuilder);
           else
             return BlocConsumer<PurchInvoiceBloc, FinDocState>(
-                listener: (context, state) {
-              if (state is FinDocProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              if (state is FinDocSuccess) {
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              }
-              if (state is FinDocLoading)
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-            }, builder: (context, state) {
-              List<FinDoc> finDocs = [];
-              bool hasReachedMax = true;
-              if (state is FinDocSuccess) {
-                finDocs = state.finDocs;
-                hasReachedMax = state.hasReachedMax;
-              }
-              if (state is FinDocLoading)
-                return Center(child: CircularProgressIndicator());
-              return finDocPage(finDocs, hasReachedMax);
-            });
+                listener: blocConsumerListener, builder: blocConsumerBuilder);
         }
         if (widget.docType == 'payment') {
           if (widget.sales)
             return BlocConsumer<SalesPaymentBloc, FinDocState>(
-                listener: (context, state) {
-              if (state is FinDocProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              if (state is FinDocSuccess)
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-            }, builder: (context, state) {
-              if (state is FinDocSuccess)
-                return finDocPage(state.finDocs, state.hasReachedMax);
-              return Center(child: CircularProgressIndicator());
-            });
+                listener: blocConsumerListener, builder: blocConsumerBuilder);
           else
             return BlocConsumer<PurchPaymentBloc, FinDocState>(
-                listener: (context, state) {
-              if (state is FinDocProblem)
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              if (state is FinDocSuccess) {
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              }
-              if (state is FinDocLoading)
-                HelperFunctions.showMessage(
-                    context, '${state.message}', Colors.green);
-            }, builder: (context, state) {
-              List<FinDoc> finDocs = [];
-              bool hasReachedMax = true;
-              if (state is FinDocSuccess) {
-                finDocs = state.finDocs;
-                hasReachedMax = state.hasReachedMax;
-              }
-              if (state is FinDocLoading)
-                return Center(child: CircularProgressIndicator());
-              return finDocPage(finDocs, hasReachedMax);
-            });
+                listener: blocConsumerListener, builder: blocConsumerBuilder);
         }
         if (widget.docType == 'transaction') {
           return BlocConsumer<TransactionBloc, FinDocState>(
-              listener: (context, state) {
-            if (state is FinDocProblem)
-              HelperFunctions.showMessage(
-                  context, '${state.errorMessage}', Colors.red);
-            if (state is FinDocSuccess)
-              HelperFunctions.showMessage(
-                  context, '${state.message}', Colors.green);
-          }, builder: (context, state) {
-            if (state is FinDocSuccess)
-              return finDocPage(state.finDocs, state.hasReachedMax);
-            return Center(child: CircularProgressIndicator());
-          });
+              listener: blocConsumerListener, builder: blocConsumerBuilder);
         }
       }
       return Container(
@@ -226,7 +144,7 @@ class _OrdersState extends State<FinDocsForm> {
     });
   }
 
-  Widget finDocPage(finDocs, hasReachedMax) {
+  Widget finDocsPage() {
     return ListView.builder(
         itemCount: hasReachedMax && finDocs.isNotEmpty
             ? finDocs.length + 1
@@ -279,7 +197,11 @@ class _OrdersState extends State<FinDocsForm> {
                       ])
                     : Column(children: [
                         Row(children: <Widget>[
-                          Expanded(child: Text("${widget.docType} ID")),
+                          Expanded(
+                              child: Text(
+                                  // capitalize first char
+                                  "${widget.docType[0].toUpperCase()}"
+                                  "${widget.docType.substring(1)} ID")),
                           Expanded(
                               child: Text(widget.sales == null
                                   ? 'Other User'
@@ -297,7 +219,8 @@ class _OrdersState extends State<FinDocsForm> {
                               child:
                                   Text("Status", textAlign: TextAlign.center)),
                           if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(TABLET))
+                                  .isSmallerThan(TABLET) &&
+                              widget.docType != 'payment')
                             Expanded(
                                 child: Text("#items",
                                     textAlign: TextAlign.center)),
@@ -305,7 +228,7 @@ class _OrdersState extends State<FinDocsForm> {
                         Divider(color: Colors.black),
                       ]),
                 trailing: Text('                     '));
-          if (index == 1 && finDocs.isEmpty)
+          if (index == 1 && finDocs.isEmpty && !isLoading)
             return Center(
                 heightFactor: 20,
                 child: Text("no records found!", textAlign: TextAlign.center));
@@ -347,7 +270,8 @@ class _OrdersState extends State<FinDocsForm> {
                                   "${finDocStatusValues[finDocs[index].statusId]}",
                                   textAlign: TextAlign.center)),
                           if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(TABLET))
+                                  .isSmallerThan(TABLET) &&
+                              widget.docType != 'payment')
                             Expanded(
                                 child: Text("${finDocs[index].items?.length}",
                                     textAlign: TextAlign.center)),

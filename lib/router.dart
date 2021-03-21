@@ -51,13 +51,15 @@ Route<dynamic> generateRoute(RouteSettings settings) {
           builder: (context) =>
               local.ProductForm(formArguments: settings.arguments));
     case '/sales':
-      return MaterialPageRoute(builder: (context) => local.SalesForm());
+      return MaterialPageRoute(builder: (context) => local.SalesOrderForm());
     case '/purchase':
-      return MaterialPageRoute(builder: (context) => local.PurchaseForm());
+      return MaterialPageRoute(builder: (context) => local.PurchaseOrderForm());
     case '/acctSales':
-      return MaterialPageRoute(builder: (context) => local.AccntSalesForm());
+      return MaterialPageRoute(
+          builder: (context) => local.AccntSalesOrderForm());
     case '/acctPurchase':
-      return MaterialPageRoute(builder: (context) => local.AccntPurchaseForm());
+      return MaterialPageRoute(
+          builder: (context) => local.AccntPurchaseOrderForm());
     case '/ledger':
       return MaterialPageRoute(builder: (context) => local.LedgerForm());
     case '/ledgerTree':

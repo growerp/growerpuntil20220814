@@ -17,7 +17,7 @@ import 'package:core/templates/@templates.dart';
 import 'package:models/@models.dart';
 import '@forms.dart';
 
-class PurchaseForm extends StatelessWidget {
+class PurchaseOrderForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
@@ -36,7 +36,8 @@ List<MapItem> purchaseMap = [
     icon: Icon(Icons.home),
     floatButtonRoute: "/order",
     floatButtonArgs: FormArguments(
-        object: FinDoc(sales: false, docType: 'purchase', items: [])),
+        object: FinDoc(sales: false, docType: 'purchase', items: []),
+        menuIndex: MENU_PURCHASE),
   ),
   MapItem(
       form: UsersForm(

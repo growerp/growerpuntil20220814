@@ -17,7 +17,7 @@ import 'package:core/templates/@templates.dart';
 import 'package:models/@models.dart';
 import '@forms.dart';
 
-class SalesForm extends StatelessWidget {
+class SalesOrderForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(

@@ -220,14 +220,13 @@ class _UsersState extends State<UsersForm> {
           }, builder: (context, state) {
             if (state is UserProblem)
               return FatalErrorForm("Could not load leads!");
-            if (state is UserLoading) isLoading = true;
+            if (state is UserLoading) LoadingIndicator();
             if (state is UserSuccess) {
               isLoading = false;
               users = state.users;
               hasReachedMax = state.hasReachedMax;
             }
-            return Stack(
-                children: [showForm(), if (isLoading) LoadingIndicator()]);
+            return showForm();
           });
         case "GROWERP_M_CUSTOMER":
           return BlocConsumer<CustomerBloc, UserState>(

@@ -1,8 +1,8 @@
 export 'category_form.dart';
 export 'home_form.dart';
 export 'finDoc_form.dart';
-export 'sales_form.dart';
-export 'purchase_form.dart';
+export 'salesOrder_form.dart';
+export 'purchaseOrder_form.dart';
 export 'product_form.dart';
 export 'catalog_form.dart';
 export 'product_form.dart';

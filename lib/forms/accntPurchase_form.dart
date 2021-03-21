@@ -17,7 +17,7 @@ import 'package:core/templates/@templates.dart';
 import 'package:models/@models.dart';
 import '@forms.dart';
 
-class AccntPurchaseForm extends StatelessWidget {
+class AccntPurchaseOrderForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
