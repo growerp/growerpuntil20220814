@@ -39,15 +39,14 @@ void main() async {
           ? Ofbiz(client: Dio())
           : null;
 
-  runApp(AdminApp(repos: repos));
+  runApp(AdminApp(repos: repos!));
 }
 
 class AdminApp extends StatelessWidget {
   const AdminApp({
-    Key key,
-    @required this.repos,
-  })  : assert(repos != null),
-        super(key: key);
+    Key? key,
+    required this.repos,
+  }) : super(key: key);
 
   final Object repos;
 
@@ -87,12 +86,14 @@ class AdminApp extends StatelessWidget {
               create: (context) => CartBloc(
                   repos: repos,
                   sales: true,
-                  finDocBloc: BlocProvider.of<SalesOrderBloc>(context))),
+                  finDocBloc:
+                      BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc?)),
           BlocProvider<PurchCartBloc>(
               create: (context) => CartBloc(
                   repos: repos,
                   sales: false,
-                  finDocBloc: BlocProvider.of<SalesOrderBloc>(context))),
+                  finDocBloc:
+                      BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc?)),
           BlocProvider<OpportunityBloc>(
               create: (context) => OpportunityBloc(repos)),
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(repos)),
@@ -108,7 +109,7 @@ class AdminApp extends StatelessWidget {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String classificationId = GlobalConfiguration().get("classificationId");
+    String? classificationId = GlobalConfiguration().get("classificationId");
     return MaterialApp(
         localizationsDelegates: [
           S.delegate,
@@ -118,7 +119,7 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: S.delegate.supportedLocales,
         builder: (context, widget) => ResponsiveWrapper.builder(
-            BouncingScrollWrapper.builder(context, widget),
+            BouncingScrollWrapper.builder(context, widget!),
             maxWidth: 2460,
             minWidth: 450,
             defaultScale: true,
@@ -141,8 +142,9 @@ class MyApp extends StatelessWidget {
                   return core.RegisterForm(
                       'No companies found in system, create one?');
                 else
-                  return core.FatalErrorForm(
-                      S.of(context).classificationNotDefined(classificationId));
+                  return core.FatalErrorForm(S
+                      .of(context)
+                      .classificationNotDefined(classificationId!));
               } else
                 return HomeForm();
             }
@@ -152,7 +154,7 @@ class MyApp extends StatelessWidget {
               } else
                 return core.FatalErrorForm(S
                     .of(context)
-                    .screenNotFound('for classification ' + classificationId));
+                    .screenNotFound('for classification ' + classificationId!));
             }
             return core.SplashForm();
           },
@@ -162,7 +164,7 @@ class MyApp extends StatelessWidget {
 
 class SimpleBlocObserver extends BlocObserver {
   @override
-  void onEvent(Bloc bloc, Object event) {
+  void onEvent(Bloc bloc, Object? event) {
     print(">>>Bloc event { $event: }");
     super.onEvent(bloc, event);
   }

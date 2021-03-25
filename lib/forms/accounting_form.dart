@@ -25,7 +25,7 @@ class AccountingForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
-        Authenticate authenticate = state.authenticate;
+        Authenticate authenticate = state.authenticate!;
         return MainTemplate(
             menu: acctMenuItems,
             menuIndex: 0,
@@ -37,7 +37,7 @@ class AccountingForm extends StatelessWidget {
                   onPressed: () => {
                         Navigator.pushNamed(context, '/about'),
                       }),
-              if (authenticate?.apiKey != null)
+              if (authenticate.apiKey != null)
                 IconButton(
                     key: Key('logoutButton'),
                     icon: Icon(Icons.do_not_disturb),
@@ -57,9 +57,9 @@ class AccountingForm extends StatelessWidget {
                     context,
                     acctMenuItems[1],
                     "Sls open inv: "
-                        "${authenticate.company.currencyId} "
-                        "${authenticate.stats.salesInvoicesNotPaidAmount}"
-                        "(${authenticate.stats.salesInvoicesNotPaidCount})",
+                        "${authenticate.company!.currencyId} "
+                        "${authenticate.stats!.salesInvoicesNotPaidAmount}"
+                        "(${authenticate.stats!.salesInvoicesNotPaidCount})",
                     "",
                     "",
                     "",
@@ -68,9 +68,9 @@ class AccountingForm extends StatelessWidget {
                     context,
                     acctMenuItems[2],
                     "Pur unp inv: "
-                        "${authenticate.company.currencyId} "
-                        "${authenticate.stats.purchInvoicesNotPaidAmount}"
-                        "(${authenticate.stats.purchInvoicesNotPaidCount})",
+                        "${authenticate.company!.currencyId} "
+                        "${authenticate.stats!.purchInvoicesNotPaidAmount}"
+                        "(${authenticate.stats!.purchInvoicesNotPaidCount})",
                     "",
                     "",
                     "",

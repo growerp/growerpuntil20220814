@@ -26,7 +26,7 @@ class HomeForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
-        Authenticate authenticate = state.authenticate;
+        Authenticate authenticate = state.authenticate!;
         return MainTemplate(
             menu: menuItems,
             menuIndex: 0,
@@ -38,7 +38,7 @@ class HomeForm extends StatelessWidget {
                   onPressed: () => {
                         Navigator.pushNamed(context, '/about'),
                       }),
-              if (authenticate?.apiKey != null)
+              if (authenticate.apiKey != null)
                 IconButton(
                     key: Key('logoutButton'),
                     icon: Icon(Icons.do_not_disturb),
@@ -57,34 +57,34 @@ class HomeForm extends StatelessWidget {
                   makeDashboardItem(
                     context,
                     menuItems[1],
-                    authenticate.company.name.length > 20
-                        ? "${authenticate.company.name.substring(0, 20)}..."
-                        : "${authenticate.company.name}",
-                    "Administrators: ${authenticate.stats.admins}",
-                    "Employees: ${authenticate.stats.employees}",
+                    authenticate.company!.name!.length > 20
+                        ? "${authenticate.company!.name!.substring(0, 20)}..."
+                        : "${authenticate.company!.name}",
+                    "Administrators: ${authenticate.stats!.admins}",
+                    "Employees: ${authenticate.stats!.employees}",
                     "",
                   ),
                   makeDashboardItem(
                     context,
                     menuItems[2],
-                    "All Opportunities: ${authenticate.stats.opportunities}",
-                    "My Opportunities: ${authenticate.stats.myOpportunities}",
-                    "Leads: ${authenticate.stats.leads}",
-                    "Customers: ${authenticate.stats.customers}",
+                    "All Opportunities: ${authenticate.stats!.opportunities}",
+                    "My Opportunities: ${authenticate.stats!.myOpportunities}",
+                    "Leads: ${authenticate.stats!.leads}",
+                    "Customers: ${authenticate.stats!.customers}",
                   ),
                   makeDashboardItem(
                     context,
                     menuItems[3],
-                    "Categories: ${authenticate.stats.categories}",
-                    "Products: ${authenticate.stats.products}",
+                    "Categories: ${authenticate.stats!.categories}",
+                    "Products: ${authenticate.stats!.products}",
                     "",
                     "",
                   ),
                   makeDashboardItem(
                     context,
                     menuItems[4],
-                    "Orders: ${authenticate.stats.openSlsOrders}",
-                    "Customers: ${authenticate.stats.customers}",
+                    "Orders: ${authenticate.stats!.openSlsOrders}",
+                    "Customers: ${authenticate.stats!.customers}",
                     "",
                     "",
                   ),
@@ -92,21 +92,21 @@ class HomeForm extends StatelessWidget {
                     context,
                     menuItems[6],
                     "Sls open inv: "
-                        "${authenticate.company.currencyId} "
-                        "${authenticate.stats.salesInvoicesNotPaidAmount}"
-                        "(${authenticate.stats.salesInvoicesNotPaidCount})",
+                        "${authenticate.company!.currencyId} "
+                        "${authenticate.stats!.salesInvoicesNotPaidAmount}"
+                        "(${authenticate.stats!.salesInvoicesNotPaidCount})",
                     "Pur unp inv: "
-                        "${authenticate.company.currencyId} "
-                        "${authenticate.stats.purchInvoicesNotPaidAmount}"
-                        "(${authenticate.stats.purchInvoicesNotPaidCount})",
+                        "${authenticate.company!.currencyId} "
+                        "${authenticate.stats!.purchInvoicesNotPaidAmount}"
+                        "(${authenticate.stats!.purchInvoicesNotPaidCount})",
                     "",
                     "",
                   ),
                   makeDashboardItem(
                     context,
                     menuItems[5],
-                    "Orders: ${authenticate.stats.openPurOrders}",
-                    "Suppliers: ${authenticate.stats.suppliers}",
+                    "Orders: ${authenticate.stats!.openPurOrders}",
+                    "Suppliers: ${authenticate.stats!.suppliers}",
                     "",
                     "",
                   ),
@@ -118,7 +118,7 @@ class HomeForm extends StatelessWidget {
       if (state is AuthUnauthenticated) {
         final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
             GlobalKey<ScaffoldMessengerState>();
-        Authenticate authenticate = state.authenticate;
+        Authenticate? authenticate = state.authenticate;
         return ScaffoldMessenger(
             key: scaffoldMessengerKey,
             child: Scaffold(
@@ -152,7 +152,7 @@ class HomeForm extends StatelessWidget {
                     key: Key('newCompButton'),
                     child: Text('Create a new company and admin'),
                     onPressed: () {
-                      authenticate.company.copyWith(partyId: null);
+                      authenticate!.company!.copyWith(partyId: null);
                       Navigator.popAndPushNamed(context, '/register');
                     },
                   ),

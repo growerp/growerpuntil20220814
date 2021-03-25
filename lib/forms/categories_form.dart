@@ -14,12 +14,12 @@ class CategoriesForm extends StatefulWidget {
 class _CategoriesState extends State<CategoriesForm> {
   final _scrollController = ScrollController();
   final _scrollThreshold = 200.0;
-  CategoryBloc _categoryBloc;
-  Authenticate authenticate;
+  late CategoryBloc _categoryBloc;
+  Authenticate? authenticate;
   _CategoriesState();
-  int limit;
-  bool search;
-  String searchString;
+  late int limit;
+  late bool search;
+  String? searchString;
 
   @override
   void initState() {
@@ -37,17 +37,17 @@ class _CategoriesState extends State<CategoriesForm> {
     });
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
-        authenticate = state?.authenticate;
+        authenticate = state.authenticate;
         return BlocBuilder<CategoryBloc, CategoryState>(
             builder: (context, state) {
           if (state is CategoryProblem)
             return Center(child: Text("${state.errorMessage}"));
           if (state is CategorySuccess) {
-            List<ProductCategory> categories = state.categories;
+            List<ProductCategory>? categories = state.categories;
             return ListView.builder(
-              itemCount: state.hasReachedMax && categories.isNotEmpty
+              itemCount: state.hasReachedMax! && categories!.isNotEmpty
                   ? categories.length + 1
-                  : categories.length + 2,
+                  : categories!.length + 2,
               controller: _scrollController,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0)
@@ -120,30 +120,30 @@ class _CategoriesState extends State<CategoriesForm> {
                 return index >= categories.length
                     ? BottomLoader()
                     : Dismissible(
-                        key: Key(categories[index].categoryId),
+                        key: Key(categories[index].categoryId!),
                         direction: DismissDirection.startToEnd,
                         child: ListTile(
                             leading: CircleAvatar(
                               backgroundColor: Colors.green,
                               child: categories[index].image != null
                                   ? Image.memory(
-                                      categories[index]?.image,
+                                      categories[index].image!,
                                       height: 100,
                                     )
                                   : Text(
-                                      "${categories[index]?.categoryName[0]}"),
+                                      "${categories[index].categoryName![0]}"),
                             ),
                             title: Row(
                               children: <Widget>[
                                 Expanded(
                                     child: Text(
-                                        "${categories[index]?.categoryName}"
-                                        "[${categories[index]?.categoryId}]")),
+                                        "${categories[index].categoryName}"
+                                        "[${categories[index].categoryId}]")),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(TABLET))
                                   Expanded(
                                       child: Text(
-                                          "${categories[index]?.description}",
+                                          "${categories[index].description}",
                                           textAlign: TextAlign.center)),
                                 Expanded(
                                     child: Text(
@@ -190,7 +190,7 @@ class _CategoriesState extends State<CategoriesForm> {
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
       _categoryBloc.add(FetchCategory(
-          companyPartyId: authenticate.company.partyId,
+          companyPartyId: authenticate!.company!.partyId,
           limit: limit,
           search: searchString));
     }

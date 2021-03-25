@@ -26,8 +26,8 @@ class BalanceSheetForm extends StatefulWidget {
 }
 
 class _BalanceSheetFormState extends State<BalanceSheetForm> {
-  TreeController _controller;
-  Iterable<TreeNode> balanceSheetTree = [];
+  TreeController? _controller;
+  Iterable<TreeNode?> balanceSheetTree = [];
 
   @override
   void initState() {
@@ -38,26 +38,26 @@ class _BalanceSheetFormState extends State<BalanceSheetForm> {
 
   @override
   Widget build(BuildContext context) {
-    Iterable<TreeNode> convert(BalanceSheet bs) {
-      TreeNode getTreeNode(ClassInfo classInfo) {
+    Iterable<TreeNode?> convert(BalanceSheet bs) {
+      TreeNode? getTreeNode(ClassInfo? classInfo) {
         if (classInfo == null) return null;
         TreeNode result = TreeNode(
           key: ValueKey(classInfo.id),
           content: Row(children: [
-            Text(classInfo.description),
+            Text(classInfo.description!),
             Text(classInfo.periodsAmount[0].toString())
           ]),
-          children: classInfo.children.map((x) => getTreeNode(x)).toList(),
+          children: classInfo.children.map((x) => getTreeNode(x)).toList() as List<TreeNode>?,
         );
         return result;
       }
 
-      List<TreeNode> nodes = [];
+      List<TreeNode?> nodes = [];
       if (bs.asset != null) nodes.add(getTreeNode(bs.asset));
       if (bs.liability != null) nodes.add(getTreeNode(bs.liability));
       if (bs.equity != null) nodes.add(getTreeNode(bs.equity));
       if (bs.distribution != null) nodes.add(getTreeNode(bs.distribution));
-      Iterable<TreeNode> iterable = nodes;
+      Iterable<TreeNode?> iterable = nodes;
       return iterable;
     }
 
@@ -68,19 +68,19 @@ class _BalanceSheetFormState extends State<BalanceSheetForm> {
     }, builder: (context, state) {
       if (state is AccntProblem)
         return FatalErrorForm("Could not load balance sheet!");
-      if (state is AccntSuccess) balanceSheetTree = convert(state.balanceSheet);
+      if (state is AccntSuccess) balanceSheetTree = convert(state.balanceSheet!);
       return ListView(
         children: <Widget>[
           ElevatedButton(
             child: Text("Expand All"),
             onPressed: () => setState(() {
-              _controller.expandAll();
+              _controller!.expandAll();
             }),
           ),
           ElevatedButton(
             child: Text("Collapse All"),
             onPressed: () => setState(() {
-              _controller.collapseAll();
+              _controller!.collapseAll();
             }),
           ),
           buildTree(),
@@ -92,7 +92,7 @@ class _BalanceSheetFormState extends State<BalanceSheetForm> {
   Widget buildTree() {
     return TreeView(
       treeController: _controller,
-      nodes: balanceSheetTree,
+      nodes: balanceSheetTree as List<TreeNode>,
       indent: 10,
     );
   }

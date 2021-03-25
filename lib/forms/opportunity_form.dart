@@ -26,16 +26,16 @@ import 'package:core/templates/@templates.dart';
 import '@forms.dart';
 
 class OpportunityForm extends StatelessWidget {
-  final Opportunity opportunity;
+  final Opportunity? opportunity;
 
-  const OpportunityForm({Key key, this.opportunity}) : super(key: key);
+  const OpportunityForm({Key? key, this.opportunity}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     crmMap[0] = MapItem(
         form: OpportunityPage(opportunity),
         label:
-            "Opportunity #${opportunity != null ? opportunity.opportunityId : 'New'}",
+            "Opportunity #${opportunity != null ? opportunity!.opportunityId : 'New'}",
         icon: Icon(Icons.home));
     return MainTemplate(
       menu: menuItems,
@@ -46,7 +46,7 @@ class OpportunityForm extends StatelessWidget {
 }
 
 class OpportunityPage extends StatefulWidget {
-  final Opportunity opportunity;
+  final Opportunity? opportunity;
   const OpportunityPage(this.opportunity);
   @override
   _OpportunityState createState() => _OpportunityState();
@@ -62,11 +62,11 @@ class _OpportunityState extends State<OpportunityPage> {
   final _leadSearchBoxController = TextEditingController();
   final _accountSearchBoxController = TextEditingController();
 
-  Opportunity updatedOpportunity;
+  late Opportunity updatedOpportunity;
   bool loading = false;
-  String _selectedStageId;
-  User _selectedAccount;
-  User _selectedLead;
+  String? _selectedStageId;
+  User? _selectedAccount;
+  User? _selectedLead;
 
   @override
   Widget build(BuildContext context) {
@@ -89,27 +89,27 @@ class _OpportunityState extends State<OpportunityPage> {
   }
 
   Widget _showForm(repos) {
-    Opportunity opportunity = widget.opportunity;
-    _nameController..text = opportunity?.opportunityName;
-    _descriptionController..text = opportunity?.description;
-    _estAmountController..text = opportunity?.estAmount?.toString();
-    _estProbabilityController..text = opportunity?.estProbability?.toString();
-    _estNextStepController..text = opportunity?.nextStep?.toString();
-    if (_selectedLead == null && opportunity?.leadPartyId != null) {
+    Opportunity? opportunity = widget.opportunity;
+    _nameController..text = opportunity!.opportunityName!;
+    _descriptionController..text = opportunity.description!;
+    _estAmountController..text = opportunity.estAmount.toString();
+    _estProbabilityController..text = opportunity.estProbability.toString();
+    _estNextStepController..text = opportunity.nextStep.toString();
+    if (_selectedLead == null && opportunity.leadPartyId != null) {
       _selectedLead = User(
-          partyId: opportunity?.leadPartyId,
-          email: opportunity?.leadEmail,
+          partyId: opportunity.leadPartyId,
+          email: opportunity.leadEmail,
           firstName: opportunity.leadFirstName,
           lastName: opportunity.leadLastName);
     }
-    if (_selectedAccount == null && opportunity?.accountPartyId != null) {
+    if (_selectedAccount == null && opportunity.accountPartyId != null) {
       _selectedAccount = User(
-          partyId: opportunity?.accountPartyId,
-          email: opportunity?.accountEmail,
+          partyId: opportunity.accountPartyId,
+          email: opportunity.accountEmail,
           firstName: opportunity.accountFirstName,
           lastName: opportunity.accountLastName);
     }
-    if (_selectedStageId == null && opportunity?.stageId != null)
+    if (_selectedStageId == null && opportunity.stageId != null)
       _selectedStageId = opportunity.stageId ?? opportunityStages[0];
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
     return Center(
@@ -131,7 +131,7 @@ class _OpportunityState extends State<OpportunityPage> {
                                 InputDecoration(labelText: 'Opportunity Name'),
                             controller: _nameController,
                             validator: (value) {
-                              if (value.isEmpty)
+                              if (value!.isEmpty)
                                 return 'Please enter a opportunity name?';
                               return null;
                             },
@@ -153,7 +153,7 @@ class _OpportunityState extends State<OpportunityPage> {
                                 labelText: 'Expected revenue Amount'),
                             controller: _estAmountController,
                             validator: (value) {
-                              if (value.isEmpty)
+                              if (value!.isEmpty)
                                 return 'Please enter an amount?';
                               return null;
                             },
@@ -168,7 +168,7 @@ class _OpportunityState extends State<OpportunityPage> {
                                 labelText: 'Estimated Probabilty %'),
                             controller: _estProbabilityController,
                             validator: (value) {
-                              if (value.isEmpty)
+                              if (value!.isEmpty)
                                 return 'Please enter a probability % (1-100)?';
                               return null;
                             },
@@ -178,7 +178,7 @@ class _OpportunityState extends State<OpportunityPage> {
                             decoration: InputDecoration(labelText: 'Next step'),
                             controller: _estNextStepController,
                             validator: (value) {
-                              if (value.isEmpty) return 'Next step?';
+                              if (value!.isEmpty) return 'Next step?';
                               return null;
                             },
                           ),
@@ -191,8 +191,8 @@ class _OpportunityState extends State<OpportunityPage> {
                             items: opportunityStages.map((item) {
                               return DropdownMenuItem<String>(
                                   child: Text(item), value: item);
-                            })?.toList(),
-                            onChanged: (String newValue) {
+                            }).toList(),
+                            onChanged: (String? newValue) {
                               setState(() {
                                 _selectedStageId = newValue;
                               });
@@ -224,7 +224,7 @@ class _OpportunityState extends State<OpportunityPage> {
                                   userGroupId: 'GROWERP_M_LEAD',
                                   filter: _leadSearchBoxController.text);
                               return result;
-                            },
+                            } as Future<List<User>> Function(String)?,
                             onChanged: (User newValue) {
                               setState(() {
                                 _selectedLead = newValue;
@@ -232,7 +232,7 @@ class _OpportunityState extends State<OpportunityPage> {
                             },
                           ),
                           Visibility(
-                              visible: opportunity?.opportunityId != null,
+                              visible: opportunity.opportunityId != null,
                               child: DropdownSearch<User>(
                                   label: 'Account Employee',
                                   dialogMaxWidth: 300,
@@ -262,7 +262,7 @@ class _OpportunityState extends State<OpportunityPage> {
                                         filter:
                                             _accountSearchBoxController.text);
                                     return result;
-                                  },
+                                  } as Future<List<User>> Function(String)?,
                                   onChanged: (User newValue) {
                                     setState(() {
                                       _selectedAccount = newValue;
@@ -276,14 +276,14 @@ class _OpportunityState extends State<OpportunityPage> {
                               }),
                           ElevatedButton(
                               key: Key('update'),
-                              child: Text(opportunity?.opportunityId == null
+                              child: Text(opportunity.opportunityId == null
                                   ? 'Create'
                                   : 'Update'),
                               onPressed: () {
-                                if (_formKey.currentState.validate() &&
+                                if (_formKey.currentState!.validate() &&
                                     !loading) {
                                   updatedOpportunity = Opportunity(
-                                      opportunityId: opportunity?.opportunityId,
+                                      opportunityId: opportunity.opportunityId,
                                       opportunityName: _nameController.text,
                                       description: _descriptionController.text,
                                       estAmount: Decimal.parse(

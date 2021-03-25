@@ -24,19 +24,19 @@ import 'package:core/templates/@templates.dart';
 import '@forms.dart';
 
 class UserForm extends StatelessWidget {
-  final FormArguments formArguments;
-  const UserForm({Key key, this.formArguments}) : super(key: key);
+  final FormArguments? formArguments;
+  const UserForm({Key? key, this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int tab;
-    User user = formArguments.object;
-    int menuIndex = formArguments.menuIndex;
-    String userType;
-    List<MapItem> mapItems;
+    int? tab;
+    User? user = formArguments!.object as User?;
+    int? menuIndex = formArguments!.menuIndex;
+    String? userType;
+    List<MapItem>? mapItems;
     switch (menuIndex) {
       case MENU_COMPANY:
-        if (user.userGroupId == "GROWERP_M_ADMIN") {
+        if (user!.userGroupId == "GROWERP_M_ADMIN") {
           tab = 1;
           userType = 'Admin';
         }
@@ -44,14 +44,14 @@ class UserForm extends StatelessWidget {
           tab = 2;
           userType = 'Employee';
         }
-        companyMap[tab] = MapItem(
+        companyMap[tab!] = MapItem(
             form: UserPage(user),
             label: "$userType #${user != null ? user.partyId : 'New'}",
             icon: Icon(Icons.home));
         mapItems = companyMap;
         break;
       case MENU_CRM:
-        if (user.userGroupId == "GROWERP_M_LEAD") {
+        if (user!.userGroupId == "GROWERP_M_LEAD") {
           tab = 1;
           userType = 'Lead';
         }
@@ -59,29 +59,29 @@ class UserForm extends StatelessWidget {
           tab = 2;
           userType = 'Customer';
         }
-        crmMap[tab] = MapItem(
+        crmMap[tab!] = MapItem(
             form: UserPage(user),
             label: "$userType #${user != null ? user.partyId : 'New'}",
             icon: Icon(Icons.home));
         mapItems = crmMap;
         break;
       case MENU_SALES:
-        if (user.userGroupId == "GROWERP_M_CUSTOMER") {
+        if (user!.userGroupId == "GROWERP_M_CUSTOMER") {
           tab = 1;
           userType = 'Customer';
         }
-        salesMap[tab] = MapItem(
+        salesMap[tab!] = MapItem(
             form: UserPage(user),
             label: "$userType #${user != null ? user.partyId : 'New'}",
             icon: Icon(Icons.home));
         mapItems = salesMap;
         break;
       case MENU_PURCHASE:
-        if (user.userGroupId == "GROWERP_M_SUPPLIER") {
+        if (user!.userGroupId == "GROWERP_M_SUPPLIER") {
           tab = 1;
           userType = 'Supplier';
         }
-        purchaseMap[tab] = MapItem(
+        purchaseMap[tab!] = MapItem(
             form: UserPage(user),
             label: "$userType #${user != null ? user.partyId : 'New'}",
             icon: Icon(Icons.home));
@@ -98,7 +98,7 @@ class UserForm extends StatelessWidget {
 }
 
 class UserPage extends StatefulWidget {
-  final User user;
+  final User? user;
   UserPage(this.user);
   @override
   _UserState createState() => _UserState();
@@ -112,17 +112,18 @@ class _UserState extends State<UserPage> {
   final _emailController = TextEditingController();
   final _companyController = TextEditingController();
 
-  User updatedUser;
+  User? updatedUser;
   bool loading = false;
-  UserGroup _selectedUserGroup;
-  PickedFile _imageFile;
+  UserGroup? _selectedUserGroup;
+  PickedFile? _imageFile;
   dynamic _pickImageError;
-  String _retrieveDataError;
+  String? _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
 
-  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
+  void _onImageButtonPressed(ImageSource source,
+      {BuildContext? context}) async {
     try {
       final pickedFile = await _picker.getImage(
         source: source,
@@ -147,14 +148,14 @@ class _UserState extends State<UserPage> {
         _imageFile = response.file;
       });
     } else {
-      _retrieveDataError = response.exception.code;
+      _retrieveDataError = response.exception!.code;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    User user = widget.user;
-    Authenticate authenticate;
+    User? user = widget.user;
+    Authenticate? authenticate;
     updatedUser = widget.user;
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) authenticate = state.authenticate;
@@ -163,7 +164,7 @@ class _UserState extends State<UserPage> {
           child: Scaffold(
               floatingActionButton:
                   imageButtons(context, _onImageButtonPressed),
-              body: user.userGroupId == "GROWERP_M_EMPLOYEE"
+              body: user!.userGroupId == "GROWERP_M_EMPLOYEE"
                   ? BlocListener<EmployeeBloc, UserState>(
                       listener: (context, state) {
                         listListener(state);
@@ -229,9 +230,9 @@ class _UserState extends State<UserPage> {
     }
   }
 
-  Text _getRetrieveErrorWidget() {
+  Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError);
+      final Text result = Text(_retrieveDataError!);
       _retrieveDataError = null;
       return result;
     }
@@ -239,16 +240,16 @@ class _UserState extends State<UserPage> {
   }
 
   Widget _showForm(authenticate, updatedUser) {
-    User user = widget.user;
-    _firstNameController..text = user?.firstName;
-    _lastNameController..text = user?.lastName;
-    _nameController..text = user?.name;
-    _emailController..text = user?.email;
-    _companyController..text = user?.companyName;
-    final Text retrieveError = _getRetrieveErrorWidget();
-    if (_selectedUserGroup == null && user?.userGroupId != null)
+    User? user = widget.user;
+    _firstNameController..text = user!.firstName!;
+    _lastNameController..text = user.lastName!;
+    _nameController..text = user.name!;
+    _emailController..text = user.email!;
+    _companyController..text = user.companyName!;
+    final Text? retrieveError = _getRetrieveErrorWidget();
+    if (_selectedUserGroup == null && user.userGroupId != null)
       _selectedUserGroup =
-          userGroups.firstWhere((a) => a.userGroupId == user?.userGroupId);
+          userGroups.firstWhere((a) => a.userGroupId == user.userGroupId);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -270,11 +271,11 @@ class _UserState extends State<UserPage> {
                       radius: 80,
                       child: _imageFile != null
                           ? kIsWeb
-                              ? Image.network(_imageFile.path)
-                              : Image.file(File(_imageFile.path))
-                          : user?.image != null
-                              ? Image.memory(user?.image, height: 150)
-                              : Text(user?.firstName?.substring(0, 1) ?? '',
+                              ? Image.network(_imageFile!.path)
+                              : Image.file(File(_imageFile!.path))
+                          : user.image != null
+                              ? Image.memory(user.image!, height: 150)
+                              : Text(user.firstName?.substring(0, 1) ?? '',
                                   style: TextStyle(
                                       fontSize: 30, color: Colors.black))),
                   SizedBox(height: 20),
@@ -283,7 +284,7 @@ class _UserState extends State<UserPage> {
                     decoration: InputDecoration(labelText: 'First Name'),
                     controller: _firstNameController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter a first name?';
+                      if (value!.isEmpty) return 'Please enter a first name?';
                       return null;
                     },
                   ),
@@ -293,7 +294,7 @@ class _UserState extends State<UserPage> {
                     decoration: InputDecoration(labelText: 'Last Name'),
                     controller: _lastNameController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter a last name?';
+                      if (value!.isEmpty) return 'Please enter a last name?';
                       return null;
                     },
                   ),
@@ -303,7 +304,7 @@ class _UserState extends State<UserPage> {
                     decoration: InputDecoration(labelText: 'User Login Name'),
                     controller: _nameController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter a login name?';
+                      if (value!.isEmpty) return 'Please enter a login name?';
                       return null;
                     },
                   ),
@@ -312,8 +313,8 @@ class _UserState extends State<UserPage> {
                     key: Key('email'),
                     decoration: InputDecoration(labelText: 'Email address'),
                     controller: _emailController,
-                    validator: (String value) {
-                      if (value.isEmpty) return 'Please enter Email address?';
+                    validator: (String? value) {
+                      if (value!.isEmpty) return 'Please enter Email address?';
                       if (!RegExp(
                               r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
                           .hasMatch(value)) {
@@ -331,11 +332,11 @@ class _UserState extends State<UserPage> {
                         value: _selectedUserGroup,
                         validator: (value) =>
                             value == null ? 'field required' : null,
-                        items: userGroups?.map((item) {
+                        items: userGroups.map((item) {
                           return DropdownMenuItem<UserGroup>(
-                              child: Text(item.description), value: item);
-                        })?.toList(),
-                        onChanged: (UserGroup newValue) {
+                              child: Text(item.description!), value: item);
+                        }).toList(),
+                        onChanged: (UserGroup? newValue) {
                           setState(() {
                             _selectedUserGroup = newValue;
                           });
@@ -351,7 +352,7 @@ class _UserState extends State<UserPage> {
                         decoration: InputDecoration(labelText: 'Company Name'),
                         controller: _companyController,
                         validator: (value) {
-                          if (value.isEmpty)
+                          if (value!.isEmpty)
                             return 'Please enter a company name?';
                           return null;
                         },
@@ -359,16 +360,16 @@ class _UserState extends State<UserPage> {
                   SizedBox(height: 10),
                   ElevatedButton(
                       key: Key('update'),
-                      child: Text(user?.partyId == null ? 'Create' : 'Update'),
+                      child: Text(user.partyId == null ? 'Create' : 'Update'),
                       onPressed: () async {
-                        if (_formKey.currentState.validate() && !loading) {
+                        if (_formKey.currentState!.validate() && !loading) {
                           updatedUser = User(
-                              partyId: user?.partyId,
+                              partyId: user.partyId,
                               firstName: _firstNameController.text,
                               lastName: _lastNameController.text,
                               email: _emailController.text,
                               name: _nameController.text,
-                              userGroupId: _selectedUserGroup.userGroupId,
+                              userGroupId: _selectedUserGroup!.userGroupId,
                               language: Localizations.localeOf(context)
                                   .languageCode
                                   .toString(),

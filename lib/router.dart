@@ -15,6 +15,7 @@
 import 'package:flutter/material.dart';
 import 'forms/@forms.dart' as local;
 import 'package:core/forms/@forms.dart';
+import 'package:models/@models.dart';
 
 // https://medium.com/flutter-community/flutter-navigation-cheatsheet-a-guide-to-named-routing-dc642702b98c
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -31,25 +32,26 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => local.CatalogForm());
     case '/category':
       return MaterialPageRoute(
-          builder: (context) =>
-              local.CategoryForm(formArguments: settings.arguments));
+          builder: (context) => local.CategoryForm(
+              formArguments: settings.arguments as FormArguments?));
     case '/company':
       return MaterialPageRoute(builder: (context) => local.CompanyForm());
     case '/login':
       return MaterialPageRoute(
-          builder: (context) => LoginForm(settings.arguments));
+          builder: (context) => LoginForm(settings.arguments as String?));
     case '/register':
       return MaterialPageRoute(
-          builder: (context) => RegisterForm(settings.arguments));
+          builder: (context) => RegisterForm(settings.arguments as String?));
     case '/changePw':
       return MaterialPageRoute(
-          builder: (context) => ChangePwForm(changePwArgs: settings.arguments));
+          builder: (context) =>
+              ChangePwForm(changePwArgs: settings.arguments as ChangePwArgs?));
     case '/about':
       return MaterialPageRoute(builder: (context) => AboutForm());
     case '/product':
       return MaterialPageRoute(
-          builder: (context) =>
-              local.ProductForm(formArguments: settings.arguments));
+          builder: (context) => local.ProductForm(
+              formArguments: settings.arguments as FormArguments?));
     case '/sales':
       return MaterialPageRoute(builder: (context) => local.SalesOrderForm());
     case '/purchase':
@@ -70,18 +72,18 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => local.ReportsForm());
     case '/finDoc':
       return MaterialPageRoute(
-          builder: (context) =>
-              local.FinDocForm(formArguments: settings.arguments));
+          builder: (context) => local.FinDocForm(
+              formArguments: settings.arguments as FormArguments));
     case '/crm':
       return MaterialPageRoute(builder: (context) => local.CrmForm());
     case '/opportunity':
       return MaterialPageRoute(
-          builder: (context) =>
-              local.OpportunityForm(opportunity: settings.arguments));
+          builder: (context) => local.OpportunityForm(
+              opportunity: settings.arguments as Opportunity?));
     case '/user':
       return MaterialPageRoute(
-          builder: (context) =>
-              local.UserForm(formArguments: settings.arguments));
+          builder: (context) => local.UserForm(
+              formArguments: settings.arguments as FormArguments?));
     default:
       return MaterialPageRoute(
           builder: (context) => FatalErrorForm(

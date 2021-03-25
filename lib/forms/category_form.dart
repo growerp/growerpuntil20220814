@@ -24,14 +24,14 @@ import 'package:core/helper_functions.dart';
 import '@forms.dart';
 
 class CategoryForm extends StatelessWidget {
-  final FormArguments formArguments;
-  const CategoryForm({Key key, this.formArguments}) : super(key: key);
+  final FormArguments? formArguments;
+  const CategoryForm({Key? key, this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ProductCategory category = formArguments.object;
+    ProductCategory? category = formArguments!.object as ProductCategory?;
     catalogMap[1] = MapItem(
-        form: CategoryPage(formArguments.message, category),
+        form: CategoryPage(formArguments!.message, category),
         label: "Category #${category != null ? category.categoryId : 'New'}",
         icon: Icon(Icons.home));
     return MainTemplate(
@@ -44,8 +44,8 @@ class CategoryForm extends StatelessWidget {
 }
 
 class CategoryPage extends StatefulWidget {
-  final String message;
-  final ProductCategory category;
+  final String? message;
+  final ProductCategory? category;
   CategoryPage(this.message, this.category);
   @override
   _CategoryState createState() => _CategoryState(message, category);
@@ -59,10 +59,10 @@ class _CategoryState extends State<CategoryPage> {
   TextEditingController _descrController = TextEditingController();
 
   bool loading = false;
-  ProductCategory updatedCategory;
-  PickedFile _imageFile;
+  late ProductCategory updatedCategory;
+  PickedFile? _imageFile;
   dynamic _pickImageError;
-  String _retrieveDataError;
+  String? _retrieveDataError;
 
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -71,7 +71,7 @@ class _CategoryState extends State<CategoryPage> {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
-  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
+  void _onImageButtonPressed(ImageSource source, {BuildContext? context}) async {
     try {
       final pickedFile = await _picker.getImage(
         source: source,
@@ -96,7 +96,7 @@ class _CategoryState extends State<CategoryPage> {
         _imageFile = response.file;
       });
     } else {
-      _retrieveDataError = response.exception.code;
+      _retrieveDataError = response.exception!.code;
     }
   }
 
@@ -135,9 +135,9 @@ class _CategoryState extends State<CategoryPage> {
             }))));
   }
 
-  Text _getRetrieveErrorWidget() {
+  Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError);
+      final Text result = Text(_retrieveDataError!);
       _retrieveDataError = null;
       return result;
     }
@@ -147,7 +147,7 @@ class _CategoryState extends State<CategoryPage> {
   Widget _showForm() {
     _nameController..text = category?.categoryName;
     _descrController..text = category?.description;
-    final Text retrieveError = _getRetrieveErrorWidget();
+    final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -169,8 +169,8 @@ class _CategoryState extends State<CategoryPage> {
                       radius: 80,
                       child: _imageFile != null
                           ? kIsWeb
-                              ? Image.network(_imageFile.path)
-                              : Image.file(File(_imageFile.path))
+                              ? Image.network(_imageFile!.path)
+                              : Image.file(File(_imageFile!.path))
                           : category?.image != null
                               ? Image.memory(category?.image)
                               : Text(
@@ -183,7 +183,7 @@ class _CategoryState extends State<CategoryPage> {
                     decoration: InputDecoration(labelText: 'Category Name'),
                     controller: _nameController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter a category name?';
+                      if (value!.isEmpty) return 'Please enter a category name?';
                       return null;
                     },
                   ),
@@ -194,7 +194,7 @@ class _CategoryState extends State<CategoryPage> {
                     controller: _descrController,
                     maxLines: 5,
                     validator: (value) {
-                      if (value.isEmpty)
+                      if (value!.isEmpty)
                         return 'Please enter a category description?';
                       return null;
                     },
@@ -205,7 +205,7 @@ class _CategoryState extends State<CategoryPage> {
                       child: Text(
                           category?.categoryId == null ? 'Create' : 'Update'),
                       onPressed: () async {
-                        if (_formKey.currentState.validate() && !loading) {
+                        if (_formKey.currentState!.validate() && !loading) {
                           updatedCategory = ProductCategory(
                               categoryId: category?.categoryId,
                               categoryName: _nameController.text,

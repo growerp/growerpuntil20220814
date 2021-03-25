@@ -28,7 +28,7 @@ class LedgerTreeForm extends StatefulWidget {
 }
 
 class _LedgerTreeFormState extends State<LedgerTreeForm> {
-  TreeController _controller;
+  TreeController? _controller;
   Iterable<TreeNode> nodes = [];
 
   @override
@@ -50,7 +50,7 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
           key: ValueKey(glAccount.id),
           content: Row(children: [
             SizedBox(
-                width: (isPhone ? 330 : 400) - (glAccount.l.toDouble() * 10),
+                width: (isPhone ? 330 : 400) - (glAccount.l!.toDouble() * 10),
                 child: Text("${glAccount.id} ${glAccount.accountName} ")),
             SizedBox(
                 width: 100,
@@ -64,7 +64,7 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
                     NumberFormat.simpleCurrency().format(glAccount.rollUp),
                     textAlign: TextAlign.right))
           ]),
-          children: glAccount.children.map((x) => getTreeNode(x)).toList(),
+          children: glAccount.children!.map((x) => getTreeNode(x)).toList(),
         );
         return result;
       }
@@ -85,7 +85,7 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
     }, builder: (context, state) {
       if (state is AccntProblem)
         return FatalErrorForm("Could not load Ledger tree!");
-      if (state is AccntSuccess) nodes = convert(state.ledgerTree);
+      if (state is AccntSuccess) nodes = convert(state.ledgerTree!);
       return ListView(
         children: <Widget>[
           SizedBox(height: 10),
@@ -93,14 +93,14 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
             ElevatedButton(
               child: Text("Expand All"),
               onPressed: () => setState(() {
-                _controller.expandAll();
+                _controller!.expandAll();
               }),
             ),
             SizedBox(width: 10),
             ElevatedButton(
               child: Text("Collapse All"),
               onPressed: () => setState(() {
-                _controller.collapseAll();
+                _controller!.collapseAll();
               }),
             ),
           ]),
@@ -118,7 +118,7 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
           Divider(color: Colors.black),
           TreeView(
             treeController: _controller,
-            nodes: nodes,
+            nodes: nodes as List<TreeNode>,
             indent: 10,
           )
         ],

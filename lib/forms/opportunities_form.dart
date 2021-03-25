@@ -30,12 +30,12 @@ class OpportunitiesForm extends StatefulWidget {
 class _OpportunitiesState extends State<OpportunitiesForm> {
   ScrollController _scrollController = ScrollController();
   double _scrollThreshold = 200.0;
-  OpportunityBloc _opportunityBloc;
-  Authenticate authenticate;
+  late OpportunityBloc _opportunityBloc;
+  Authenticate? authenticate;
   int limit = 20;
-  bool searchField;
-  String searchString;
-  bool isLoading;
+  late bool searchField;
+  String? searchString;
+  bool? isLoading;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
     });
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
-        authenticate = state?.authenticate;
+        authenticate = state.authenticate;
         return BlocConsumer<OpportunityBloc, OpportunityState>(
             listener: (context, state) {
           if (state is OpportunityProblem)
@@ -67,12 +67,12 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
             return FatalErrorForm("Could not load opportunities!");
           if (state is OpportunitySuccess) {
             isLoading = false;
-            bool hasReachedMax = state.hasReachedMax;
-            List<Opportunity> opportunities = state.opportunities;
+            bool hasReachedMax = state.hasReachedMax!;
+            List<Opportunity>? opportunities = state.opportunities;
             return ListView.builder(
-              itemCount: hasReachedMax && opportunities.isNotEmpty
-                  ? state.opportunities.length + 1
-                  : state.opportunities.length + 2,
+              itemCount: hasReachedMax && opportunities!.isNotEmpty
+                  ? state.opportunities!.length + 1
+                  : state.opportunities!.length + 2,
               controller: _scrollController,
               itemBuilder: (BuildContext context, int index) {
                 if (index == 0)
@@ -160,28 +160,28 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               Divider(color: Colors.black),
                             ]),
                       trailing: Text(' '));
-                if (index == 1 && opportunities.isEmpty)
+                if (index == 1 && opportunities!.isEmpty)
                   return Center(
                       heightFactor: 20,
                       child: Text("no records found!",
                           textAlign: TextAlign.center));
                 index -= 1;
-                return index >= state.opportunities.length
+                return index >= state.opportunities!.length
                     ? BottomLoader()
                     : Dismissible(
-                        key: Key(state.opportunities[index].opportunityId),
+                        key: Key(state.opportunities![index].opportunityId!),
                         direction: DismissDirection.startToEnd,
                         child: ListTile(
                             leading: CircleAvatar(
                               backgroundColor: Colors.green,
                               child: Text(
-                                  "${state.opportunities[index]?.opportunityName[0]}"),
+                                  "${state.opportunities![index].opportunityName![0]}"),
                             ),
                             title: Row(
                               children: <Widget>[
                                 Expanded(
                                     child: Text(
-                                  "${opportunities[index].opportunityName}"
+                                  "${opportunities![index].opportunityName}"
                                   "[${opportunities[index].opportunityId}]",
                                 )),
                                 if (!ResponsiveWrapper.of(context)
@@ -228,7 +228,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                             ),
                             onTap: () async {
                               await Navigator.pushNamed(context, '/opportunity',
-                                  arguments: state.opportunities[index]);
+                                  arguments: state.opportunities![index]);
                               BlocProvider.of<OpportunityBloc>(context)
                                   .add(FetchOpportunity());
                             },

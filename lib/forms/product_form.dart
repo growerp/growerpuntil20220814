@@ -27,14 +27,14 @@ import 'package:core/templates/@templates.dart';
 import '@forms.dart';
 
 class ProductForm extends StatelessWidget {
-  final FormArguments formArguments;
-  const ProductForm({Key key, this.formArguments}) : super(key: key);
+  final FormArguments? formArguments;
+  const ProductForm({Key? key, this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Product product = formArguments.object;
+    Product? product = formArguments!.object as Product?;
     catalogMap[0] = MapItem(
-        form: ProductPage(formArguments.message, product),
+        form: ProductPage(formArguments!.message, product),
         label: "product #${product != null ? product.productId : 'New'}",
         icon: Icon(Icons.home));
     return MainTemplate(
@@ -47,16 +47,16 @@ class ProductForm extends StatelessWidget {
 }
 
 class ProductPage extends StatefulWidget {
-  final String message;
-  final Product product;
+  final String? message;
+  final Product? product;
   ProductPage(this.message, this.product);
   @override
   _ProductState createState() => _ProductState(message, product);
 }
 
 class _ProductState extends State<ProductPage> {
-  final String message;
-  final Product product;
+  final String? message;
+  final Product? product;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
@@ -64,11 +64,11 @@ class _ProductState extends State<ProductPage> {
   TextEditingController _categorySearchBoxController = TextEditingController();
 
   bool loading = false;
-  Product updatedProduct;
-  ProductCategory _selectedCategory;
-  PickedFile _imageFile;
+  late Product updatedProduct;
+  ProductCategory? _selectedCategory;
+  PickedFile? _imageFile;
   dynamic _pickImageError;
-  String _retrieveDataError;
+  String? _retrieveDataError;
 
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -77,7 +77,8 @@ class _ProductState extends State<ProductPage> {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
-  void _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
+  void _onImageButtonPressed(ImageSource source,
+      {BuildContext? context}) async {
     try {
       final pickedFile = await _picker.getImage(
         source: source,
@@ -102,7 +103,7 @@ class _ProductState extends State<ProductPage> {
         _imageFile = response.file;
       });
     } else {
-      _retrieveDataError = response.exception.code;
+      _retrieveDataError = response.exception!.code;
     }
   }
 
@@ -142,9 +143,9 @@ class _ProductState extends State<ProductPage> {
             }))));
   }
 
-  Text _getRetrieveErrorWidget() {
+  Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError);
+      final Text result = Text(_retrieveDataError!);
       _retrieveDataError = null;
       return result;
     }
@@ -152,13 +153,13 @@ class _ProductState extends State<ProductPage> {
   }
 
   Widget _showForm(repos) {
-    _nameController..text = product?.productName;
-    _descriptionController..text = product?.description;
-    _priceController..text = product?.price?.toString();
-    final Text retrieveError = _getRetrieveErrorWidget();
+    _nameController..text = product!.productName!;
+    _descriptionController..text = product!.description!;
+    _priceController..text = product!.price.toString();
+    final Text? retrieveError = _getRetrieveErrorWidget();
     if (_selectedCategory == null && product?.categoryId != null)
       _selectedCategory = ProductCategory(
-          categoryId: product.categoryId, categoryName: product.categoryName);
+          categoryId: product!.categoryId, categoryName: product!.categoryName);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -180,11 +181,11 @@ class _ProductState extends State<ProductPage> {
                       radius: 80,
                       child: _imageFile != null
                           ? kIsWeb
-                              ? Image.network(_imageFile.path)
-                              : Image.file(File(_imageFile.path))
+                              ? Image.network(_imageFile!.path)
+                              : Image.file(File(_imageFile!.path))
                           : product?.image != null
                               ? Image.memory(
-                                  product?.image,
+                                  product!.image!,
                                 )
                               : Text(
                                   product?.productName?.substring(0, 1) ?? '',
@@ -196,7 +197,7 @@ class _ProductState extends State<ProductPage> {
                     decoration: InputDecoration(labelText: 'Product Name'),
                     controller: _nameController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter a product name?';
+                      if (value!.isEmpty) return 'Please enter a product name?';
                       return null;
                     },
                   ),
@@ -216,7 +217,7 @@ class _ProductState extends State<ProductPage> {
                     ],
                     controller: _priceController,
                     validator: (value) {
-                      if (value.isEmpty) return 'Please enter a price?';
+                      if (value!.isEmpty) return 'Please enter a price?';
                       return null;
                     },
                   ),
@@ -244,7 +245,7 @@ class _ProductState extends State<ProductPage> {
                       var result = await repos.getCategory(
                           filter: _categorySearchBoxController.text);
                       return result;
-                    },
+                    } as Future<List<ProductCategory>> Function(String)?,
                     onChanged: (ProductCategory newValue) {
                       setState(() {
                         _selectedCategory = newValue;
@@ -257,13 +258,13 @@ class _ProductState extends State<ProductPage> {
                       child: Text(
                           product?.productId == null ? 'Create' : 'Update'),
                       onPressed: () async {
-                        if (_formKey.currentState.validate() && !loading) {
+                        if (_formKey.currentState!.validate() && !loading) {
                           updatedProduct = Product(
                               productId: product?.productId,
                               productName: _nameController.text,
                               description: _descriptionController.text,
                               price: Decimal.parse(_priceController.text),
-                              categoryId: _selectedCategory.categoryId,
+                              categoryId: _selectedCategory!.categoryId,
                               image: await HelperFunctions.getResizedImage(
                                   _imageFile?.path));
                           BlocProvider.of<ProductBloc>(context)
