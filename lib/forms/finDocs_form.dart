@@ -227,7 +227,7 @@ class _OrdersState extends State<FinDocsForm> {
                         ]),
                         Divider(color: Colors.black),
                       ]),
-                trailing: Text('                     '));
+                trailing: Text('                            '));
           if (index == 1 && finDocs.isEmpty && !isLoading)
             return Center(
                 heightFactor: 20,
@@ -236,9 +236,9 @@ class _OrdersState extends State<FinDocsForm> {
           return index >= finDocs.length
               ? BottomLoader()
               : Dismissible(
-                  key: Key(finDocs[index].orderId),
+                  key: Key(finDocs[index].id()),
                   direction: DismissDirection.startToEnd,
-                  child: ListTile(
+                  child: ExpansionTile(
                       leading: CircleAvatar(
                         backgroundColor: Colors.green,
                         child: Text("${finDocs[index].otherUser.lastName[0]}"),
@@ -277,25 +277,51 @@ class _OrdersState extends State<FinDocsForm> {
                                     textAlign: TextAlign.center)),
                         ],
                       ),
-                      onTap: () async {
-                        await Navigator.pushNamed(context, '/order',
-                            arguments: FormArguments(
-                                menuIndex: tab, object: finDocs[index]));
-                      },
+                      children: List.from(finDocs[index].items.map((e) => Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                SizedBox(width: 50),
+                                Expanded(
+                                    child: ListTile(
+                                        leading: CircleAvatar(
+                                          backgroundColor: Colors.green,
+                                          maxRadius: 10,
+                                          child:
+                                              Text("${e.itemSeqId.toString()}"),
+                                        ),
+                                        title: Text(
+                                          "ProductId: ${e.productId} "
+                                          "Description: ${e.description} "
+                                          "Quantity: ${e.quantity.toString()} "
+                                          "Price: ${e.price.toString()} "
+                                          "SubTotal: ${(e.quantity * e.price).toString()}",
+                                        )))
+                              ]))),
                       trailing: Container(
-                          width: 100,
+                          width: 120,
                           child: Visibility(
                               visible:
                                   finDocStatusFixed[finDocs[index].statusId] ??
                                       true,
                               child: Row(children: [
                                 IconButton(
+                                  icon: Icon(Icons.edit),
+                                  tooltip: 'Cancel ${finDocs[0]?.docType}',
+                                  onPressed: () async {
+                                    await Navigator.pushNamed(
+                                        context, '/finDoc',
+                                        arguments: FormArguments(
+                                            menuIndex: tab,
+                                            object: finDocs[index]));
+                                  },
+                                ),
+                                IconButton(
                                   icon: Icon(Icons.delete_forever),
                                   tooltip: 'Cancel ${finDocs[0]?.docType}',
                                   onPressed: () {
-                                    finDocs[index].statusId = 'finDocCancelled';
-                                    _finDocBloc
-                                        .add(UpdateFinDoc(finDocs[index]));
+                                    _finDocBloc.add(UpdateFinDoc(finDocs[index]
+                                        .copyWith(
+                                            statusId: 'finDocCancelled')));
                                   },
                                 ),
                                 IconButton(
@@ -304,11 +330,10 @@ class _OrdersState extends State<FinDocsForm> {
                                         finDocStatusValues[
                                             finDocs[index].statusId]],
                                     onPressed: () {
-                                      finDocs[index].statusId =
-                                          nextFinDocStatus[
-                                              finDocs[index].statusId];
-                                      _finDocBloc
-                                          .add(UpdateFinDoc(finDocs[index]));
+                                      _finDocBloc.add(UpdateFinDoc(
+                                          finDocs[index].copyWith(
+                                              statusId: nextFinDocStatus[
+                                                  finDocs[index].statusId])));
                                     })
                               ])))));
         });

@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:models/@models.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
+import 'package:intl/intl.dart';
 
 class LedgerTreeForm extends StatefulWidget {
   @override
@@ -52,12 +53,15 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
                 width: (isPhone ? 330 : 400) - (glAccount.l.toDouble() * 10),
                 child: Text("${glAccount.id} ${glAccount.accountName} ")),
             SizedBox(
-                width: 50,
-                child: Text(glAccount.postedBalance.toString(),
+                width: 100,
+                child: Text(
+                    NumberFormat.simpleCurrency()
+                        .format(glAccount.postedBalance),
                     textAlign: TextAlign.right)),
             SizedBox(
-                width: 50,
-                child: Text(glAccount.rollUp.toString(),
+                width: 100,
+                child: Text(
+                    NumberFormat.simpleCurrency().format(glAccount.rollUp),
                     textAlign: TextAlign.right))
           ]),
           children: glAccount.children.map((x) => getTreeNode(x)).toList(),
@@ -107,9 +111,9 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
                 width: isPhone ? 340 : 410,
                 child: Text("Gl Account ID  GL Account Name")),
             SizedBox(
-                width: 60, child: Text("Posted", textAlign: TextAlign.right)),
+                width: 100, child: Text("Posted", textAlign: TextAlign.right)),
             SizedBox(
-                width: 50, child: Text("Roll Up", textAlign: TextAlign.right))
+                width: 100, child: Text("Roll Up", textAlign: TextAlign.right))
           ]),
           Divider(color: Colors.black),
           TreeView(

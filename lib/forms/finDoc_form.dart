@@ -131,7 +131,7 @@ class _MyFinDocState extends State<OrderPage> {
     if (finDocIn.sales)
       return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         if (state is AuthAuthenticated)
-          itemTypes = state.authenticate.company.itemTypes.sales;
+          itemTypes = state.authenticate.itemTypes.sales;
         return BlocListener<SalesOrderBloc, FinDocState>(
             listener: (context, state) {
               if (state is FinDocProblem)
@@ -172,7 +172,7 @@ class _MyFinDocState extends State<OrderPage> {
     // purchase finDoc
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated)
-        itemTypes = state.authenticate.company.itemTypes.purchase;
+        itemTypes = state.authenticate.itemTypes.purchase;
       return BlocListener<PurchaseOrderBloc, FinDocState>(
           listener: (context, state) {
             if (state is FinDocProblem)
@@ -261,7 +261,8 @@ class _MyFinDocState extends State<OrderPage> {
                                 },
                                 onChanged: (User newValue) {
                                   setState(() {
-                                    finDoc.otherUser = newValue;
+                                    finDoc =
+                                        finDoc.copyWith(otherUser: newValue);
                                   });
                                 },
                                 validator: (value) {

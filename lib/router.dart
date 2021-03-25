@@ -68,7 +68,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(builder: (context) => local.BalanceSheetForm());
     case '/reports':
       return MaterialPageRoute(builder: (context) => local.ReportsForm());
-    case '/order':
+    case '/finDoc':
       return MaterialPageRoute(
           builder: (context) =>
               local.FinDocForm(formArguments: settings.arguments));

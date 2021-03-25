@@ -34,7 +34,7 @@ List<MapItem> salesMap = [
     form: FinDocsForm(sales: true, docType: 'order'),
     label: "Sales orders",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/order",
+    floatButtonRoute: "/finDoc",
     floatButtonArgs: FormArguments(
         object: FinDoc(sales: true, docType: 'order', items: []),
         menuIndex: MENU_SALES),
