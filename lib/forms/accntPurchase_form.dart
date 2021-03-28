@@ -34,7 +34,7 @@ List<MapItem> acctPurchaseMap = [
     form: FinDocsForm(sales: false, docType: 'invoice'),
     label: "Purchase invoices",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/acctPurchase",
+    floatButtonRoute: "/finDoc",
     floatButtonArgs: FormArguments(
         object: FinDoc(sales: false, docType: 'invoice', items: []),
         menuIndex: MENU_ACCTPURCHASE),
@@ -43,7 +43,7 @@ List<MapItem> acctPurchaseMap = [
     form: FinDocsForm(sales: false, docType: 'payment'),
     label: "Puchase payments",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/payment",
+    floatButtonRoute: "/finDoc",
     floatButtonArgs: FormArguments(
         object: FinDoc(sales: false, docType: 'payment', items: []),
         menuIndex: MENU_ACCTPURCHASE),

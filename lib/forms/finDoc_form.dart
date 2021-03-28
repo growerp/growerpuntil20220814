@@ -31,9 +31,8 @@ class FinDocForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FinDoc finDoc = formArguments!.object as FinDoc;
-
     MapItem finDocItem = MapItem(
-        form: OrderPage(formArguments!.message, finDoc),
+        form: FinDocPage(formArguments!.message, finDoc),
         label:
             "${finDoc.salesString()} Sales ${finDoc.docType} #${finDoc.id()}",
         icon: Icon(Icons.home));
@@ -84,17 +83,17 @@ class FinDocForm extends StatelessWidget {
   }
 }
 
-class OrderPage extends StatefulWidget {
+class FinDocPage extends StatefulWidget {
   final String? message;
   final FinDoc finDoc;
-  OrderPage(this.message, this.finDoc);
+  FinDocPage(this.message, this.finDoc);
   @override
   _MyFinDocState createState() => _MyFinDocState(message, finDoc);
 }
 
-class _MyFinDocState extends State<OrderPage> {
+class _MyFinDocState extends State<FinDocPage> {
   final String? message;
-  final FinDoc finDocIn; // incoming existing finDoc from list
+  final FinDoc finDocIn; // incoming finDoc
   final _formKeyHeader = GlobalKey<FormState>();
   final _formKeyItems = GlobalKey<FormState>();
   final _priceController = TextEditingController();
@@ -103,12 +102,11 @@ class _MyFinDocState extends State<OrderPage> {
   final _quantityController = TextEditingController();
   final _userSearchBoxController = TextEditingController();
   final _productSearchBoxController = TextEditingController();
-  //ignore: close_sinks
   late CartBloc _cartBloc;
-  late UserBloc _userBloc;
   FinDoc? finDoc;
-  List<ItemType>? itemTypes;
+  List<ItemType> itemTypes = [];
   Product? _selectedProduct;
+  User? _selectedUser;
   ItemType? _selectedItemType;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -118,20 +116,18 @@ class _MyFinDocState extends State<OrderPage> {
 
   @override
   Widget build(BuildContext context) {
+    if (finDoc == null) finDoc = finDocIn.copyWith();
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    if (finDocIn.sales!) {
+    if (finDoc!.sales!) {
       _cartBloc = BlocProvider.of<SalesCartBloc>(context) as CartBloc;
-      _userBloc = BlocProvider.of<CustomerBloc>(context) as UserBloc;
     } else {
       _cartBloc = BlocProvider.of<PurchCartBloc>(context) as CartBloc;
-      _userBloc = BlocProvider.of<SupplierBloc>(context) as UserBloc;
     }
-    finDoc = finDocIn;
     var repos = context.read<Object>();
-    if (finDocIn.sales!)
+    if (finDoc!.sales!)
       return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
         if (state is AuthAuthenticated)
-          itemTypes = state.authenticate!.itemTypes!.sales;
+          itemTypes = state.authenticate!.itemTypes!.sales!;
         return BlocListener<SalesOrderBloc, FinDocState>(
             listener: (context, state) {
               if (state is FinDocProblem)
@@ -169,15 +165,17 @@ class _MyFinDocState extends State<OrderPage> {
               ]);
             }));
       });
-    // purchase finDoc
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated)
-        itemTypes = state.authenticate!.itemTypes!.purchase;
+        itemTypes = state.authenticate!.itemTypes!.purchase!;
       return BlocListener<PurchaseOrderBloc, FinDocState>(
           listener: (context, state) {
             if (state is FinDocProblem)
               HelperFunctions.showMessage(
                   context, '${state.errorMessage}', Colors.red);
+            if (state is FinDocSuccess)
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
           },
           child: BlocConsumer<PurchCartBloc, CartState>(
               listener: (context, state) {
@@ -214,6 +212,15 @@ class _MyFinDocState extends State<OrderPage> {
   Widget _headerEntry(repos) {
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
     double width = columns.toDouble() * 350;
+    _selectedUser = finDoc!.otherUser;
+    _descriptionController.text = finDoc!.description ?? "";
+
+    Future<List<User>> getData(userGroupId, filter) async {
+      var response = await repos.getUser(
+          userGroupId: userGroupId, filter: _userSearchBoxController.text);
+      return response;
+    }
+
     return Center(
         child: Column(children: [
       Container(
@@ -229,61 +236,35 @@ class _MyFinDocState extends State<OrderPage> {
                       mainAxisSpacing: 5,
                       childAspectRatio: (6),
                       children: <Widget>[
-                        Row(
-                          children: [
-                            Container(
-                              width: width / columns.toDouble() - 160,
-                              child: DropdownSearch<User>(
-                                label: finDoc!.sales! ? 'Customer' : 'Supplier',
-                                dialogMaxWidth: 300,
-                                autoFocusSearchBox: true,
-                                selectedItem: finDoc!.otherUser,
-                                dropdownSearchDecoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(25.0)),
-                                ),
-                                searchBoxDecoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(25.0)),
-                                ),
-                                showSearchBox: true,
-                                searchBoxController: _userSearchBoxController,
-                                isFilteredOnline: true,
-                                key: Key('dropUser'),
-                                itemAsString: (User u) => "${u.companyName}",
-                                onFind: (String filter) async {
-                                  var result = await repos.getUser(
-                                      userGroupId: 'GROWERP_M_CUSTOMER',
-                                      filter: _userSearchBoxController.text);
-                                  return result;
-                                } as Future<List<User>> Function(String)?,
-                                onChanged: (User newValue) {
-                                  setState(() {
-                                    finDoc =
-                                        finDoc!.copyWith(otherUser: newValue);
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null)
-                                    return "Select ${finDoc!.sales! ? 'Customer' : 'Supplier'}!";
-                                  return null;
-                                },
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            ElevatedButton(
-                              child: Text('Add New'),
-                              onPressed: () async {
-                                final User other = await _addOtherPartyDialog(
-                                    context, finDoc!.sales);
-                                if (other != null) {
-                                  _userBloc.add(UpdateUser(other));
-                                }
-                              },
-                            )
-                          ],
+                        DropdownSearch<User>(
+                          label: finDoc!.sales! ? 'Customer' : 'Supplier',
+                          dialogMaxWidth: 300,
+                          autoFocusSearchBox: true,
+                          selectedItem: _selectedUser,
+                          dropdownSearchDecoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0)),
+                          ),
+                          searchBoxDecoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0)),
+                          ),
+                          showSearchBox: true,
+                          searchBoxController: _userSearchBoxController,
+                          isFilteredOnline: true,
+                          key: Key('dropUser'),
+                          itemAsString: (User? u) => "${u!.companyName}",
+                          onFind: (String filter) => getData(
+                              "GROWERP_M_CUSTOMER",
+                              _userSearchBoxController.text),
+                          onChanged: (User? newValue) {
+                            setState(() {
+                              _selectedUser = newValue;
+                            });
+                          },
+                          validator: (value) => value == null
+                              ? "Select ${finDoc!.sales! ? 'Customer' : 'Supplier'}!"
+                              : null,
                         ),
                         TextFormField(
                           key: Key('description'),
@@ -298,6 +279,13 @@ class _MyFinDocState extends State<OrderPage> {
   Widget _itemEntry(repos, isPhone) {
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
     double width = columns.toDouble() * 350;
+
+    Future<List<Product>> getProduct(filter) async {
+      var response =
+          await repos.getProduct(filter: _userSearchBoxController.text);
+      return response;
+    }
+
     return Center(
         child: Column(children: [
       Container(
@@ -316,7 +304,7 @@ class _MyFinDocState extends State<OrderPage> {
                         DropdownButtonFormField<ItemType>(
                           hint: Text('Item type'),
                           value: _selectedItemType,
-                          items: itemTypes?.map((item) {
+                          items: itemTypes.map((item) {
                             return DropdownMenuItem<ItemType>(
                                 child: Text(item.description!), value: item);
                           }).toList(),
@@ -347,20 +335,18 @@ class _MyFinDocState extends State<OrderPage> {
                           showSearchBox: true,
                           searchBoxController: _productSearchBoxController,
                           isFilteredOnline: true,
-                          key: Key('dropDownLead'),
-                          itemAsString: (Product u) => "${u.productName}",
-                          onFind: (String filter) async {
-                            var result = await repos.getProduct(
-                                filter: _productSearchBoxController.text);
-                            return result;
-                          } as Future<List<Product>> Function(String)?,
-                          onChanged: (Product newValue) {
+                          key: Key('dropProduct'),
+                          itemAsString: (Product? u) => "${u!.productName}",
+                          onFind: (String filter) =>
+                              getProduct(_productSearchBoxController.text),
+                          onChanged: (Product? newValue) {
                             setState(() {
                               _selectedProduct = newValue;
-                              _priceController.text = newValue.price.toString();
+                              _priceController.text =
+                                  newValue!.price.toString();
                               _itemDescriptionController.text =
                                   "${newValue.productName}[${newValue.productId}]";
-                              _selectedItemType = itemTypes!.firstWhere(
+                              _selectedItemType = itemTypes.firstWhere(
                                   (x) => x.itemTypeId == 'ItemProduct');
                             });
                           },
@@ -409,18 +395,17 @@ class _MyFinDocState extends State<OrderPage> {
               child: Text('Clear'),
               onPressed: () {
                 if (finDoc!.items!.length > 0) {
-                  _cartBloc.add(DeleteFromCart());
+                  _cartBloc.add(ClearCart(finDoc!));
                 }
               }),
           ElevatedButton(
-              child: Text(finDoc!.orderId == null &&
-                      finDoc!.invoiceId == null &&
-                      finDoc!.paymentId == null
+              child: Text(finDoc!.idIsNull()
                   ? 'Create '
                   : 'Update ' + '${finDoc!.docType}'),
               onPressed: () {
                 if (finDoc!.items!.length > 0) {
-                  _cartBloc.add(CreateFinDocFromCart());
+                  print("==create findoc: $finDoc");
+                  _cartBloc.add(CreateFinDocFromCart(finDoc!));
                 }
               }),
           ElevatedButton(
@@ -429,13 +414,11 @@ class _MyFinDocState extends State<OrderPage> {
               onPressed: () {
                 if (_formKeyHeader.currentState!.validate() &&
                     _formKeyItems.currentState!.validate()) {
+                  print("===findoc TO cart: $finDoc");
                   _cartBloc.add(AddToCart(
-                      finDoc: FinDoc(
-                          docType: finDocIn.docType,
-                          sales: finDocIn.sales,
-                          otherUser: finDoc!.otherUser,
-                          description: _descriptionController.text,
-                          items: finDoc!.items),
+                      finDoc: finDoc!.copyWith(
+                          otherUser: _selectedUser,
+                          description: _descriptionController.text),
                       newItem: FinDocItem(
                           itemTypeId: _selectedItemType!.itemTypeId,
                           productId: _selectedProduct?.productId,
@@ -446,11 +429,12 @@ class _MyFinDocState extends State<OrderPage> {
                                   ? "1"
                                   : _quantityController.text))));
                   setState(() {
+                    _selectedItemType = null;
                     _selectedProduct = null;
                     _priceController.clear();
                     _quantityController.clear();
                     _itemDescriptionController.clear();
-                    _selectedItemType = null;
+                    //                 _selectedItemType = null;
                   });
                 }
               }),
@@ -471,7 +455,8 @@ class _MyFinDocState extends State<OrderPage> {
           title: Column(children: [
             Row(children: <Widget>[
               Expanded(child: Text("Item Type", textAlign: TextAlign.center)),
-              Expanded(child: Text("Description", textAlign: TextAlign.center)),
+              Expanded(
+                  child: Text("Description[id]", textAlign: TextAlign.center)),
               Expanded(child: Text("Quantity", textAlign: TextAlign.center)),
               Expanded(child: Text("Price", textAlign: TextAlign.center)),
               Expanded(child: Text("SubTotal", textAlign: TextAlign.center)),
@@ -484,7 +469,7 @@ class _MyFinDocState extends State<OrderPage> {
             (context, index) {
               return InkWell(
                   onLongPress: () async {
-                    _cartBloc.add(DeleteFromCart(index));
+                    _cartBloc.add(DeleteItemFromCart(index));
                     Navigator.pushNamed(context, '/finDoc',
                         arguments: FormArguments(
                             message: 'item deleted',
@@ -499,9 +484,14 @@ class _MyFinDocState extends State<OrderPage> {
                       title: Row(children: <Widget>[
                         Expanded(
                             child: Text(
-                                itemTypes!
-                                    .firstWhere((x) =>
-                                        x.itemTypeId == items[index].itemTypeId)
+                                itemTypes
+                                    .firstWhere(
+                                        (x) =>
+                                            x.itemTypeId ==
+                                            items[index].itemTypeId,
+                                        orElse: () => ItemType(
+                                            itemTypeId: '',
+                                            description: 'null or invalid'))
                                     .description!,
                                 textAlign: TextAlign.center)),
                         Expanded(
@@ -521,7 +511,7 @@ class _MyFinDocState extends State<OrderPage> {
                       trailing: IconButton(
                         icon: Icon(Icons.delete_forever),
                         onPressed: () {
-                          _cartBloc.add(DeleteFromCart(index));
+                          _cartBloc.add(DeleteItemFromCart(index));
                         },
                       )));
             },
@@ -531,83 +521,4 @@ class _MyFinDocState extends State<OrderPage> {
       ],
     ));
   }
-}
-
-_addOtherPartyDialog(BuildContext context, bool? sales) async {
-  final _formKeyDialog = GlobalKey<FormState>();
-  final _firstNameController = TextEditingController();
-  final _lastNameController = TextEditingController();
-  final _emailController = TextEditingController();
-  User updatedUser;
-
-  return showDialog<User>(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        title: Text('Enter a new Customer', textAlign: TextAlign.center),
-        content: Container(
-            height: 300,
-            width: 200,
-            child: Form(
-                key: _formKeyDialog,
-                child: ListView(children: <Widget>[
-                  SizedBox(height: 10),
-                  TextFormField(
-                    key: Key('firstName'),
-                    decoration: InputDecoration(labelText: 'First Name'),
-                    controller: _firstNameController,
-                    validator: (value) {
-                      if (value!.isEmpty) return 'enter a first name?';
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    key: Key('lastName'),
-                    decoration: InputDecoration(labelText: 'Last Name'),
-                    controller: _lastNameController,
-                    validator: (value) {
-                      if (value!.isEmpty) return 'enter a last name?';
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Email address'),
-                    controller: _emailController,
-                    validator: (String? value) {
-                      if (value!.isEmpty) return 'enter an Email address?';
-                      if (!RegExp(
-                              r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                          .hasMatch(value)) {
-                        return 'This is not a valid email';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                      child: Text('Create'),
-                      onPressed: () {
-                        if (_formKeyDialog.currentState!.validate()) {
-                          //} && !loading) {
-                          updatedUser = User(
-                            userGroupId: sales!
-                                ? 'GROWERP_M_CUSTOMER'
-                                : 'GROWERP_M_SUPPLIER',
-                            firstName: _firstNameController.text,
-                            lastName: _lastNameController.text,
-                            email: _emailController.text,
-                            name: _emailController.text,
-                          );
-                          Navigator.of(context).pop();
-                        }
-                      })
-                ]))),
-      );
-    },
-  );
 }

@@ -241,15 +241,18 @@ class _UserState extends State<UserPage> {
 
   Widget _showForm(authenticate, updatedUser) {
     User? user = widget.user;
-    _firstNameController..text = user!.firstName!;
-    _lastNameController..text = user.lastName!;
-    _nameController..text = user.name!;
-    _emailController..text = user.email!;
-    _companyController..text = user.companyName!;
+    if (user != null) {
+      _firstNameController.text = user.firstName ?? '';
+      _lastNameController.text = user.lastName ?? '';
+      _nameController.text = user.name ?? '';
+      _emailController.text = user.email ?? '';
+      _companyController.text = user.companyName ?? '';
+      if (_selectedUserGroup == null && user.userGroupId != null)
+        _selectedUserGroup =
+            userGroups.firstWhere((a) => a.userGroupId == user.userGroupId);
+    }
+
     final Text? retrieveError = _getRetrieveErrorWidget();
-    if (_selectedUserGroup == null && user.userGroupId != null)
-      _selectedUserGroup =
-          userGroups.firstWhere((a) => a.userGroupId == user.userGroupId);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -273,7 +276,7 @@ class _UserState extends State<UserPage> {
                           ? kIsWeb
                               ? Image.network(_imageFile!.path)
                               : Image.file(File(_imageFile!.path))
-                          : user.image != null
+                          : user!.image != null
                               ? Image.memory(user.image!, height: 150)
                               : Text(user.firstName?.substring(0, 1) ?? '',
                                   style: TextStyle(
@@ -325,7 +328,7 @@ class _UserState extends State<UserPage> {
                   ),
                   SizedBox(height: 10),
                   Visibility(
-                      visible: user.userGroupId == null,
+                      visible: user!.userGroupId == null,
                       child: DropdownButtonFormField<UserGroup>(
                         key: Key('dropDown'),
                         hint: Text('User Group'),

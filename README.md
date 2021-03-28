@@ -33,7 +33,7 @@ mobile appstore: in progress...
   - flutter run -d chrome
 
 # Introduction.
-GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the master version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started/web
+GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the stable version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started
 
 Although all screens work on IOS/Anderoid/Web devices however a smaller screen will show less information but it is still usable.
 

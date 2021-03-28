@@ -90,28 +90,37 @@ class _OpportunityState extends State<OpportunityPage> {
 
   Widget _showForm(repos) {
     Opportunity? opportunity = widget.opportunity;
-    _nameController..text = opportunity!.opportunityName!;
-    _descriptionController..text = opportunity.description!;
-    _estAmountController..text = opportunity.estAmount.toString();
-    _estProbabilityController..text = opportunity.estProbability.toString();
-    _estNextStepController..text = opportunity.nextStep.toString();
-    if (_selectedLead == null && opportunity.leadPartyId != null) {
-      _selectedLead = User(
-          partyId: opportunity.leadPartyId,
-          email: opportunity.leadEmail,
-          firstName: opportunity.leadFirstName,
-          lastName: opportunity.leadLastName);
+    if (opportunity != null) {
+      _nameController..text = opportunity.opportunityName!;
+      _descriptionController..text = opportunity.description ?? '';
+      _estAmountController..text = opportunity.estAmount!.toString();
+      _estProbabilityController..text = opportunity.estProbability!.toString();
+      _estNextStepController..text = opportunity.nextStep!.toString();
+      if (_selectedLead == null && opportunity.leadPartyId != null) {
+        _selectedLead = User(
+            partyId: opportunity.leadPartyId,
+            email: opportunity.leadEmail,
+            firstName: opportunity.leadFirstName,
+            lastName: opportunity.leadLastName);
+      }
+      if (_selectedAccount == null && opportunity.accountPartyId != null) {
+        _selectedAccount = User(
+            partyId: opportunity.accountPartyId,
+            email: opportunity.accountEmail,
+            firstName: opportunity.accountFirstName,
+            lastName: opportunity.accountLastName);
+      }
+      if (_selectedStageId == null && opportunity.stageId != null)
+        _selectedStageId = opportunity.stageId ?? opportunityStages[0];
     }
-    if (_selectedAccount == null && opportunity.accountPartyId != null) {
-      _selectedAccount = User(
-          partyId: opportunity.accountPartyId,
-          email: opportunity.accountEmail,
-          firstName: opportunity.accountFirstName,
-          lastName: opportunity.accountLastName);
-    }
-    if (_selectedStageId == null && opportunity.stageId != null)
-      _selectedStageId = opportunity.stageId ?? opportunityStages[0];
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
+
+    Future<List<User>> getData(userGroupId, filter) async {
+      var response = await repos.getUser(
+          userGroupId: userGroupId, filter: _leadSearchBoxController.text);
+      return response;
+    }
+
     return Center(
         child: Container(
             width: columns.toDouble() * 400,
@@ -217,22 +226,19 @@ class _OpportunityState extends State<OpportunityPage> {
                             isFilteredOnline: true,
                             showClearButton: true,
                             key: Key('dropDownLead'),
-                            itemAsString: (User u) =>
-                                "${u.firstName},${u.lastName} ${u.companyName}",
-                            onFind: (String filter) async {
-                              var result = await repos.getUser(
-                                  userGroupId: 'GROWERP_M_LEAD',
-                                  filter: _leadSearchBoxController.text);
-                              return result;
-                            } as Future<List<User>> Function(String)?,
-                            onChanged: (User newValue) {
+                            itemAsString: (User? u) =>
+                                "${u?.firstName}, ${u?.lastName} "
+                                "${u?.companyName}",
+                            onFind: (String filter) => getData("GROWERP_M_LEAD",
+                                _leadSearchBoxController.text),
+                            onChanged: (User? newValue) {
                               setState(() {
                                 _selectedLead = newValue;
                               });
                             },
                           ),
                           Visibility(
-                              visible: opportunity.opportunityId != null,
+                              visible: opportunity?.opportunityId != null,
                               child: DropdownSearch<User>(
                                   label: 'Account Employee',
                                   dialogMaxWidth: 300,
@@ -254,16 +260,13 @@ class _OpportunityState extends State<OpportunityPage> {
                                   isFilteredOnline: true,
                                   showClearButton: true,
                                   key: Key('dropDownAccount'),
-                                  itemAsString: (User u) =>
-                                      "${u.firstName} ${u.lastName} ${u.companyName}",
-                                  onFind: (String filter) async {
-                                    var result = await repos.getUser(
-                                        userGroupId: 'GROWERP_M_EMPLOYEE',
-                                        filter:
-                                            _accountSearchBoxController.text);
-                                    return result;
-                                  } as Future<List<User>> Function(String)?,
-                                  onChanged: (User newValue) {
+                                  itemAsString: (User? u) =>
+                                      "${u?.firstName} ${u?.lastName} "
+                                      "${u?.companyName}",
+                                  onFind: (String filter) => getData(
+                                      "GROWERP_M_EMPLOYEE",
+                                      _accountSearchBoxController.text),
+                                  onChanged: (User? newValue) {
                                     setState(() {
                                       _selectedAccount = newValue;
                                     });
@@ -276,32 +279,34 @@ class _OpportunityState extends State<OpportunityPage> {
                               }),
                           ElevatedButton(
                               key: Key('update'),
-                              child: Text(opportunity.opportunityId == null
+                              child: Text(opportunity?.opportunityId == null
                                   ? 'Create'
                                   : 'Update'),
                               onPressed: () {
                                 if (_formKey.currentState!.validate() &&
                                     !loading) {
                                   updatedOpportunity = Opportunity(
-                                      opportunityId: opportunity.opportunityId,
-                                      opportunityName: _nameController.text,
-                                      description: _descriptionController.text,
-                                      estAmount: Decimal.parse(
-                                          _estAmountController.text),
-                                      estProbability: int.parse(
-                                          _estProbabilityController.text),
-                                      stageId: _selectedStageId,
-                                      nextStep: _estNextStepController.text,
-                                      accountPartyId: _selectedAccount?.partyId,
-                                      accountFirstName:
-                                          _selectedAccount?.firstName,
-                                      accountLastName:
-                                          _selectedAccount?.lastName,
-                                      accountEmail: _selectedAccount?.email,
-                                      leadPartyId: _selectedLead?.partyId,
-                                      leadFirstName: _selectedLead?.firstName,
-                                      leadLastName: _selectedLead?.lastName,
-                                      leadEmail: _selectedLead?.email);
+                                    opportunityId: opportunity?.opportunityId,
+                                    opportunityName: _nameController.text,
+                                    description: _descriptionController.text,
+                                    estAmount: Decimal.parse(
+                                        _estAmountController.text),
+                                    estProbability: int.parse(
+                                        _estProbabilityController.text),
+                                    stageId: _selectedStageId,
+                                    nextStep: _estNextStepController.text,
+                                    accountPartyId: _selectedAccount?.partyId,
+                                    accountFirstName:
+                                        _selectedAccount?.firstName,
+                                    accountLastName: _selectedAccount?.lastName,
+                                    accountEmail: _selectedAccount?.email,
+                                    leadPartyId: _selectedLead?.partyId,
+                                    leadFirstName: _selectedLead?.firstName,
+                                    leadLastName: _selectedLead?.lastName,
+                                    leadEmail: _selectedLead?.email,
+                                  );
+                                  print(
+                                      "selected lead: ${updatedOpportunity.leadPartyId}");
                                   BlocProvider.of<OpportunityBloc>(context).add(
                                       UpdateOpportunity(updatedOpportunity));
                                 }

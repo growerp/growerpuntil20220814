@@ -36,7 +36,7 @@ List<MapItem> purchaseMap = [
     icon: Icon(Icons.home),
     floatButtonRoute: "/finDoc",
     floatButtonArgs: FormArguments(
-        object: FinDoc(sales: false, docType: 'purchase', items: []),
+        object: FinDoc(sales: false, docType: 'order', items: []),
         menuIndex: MENU_PURCHASE),
   ),
   MapItem(

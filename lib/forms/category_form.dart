@@ -71,7 +71,8 @@ class _CategoryState extends State<CategoryPage> {
     HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
   }
 
-  void _onImageButtonPressed(ImageSource source, {BuildContext? context}) async {
+  void _onImageButtonPressed(ImageSource source,
+      {BuildContext? context}) async {
     try {
       final pickedFile = await _picker.getImage(
         source: source,
@@ -145,8 +146,10 @@ class _CategoryState extends State<CategoryPage> {
   }
 
   Widget _showForm() {
-    _nameController..text = category?.categoryName;
-    _descrController..text = category?.description;
+    if (category != null) {
+      _nameController..text = category?.categoryName;
+      _descrController..text = category?.description;
+    }
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
@@ -183,7 +186,8 @@ class _CategoryState extends State<CategoryPage> {
                     decoration: InputDecoration(labelText: 'Category Name'),
                     controller: _nameController,
                     validator: (value) {
-                      if (value!.isEmpty) return 'Please enter a category name?';
+                      if (value!.isEmpty)
+                        return 'Please enter a category name?';
                       return null;
                     },
                   ),

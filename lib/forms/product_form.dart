@@ -153,13 +153,16 @@ class _ProductState extends State<ProductPage> {
   }
 
   Widget _showForm(repos) {
-    _nameController..text = product!.productName!;
-    _descriptionController..text = product!.description!;
-    _priceController..text = product!.price.toString();
+    if (product != null) {
+      _nameController..text = product!.productName!;
+      _descriptionController..text = product!.description!;
+      _priceController..text = product!.price.toString();
+      if (_selectedCategory == null && product?.categoryId != null)
+        _selectedCategory = ProductCategory(
+            categoryId: product!.categoryId,
+            categoryName: product!.categoryName);
+    }
     final Text? retrieveError = _getRetrieveErrorWidget();
-    if (_selectedCategory == null && product?.categoryId != null)
-      _selectedCategory = ProductCategory(
-          categoryId: product!.categoryId, categoryName: product!.categoryName);
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -240,12 +243,12 @@ class _ProductState extends State<ProductPage> {
                     isFilteredOnline: true,
                     showClearButton: true,
                     key: Key('dropDownCategory'),
-                    itemAsString: (ProductCategory u) => "${u.categoryName}",
+                    itemAsString: (ProductCategory? u) => "${u?.categoryName}",
                     onFind: (String filter) async {
                       var result = await repos.getCategory(
                           filter: _categorySearchBoxController.text);
                       return result;
-                    } as Future<List<ProductCategory>> Function(String)?,
+                    },
                     onChanged: (ProductCategory newValue) {
                       setState(() {
                         _selectedCategory = newValue;
