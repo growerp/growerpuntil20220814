@@ -152,7 +152,9 @@ class HomeForm extends StatelessWidget {
                     key: Key('newCompButton'),
                     child: Text('Create a new company and admin'),
                     onPressed: () {
-                      authenticate!.company!.copyWith(partyId: null);
+                      authenticate!.company = null;
+                      BlocProvider.of<AuthBloc>(context)
+                          .add(UpdateAuth(authenticate));
                       Navigator.popAndPushNamed(context, '/register');
                     },
                   ),
