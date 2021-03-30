@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: b493c7f1e1fdbe8220c58236fd8987a890f0c59d
+      resolved-ref: "03618fa9729ce02b3c84591d73443912c54525df"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -155,7 +155,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: b493c7f1e1fdbe8220c58236fd8987a890f0c59d
+      resolved-ref: "03618fa9729ce02b3c84591d73443912c54525df"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -429,7 +429,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: b493c7f1e1fdbe8220c58236fd8987a890f0c59d
+      resolved-ref: "03618fa9729ce02b3c84591d73443912c54525df"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -787,7 +787,7 @@ packages:
       name: vm_service
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.0+1"
+    version: "6.2.0"
   watcher:
     dependency: transitive
     description:
