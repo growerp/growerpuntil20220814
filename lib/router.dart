@@ -46,6 +46,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) =>
               ChangePwForm(changePwArgs: settings.arguments as ChangePwArgs?));
+    case '/printer':
+      return MaterialPageRoute(
+          builder: (context) => local.PrintingForm(
+              formArguments: settings.arguments as FormArguments?));
     case '/about':
       return MaterialPageRoute(builder: (context) => AboutForm());
     case '/product':

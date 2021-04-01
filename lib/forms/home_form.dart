@@ -32,6 +32,19 @@ class HomeForm extends StatelessWidget {
             menuIndex: 0,
             actions: <Widget>[
               IconButton(
+                  key: Key('Printer'),
+                  icon: Image.asset('assets/images/about.png'),
+                  tooltip: 'About',
+                  onPressed: () => {
+                        Navigator.pushNamed(context, '/printer',
+                            arguments: FormArguments(
+                                object: FinDoc(
+                                    invoiceId: '100000',
+                                    sales: true,
+                                    docType: "invoice"),
+                                menuIndex: 3)),
+                      }),
+              IconButton(
                   key: Key('aboutButton'),
                   icon: Image.asset('assets/images/about.png'),
                   tooltip: 'About',

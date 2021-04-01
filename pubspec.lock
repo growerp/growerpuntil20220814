@@ -55,10 +55,17 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: "03618fa9729ce02b3c84591d73443912c54525df"
+      resolved-ref: a4403ecb68d24057db465356d9458562cefe2ccb
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
+  barcode:
+    dependency: transitive
+    description:
+      name: barcode
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   bloc:
     dependency: transitive
     description:
@@ -155,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: "03618fa9729ce02b3c84591d73443912c54525df"
+      resolved-ref: a4403ecb68d24057db465356d9458562cefe2ccb
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -273,7 +280,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   flutter_simple_treeview:
     dependency: "direct main"
     description:
@@ -339,7 +346,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.3"
+    version: "0.7.4"
   image_picker_for_web:
     dependency: "direct main"
     description:
@@ -429,7 +436,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: "03618fa9729ce02b3c84591d73443912c54525df"
+      resolved-ref: a4403ecb68d24057db465356d9458562cefe2ccb
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -461,6 +468,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
+  path_parsing:
+    dependency: transitive
+    description:
+      name: path_parsing
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0-nullsafety.0"
   path_provider_linux:
     dependency: transitive
     description:
@@ -482,6 +496,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  pdf:
+    dependency: "direct main"
+    description:
+      name: pdf
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   pedantic:
     dependency: transitive
     description:
@@ -517,6 +538,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.0"
+  printing:
+    dependency: "direct main"
+    description:
+      name: printing
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.4"
   process:
     dependency: transitive
     description:
@@ -535,6 +563,13 @@ packages:
     dependency: transitive
     description:
       name: pub_semver
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  qr:
+    dependency: transitive
+    description:
+      name: qr
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"

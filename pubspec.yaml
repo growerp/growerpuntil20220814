@@ -24,7 +24,8 @@ dependencies:
   animations: ^2.0.0
   responsive_framework: ^0.1.0
   flutter_simple_treeview: ^3.0.0-nullsafety.1
-#  printing: ^5.0.4
+  printing: ^5.0.4
+  pdf: ^3.1.0
   dropdown_search: ^0.5.0
   core:
 #    path: ../packages/core

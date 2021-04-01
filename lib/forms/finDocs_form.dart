@@ -146,6 +146,7 @@ class _OrdersState extends State<FinDocsForm> {
   }
 
   Widget finDocsPage() {
+    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return ListView.builder(
         itemCount: hasReachedMax! && finDocs!.isNotEmpty
             ? finDocs!.length + 1
@@ -302,32 +303,50 @@ class _OrdersState extends State<FinDocsForm> {
                                                 "Description: ${e.description} ")))
                               ]))),
                       trailing: Container(
-                          width: 120,
+                          width: isPhone ? 100 : 160,
                           child: Visibility(
                               visible: finDocStatusFixed[
                                       finDocs![index].statusId!] ??
                                   true,
                               child: Row(children: [
                                 IconButton(
-                                  icon: Icon(Icons.edit),
-                                  tooltip: 'Cancel ${finDocs![0].docType}',
+                                  icon: Icon(Icons.print),
+                                  tooltip: 'PDF/Print ${finDocs![0].docType}',
                                   onPressed: () async {
                                     await Navigator.pushNamed(
-                                        context, '/finDoc',
+                                        context, '/printer',
                                         arguments: FormArguments(
                                             menuIndex: tab,
                                             object: finDocs![index]));
                                   },
                                 ),
-                                IconButton(
-                                  icon: Icon(Icons.delete_forever),
-                                  tooltip: 'Cancel ${finDocs![0].docType}',
-                                  onPressed: () {
-                                    _finDocBloc.add(UpdateFinDoc(finDocs![index]
-                                        .copyWith(
-                                            statusId: 'finDocCancelled')));
-                                  },
-                                ),
+                                Visibility(
+                                    visible: !isPhone,
+                                    child: Row(children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit),
+                                        tooltip:
+                                            'Cancel ${finDocs![0].docType}',
+                                        onPressed: () async {
+                                          await Navigator.pushNamed(
+                                              context, '/finDoc',
+                                              arguments: FormArguments(
+                                                  menuIndex: tab,
+                                                  object: finDocs![index]));
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete_forever),
+                                        tooltip:
+                                            'Cancel ${finDocs![0].docType}',
+                                        onPressed: () {
+                                          _finDocBloc.add(UpdateFinDoc(
+                                              finDocs![index].copyWith(
+                                                  statusId:
+                                                      'finDocCancelled')));
+                                        },
+                                      ),
+                                    ])),
                                 IconButton(
                                     icon: Icon(Icons.arrow_upward),
                                     tooltip: nextFinDocStatus[
