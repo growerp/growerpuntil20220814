@@ -21,6 +21,7 @@ class AccntSalesOrderForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
+      title: "Sales & receipts",
       menu: acctMenuItems,
       mapItems: acctSalesMap,
       menuIndex: MENU_ACCTSALES,

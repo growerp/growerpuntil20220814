@@ -154,9 +154,10 @@ class _ProductState extends State<ProductPage> {
 
   Widget _showForm(repos) {
     if (product != null) {
-      _nameController..text = product!.productName!;
-      _descriptionController..text = product!.description!;
-      _priceController..text = product!.price.toString();
+      _nameController.text = product!.productName ?? '';
+      _descriptionController.text = product!.description ?? '';
+      _priceController.text =
+          product!.price == null ? '' : product!.price.toString();
       if (_selectedCategory == null && product?.categoryId != null)
         _selectedCategory = ProductCategory(
             categoryId: product!.categoryId,
@@ -249,7 +250,7 @@ class _ProductState extends State<ProductPage> {
                           filter: _categorySearchBoxController.text);
                       return result;
                     },
-                    onChanged: (ProductCategory newValue) {
+                    onChanged: (ProductCategory? newValue) {
                       setState(() {
                         _selectedCategory = newValue;
                       });

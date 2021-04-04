@@ -23,10 +23,12 @@ import 'package:core/templates/@templates.dart';
 class AccountingForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate!;
         return MainTemplate(
+            title: "Accounting",
             menu: acctMenuItems,
             menuIndex: 0,
             actions: <Widget>[
@@ -47,10 +49,10 @@ class AccountingForm extends StatelessWidget {
                         }),
             ],
             child: Container(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+              padding: EdgeInsets.symmetric(
+                  vertical: isPhone ? 0.8 : 20, horizontal: isPhone ? 0.8 : 20),
               child: GridView.count(
-                crossAxisCount:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 2 : 3,
+                crossAxisCount: isPhone ? 2 : 3,
                 padding: EdgeInsets.all(3.0),
                 children: <Widget>[
                   makeDashboardItem(

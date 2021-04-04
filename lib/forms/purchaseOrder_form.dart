@@ -25,6 +25,7 @@ class PurchaseOrderForm extends StatelessWidget {
       mapItems: purchaseMap,
       menuIndex: MENU_PURCHASE,
       tabIndex: 0,
+      title: "Purchases & Suppliers",
     );
   }
 }

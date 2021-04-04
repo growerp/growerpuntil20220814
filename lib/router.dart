@@ -24,8 +24,6 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case '/':
       return MaterialPageRoute(builder: (context) => local.HomeForm());
-    case '/home':
-      return MaterialPageRoute(builder: (context) => local.HomeForm());
     case '/accounting':
       return MaterialPageRoute(builder: (context) => local.AccountingForm());
     case '/catalog':

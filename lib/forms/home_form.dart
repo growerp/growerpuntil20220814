@@ -32,19 +32,6 @@ class HomeForm extends StatelessWidget {
             menuIndex: 0,
             actions: <Widget>[
               IconButton(
-                  key: Key('Printer'),
-                  icon: Image.asset('assets/images/about.png'),
-                  tooltip: 'About',
-                  onPressed: () => {
-                        Navigator.pushNamed(context, '/printer',
-                            arguments: FormArguments(
-                                object: FinDoc(
-                                    invoiceId: '100000',
-                                    sales: true,
-                                    docType: "invoice"),
-                                menuIndex: 3)),
-                      }),
-              IconButton(
                   key: Key('aboutButton'),
                   icon: Image.asset('assets/images/about.png'),
                   tooltip: 'About',
@@ -141,7 +128,7 @@ class HomeForm extends StatelessWidget {
                         authenticate?.company?.name ?? 'Company??')),
                 body: Center(
                     child: Column(children: <Widget>[
-                  SizedBox(height: 150),
+                  SizedBox(height: 100),
                   Text("Login with an existing Id"),
                   SizedBox(height: 20),
                   ElevatedButton(
@@ -149,12 +136,7 @@ class HomeForm extends StatelessWidget {
                     autofocus: true,
                     child: Text('Login'),
                     onPressed: () async {
-                      dynamic result =
-                          await Navigator.pushNamed(context, '/login');
-                      if (result)
-                        Navigator.pushNamed(context, '/',
-                            arguments: FormArguments(
-                                message: "Successfully logged in."));
+                      await Navigator.pushNamed(context, '/login');
                     },
                   ),
                   SizedBox(height: 50),

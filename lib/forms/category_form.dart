@@ -147,8 +147,8 @@ class _CategoryState extends State<CategoryPage> {
 
   Widget _showForm() {
     if (category != null) {
-      _nameController..text = category?.categoryName;
-      _descrController..text = category?.description;
+      _nameController..text = category?.categoryName ?? '';
+      _descrController..text = category?.description ?? '';
     }
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {

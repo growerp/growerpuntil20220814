@@ -139,7 +139,7 @@ class PdfFormats {
       cellHeight: 30,
       cellAlignments: {
         0: Alignment.centerLeft,
-        1: Alignment.centerRight,
+        1: Alignment.centerLeft,
         2: Alignment.centerRight,
         3: Alignment.centerRight,
         4: Alignment.centerRight,

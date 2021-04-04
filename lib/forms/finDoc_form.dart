@@ -36,7 +36,6 @@ class FinDocForm extends StatelessWidget {
         label:
             "${finDoc.salesString()} Sales ${finDoc.docType} #${finDoc.id()}",
         icon: Icon(Icons.home));
-
     if (finDoc.docType == 'invoice' || finDoc.docType == 'payment') {
       if (finDoc.sales!) {
         acctSalesMap[finDoc.docType == 'invoice' ? 0 : 1] = finDocItem;
@@ -78,8 +77,19 @@ class FinDocForm extends StatelessWidget {
           tabIndex: 0,
         );
       }
+    } else if (finDoc.docType == 'transaction') {
+      ledgerMap[1] = finDocItem;
+      BlocProvider.of<SalesCartBloc>(context)..add(LoadCart(finDoc));
+      return MainTemplate(
+        menu: menuItems,
+        mapItems: ledgerMap,
+        menuIndex: MENU_ACCTLEDGER,
+        tabIndex: 1,
+      );
     } else
-      return Container();
+      return Container(
+          child:
+              Center(child: Text("Unrecognized docType: ${finDoc.docType} ")));
   }
 }
 
@@ -159,8 +169,10 @@ class _MyFinDocState extends State<FinDocPage> {
                 _itemEntry(repos, isPhone),
                 _actionButtons(),
                 Center(
-                    child: Text(
-                        "Grant total : ${finDoc!.grandTotal?.toString()}")),
+                    child: Text("Grant total : " +
+                        (finDoc!.grandTotal == null
+                            ? "0.00"
+                            : finDoc!.grandTotal.toString()))),
                 _finDocItemList(),
               ]);
             }));
@@ -222,10 +234,8 @@ class _MyFinDocState extends State<FinDocPage> {
     }
 
     return Center(
-        child: Column(children: [
-      Container(
+      child: Container(
           height: 150 / columns.toDouble(),
-          width: width,
           child: Form(
               key: _formKeyHeader,
               child: Padding(
@@ -273,12 +283,12 @@ class _MyFinDocState extends State<FinDocPage> {
                           controller: _descriptionController,
                         ),
                       ])))),
-    ]));
+    );
   }
 
   Widget _itemEntry(repos, isPhone) {
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
-    double width = columns.toDouble() * 350;
+    double width = columns.toDouble() * 400;
 
     Future<List<Product>> getProduct(filter) async {
       var response =
@@ -289,7 +299,7 @@ class _MyFinDocState extends State<FinDocPage> {
     return Center(
         child: Column(children: [
       Container(
-          height: 480 / columns.toDouble(),
+          height: (isPhone ? 200 : 480) / columns.toDouble(),
           width: width,
           child: Form(
               key: _formKeyItems,

@@ -25,6 +25,7 @@ class SalesOrderForm extends StatelessWidget {
       mapItems: salesMap,
       menuIndex: MENU_SALES,
       tabIndex: 0,
+      title: "Sales & Customers",
     );
   }
 }

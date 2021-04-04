@@ -9,7 +9,7 @@ import 'package:responsive_framework/responsive_wrapper.dart';
 
 class FinDocsForm extends StatefulWidget {
   final sales, docType;
-  const FinDocsForm({this.sales, this.docType});
+  const FinDocsForm({this.sales = true, this.docType});
   @override
   _OrdersState createState() => _OrdersState();
 }
@@ -164,8 +164,7 @@ class _OrdersState extends State<FinDocsForm> {
                 title: showSearchField
                     ? Row(children: <Widget>[
                         SizedBox(
-                            width: ResponsiveWrapper.of(context)
-                                    .isSmallerThan(TABLET)
+                            width: isPhone
                                 ? MediaQuery.of(context).size.width - 250
                                 : MediaQuery.of(context).size.width - 350,
                             child: TextField(
@@ -214,9 +213,7 @@ class _OrdersState extends State<FinDocsForm> {
                               .isSmallerThan(TABLET))
                             Expanded(child: Text("Email")),
                           Expanded(child: Text("Date")),
-                          if (!ResponsiveWrapper.of(context)
-                              .isSmallerThan(TABLET))
-                            Expanded(child: Text("Total")),
+                          if (!isPhone) Expanded(child: Text("Total")),
                           Expanded(
                               child:
                                   Text("Status", textAlign: TextAlign.center)),
@@ -229,7 +226,9 @@ class _OrdersState extends State<FinDocsForm> {
                         ]),
                         Divider(color: Colors.black),
                       ]),
-                trailing: Text('                            '));
+                trailing: isPhone
+                    ? Text('             ')
+                    : Text('                            '));
           if (index == 1 && finDocs!.isEmpty && !isLoading)
             return Center(
                 heightFactor: 20,

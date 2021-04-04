@@ -21,6 +21,7 @@ class LedgerForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
+      title: "Ledger & Transactions",
       menu: acctMenuItems,
       mapItems: ledgerMap,
       menuIndex: MENU_ACCTLEDGER,
@@ -33,15 +34,15 @@ List<MapItem> ledgerMap = [
     form: LedgerTreeForm(),
     label: "Ledger Tree",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/ledgerTree",
+//    floatButtonRoute: "/ledgerTree",
   ),
   MapItem(
     form: FinDocsForm(docType: 'transaction'),
     label: "Transactions",
     icon: Icon(Icons.home),
-    floatButtonRoute: "/transaction",
+    floatButtonRoute: "/finDoc",
     floatButtonArgs: FormArguments(
-        object: FinDoc(docType: 'transaction', items: []),
+        object: FinDoc(sales: true, docType: 'transaction', items: []),
         menuIndex: MENU_ACCTLEDGER),
   ),
 ];

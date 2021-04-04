@@ -25,6 +25,7 @@ class CompanyForm extends StatelessWidget {
       menu: menuItems,
       mapItems: companyMap,
       menuIndex: 1,
+      title: "Company & Employees",
     );
   }
 }

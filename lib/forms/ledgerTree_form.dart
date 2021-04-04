@@ -50,7 +50,7 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
           key: ValueKey(glAccount.id),
           content: Row(children: [
             SizedBox(
-                width: (isPhone ? 330 : 400) - (glAccount.l!.toDouble() * 10),
+                width: (isPhone ? 210 : 400) - (glAccount.l!.toDouble() * 10),
                 child: Text("${glAccount.id} ${glAccount.accountName} ")),
             SizedBox(
                 width: 100,
@@ -108,7 +108,7 @@ class _LedgerTreeFormState extends State<LedgerTreeForm> {
           Row(children: [
             SizedBox(width: 20),
             SizedBox(
-                width: isPhone ? 340 : 410,
+                width: isPhone ? 220 : 410,
                 child: Text("Gl Account ID  GL Account Name")),
             SizedBox(
                 width: 100, child: Text("Posted", textAlign: TextAlign.right)),

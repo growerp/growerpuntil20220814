@@ -21,6 +21,7 @@ class AccntPurchaseOrderForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MainTemplate(
+      title: "Purchase & Payments",
       menu: acctMenuItems,
       mapItems: acctPurchaseMap,
       menuIndex: MENU_ACCTPURCHASE,

@@ -24,6 +24,7 @@ class CrmForm extends StatelessWidget {
       menu: menuItems,
       mapItems: crmMap,
       menuIndex: 2,
+      title: "CRM",
     );
   }
 }

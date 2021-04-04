@@ -23,6 +23,7 @@ class CatalogForm extends StatelessWidget {
       menu: menuItems,
       mapItems: catalogMap,
       menuIndex: MENU_CATALOG,
+      title: "Catalog",
     );
   }
 }
