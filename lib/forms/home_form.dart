@@ -20,6 +20,7 @@ import 'package:models/@models.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/templates/@templates.dart';
+import '../menuItem_data.dart';
 
 class HomeForm extends StatelessWidget {
   @override
@@ -27,92 +28,27 @@ class HomeForm extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate!;
-        return MainTemplate(
-            menu: menuItems,
-            menuIndex: 0,
-            actions: <Widget>[
+        return DisplayMenuItem(
+          menuList: menuItems,
+          menuIndex: 0,
+          actions: <Widget>[
+            IconButton(
+                key: Key('aboutButton'),
+                icon: Image.asset('assets/images/about.png'),
+                tooltip: 'About',
+                onPressed: () => {
+                      Navigator.pushNamed(context, '/about'),
+                    }),
+            if (authenticate.apiKey != null)
               IconButton(
-                  key: Key('aboutButton'),
-                  icon: Image.asset('assets/images/about.png'),
-                  tooltip: 'About',
+                  key: Key('logoutButton'),
+                  icon: Icon(Icons.do_not_disturb),
+                  tooltip: 'Logout',
                   onPressed: () => {
-                        Navigator.pushNamed(context, '/about'),
+                        BlocProvider.of<AuthBloc>(context).add(Logout()),
                       }),
-              if (authenticate.apiKey != null)
-                IconButton(
-                    key: Key('logoutButton'),
-                    icon: Icon(Icons.do_not_disturb),
-                    tooltip: 'Logout',
-                    onPressed: () => {
-                          BlocProvider.of<AuthBloc>(context).add(Logout()),
-                        }),
-            ],
-            child: Container(
-              padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-              child: GridView.count(
-                crossAxisCount:
-                    ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 2 : 3,
-                padding: EdgeInsets.all(3.0),
-                children: <Widget>[
-                  makeDashboardItem(
-                    context,
-                    menuItems[1],
-                    authenticate.company!.name!.length > 20
-                        ? "${authenticate.company!.name!.substring(0, 20)}..."
-                        : "${authenticate.company!.name}",
-                    "Administrators: ${authenticate.stats!.admins}",
-                    "Employees: ${authenticate.stats!.employees}",
-                    "",
-                  ),
-                  makeDashboardItem(
-                    context,
-                    menuItems[2],
-                    "All Opportunities: ${authenticate.stats!.opportunities}",
-                    "My Opportunities: ${authenticate.stats!.myOpportunities}",
-                    "Leads: ${authenticate.stats!.leads}",
-                    "Customers: ${authenticate.stats!.customers}",
-                  ),
-                  makeDashboardItem(
-                    context,
-                    menuItems[3],
-                    "Categories: ${authenticate.stats!.categories}",
-                    "Products: ${authenticate.stats!.products}",
-                    "",
-                    "",
-                  ),
-                  makeDashboardItem(
-                    context,
-                    menuItems[4],
-                    "Orders: ${authenticate.stats!.openSlsOrders}",
-                    "Customers: ${authenticate.stats!.customers}",
-                    "",
-                    "",
-                  ),
-                  makeDashboardItem(
-                    context,
-                    menuItems[6],
-                    "Sls open inv: "
-                        "${authenticate.company!.currencyId} "
-                        "${authenticate.stats!.salesInvoicesNotPaidAmount}"
-                        "(${authenticate.stats!.salesInvoicesNotPaidCount})",
-                    "Pur unp inv: "
-                        "${authenticate.company!.currencyId} "
-                        "${authenticate.stats!.purchInvoicesNotPaidAmount}"
-                        "(${authenticate.stats!.purchInvoicesNotPaidCount})",
-                    "",
-                    "",
-                  ),
-                  makeDashboardItem(
-                    context,
-                    menuItems[5],
-                    "Orders: ${authenticate.stats!.openPurOrders}",
-                    "Suppliers: ${authenticate.stats!.suppliers}",
-                    "",
-                    "",
-                  ),
-                ],
-              ),
-            ));
+          ],
+        );
       }
 
       if (state is AuthUnauthenticated) {

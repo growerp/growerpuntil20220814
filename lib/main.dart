@@ -23,6 +23,7 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:backend/@backend.dart';
 import 'package:core/styles/themes.dart';
+import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
 import 'package:core/forms/@forms.dart' as core;
@@ -159,25 +160,5 @@ class MyApp extends StatelessWidget {
             return core.SplashForm();
           },
         ));
-  }
-}
-
-class SimpleBlocObserver extends BlocObserver {
-  @override
-  void onEvent(Bloc bloc, Object? event) {
-    print(">>>Bloc event { $event: }");
-    super.onEvent(bloc, event);
-  }
-
-  @override
-  void onTransition(Bloc bloc, Transition transition) {
-    print(">>>$transition");
-    super.onTransition(bloc, transition);
-  }
-
-  @override
-  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
-    print(">>>error: $error");
-    super.onError(bloc, error, stackTrace);
   }
 }

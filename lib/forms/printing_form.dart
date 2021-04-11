@@ -14,7 +14,6 @@
 
 import 'package:core/forms/@forms.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/templates/@templates.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,24 +23,12 @@ import 'package:core/blocs/@blocs.dart';
 import 'pdfFormats.dart';
 
 class PrintingForm extends StatelessWidget {
-  final FormArguments? formArguments;
-  const PrintingForm({Key? key, this.formArguments}) : super(key: key);
+  final FormArguments formArguments;
+  const PrintingForm({Key? key, required this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    FinDoc finDoc = formArguments!.object as FinDoc;
-    return MainTemplate(
-      menu: menuItems,
-      child: PrintingPage(finDocIn: finDoc),
-      menuIndex: 3,
-      leadAction: IconButton(
-          key: Key('Back'),
-          icon: Icon(Icons.arrow_back),
-          tooltip: 'Back',
-          onPressed: () => {
-                Navigator.of(context).pop(),
-              }),
-    );
+    return PrintingPage(finDocIn: formArguments.object as FinDoc);
   }
 }
 

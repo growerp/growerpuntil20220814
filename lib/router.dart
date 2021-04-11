@@ -12,10 +12,14 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/coreRouter.dart';
+import 'package:core/templates/displayMenuItem.dart';
 import 'package:flutter/material.dart';
 import 'forms/@forms.dart' as local;
 import 'package:core/forms/@forms.dart';
 import 'package:models/@models.dart';
+
+import 'menuItem_data.dart';
 
 // https://medium.com/flutter-community/flutter-navigation-cheatsheet-a-guide-to-named-routing-dc642702b98c
 Route<dynamic> generateRoute(RouteSettings settings) {
@@ -24,71 +28,31 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case '/':
       return MaterialPageRoute(builder: (context) => local.HomeForm());
-    case '/accounting':
-      return MaterialPageRoute(builder: (context) => local.AccountingForm());
-    case '/catalog':
-      return MaterialPageRoute(builder: (context) => local.CatalogForm());
-    case '/category':
-      return MaterialPageRoute(
-          builder: (context) => local.CategoryForm(
-              formArguments: settings.arguments as FormArguments?));
     case '/company':
-      return MaterialPageRoute(builder: (context) => local.CompanyForm());
-    case '/login':
-      return MaterialPageRoute(
-          builder: (context) => LoginForm(settings.arguments as String?));
-    case '/register':
-      return MaterialPageRoute(
-          builder: (context) => RegisterForm(settings.arguments as String?));
-    case '/changePw':
       return MaterialPageRoute(
           builder: (context) =>
-              ChangePwForm(changePwArgs: settings.arguments as ChangePwArgs?));
-    case '/printer':
+              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 0));
+    case '/catalog':
       return MaterialPageRoute(
-          builder: (context) => local.PrintingForm(
-              formArguments: settings.arguments as FormArguments?));
-    case '/about':
-      return MaterialPageRoute(builder: (context) => AboutForm());
-    case '/product':
-      return MaterialPageRoute(
-          builder: (context) => local.ProductForm(
-              formArguments: settings.arguments as FormArguments?));
+          builder: (context) =>
+              DisplayMenuItem(menuList: menuItems, menuIndex: 3, tabIndex: 0));
     case '/sales':
-      return MaterialPageRoute(builder: (context) => local.SalesOrderForm());
+      return MaterialPageRoute(
+          builder: (context) =>
+              DisplayMenuItem(menuList: menuItems, menuIndex: 4, tabIndex: 0));
     case '/purchase':
-      return MaterialPageRoute(builder: (context) => local.PurchaseOrderForm());
-    case '/acctSales':
       return MaterialPageRoute(
-          builder: (context) => local.AccntSalesOrderForm());
-    case '/acctPurchase':
-      return MaterialPageRoute(
-          builder: (context) => local.AccntPurchaseOrderForm());
-    case '/ledger':
-      return MaterialPageRoute(builder: (context) => local.LedgerForm());
-    case '/ledgerTree':
-      return MaterialPageRoute(builder: (context) => local.LedgerTreeForm());
-    case '/balanceSheet':
-      return MaterialPageRoute(builder: (context) => local.BalanceSheetForm());
-    case '/reports':
-      return MaterialPageRoute(builder: (context) => local.ReportsForm());
+          builder: (context) =>
+              DisplayMenuItem(menuList: menuItems, menuIndex: 5, tabIndex: 0));
     case '/finDoc':
       return MaterialPageRoute(
-          builder: (context) => local.FinDocForm(
-              formArguments: settings.arguments as FormArguments));
+          builder: (context) =>
+              FinDocForm(formArguments: settings.arguments as FormArguments));
     case '/crm':
-      return MaterialPageRoute(builder: (context) => local.CrmForm());
-    case '/opportunity':
       return MaterialPageRoute(
-          builder: (context) => local.OpportunityForm(
-              opportunity: settings.arguments as Opportunity?));
-    case '/user':
-      return MaterialPageRoute(
-          builder: (context) => local.UserForm(
-              formArguments: settings.arguments as FormArguments?));
+          builder: (context) =>
+              DisplayMenuItem(menuList: menuItems, menuIndex: 2, tabIndex: 0));
     default:
-      return MaterialPageRoute(
-          builder: (context) => FatalErrorForm(
-              "Routing not found for request: ${settings.name}"));
+      return coreRoute(settings);
   }
 }

@@ -24,25 +24,14 @@ import 'package:models/@models.dart';
 import 'package:core/blocs/@blocs.dart';
 import 'package:core/helper_functions.dart';
 import 'package:core/templates/@templates.dart';
-import '@forms.dart';
 
 class ProductForm extends StatelessWidget {
-  final FormArguments? formArguments;
-  const ProductForm({Key? key, this.formArguments}) : super(key: key);
+  final FormArguments formArguments;
+  const ProductForm({Key? key, required this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Product? product = formArguments!.object as Product?;
-    catalogMap[0] = MapItem(
-        form: ProductPage(formArguments!.message, product),
-        label: "product #${product != null ? product.productId : 'New'}",
-        icon: Icon(Icons.home));
-    return MainTemplate(
-      menu: menuItems,
-      mapItems: catalogMap,
-      menuIndex: 3,
-      tabIndex: 0,
-    );
+    return ProductPage(formArguments.message, formArguments.object as Product);
   }
 }
 
@@ -110,37 +99,47 @@ class _ProductState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     var repos = context.read<Object>();
-    return ScaffoldMessenger(
-        key: scaffoldMessengerKey,
-        child: Scaffold(
-            floatingActionButton: imageButtons(context, _onImageButtonPressed),
-            body: BlocListener<ProductBloc, ProductState>(
-                listener: (context, state) {
-              if (state is ProductProblem) {
-                loading = false;
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              }
-              if (state is ProductSuccess) Navigator.of(context).pop();
-            }, child: Builder(builder: (BuildContext context) {
-              return Center(
-                child:
-                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-                        ? FutureBuilder<void>(
-                            future: retrieveLostData(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<void> snapshot) {
-                              if (snapshot.hasError) {
-                                return Text(
-                                  'Pick image error: ${snapshot.error}}',
-                                  textAlign: TextAlign.center,
-                                );
-                              }
-                              return _showForm(repos);
-                            })
-                        : _showForm(repos),
-              );
-            }))));
+    return Dialog(
+        insetPadding: EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: ScaffoldMessenger(
+            key: scaffoldMessengerKey,
+            child: Container(
+                padding: EdgeInsets.all(20),
+                width: 400,
+                height: 750,
+                child: Scaffold(
+                    floatingActionButton:
+                        imageButtons(context, _onImageButtonPressed),
+                    body: BlocListener<ProductBloc, ProductState>(
+                        listener: (context, state) {
+                      if (state is ProductProblem) {
+                        loading = false;
+                        HelperFunctions.showMessage(
+                            context, '${state.errorMessage}', Colors.red);
+                      }
+                      if (state is ProductSuccess) Navigator.of(context).pop();
+                    }, child: Builder(builder: (BuildContext context) {
+                      return Center(
+                        child: !kIsWeb &&
+                                defaultTargetPlatform == TargetPlatform.android
+                            ? FutureBuilder<void>(
+                                future: retrieveLostData(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text(
+                                      'Pick image error: ${snapshot.error}}',
+                                      textAlign: TextAlign.center,
+                                    );
+                                  }
+                                  return _showForm(repos);
+                                })
+                            : _showForm(repos),
+                      );
+                    }))))));
   }
 
   Text? _getRetrieveErrorWidget() {

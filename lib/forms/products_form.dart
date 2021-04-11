@@ -6,6 +6,8 @@ import 'package:core/helper_functions.dart';
 import 'package:models/@models.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
+import '@forms.dart';
+
 class ProductsForm extends StatefulWidget {
   const ProductsForm();
   @override
@@ -164,9 +166,14 @@ class _ProductsState extends State<ProductsForm> {
                               ],
                             ),
                             onTap: () async {
-                              await Navigator.pushNamed(context, '/product',
-                                  arguments: FormArguments(
-                                      menuIndex: 0, object: products[index]));
+                              await showDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return ProductForm(
+                                        formArguments: FormArguments(
+                                            object: products[index]));
+                                  });
                             },
                             trailing: IconButton(
                               icon: Icon(Icons.delete_forever),

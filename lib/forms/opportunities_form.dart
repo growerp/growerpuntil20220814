@@ -21,6 +21,8 @@ import 'package:models/@models.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/forms/@forms.dart';
 
+import '@forms.dart';
+
 class OpportunitiesForm extends StatefulWidget {
   const OpportunitiesForm();
   @override
@@ -227,10 +229,14 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               ],
                             ),
                             onTap: () async {
-                              await Navigator.pushNamed(context, '/opportunity',
-                                  arguments: state.opportunities![index]);
-                              BlocProvider.of<OpportunityBloc>(context)
-                                  .add(FetchOpportunity());
+                              await showDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return OpportunityForm(
+                                        formArguments: FormArguments(
+                                            object: opportunities[index]));
+                                  });
                             },
                             trailing: IconButton(
                               icon: Icon(Icons.delete_forever),

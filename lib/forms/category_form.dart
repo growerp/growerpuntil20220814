@@ -24,22 +24,13 @@ import 'package:core/helper_functions.dart';
 import '@forms.dart';
 
 class CategoryForm extends StatelessWidget {
-  final FormArguments? formArguments;
-  const CategoryForm({Key? key, this.formArguments}) : super(key: key);
+  final FormArguments formArguments;
+  const CategoryForm({Key? key, required this.formArguments}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    ProductCategory? category = formArguments!.object as ProductCategory?;
-    catalogMap[1] = MapItem(
-        form: CategoryPage(formArguments!.message, category),
-        label: "Category #${category != null ? category.categoryId : 'New'}",
-        icon: Icon(Icons.home));
-    return MainTemplate(
-      menu: menuItems,
-      mapItems: catalogMap,
-      menuIndex: MENU_CATALOG,
-      tabIndex: 1,
-    );
+    return CategoryPage(
+        formArguments.message, formArguments.object as ProductCategory);
   }
 }
 
@@ -103,37 +94,47 @@ class _CategoryState extends State<CategoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMessenger(
-        key: scaffoldMessengerKey,
-        child: Scaffold(
-            floatingActionButton: imageButtons(context, _onImageButtonPressed),
-            body: BlocListener<CategoryBloc, CategoryState>(
-                listener: (context, state) {
-              if (state is CategoryProblem) {
-                loading = false;
-                HelperFunctions.showMessage(
-                    context, '${state.errorMessage}', Colors.red);
-              }
-              if (state is CategorySuccess) Navigator.of(context).pop();
-            }, child: Builder(builder: (BuildContext context) {
-              return Center(
-                child:
-                    !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-                        ? FutureBuilder<void>(
-                            future: retrieveLostData(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<void> snapshot) {
-                              if (snapshot.hasError) {
-                                return Text(
-                                  'Pick image error: ${snapshot.error}}',
-                                  textAlign: TextAlign.center,
-                                );
-                              }
-                              return _showForm();
-                            })
-                        : _showForm(),
-              );
-            }))));
+    return Dialog(
+        insetPadding: EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Container(
+            padding: EdgeInsets.all(20),
+            width: 400,
+            height: 600,
+            child: ScaffoldMessenger(
+                key: scaffoldMessengerKey,
+                child: Scaffold(
+                    floatingActionButton:
+                        imageButtons(context, _onImageButtonPressed),
+                    body: BlocListener<CategoryBloc, CategoryState>(
+                        listener: (context, state) {
+                      if (state is CategoryProblem) {
+                        loading = false;
+                        HelperFunctions.showMessage(
+                            context, '${state.errorMessage}', Colors.red);
+                      }
+                      if (state is CategorySuccess) Navigator.of(context).pop();
+                    }, child: Builder(builder: (BuildContext context) {
+                      return Center(
+                        child: !kIsWeb &&
+                                defaultTargetPlatform == TargetPlatform.android
+                            ? FutureBuilder<void>(
+                                future: retrieveLostData(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<void> snapshot) {
+                                  if (snapshot.hasError) {
+                                    return Text(
+                                      'Pick image error: ${snapshot.error}}',
+                                      textAlign: TextAlign.center,
+                                    );
+                                  }
+                                  return _showForm();
+                                })
+                            : _showForm(),
+                      );
+                    }))))));
   }
 
   Text? _getRetrieveErrorWidget() {

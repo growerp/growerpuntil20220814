@@ -5,6 +5,8 @@ import 'package:core/widgets/@widgets.dart';
 import 'package:models/@models.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
+import '@forms.dart';
+
 class CategoriesForm extends StatefulWidget {
   const CategoriesForm();
   @override
@@ -152,10 +154,14 @@ class _CategoriesState extends State<CategoriesForm> {
                               ],
                             ),
                             onTap: () async {
-                              dynamic result = await Navigator.pushNamed(
-                                  context, '/category',
-                                  arguments: FormArguments(
-                                      menuIndex: 0, object: categories[index]));
+                              dynamic result = await showDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return CategoryForm(
+                                        formArguments: FormArguments(
+                                            object: categories[index]));
+                                  });
                               setState(() {
                                 if (result is ProductCategory)
                                   categories
