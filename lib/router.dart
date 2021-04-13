@@ -47,7 +47,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/finDoc':
       return MaterialPageRoute(
           builder: (context) =>
-              FinDocForm(formArguments: settings.arguments as FormArguments));
+              FinDocDialog(formArguments: settings.arguments as FormArguments));
     case '/crm':
       return MaterialPageRoute(
           builder: (context) =>

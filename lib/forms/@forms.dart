@@ -1,10 +1,5 @@
-export 'category_form.dart';
 export 'home_form.dart';
-export 'product_form.dart';
-export 'product_form.dart';
-export 'opportunity_form.dart';
-export 'products_form.dart';
-export 'categories_form.dart';
+export 'opportunity_dialog.dart';
 export 'opportunities_form.dart';
 export 'balanceSheet_form.dart';
 export 'incomeStatement_form.dart';

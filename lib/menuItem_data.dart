@@ -12,11 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'package:core/forms/@forms.dart';
 import 'package:flutter/material.dart';
 import 'package:models/@models.dart';
 
-import 'forms/@forms.dart';
+import 'forms/@forms.dart' as local;
+import 'package:core/forms/@forms.dart';
 import 'forms/opportunities_form.dart';
 
 const MENU_DASHBOARD = 0;
@@ -37,7 +37,7 @@ List<MenuItem> menuItems = [
     title: "Main",
     route: '/',
     readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE"],
-    child: DashBoardForm(),
+    child: local.DashBoardForm(),
   ),
   MenuItem(
     image: "assets/images/companyGrey.png",
@@ -59,7 +59,7 @@ List<MenuItem> menuItems = [
         ),
         label: "Admins",
         icon: Icon(Icons.business),
-        floatButtonForm: UserForm(
+        floatButtonForm: UserDialog(
             formArguments:
                 FormArguments(object: User(userGroupId: "GROWERP_M_ADMIN"))),
       ),
@@ -70,7 +70,7 @@ List<MenuItem> menuItems = [
         ),
         label: "Employees",
         icon: Icon(Icons.school),
-        floatButtonForm: UserForm(
+        floatButtonForm: UserDialog(
             formArguments:
                 FormArguments(object: User(userGroupId: "GROWERP_M_EMPLOYEE"))),
       ),
@@ -87,7 +87,7 @@ List<MenuItem> menuItems = [
         form: OpportunitiesForm(),
         label: "My Opportunities",
         icon: Icon(Icons.home),
-        floatButtonForm: OpportunityForm(
+        floatButtonForm: local.OpportunityDialog(
             formArguments: FormArguments(object: Opportunity())),
       ),
       TabItem(
@@ -97,7 +97,7 @@ List<MenuItem> menuItems = [
         ),
         label: "Leads",
         icon: Icon(Icons.business),
-        floatButtonForm: UserForm(
+        floatButtonForm: UserDialog(
             formArguments:
                 FormArguments(object: User(userGroupId: "GROWERP_M_LEAD"))),
       ),
@@ -108,7 +108,7 @@ List<MenuItem> menuItems = [
         ),
         label: "Customers",
         icon: Icon(Icons.school),
-        floatButtonForm: UserForm(
+        floatButtonForm: UserDialog(
             formArguments:
                 FormArguments(object: User(userGroupId: "GROWERP_M_CUSTOMER"))),
       ),
@@ -131,16 +131,14 @@ List<MenuItem> menuItems = [
           form: ProductsForm(),
           label: "Products",
           icon: Icon(Icons.home),
-          floatButtonRoute: "/product",
-          floatButtonArgs: FormArguments(),
           floatButtonForm:
-              ProductForm(formArguments: FormArguments(object: Product())),
+              ProductDialog(formArguments: FormArguments(object: Product())),
         ),
         TabItem(
           form: CategoriesForm(),
           label: "Categories",
           icon: Icon(Icons.business),
-          floatButtonForm: CategoryForm(
+          floatButtonForm: CategoryDialog(
               formArguments: FormArguments(object: ProductCategory())),
         ),
       ]),
@@ -156,7 +154,7 @@ List<MenuItem> menuItems = [
         form: FinDocsForm(sales: true, docType: 'order'),
         label: "Sales orders",
         icon: Icon(Icons.home),
-        floatButtonForm: FinDocForm(
+        floatButtonForm: FinDocDialog(
           formArguments: FormArguments(
               object: FinDoc(sales: true, docType: 'order', items: [])),
         ),
@@ -168,7 +166,7 @@ List<MenuItem> menuItems = [
         ),
         label: "Customers",
         icon: Icon(Icons.business),
-        floatButtonForm: UserForm(
+        floatButtonForm: UserDialog(
             formArguments:
                 FormArguments(object: User(userGroupId: "GROWERP_M_CUSTOMER"))),
       ),
@@ -185,7 +183,7 @@ List<MenuItem> menuItems = [
         form: FinDocsForm(sales: true, docType: 'order'),
         label: "Purchase orders",
         icon: Icon(Icons.home),
-        floatButtonForm: FinDocForm(
+        floatButtonForm: FinDocDialog(
           formArguments: FormArguments(
               object: FinDoc(sales: false, docType: 'order', items: [])),
         ),
@@ -197,7 +195,7 @@ List<MenuItem> menuItems = [
         ),
         label: "Customers",
         icon: Icon(Icons.business),
-        floatButtonForm: UserForm(
+        floatButtonForm: UserDialog(
             formArguments:
                 FormArguments(object: User(userGroupId: "GROWERP_M_SUPPLIER"))),
       ),

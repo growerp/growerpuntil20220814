@@ -233,7 +233,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                   barrierDismissible: true,
                                   context: context,
                                   builder: (BuildContext context) {
-                                    return OpportunityForm(
+                                    return OpportunityDialog(
                                         formArguments: FormArguments(
                                             object: opportunities[index]));
                                   });
