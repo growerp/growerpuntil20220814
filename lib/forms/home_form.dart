@@ -76,7 +76,6 @@ class HomeForm extends StatelessWidget {
                   SizedBox(height: 20),
                   ElevatedButton(
                     key: Key('loginButton'),
-                    autofocus: true,
                     child: Text('Login'),
                     onPressed: () async {
                       await Navigator.pushNamed(context, '/login');

@@ -135,6 +135,12 @@ List<MenuItem> menuItems = [
               ProductDialog(formArguments: FormArguments(object: Product())),
         ),
         TabItem(
+          form: AssetsForm(),
+          label: "Assets",
+          icon: Icon(Icons.money),
+          floatButtonForm: AssetDialog(formArguments: FormArguments()),
+        ),
+        TabItem(
           form: CategoriesForm(),
           label: "Categories",
           icon: Icon(Icons.business),
@@ -180,7 +186,7 @@ List<MenuItem> menuItems = [
     readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE"],
     tabItems: [
       TabItem(
-        form: FinDocsForm(sales: true, docType: 'order'),
+        form: FinDocsForm(sales: false, docType: 'order'),
         label: "Purchase orders",
         icon: Icon(Icons.home),
         floatButtonForm: FinDocDialog(
@@ -193,7 +199,7 @@ List<MenuItem> menuItems = [
           key: ValueKey("GROWERP_M_SUPPLIER"),
           userGroupId: "GROWERP_M_SUPPLIER",
         ),
-        label: "Customers",
+        label: "Suppliers",
         icon: Icon(Icons.business),
         floatButtonForm: UserDialog(
             formArguments:
