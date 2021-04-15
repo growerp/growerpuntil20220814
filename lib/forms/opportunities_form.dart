@@ -44,7 +44,8 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
     super.initState();
     searchField = false;
     _scrollController.addListener(_onScroll);
-    BlocProvider.of<OpportunityBloc>(context)..add(FetchOpportunity());
+    _opportunityBloc = BlocProvider.of<OpportunityBloc>(context)
+      ..add(FetchOpportunity());
   }
 
   @override
@@ -65,11 +66,12 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                 state.error ? Colors.red : Colors.green);
           }
         }, builder: (context, state) {
+          if (state is OpportunityLoading) return LoadingIndicator();
           if (state is OpportunityProblem)
             return FatalErrorForm("Could not load opportunities!");
           if (state is OpportunitySuccess) {
             isLoading = false;
-            bool hasReachedMax = state.hasReachedMax!;
+            bool hasReachedMax = state.hasReachedMax ?? true;
             List<Opportunity>? opportunities = state.opportunities;
             return ListView.builder(
               itemCount: hasReachedMax && opportunities!.isNotEmpty

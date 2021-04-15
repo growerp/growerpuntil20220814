@@ -53,16 +53,22 @@ class _OpportunityState extends State<OpportunityPage> {
   final _leadSearchBoxController = TextEditingController();
   final _accountSearchBoxController = TextEditingController();
 
-  late Opportunity updatedOpportunity;
+  late Opportunity opportunity;
   bool loading = false;
   String? _selectedStageId;
   User? _selectedAccount;
   User? _selectedLead;
 
   @override
+  void initState() {
+    super.initState();
+    opportunity = widget.opportunity ?? Opportunity();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var repos = context.read<Object>();
-    return BlocListener<OpportunityBloc, OpportunityState>(
+    return BlocConsumer<OpportunityBloc, OpportunityState>(
         listener: (context, state) {
       if (state is OpportunityProblem) {
         loading = false;
@@ -72,38 +78,44 @@ class _OpportunityState extends State<OpportunityPage> {
       if (state is OpportunityLoading)
         HelperFunctions.showMessage(context, '${state.message}', Colors.green);
       if (state is OpportunitySuccess) Navigator.of(context).pop();
-    }, child: Builder(builder: (BuildContext context) {
+    }, builder: (context, state) {
+      if (state is OpportunityLoading) return Container();
       return Center(
         child: _showForm(repos),
       );
-    }));
+    });
   }
 
   Widget _showForm(repos) {
-    Opportunity? opportunity = widget.opportunity;
-    if (opportunity != null) {
-      _nameController..text = opportunity.opportunityName ?? '';
-      _descriptionController..text = opportunity.description ?? '';
-      _estAmountController..text = opportunity.estAmount.toString();
-      _estProbabilityController..text = opportunity.estProbability.toString();
-      _estNextStepController..text = opportunity.nextStep.toString();
-      if (_selectedLead == null && opportunity.leadPartyId != null) {
-        _selectedLead = User(
-            partyId: opportunity.leadPartyId,
-            email: opportunity.leadEmail,
-            firstName: opportunity.leadFirstName,
-            lastName: opportunity.leadLastName);
-      }
-      if (_selectedAccount == null && opportunity.accountPartyId != null) {
-        _selectedAccount = User(
-            partyId: opportunity.accountPartyId,
-            email: opportunity.accountEmail,
-            firstName: opportunity.accountFirstName,
-            lastName: opportunity.accountLastName);
-      }
-      if (_selectedStageId == null && opportunity.stageId != null)
-        _selectedStageId = opportunity.stageId ?? opportunityStages[0];
+    _nameController..text = opportunity.opportunityName ?? '';
+    _descriptionController..text = opportunity.description ?? '';
+    _estAmountController
+      ..text = (opportunity.estAmount != null
+          ? opportunity.estAmount.toString()
+          : '');
+    _estProbabilityController
+      ..text = (opportunity.estProbability != null
+          ? opportunity.estProbability.toString()
+          : '');
+    _estNextStepController
+      ..text =
+          (opportunity.nextStep != null ? opportunity.nextStep.toString() : '');
+    if (_selectedLead == null && opportunity.leadPartyId != null) {
+      _selectedLead = User(
+          partyId: opportunity.leadPartyId,
+          email: opportunity.leadEmail,
+          firstName: opportunity.leadFirstName,
+          lastName: opportunity.leadLastName);
     }
+    if (_selectedAccount == null && opportunity.accountPartyId != null) {
+      _selectedAccount = User(
+          partyId: opportunity.accountPartyId,
+          email: opportunity.accountEmail,
+          firstName: opportunity.accountFirstName,
+          lastName: opportunity.accountLastName);
+    }
+    if (_selectedStageId == null && opportunity.stageId != null)
+      _selectedStageId = opportunity.stageId ?? opportunityStages[0];
 
     Future<List<User>> getData(userGroupId, filter) async {
       var response = await repos.getUser(
@@ -208,9 +220,7 @@ class _OpportunityState extends State<OpportunityPage> {
                           child: Text(item), value: item);
                     }).toList(),
                     onChanged: (String? newValue) {
-                      setState(() {
-                        _selectedStageId = newValue;
-                      });
+                      _selectedStageId = newValue;
                     },
                     isExpanded: true,
                   ),
@@ -238,9 +248,7 @@ class _OpportunityState extends State<OpportunityPage> {
                     onFind: (String filter) => getData(
                         "GROWERP_M_LEAD", _leadSearchBoxController.text),
                     onChanged: (User? newValue) {
-                      setState(() {
-                        _selectedLead = newValue;
-                      });
+                      _selectedLead = newValue;
                     },
                   ),
                   Visibility(
@@ -270,9 +278,7 @@ class _OpportunityState extends State<OpportunityPage> {
                               "GROWERP_M_EMPLOYEE",
                               _accountSearchBoxController.text),
                           onChanged: (User? newValue) {
-                            setState(() {
-                              _selectedAccount = newValue;
-                            });
+                            _selectedAccount = newValue;
                           })),
                   ElevatedButton(
                       key: Key('cancel'),
@@ -287,7 +293,8 @@ class _OpportunityState extends State<OpportunityPage> {
                           : 'Update'),
                       onPressed: () {
                         if (_formKey.currentState!.validate() && !loading) {
-                          updatedOpportunity = Opportunity(
+                          BlocProvider.of<OpportunityBloc>(context)
+                              .add(UpdateOpportunity(Opportunity(
                             opportunityId: opportunity?.opportunityId,
                             opportunityName: _nameController.text,
                             description: _descriptionController.text,
@@ -304,11 +311,7 @@ class _OpportunityState extends State<OpportunityPage> {
                             leadFirstName: _selectedLead?.firstName,
                             leadLastName: _selectedLead?.lastName,
                             leadEmail: _selectedLead?.email,
-                          );
-                          print(
-                              "selected lead: ${updatedOpportunity.leadPartyId}");
-                          BlocProvider.of<OpportunityBloc>(context)
-                              .add(UpdateOpportunity(updatedOpportunity));
+                          )));
                         }
                       }),
                 ])));
