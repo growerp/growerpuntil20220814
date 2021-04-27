@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: bb4b9f1ab568ea7e43677596d4723b3d9f395485
+      resolved-ref: "294cc295dd1be9d095a76f91128cd7c7567b2222"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: "74343bfa51267fac487860cb763a9493b55bdddc"
+      resolved-ref: "294cc295dd1be9d095a76f91128cd7c7567b2222"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -186,7 +186,7 @@ packages:
       name: dart_style
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   decimal:
     dependency: "direct main"
     description:
@@ -430,13 +430,13 @@ packages:
       name: mocktail
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "0.1.2"
   models:
     dependency: transitive
     description:
       path: models
       ref: packages
-      resolved-ref: bb4b9f1ab568ea7e43677596d4723b3d9f395485
+      resolved-ref: "294cc295dd1be9d095a76f91128cd7c7567b2222"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -453,7 +453,7 @@ packages:
       name: node_preamble
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "1.4.13"
   package_config:
     dependency: transitive
     description:
@@ -502,7 +502,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.2.0"
+    version: "3.3.0"
   pedantic:
     dependency: transitive
     description:
@@ -544,7 +544,7 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.2.1"
   process:
     dependency: transitive
     description:
@@ -642,7 +642,7 @@ packages:
       name: shelf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   shelf_packages_handler:
     dependency: transitive
     description:
@@ -703,7 +703,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.1"
+    version: "1.8.0"
   stack_trace:
     dependency: transitive
     description:
@@ -738,21 +738,21 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.16.8"
+    version: "1.16.5"
   test_api:
     dependency: transitive
     description:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.2.19"
   test_core:
     dependency: transitive
     description:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.19"
+    version: "0.3.15"
   typed_data:
     dependency: transitive
     description:
