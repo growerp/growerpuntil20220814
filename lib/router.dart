@@ -13,7 +13,7 @@
  */
 
 import 'package:core/coreRouter.dart';
-import 'package:core/templates/displayMenuItem.dart';
+import 'package:core/templates/displayMenuList.dart';
 import 'package:flutter/material.dart';
 import 'forms/@forms.dart' as local;
 import 'package:core/forms/@forms.dart';
@@ -21,7 +21,6 @@ import 'package:models/@models.dart';
 
 import 'menuItem_data.dart';
 
-// https://medium.com/flutter-community/flutter-navigation-cheatsheet-a-guide-to-named-routing-dc642702b98c
 Route<dynamic> generateRoute(RouteSettings settings) {
   print(">>>NavigateTo { ${settings.name} " +
       "with: ${settings.arguments.toString()} }");
@@ -31,19 +30,19 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/company':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 0));
+              DisplayMenuList(menuList: menuItems, menuIndex: 1, tabIndex: 0));
     case '/catalog':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 3, tabIndex: 0));
+              DisplayMenuList(menuList: menuItems, menuIndex: 3, tabIndex: 0));
     case '/sales':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 4, tabIndex: 0));
+              DisplayMenuList(menuList: menuItems, menuIndex: 4, tabIndex: 0));
     case '/purchase':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 5, tabIndex: 0));
+              DisplayMenuList(menuList: menuItems, menuIndex: 5, tabIndex: 0));
     case '/finDoc':
       return MaterialPageRoute(
           builder: (context) =>
@@ -51,7 +50,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/crm':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 2, tabIndex: 0));
+              DisplayMenuList(menuList: menuItems, menuIndex: 2, tabIndex: 0));
     default:
       return coreRoute(settings);
   }

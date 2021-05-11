@@ -111,7 +111,6 @@ class AdminApp extends StatelessWidget {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String? classificationId = GlobalConfiguration().get("classificationId");
     return MaterialApp(
         localizationsDelegates: [
           S.delegate,
@@ -138,26 +137,10 @@ class MyApp extends StatelessWidget {
           builder: (context, state) {
             if (state is AuthProblem)
               return core.FatalErrorForm("Internet or server problem?");
-            if (state is AuthUnauthenticated) {
-              if (state.authenticate?.company == null) {
-                if (classificationId == 'AppAdmin')
-                  return core.RegisterForm(
-                      'No companies found in system, create one?');
-                else
-                  return core.FatalErrorForm(S
-                      .of(context)
-                      .classificationNotDefined(classificationId!));
-              } else
-                return HomeForm();
-            }
-            if (state is AuthAuthenticated) {
-              if (classificationId == 'AppAdmin') {
-                return HomeForm();
-              } else
-                return core.FatalErrorForm(S
-                    .of(context)
-                    .screenNotFound('for classification ' + classificationId!));
-            }
+            if (state is AuthAuthenticated)
+              return HomeForm(message: state.message);
+            if (state is AuthUnauthenticated)
+              return HomeForm(message: state.message);
             return core.SplashForm();
           },
         ));
