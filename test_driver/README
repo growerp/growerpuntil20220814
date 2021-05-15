@@ -1,0 +1,15 @@
+to run integration test in the root directory:
+
+start your mobile emulator and then:
+flutter drive --driver=test_driver/app.dart
+
+
+run on chrome: (not work yet)
+
+download chromedriver and install in path: https://flutter.dev/docs/cookbook/testing/integration/introduction#6b-web
+
+start on command line in home dir:
+./chromedriver --port=4444
+
+
+
