@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: "29526158e516d97fa1ecf039458f8014327162c1"
+      resolved-ref: "6e786b1299238f41cc03c61c7ea40a9091c83feb"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -160,9 +160,11 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: "../packages/core"
-      relative: true
-    source: path
+      path: core
+      ref: packages
+      resolved-ref: "6e786b1299238f41cc03c61c7ea40a9091c83feb"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   coverage:
     dependency: transitive
@@ -212,7 +214,7 @@ packages:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   fake_async:
     dependency: transitive
     description:
@@ -449,7 +451,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: "29526158e516d97fa1ecf039458f8014327162c1"
+      resolved-ref: "6e786b1299238f41cc03c61c7ea40a9091c83feb"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -825,9 +827,11 @@ packages:
   utils:
     dependency: "direct dev"
     description:
-      path: "../packages/utils"
-      relative: true
-    source: path
+      path: utils
+      ref: packages
+      resolved-ref: "6e786b1299238f41cc03c61c7ea40a9091c83feb"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.0"
   vector_math:
     dependency: transitive
