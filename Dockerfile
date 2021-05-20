@@ -1,42 +1,26 @@
-#
-# Grant of Patent License.
-#
-# To the extent possible under law, the author(s) have dedicated all
-# copyright and related and neighboring rights to this software to the
-# public domain worldwide. This software is distributed without any
-# warranty.
-#
-# You should have received a copy of the CC0 Public Domain Dedication
-# along with this software (see the LICENSE.md file). If not, see
-# <http://creativecommons.org/publicdomain/zero/1.0/>.
-#
- 
-#Stage 1 - Install dependencies and build the app
-FROM debian:latest AS build-env
+# see https://hub.docker.com/_/dart?s=03
 
-# Install flutter dependencies
-RUN apt-get update && \
-    apt-get install -y curl git wget zip unzip libgconf-2-4 gdb libstdc++6 \
-        libglu1-mesa fonts-droid-fallback lib32stdc++6 python3 nano && \
-    apt-get clean
 
-# Clone the flutter repo
-RUN git clone https://github.com/flutter/flutter.git /usr/local/flutter && \
-    /usr/local/flutter/bin/flutter doctor -v
+# Specify the Dart SDK base image version using dart:<version> (ex: dart:2.12)
+FROM dart:stable AS build
 
-ENV PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PATH}"
+# Resolve app dependencies.
+WORKDIR /app
+COPY pubspec.* ./
+RUN dart pub get
 
-# Enable flutter web
-RUN flutter channel stable && flutter upgrade
+# Copy app source code and AOT compile it.
+COPY . .
+# Ensure packages are still up-to-date if anything has changed
+RUN dart pub get --offline
+RUN dart compile exe bin/server.dart -o bin/server
 
-# Copy files to container and build
-# RUN mkdir /usr/local/
-RUN git clone https://github.com/growerp/growerp.git /usr/local/growerp && \
-    cd /usr/local/growerp && git fetch && git checkout master
-WORKDIR /usr/local/growerp
-RUN /usr/local/flutter/bin/flutter build web --release
+# Build minimal serving image from AOT-compiled `/server` and required system
+# libraries and configuration files stored in `/runtime/` from the build stage.
+FROM scratch
+COPY --from=build /runtime/ /
+COPY --from=build /app/bin/server /app/bin/
 
-# Stage 2 - Create the run-time image
-FROM nginx
-COPY --from=build-env /usr/local/growerp/build/web /usr/share/nginx/html
+# Start server.
 EXPOSE 80
+CMD ["/app/bin/server"]

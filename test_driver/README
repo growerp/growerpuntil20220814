@@ -1,8 +1,9 @@
 to run integration test in the root directory:
 
 start your mobile emulator and then:
-flutter drive --driver=test_driver/app.dart
+flutter drive --driver=test_driver/main.dart
 
+or just : flutter drive
 
 run on chrome: (not work yet)
 

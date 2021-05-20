@@ -42,7 +42,7 @@ packages:
       name: args
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.0.0"
   async:
     dependency: transitive
     description:
@@ -212,7 +212,7 @@ packages:
       name: equatable
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -258,6 +258,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_launcher_icons:
+    dependency: "direct dev"
+    description:
+      name: flutter_launcher_icons
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -347,7 +354,7 @@ packages:
       name: image_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.5"
+    version: "0.7.5+2"
   image_picker_for_web:
     dependency: transitive
     description:
@@ -429,7 +436,7 @@ packages:
       name: mockito
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.7"
+    version: "5.0.8"
   mocktail:
     dependency: transitive
     description:
@@ -565,13 +572,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.0"
-  pub_cache:
-    dependency: transitive
-    description:
-      name: pub_cache
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0"
   pub_semver:
     dependency: transitive
     description:
@@ -593,13 +593,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0+1"
-  resource_portable:
-    dependency: transitive
-    description:
-      name: resource_portable
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
   responsive_framework:
     dependency: "direct main"
     description:
@@ -614,15 +607,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.26.0"
-  screenshots:
-    dependency: "direct dev"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "095ee2c85757f0f305c39b2a653e580d97f8d07a"
-      url: "https://github.com/growerp/screenshots"
-    source: git
-    version: "2.2.0"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -789,24 +773,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.19"
-  tool_base:
-    dependency: transitive
-    description:
-      path: "."
-      ref: master
-      resolved-ref: eaefa8a5d502331e90ee02d0549df5f156fa12f9
-      url: "https://github.com/adrienbaron/tool_base.git"
-    source: git
-    version: "2.0.0"
-  tool_mobile:
-    dependency: transitive
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "23b303d953676f80eb8d8c15f99b9a8d1a29c988"
-      url: "https://github.com/felixgabler/tool_mobile.git"
-    source: git
-    version: "1.9.5+1"
   typed_data:
     dependency: transitive
     description:
@@ -820,7 +786,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.3"
+    version: "6.0.4"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -856,6 +822,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  utils:
+    dependency: "direct dev"
+    description:
+      path: "../packages/utils"
+      relative: true
+    source: path
+    version: "0.0.0"
   vector_math:
     dependency: transitive
     description:
@@ -911,7 +884,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5"
+    version: "2.1.1"
   xdg_directories:
     dependency: transitive
     description:
@@ -934,5 +907,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
+  dart: ">=2.13.0 <3.0.0"
   flutter: ">=1.22.0"

@@ -12,12 +12,23 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'dart:io';
 import 'package:flutter_driver/flutter_driver.dart';
 import 'package:test/test.dart';
-import 'package:screenshots/screenshots.dart';
 
 void main() {
-  final config = Config();
+  // Load environmental variables
+  String imagePrefix = Platform.environment['imagePrefix'] ?? '?';
+  print('=========Results  is $imagePrefix');
+
+  Future<void> takeScreenshot(FlutterDriver driver, String name) async {
+    if (imagePrefix != '?') {
+      final List<int> pixels = await driver.screenshot();
+      final File file = File('$imagePrefix$name.png');
+      await file.writeAsBytes(pixels);
+    }
+  }
+
   group('Admin Home Page test', () {
     late FlutterDriver driver;
 
@@ -29,16 +40,18 @@ void main() {
     tearDownAll(() async {
       driver.close();
     });
+    test('check flutter driver health', () async {
+      Health health = await driver.checkHealth();
+      print("====health status: ${health.status}");
+    });
 
     test('Login button', () async {
-      print("====starting!!!!======");
-      final login = find.byValueKey('loginButton');
-      await driver.tap(login);
-      final login1 = find.byValueKey('login');
-      await driver.tap(login1);
-      await screenshot(driver, config, 'dashboard');
-      final logout = find.byValueKey('logoutButton');
-      await driver.tap(logout);
+      await driver.tap(find.byValueKey('loginButton'));
+      await driver.tap(find.byValueKey('login'));
+      await driver.waitFor(find.byValueKey('DashBoardForm'),
+          timeout: Duration(seconds: 20));
+      await takeScreenshot(driver, 'dashboard');
+      await driver.tap(find.byValueKey('logoutButton'));
     });
   });
 }

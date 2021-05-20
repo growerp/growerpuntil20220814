@@ -32,6 +32,7 @@ dependencies:
 #      url: https://github.com/growerp/growerp.git
 #      ref: packages
 #      path: core
+
 dev_dependencies:
   integration_test:
     sdk: flutter
@@ -39,15 +40,19 @@ dev_dependencies:
     sdk: flutter
   flutter_driver:
     sdk: flutter
-  screenshots:
-    git: https://github.com/growerp/screenshots
-    
+
+  utils:
+    path: ../packages/utils
+#    git:
+#      url: https://github.com/growerp/growerp.git
+#      ref: packages
+#      path: utils
+
   mockito: ^5.0.2
   very_good_analysis: ^2.0.0
 
   bloc_test: ^8.0.0
-#  flutter_launcher_icons: ^0.9.0
-
+  flutter_launcher_icons: ^0.9.0
 # to run icons: flutter pub run flutter_launcher_icons:main 
 flutter_icons:
   android: "launcher_icon"

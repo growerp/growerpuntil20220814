@@ -47,6 +47,7 @@ class _HomeFormState extends State<HomeForm> {
       if (state is AuthAuthenticated) {
         Authenticate authenticate = state.authenticate!;
         return DisplayMenuList(
+          scaffoldMessengerKey: scaffoldMessengerKey,
           menuList: menuItems,
           menuIndex: 0,
           actions: <Widget>[

@@ -27,12 +27,14 @@ import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
 import 'package:core/forms/@forms.dart' as core;
+import 'package:flutter_driver/driver_extension.dart';
 
-void main() async {
+Future main() async {
+  enableFlutterDriverExtension();
   WidgetsFlutterBinding.ensureInitialized();
-  await GlobalConfiguration().loadFromAsset("app_settings");
   Bloc.observer = SimpleBlocObserver();
 
+  await GlobalConfiguration().loadFromAsset("app_settings");
   String backend = GlobalConfiguration().getValue("backend");
   var repos = backend == 'moqui'
       ? Moqui(client: Dio())
@@ -127,7 +129,7 @@ class MyApp extends StatelessWidget {
             defaultScale: true,
             breakpoints: [
               ResponsiveBreakpoint.resize(450, name: MOBILE),
-              ResponsiveBreakpoint.autoScale(1000, name: TABLET),
+              ResponsiveBreakpoint.autoScale(800, name: TABLET),
               ResponsiveBreakpoint.resize(1200, name: DESKTOP),
               ResponsiveBreakpoint.autoScale(2460, name: "4K"),
             ],

@@ -1,16 +1,6 @@
+Running fastlane
+=================
 
+create screenshots and frame them:
 
-registering app into the google play store:
-
-
-Create screen shots in project dir:
-flutter pub run screenshots:main
-
-move images to en-US
-
-put a frame around it:
-flutter pub global run frameit_chrome \
-    --base-dir=android/fastlane/metadata/android \
-    --frames-dir=android/fastlane/frames \
-    --chrome-binary="/usr/bin/google-chrome-stable" \
-    --pixel-ratio=1
+flutter pub run utils:screenshots
