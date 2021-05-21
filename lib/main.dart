@@ -38,9 +38,9 @@ Future main() async {
   String backend = GlobalConfiguration().getValue("backend");
   var repos = backend == 'moqui'
       ? Moqui(client: Dio())
-      : backend == 'ofbiz'
-          ? Ofbiz(client: Dio())
-          : null;
+//      : backend == 'ofbiz'
+//          ? Ofbiz(client: Dio())
+      : null;
 
   runApp(AdminApp(repos: repos!));
 }

@@ -25,7 +25,7 @@ class DashBoardForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
-        Authenticate authenticate = state.authenticate!;
+        Authenticate authenticate = state.authenticate;
         return Container(
           padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
           child: GridView.count(

@@ -45,7 +45,7 @@ class _HomeFormState extends State<HomeForm> {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state is AuthAuthenticated) {
-        Authenticate authenticate = state.authenticate!;
+        Authenticate authenticate = state.authenticate;
         return DisplayMenuList(
           scaffoldMessengerKey: scaffoldMessengerKey,
           menuList: menuItems,
@@ -71,14 +71,14 @@ class _HomeFormState extends State<HomeForm> {
       }
 
       if (state is AuthUnauthenticated) {
-        Authenticate? authenticate = state.authenticate;
+        Authenticate authenticate = state.authenticate;
         return ScaffoldMessenger(
             key: scaffoldMessengerKey,
             child: Scaffold(
                 appBar: AppBar(
                     key: Key('DashBoardUnAuth'),
                     title: companyLogo(context, authenticate,
-                        authenticate?.company?.name! ?? 'Company??')),
+                        authenticate.company?.name! ?? 'Company??')),
                 body: Center(
                     child: Column(children: <Widget>[
                   SizedBox(height: 100),
@@ -89,7 +89,7 @@ class _HomeFormState extends State<HomeForm> {
                           fontWeight: FontWeight.bold)),
                   SizedBox(height: 40),
                   Visibility(
-                      visible: authenticate?.company != null,
+                      visible: authenticate.company != null,
                       child: ElevatedButton(
                           key: Key('loginButton'),
                           child: Text('Login with an Existing ID'),
@@ -107,7 +107,7 @@ class _HomeFormState extends State<HomeForm> {
                       key: Key('newCompButton'),
                       child: Text('Create a new company and admin'),
                       onPressed: () async {
-                        authenticate?.company = null;
+                        authenticate.copyWith(company: null);
                         await showDialog(
                             barrierDismissible: true,
                             context: context,

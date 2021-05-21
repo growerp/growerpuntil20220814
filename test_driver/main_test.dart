@@ -33,7 +33,7 @@ void main() {
   }
 
   Future<bool> isPresent(SerializableFinder finder, FlutterDriver driver,
-      {Duration timeout = const Duration(seconds: 1)}) async {
+      {Duration timeout = const Duration(seconds: 10)}) async {
     try {
       await driver.waitFor(finder, timeout: timeout);
       return true;
@@ -71,9 +71,24 @@ void main() {
     });
 
     test('Page tester', () async {
-      // login
-      await driver.tap(find.byValueKey('loginButton'));
-      await driver.tap(find.byValueKey('login'));
+      // check first if already logged in
+      if (await isPresent(find.byValueKey('DashBoardForm'), driver)) {
+        print('already logged in');
+      } else {
+        // check if company exist when not create
+        if (await isPresent(find.byValueKey('loginButton'), driver)) {
+          print('company already created, no need to create new');
+        } else {
+          await driver.tap(find.byValueKey('newCompButton'));
+          await driver.tap(find.byValueKey('newCompany'));
+          // allow demo data to be created
+          await Future.delayed(const Duration(seconds: 20));
+        }
+
+        // login
+        await driver.tap(find.byValueKey('loginButton'));
+        await driver.tap(find.byValueKey('login'));
+      }
 
       //dashboard and check if phone
       await driver.waitFor(find.byValueKey('DashBoardForm'));
@@ -117,6 +132,6 @@ void main() {
 
       // logout
       await driver.tap(find.byValueKey('logoutButton'));
-    }, timeout: Timeout(Duration(seconds: 60)));
+    }, timeout: Timeout(Duration(seconds: 600)));
   });
 }
