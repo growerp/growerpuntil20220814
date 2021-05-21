@@ -19,14 +19,39 @@ import 'package:test/test.dart';
 void main() {
   // Load environmental variables
   String imagePrefix = Platform.environment['imagePrefix'] ?? '?';
-  print('=========Results  is $imagePrefix');
+  bool isPhone = false;
 
-  Future<void> takeScreenshot(FlutterDriver driver, String name) async {
+  Future<void> takeScreenshot(
+      FlutterDriver driver, String form, String name) async {
     if (imagePrefix != '?') {
+      await driver.waitFor(find.byValueKey(form),
+          timeout: Duration(seconds: 20));
       final List<int> pixels = await driver.screenshot();
       final File file = File('$imagePrefix$name.png');
       await file.writeAsBytes(pixels);
     }
+  }
+
+  Future<bool> isPresent(SerializableFinder finder, FlutterDriver driver,
+      {Duration timeout = const Duration(seconds: 1)}) async {
+    try {
+      await driver.waitFor(finder, timeout: timeout);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> tapButton(FlutterDriver driver, button) async {
+    if (isPhone) {
+      // open drawer when phone
+      final drawerFinder = find.byTooltip('Open navigation menu');
+      await driver.waitFor(drawerFinder, timeout: Duration(seconds: 20));
+      await driver.tap(drawerFinder);
+    }
+    final buttonKey = find.byValueKey(button);
+    await driver.scrollIntoView(buttonKey);
+    await driver.tap(buttonKey);
   }
 
   group('Admin Home Page test', () {
@@ -45,13 +70,53 @@ void main() {
       print("====health status: ${health.status}");
     });
 
-    test('Login button', () async {
+    test('Page tester', () async {
+      // login
       await driver.tap(find.byValueKey('loginButton'));
       await driver.tap(find.byValueKey('login'));
-      await driver.waitFor(find.byValueKey('DashBoardForm'),
-          timeout: Duration(seconds: 20));
-      await takeScreenshot(driver, 'dashboard');
+
+      //dashboard and check if phone
+      await driver.waitFor(find.byValueKey('DashBoardForm'));
+      isPhone = await isPresent(find.byTooltip('Open navigation menu'), driver);
+      await takeScreenshot(driver, 'DashBoardForm', 'dashboard');
+
+      //company
+      await tapButton(driver, 'tap/company');
+      await takeScreenshot(driver, 'CompanyInfoForm', 'company');
+
+      // crm
+      await tapButton(driver, 'tap/crm');
+
+      //catalog
+      await tapButton(driver, 'tap/catalog');
+      await takeScreenshot(driver, 'ProductsForm', 'catalog');
+
+      //sales
+      await tapButton(driver, 'tap/sales');
+      await takeScreenshot(driver, 'FinDocsForm', 'sales');
+
+      // purchase
+      await tapButton(driver, 'tap/purchase');
+
+      //accounting
+      await tapButton(driver, 'tap/accounting');
+      await takeScreenshot(driver, 'AcctDashBoard', 'accounting');
+
+      // accounting sales
+      await tapButton(driver, 'tap/acctSales');
+
+      // accounting purchase
+      await tapButton(driver, 'tap/acctPurchase');
+
+      // ledger
+      await tapButton(driver, 'tap/ledger');
+      await takeScreenshot(driver, 'LedgerTreeForm', 'ledger');
+
+      // back to main
+      await tapButton(driver, 'tap/');
+
+      // logout
       await driver.tap(find.byValueKey('logoutButton'));
-    });
+    }, timeout: Timeout(Duration(seconds: 60)));
   });
 }
