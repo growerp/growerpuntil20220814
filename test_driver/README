@@ -14,6 +14,7 @@ download chromedriver and install in path: https://flutter.dev/docs/cookbook/tes
 
 start on command line in home dir:
 ./chromedriver --port=4444
+flutter drive
 
 
 
