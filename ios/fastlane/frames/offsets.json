@@ -1,0 +1,20 @@
+{
+  "portrait": {
+    "iPad Pro (11": {
+      "offset": "+95+100",
+      "width": 1668
+    },
+    "iPad Pro (12.9": {
+      "offset": "+96+102",
+      "width": 2048
+    },
+    "iPhone 8": {
+      "offset": "+61+219",
+      "width": 750
+    },
+    "iPhone 11": {
+      "offset": "+75+71",
+      "width": 828
+    }
+  }
+}

@@ -2,6 +2,8 @@ PODS:
   - Flutter (1.0.0)
   - image_picker (0.0.1):
     - Flutter
+  - integration_test (0.0.1):
+    - Flutter
   - printing (1.0.0):
     - Flutter
   - shared_preferences (0.0.1):
@@ -12,6 +14,7 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - printing (from `.symlinks/plugins/printing/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
@@ -21,6 +24,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
   printing:
     :path: ".symlinks/plugins/printing/ios"
   shared_preferences:
@@ -31,6 +36,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
+  integration_test: 6eb66a19f7104200dcfdd62bc0077e1b09686e4f
   printing: eafa00acb682c0ca029d4d98d0798f55a1e27102
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
