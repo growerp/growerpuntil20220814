@@ -53,9 +53,11 @@ packages:
   backend:
     dependency: transitive
     description:
-      path: "../packages/backend"
-      relative: true
-    source: path
+      path: backend
+      ref: packages
+      resolved-ref: "9aca556c52172749d63b745dec7701c45c04a49c"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   barcode:
     dependency: transitive
@@ -158,9 +160,11 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: "../packages/core"
-      relative: true
-    source: path
+      path: core
+      ref: packages
+      resolved-ref: "9aca556c52172749d63b745dec7701c45c04a49c"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   coverage:
     dependency: transitive
@@ -445,9 +449,11 @@ packages:
   models:
     dependency: transitive
     description:
-      path: "../packages/models"
-      relative: true
-    source: path
+      path: models
+      ref: packages
+      resolved-ref: "9aca556c52172749d63b745dec7701c45c04a49c"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   nested:
     dependency: transitive
@@ -821,9 +827,11 @@ packages:
   utils:
     dependency: "direct dev"
     description:
-      path: "../packages/utils"
-      relative: true
-    source: path
+      path: utils
+      ref: packages
+      resolved-ref: "9aca556c52172749d63b745dec7701c45c04a49c"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.0"
   vector_math:
     dependency: transitive
