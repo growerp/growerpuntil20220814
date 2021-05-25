@@ -21,13 +21,17 @@ platform :ios do
     # add actions here: https://docs.fastlane.tools/actions
   end
   lane :release do
-    build_app(scheme: "MyApp")
+    build_ios_app
+    export_method: 'app-store'
+    upload_to_testflight
+    build_app(scheme: "GrowERPadmin")
   end
   lane :submit_review do
     deliver(
-      submit_for_review: false,
-      force: false,
-      skip_metadata: false,
+      submit_for_review: true,
+      force: true,
+      skip_metadata: true,
+      skip_screenshots: true,
       overwrite_screenshots: true,
       precheck_include_in_app_purchases: false
     )

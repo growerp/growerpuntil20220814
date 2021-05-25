@@ -827,9 +827,11 @@ packages:
   utils:
     dependency: "direct dev"
     description:
-      path: "../packages/utils"
-      relative: true
-    source: path
+      path: utils
+      ref: packages
+      resolved-ref: "591821a6c441042f913c910ee479b4f03a2e24ca"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.0"
   vector_math:
     dependency: transitive
