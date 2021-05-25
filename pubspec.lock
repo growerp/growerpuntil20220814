@@ -79,7 +79,7 @@ packages:
       name: bloc_test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.0.0"
+    version: "8.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -827,11 +827,9 @@ packages:
   utils:
     dependency: "direct dev"
     description:
-      path: utils
-      ref: packages
-      resolved-ref: "9aca556c52172749d63b745dec7701c45c04a49c"
-      url: "https://github.com/growerp/growerp.git"
-    source: git
+      path: "../packages/utils"
+      relative: true
+    source: path
     version: "0.0.0"
   vector_math:
     dependency: transitive

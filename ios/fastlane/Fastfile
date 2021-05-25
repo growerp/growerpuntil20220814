@@ -20,4 +20,16 @@ platform :ios do
   lane :custom_lane do
     # add actions here: https://docs.fastlane.tools/actions
   end
+  lane :release do
+    build_app(scheme: "MyApp")
+  end
+  lane :submit_review do
+    deliver(
+      submit_for_review: false,
+      force: false,
+      skip_metadata: false,
+      overwrite_screenshots: true,
+      precheck_include_in_app_purchases: false
+    )
+  end
 end
