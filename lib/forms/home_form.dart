@@ -107,7 +107,7 @@ class _HomeFormState extends State<HomeForm> {
                       key: Key('newCompButton'),
                       child: Text('Create a new company and admin'),
                       onPressed: () async {
-                        authenticate.copyWith(company: null);
+                        authenticate = authenticate.copyWith(company: null);
                         await showDialog(
                             barrierDismissible: true,
                             context: context,
