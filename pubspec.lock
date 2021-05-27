@@ -21,7 +21,7 @@ packages:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.0"
+    version: "1.7.1"
   animations:
     dependency: "direct main"
     description:
@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: "29e1e024b2ce65eaf2a1283b97329905fe3b99ab"
+      resolved-ref: dcd94172aefbfea339a987f47e0e9f9b647239c4
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: "29e1e024b2ce65eaf2a1283b97329905fe3b99ab"
+      resolved-ref: aead205e9277393392bbf3c12d4ed64d1e4cd5e7
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -172,7 +172,7 @@ packages:
       name: coverage
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   crypto:
     dependency: transitive
     description:
@@ -228,7 +228,7 @@ packages:
       name: ffi
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.1.1"
   file:
     dependency: transitive
     description:
@@ -451,7 +451,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: "29e1e024b2ce65eaf2a1283b97329905fe3b99ab"
+      resolved-ref: dcd94172aefbfea339a987f47e0e9f9b647239c4
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -697,7 +697,7 @@ packages:
       name: source_gen
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   source_map_stack_trace:
     dependency: transitive
     description:
@@ -829,7 +829,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: "29e1e024b2ce65eaf2a1283b97329905fe3b99ab"
+      resolved-ref: dcd94172aefbfea339a987f47e0e9f9b647239c4
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
@@ -846,7 +846,7 @@ packages:
       name: very_good_analysis
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.1.1"
   vm_service:
     dependency: transitive
     description:
