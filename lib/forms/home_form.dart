@@ -113,7 +113,9 @@ class _HomeFormState extends State<HomeForm> {
                             context: context,
                             builder: (BuildContext context) {
                               return RegisterDialog(
-                                  formArguments: FormArguments());
+                                  formArguments: FormArguments(
+                                      object: authenticate.copyWith(
+                                          clearCompany: true)));
                             });
                       }),
                 ]))));

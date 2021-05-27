@@ -27,11 +27,11 @@ dependencies:
   pdf: ^3.0.0
   dropdown_search: ^0.5.0
   core:
-#    path: ../packages/core
-    git:
-      url: https://github.com/growerp/growerp.git
-      ref: packages
-      path: core
+    path: ../packages/core
+#    git:
+#      url: https://github.com/growerp/growerp.git
+#      ref: packages
+#      path: core
 
 dev_dependencies:
   integration_test:

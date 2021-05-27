@@ -27,10 +27,8 @@ import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
 import 'package:core/forms/@forms.dart' as core;
-import 'package:flutter_driver/driver_extension.dart';
 
 Future main() async {
-  enableFlutterDriverExtension();
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
 
@@ -90,13 +88,13 @@ class AdminApp extends StatelessWidget {
                   repos: repos,
                   sales: true,
                   finDocBloc:
-                      BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc?)),
+                      BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc)),
           BlocProvider<PurchCartBloc>(
               create: (context) => CartBloc(
                   repos: repos,
                   sales: false,
                   finDocBloc:
-                      BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc?)),
+                      BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc)),
           BlocProvider<OpportunityBloc>(
               create: (context) => OpportunityBloc(repos)),
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(repos)),

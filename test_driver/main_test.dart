@@ -67,10 +67,10 @@ void main() {
     });
     test('check flutter driver health', () async {
       Health health = await driver.checkHealth();
-      print("====health status: ${health.status}");
+      expect(health.status, HealthStatus.ok);
     });
 
-    test('Page tester', () async {
+    test('Menu Test', () async {
       // check first if already logged in
       if (await isPresent(find.byValueKey('DashBoardForm'), driver)) {
         print('already logged in');
