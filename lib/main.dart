@@ -100,7 +100,8 @@ class AdminApp extends StatelessWidget {
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(repos)),
           BlocProvider<TransactionBloc>(
               create: (context) => FinDocBloc(repos, false, 'transaction')),
-          BlocProvider<AssetBloc>(create: (context) => AssetBloc(repos)),
+          BlocProvider<AssetBloc>(
+              create: (context) => AssetBloc(repos)..add(FetchAsset())),
         ],
         child: MyApp(),
       ),
