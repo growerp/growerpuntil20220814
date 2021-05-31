@@ -2,5 +2,25 @@ Running fastlane
 =================
 
 create screenshots and frame them:
-
+1. enable enableFlutterDriverExtension(); in lib/main.dart
 flutter pub run utils:screenshots
+
+create a <projdir>/android/key.properties link to a local file
+(do NOT upload the actual file into git!)
+which contains the following info:
+
+storePassword=xxxxx
+keyPassword=xxxxx
+keyAlias=xxxxx
+storeFile=xxxxxxx
+
+command ln -s android/actual_file_name key.properties
+
+build the aab bundle:
+flutter build appbundle
+
+Upload in Play store:
+(everything including build/meta/screenshots)
+--------------------------------------
+fastlane supply --aab /home/dell/admin/build/app/outputs/bundle/release/app-release.aab --track beta --in_app_update_priority 3
+

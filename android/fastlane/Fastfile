@@ -42,6 +42,10 @@ platform :android do
       task: 'assemble',
       build_type: 'Release',
     )
-    upload_to_play_store(track: 'beta', version_code: 3, skip_upload_screenshots: true)
+    upload_to_play_store(
+      track: 'beta',
+      version_code: 5,
+      skip_upload_changelogs: true,
+      skip_upload_screenshots: true)
     end
 end
