@@ -5,6 +5,8 @@ list: flutter emulators
 launch: flutter emulators --launch >>name<<
 
 and then:
+enable enableFlutterDriverExtension(); in main.dart
+(disable when done because diables keyboard)
 flutter drive --driver=test_driver/main.dart
 
 or just : flutter drive

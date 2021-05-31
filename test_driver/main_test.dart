@@ -58,6 +58,7 @@ void main() {
     late FlutterDriver driver;
 
     setUpAll(() async {
+      print('=== setup driver ===');
       driver = await FlutterDriver.connect();
     });
 
@@ -65,20 +66,26 @@ void main() {
     tearDownAll(() async {
       driver.close();
     });
+
     test('check flutter driver health', () async {
+      print('=== checking driver ===');
       Health health = await driver.checkHealth();
       expect(health.status, HealthStatus.ok);
     });
 
     test('Menu Test', () async {
+      print('=== start menu test===');
       // check first if already logged in
       if (await isPresent(find.byValueKey('DashBoardForm'), driver)) {
-        print('already logged in');
+        print('======already logged in');
       } else {
+        print('======logging in');
         // check if company exist when not create
         if (await isPresent(find.byValueKey('loginButton'), driver)) {
           print('company already created, no need to create new');
+          print('====company exist=======');
         } else {
+          print('===create new company=====');
           await driver.tap(find.byValueKey('newCompButton'));
           await driver.tap(find.byValueKey('newCompany'));
           // allow demo data to be created
