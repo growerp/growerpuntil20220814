@@ -3,7 +3,20 @@ Running fastlane
 
 create screenshots and frame them:
 1. enable enableFlutterDriverExtension(); in lib/main.dart
-flutter pub run utils:screenshots
+2. create emulators in android studio
+    they should be slisted with the command:
+    flutter emulators.
+3. flutter pub run utils:screenshots (projectDir)
+
+frame the screenshots: (project dir)
+create title.strings and key.word.strings with screenshots
+flutter pub global run frameit_chrome \
+    --base-dir=android/fastlane/metadata/android \
+    --frames-dir=android/fastlane/frames \
+    --chrome-binary="/usr/bin/google-chrome-stable" \
+    --pixel-ratio=1
+
+move framed images to respective metadata/images directory
 
 create a <projdir>/android/key.properties link to a local file
 (do NOT upload the actual file into git!)
@@ -18,6 +31,10 @@ command ln -s android/actual_file_name key.properties
 
 build the aab bundle:
 flutter build appbundle
+
+First time upload by hand, make sure bundle id is set correctly:
+flutter create --org org/growerp/admin .
+init: fastlane supply init
 
 Upload in Play store:
 (everything including build/meta/screenshots)
