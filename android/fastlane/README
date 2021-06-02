@@ -36,8 +36,10 @@ First time upload by hand, make sure bundle id is set correctly:
 flutter create --org org/growerp/admin .
 init: fastlane supply init
 
-Upload in Play store:
+Upload in Play store: (android dir)
 (everything including build/meta/screenshots)
 --------------------------------------
-fastlane supply --aab /home/dell/admin/build/app/outputs/bundle/release/app-release.aab --track beta --in_app_update_priority 3
+fastlane supply \
+    --aab /home/dell/admin/build/app/outputs/bundle/release/app-release.aab \
+    --track beta --in_app_update_priority 3
 
