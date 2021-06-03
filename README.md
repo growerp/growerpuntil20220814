@@ -10,27 +10,27 @@ mobile appstore: in progress...
 # if you want to run the system locally.
 ## Quick start: after installation of [Java 11](https://openjdk.java.net/install/):
 ### Moqui backend:
-  - git clone https://github.com/growerp/moqui-framework.git moqui && cd moqui
-  - git clone https://github.com/growerp/moqui-runtime.git runtime
-  - git clone https://github.com/growerp/growerp-moqui.git runtime/component/growerp
-  - git clone https://github.com/growerp/moqui-paypal.git runtime/component/paypal
-  - git clone https://github.com/growerp/PopCommerce.git runtime/component/PopCommerce
-  - git clone https://github.com/growerp/mantle-udm.git runtime/component/mantle-udm
-  - git clone https://github.com/growerp/mantle-usl.git runtime/component/mantle-usl
-  - git clone https://github.com/growerp/SimpleScreens.git runtime/component/SimpleScreens
-  - git clone https://github.com/growerp/moqui-fop.git runtime/component/moqui-fop
-  - ./gradlew downloadElasticSearch
-  - ./gradlew build
-  - java -jar moqui.war load types=seed,seed-initial,install
-  - java -jar moqui.war
+git clone https://github.com/growerp/moqui-framework.git moqui && cd moqui
+git clone https://github.com/growerp/moqui-runtime runtime
+git clone https://github.com/growerp/growerp-moqui.git runtime/component/growerp
+git clone https://github.com/growerp/PopCommerce.git runtime/component/PopCommerce
+git clone https://github.com/growerp/mantle-udm.git runtime/component/mantle-udm
+git clone https://github.com/growerp/mantle-usl.git runtime/component/mantle-usl
+git clone https://github.com/growerp/SimpleScreens.git runtime/component/SimpleScreens
+git clone https://github.com/growerp/moqui-fop.git runtime/component/moqui-fop
+./gradlew build
+java -jar moqui.war load types=seed,seed-initial,install
+java -jar moqui.war
+
+### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
+git clone https://github.com/growerp/growerp admin
+cd admin
+flutter run
+create your first company!
+
 
 ### OR...Apache OFBiz backend:
   https://github.com/growerp/growerp-ofbiz
-
-### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
-  - git clone https://github.com/growerp/growerp/ admin
-  - cd admin
-  - flutter run -d chrome
 
 # Introduction.
 GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the stable version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started
