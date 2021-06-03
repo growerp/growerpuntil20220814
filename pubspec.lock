@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: fabe9be2636963ac96ede2f6ef0e663e6f28ad1e
+      resolved-ref: "45d09286392e9c2607b2b3339c3f8db605f038ce"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: fabe9be2636963ac96ede2f6ef0e663e6f28ad1e
+      resolved-ref: "45d09286392e9c2607b2b3339c3f8db605f038ce"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -193,7 +193,7 @@ packages:
       name: decimal
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+    version: "1.2.0"
   dio:
     dependency: "direct main"
     description:
@@ -451,7 +451,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: fabe9be2636963ac96ede2f6ef0e663e6f28ad1e
+      resolved-ref: deaa962d02113f376d3bf91988825953e32481b3
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -788,7 +788,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.4"
+    version: "6.0.6"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -816,7 +816,7 @@ packages:
       name: url_launcher_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   url_launcher_windows:
     dependency: transitive
     description:
@@ -829,7 +829,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: fabe9be2636963ac96ede2f6ef0e663e6f28ad1e
+      resolved-ref: deaa962d02113f376d3bf91988825953e32481b3
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
@@ -888,7 +888,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.1"
+    version: "2.1.3"
   xdg_directories:
     dependency: transitive
     description:
@@ -912,4 +912,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.13.0 <3.0.0"
-  flutter: ">=1.22.0"
+  flutter: ">=2.0.0"

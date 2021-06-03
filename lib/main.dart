@@ -27,6 +27,7 @@ import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'forms/@forms.dart';
 import 'package:core/forms/@forms.dart' as core;
+// ignore: unused_import
 import 'package:flutter_driver/driver_extension.dart';
 
 Future main() async {
