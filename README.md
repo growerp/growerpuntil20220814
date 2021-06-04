@@ -1,11 +1,19 @@
 # GrowERP Admin App 
 
-more info at https://www.growerp.org (be patient, also in flutter, needs to load first....)
+more info at https://www.growerp.org (be patient, also in flutter, needs to load for the first time....)
 
-Online versions available, where you can add your own company, demo data will be provided:
-web: https://admin.growerp.org
-mobile playstore: https://play.google.com/store/apps/details?id=org.growerp.admin
-mobile appstore: in progress...
+Online versions available, where you can add your own company, demo data will be provided.
+# Web, browser version.
+- Admin: https://admin.growerp.org
+- Hotel: https://hotel.growerp.org
+
+# Android playstore
+- Admin: https://play.google.com/store/apps/details?id=org.growerp.admin
+- Hotel: https://play.google.com/store/apps/details?id=org.growerp.hotel
+
+# IOS appstore:
+- Admin: https://apps.apple.com/us/app/growerp-admin-open-source/id1545521755
+- Hotel: https://apps.apple.com/us/app/growerp-hotel-open-source/id1531267095
 
 # if you want to run the system locally.
 ## Quick start: after installation of [Java 11](https://openjdk.java.net/install/):
@@ -43,7 +51,7 @@ Although all screens work on IOS/Anderoid/Web devices however a smaller screen w
 It is a simplified frontend however with the ability to still use with, or in addition to the original ERP system screens.
 The system is a true multicompany system and can support virtually any ERP backend as long as it has a REST interface.
 
-The system is implemented with https://pub.dev/packages/flutter_bloc state management with the https://bloclibrary.dev documentation, data models, automated tests and a separated rest interface for the different systems. 
+The system is implemented with https://pub.dev/packages/flutter_bloc state management with the https://bloclibrary.dev documentation, data models, automated integration tests and a separated rest interface for the different systems. 
 
 The system configuration file is in /assets/cfg/app_settings.json. Select OFBiz or Moqui here.
 

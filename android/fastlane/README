@@ -16,7 +16,7 @@ flutter pub global run frameit_chrome \
     --chrome-binary="/usr/bin/google-chrome-stable" \
     --pixel-ratio=1
 
-move framed images to respective metadata/images directory
+replace unframed with framed images
 
 create a <projdir>/android/key.properties link to a local file
 (do NOT upload the actual file into git!)
@@ -41,5 +41,6 @@ Upload in Play store: (android dir)
 --------------------------------------
 fastlane supply \
     --aab /home/dell/admin/build/app/outputs/bundle/release/app-release.aab \
-    --track beta --in_app_update_priority 3
+    --track beta --in_app_update_priority 3 \
+    --version_code x
 
