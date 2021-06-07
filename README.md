@@ -2,35 +2,31 @@
 
 more info at https://www.growerp.org (be patient, also in flutter, needs to load for the first time....)
 
-Online versions available, where you can add your own company, demo data will be provided.
-# Web, browser version.
+- also see the introduction below.
+
+# Online versions.
+where you can create your own company, demo data will be provided.
+## Web browser version.
 - Admin: https://admin.growerp.org
 - Hotel: https://hotel.growerp.org
+- Ecommerce: https://ecommerce.growerp.org
 
-# Android playstore
+## Android Playstore
 - Admin: https://play.google.com/store/apps/details?id=org.growerp.admin
 - Hotel: https://play.google.com/store/apps/details?id=org.growerp.hotel
 
-# IOS appstore:
+## IOS Appstore:
 - Admin: https://apps.apple.com/us/app/growerp-admin-open-source/id1545521755
 - Hotel: https://apps.apple.com/us/app/growerp-hotel-open-source/id1531267095
 
-# if you want to run the system locally.
-## Quick start: after installation of [Java 11](https://openjdk.java.net/install/):
-### Moqui backend:
-```
-git clone https://github.com/growerp/moqui-framework.git moqui && cd moqui
-git clone https://github.com/growerp/moqui-runtime runtime
-git clone https://github.com/growerp/growerp-moqui.git runtime/component/growerp
-git clone https://github.com/growerp/PopCommerce.git runtime/component/PopCommerce
-git clone https://github.com/growerp/mantle-udm.git runtime/component/mantle-udm
-git clone https://github.com/growerp/mantle-usl.git runtime/component/mantle-usl
-git clone https://github.com/growerp/SimpleScreens.git runtime/component/SimpleScreens
-git clone https://github.com/growerp/moqui-fop.git runtime/component/moqui-fop
-./gradlew build
-java -jar moqui.war load types=seed,seed-initial,install
-java -jar moqui.war
-```
+# To run the system locally.
+## After installation of [Java 11](https://openjdk.java.net/install/):
+### Moqui backend: (preferred)
+  https://github.com/growerp/growerp-moqui/README.md
+
+### OR...Apache OFBiz backend:
+  https://github.com/growerp/growerp-ofbiz/blob/master/README.adoc
+
 ### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
 ```
 git clone https://github.com/growerp/growerp admin
@@ -38,10 +34,6 @@ cd admin
 flutter run
 ```
 create your first company!
-
-
-### OR...Apache OFBiz backend:
-  https://github.com/growerp/growerp-ofbiz
 
 # Introduction.
 GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the stable version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started
@@ -60,21 +52,12 @@ For test purposes we can provide access to Moqui or OFBiz systems in the cloud.
 This admin branch is using the core package stored in the same repository in the 'packages' branch.
 This package contains all the basic ERP functions, see the [readme](https://github.com/growerp/growerp/blob/packages/core/README.md) file for more info.
 
-Other branches are under development:
-  - Ecommerce : https://github.com/growerp/growerp/tree/ecommerce
-  - Hotel : https://github.com/growerp/growerp/tree/hotel
-
-For the backend you need the Moqui or OFBiz ERP framework ERP system
-  with an extra component:
-  - Moqui:  https://github.com/growerp/growerp-moqui
-  - OFBiz:  https://github.com/growerp/growerp-ofbiz
-
 Additional ERP systems can be added on request, A REST interface is required.
 The implementation time is 40+ hours.
 
 Functions coming up:
-* Accounting
 * Inventory
+* Project management
 
 Phone                                                                                         |  Tablet/PC
 :--------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:
