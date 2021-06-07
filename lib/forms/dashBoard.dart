@@ -40,7 +40,7 @@ class DashBoardForm extends StatelessWidget {
                     ? "${authenticate.company!.name!.substring(0, 20)}..."
                     : "${authenticate.company!.name}",
                 "Administrators: ${authenticate.stats!.admins}",
-                "Employees: ${authenticate.stats!.employees}",
+                "Other Employees: ${authenticate.stats!.employees}",
                 "",
               ),
               makeDashboardItem(
@@ -56,7 +56,7 @@ class DashBoardForm extends StatelessWidget {
                 menuItems[3],
                 "Categories: ${authenticate.stats!.categories}",
                 "Products: ${authenticate.stats!.products}",
-                "",
+                "Assets: ${authenticate.stats!.products}",
                 "",
               ),
               makeDashboardItem(
@@ -72,12 +72,12 @@ class DashBoardForm extends StatelessWidget {
                 menuItems[6],
                 "Sls open inv: "
                     "${authenticate.company!.currencyId} "
-                    "${authenticate.stats!.salesInvoicesNotPaidAmount}"
-                    "(${authenticate.stats!.salesInvoicesNotPaidCount})",
-                "Pur unp inv: "
+                    "${authenticate.stats!.salesInvoicesNotPaidAmount ?? '0.00'} "
+                    "(${authenticate.stats!.salesInvoicesNotPaidCount ?? 0})",
+                "Pur unp. inv: "
                     "${authenticate.company!.currencyId} "
-                    "${authenticate.stats!.purchInvoicesNotPaidAmount}"
-                    "(${authenticate.stats!.purchInvoicesNotPaidCount})",
+                    "${authenticate.stats!.purchInvoicesNotPaidAmount ?? '0.00'} "
+                    "(${authenticate.stats!.purchInvoicesNotPaidCount ?? 0})",
                 "",
                 "",
               ),
