@@ -1,4 +1,4 @@
-# GrowERP Admin App 
+# GrowERP Flutter ERP Admin App for Moqui.org or ofbiz.apache.org (web browser/Android/IOS)
 
 more info at https://www.growerp.org (be patient, also in flutter, needs to load for the first time....)
 
