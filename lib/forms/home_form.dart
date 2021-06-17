@@ -102,7 +102,7 @@ class _HomeFormState extends State<HomeForm> {
                                       formArguments: FormArguments());
                                 });
                           })),
-                  SizedBox(height: 40),
+                  SizedBox(height: 300),
                   ElevatedButton(
                       key: Key('newCompButton'),
                       child: Text('Create a new company and admin'),

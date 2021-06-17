@@ -47,7 +47,8 @@ class _BalanceSheetFormState extends State<BalanceSheetForm> {
             Text(classInfo.description!),
             Text(classInfo.periodsAmount[0].toString())
           ]),
-          children: classInfo.children.map((x) => getTreeNode(x)).toList() as List<TreeNode>?,
+          children: classInfo.children.map((x) => getTreeNode(x)).toList()
+              as List<TreeNode>?,
         );
         return result;
       }
@@ -66,9 +67,9 @@ class _BalanceSheetFormState extends State<BalanceSheetForm> {
         HelperFunctions.showMessage(
             context, '${state.errorMessage}', Colors.red);
     }, builder: (context, state) {
-      if (state is AccntProblem)
-        return FatalErrorForm("Could not load balance sheet!");
-      if (state is AccntSuccess) balanceSheetTree = convert(state.balanceSheet!);
+      if (state is AccntProblem) return FatalErrorForm(state.errorMessage);
+      if (state is AccntSuccess)
+        balanceSheetTree = convert(state.balanceSheet!);
       return ListView(
         children: <Widget>[
           ElevatedButton(

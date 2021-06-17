@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/forms/fatalError_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'generated/l10n.dart';
@@ -31,7 +32,7 @@ import 'package:core/forms/@forms.dart' as core;
 import 'package:flutter_driver/driver_extension.dart';
 
 Future main() async {
-  //enableFlutterDriverExtension();
+  enableFlutterDriverExtension();
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
 
@@ -43,7 +44,7 @@ Future main() async {
 //          ? Ofbiz(client: Dio())
       : null;
 
-  runApp(AdminApp(repos: repos!));
+  runApp(RestartWidget(child: AdminApp(repos: repos!)));
 }
 
 class AdminApp extends StatelessWidget {

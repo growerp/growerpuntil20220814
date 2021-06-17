@@ -37,6 +37,7 @@ List<MenuItem> menuItems = [
     title: "Main",
     route: '/',
     readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
+    writeGroups: ["GROWERP_M_ADMIN", "ADMIN"],
     child: local.DashBoardForm(),
   ),
   MenuItem(
@@ -45,7 +46,7 @@ List<MenuItem> menuItems = [
     title: "Company",
     route: '/company',
     readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
-    writeGroups: ["GROWERP_M_ADMIN"],
+    writeGroups: ["GROWERP_M_ADMIN", "ADMIN"],
     tabItems: [
       TabItem(
         form: CompanyInfoForm(FormArguments()),
@@ -60,8 +61,10 @@ List<MenuItem> menuItems = [
         label: "Admins",
         icon: Icon(Icons.business),
         floatButtonForm: UserDialog(
-            formArguments:
-                FormArguments(object: User(userGroupId: "GROWERP_M_ADMIN"))),
+            formArguments: FormArguments(
+                object: User(
+                    userGroupId: "GROWERP_M_ADMIN",
+                    groupDescription: "Admin"))),
       ),
       TabItem(
         form: UsersForm(
@@ -71,8 +74,10 @@ List<MenuItem> menuItems = [
         label: "Employees",
         icon: Icon(Icons.school),
         floatButtonForm: UserDialog(
-            formArguments:
-                FormArguments(object: User(userGroupId: "GROWERP_M_EMPLOYEE"))),
+            formArguments: FormArguments(
+                object: User(
+                    userGroupId: "GROWERP_M_EMPLOYEE",
+                    groupDescription: "Employee"))),
       ),
     ],
   ),
@@ -98,8 +103,9 @@ List<MenuItem> menuItems = [
         label: "Leads",
         icon: Icon(Icons.business),
         floatButtonForm: UserDialog(
-            formArguments:
-                FormArguments(object: User(userGroupId: "GROWERP_M_LEAD"))),
+            formArguments: FormArguments(
+                object: User(
+                    userGroupId: "GROWERP_M_LEAD", groupDescription: "Lead"))),
       ),
       TabItem(
         form: UsersForm(
@@ -109,8 +115,10 @@ List<MenuItem> menuItems = [
         label: "Customers",
         icon: Icon(Icons.school),
         floatButtonForm: UserDialog(
-            formArguments:
-                FormArguments(object: User(userGroupId: "GROWERP_M_CUSTOMER"))),
+            formArguments: FormArguments(
+                object: User(
+                    userGroupId: "GROWERP_M_CUSTOMER",
+                    groupDescription: "Customer"))),
       ),
     ],
   ),
@@ -174,8 +182,10 @@ List<MenuItem> menuItems = [
         label: "Customers",
         icon: Icon(Icons.business),
         floatButtonForm: UserDialog(
-            formArguments:
-                FormArguments(object: User(userGroupId: "GROWERP_M_CUSTOMER"))),
+            formArguments: FormArguments(
+                object: User(
+                    userGroupId: "GROWERP_M_CUSTOMER",
+                    groupDescription: "Customer"))),
       ),
     ],
   ),
@@ -203,8 +213,10 @@ List<MenuItem> menuItems = [
         label: "Suppliers",
         icon: Icon(Icons.business),
         floatButtonForm: UserDialog(
-            formArguments:
-                FormArguments(object: User(userGroupId: "GROWERP_M_SUPPLIER"))),
+            formArguments: FormArguments(
+                object: User(
+                    userGroupId: "GROWERP_M_SUPPLIER",
+                    groupDescription: "Supplier"))),
       ),
     ],
   ),

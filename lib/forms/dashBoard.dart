@@ -73,11 +73,11 @@ class DashBoardForm extends StatelessWidget {
                 "Sls open inv: "
                     "${authenticate.company!.currencyId} "
                     "${authenticate.stats!.salesInvoicesNotPaidAmount ?? '0.00'} "
-                    "(${authenticate.stats!.salesInvoicesNotPaidCount ?? 0})",
+                    "(${authenticate.stats!.salesInvoicesNotPaidCount})",
                 "Pur unp. inv: "
                     "${authenticate.company!.currencyId} "
                     "${authenticate.stats!.purchInvoicesNotPaidAmount ?? '0.00'} "
-                    "(${authenticate.stats!.purchInvoicesNotPaidCount ?? 0})",
+                    "(${authenticate.stats!.purchInvoicesNotPaidCount})",
                 "",
                 "",
               ),
