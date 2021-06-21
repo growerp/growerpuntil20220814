@@ -2,13 +2,14 @@ Running fastlane
 =================
 
 create screenshots and frame them:
-1. enable enableFlutterDriverExtension(); in lib/main.dart
-2. create emulators in android studio
-    they should be slisted with the command:
+1. create emulators in android studio
+    they can be listed with the command:
     flutter emulators.
-3. flutter pub run utils:screenshots (projectDir)
+2. In admin dir: flutter pub run utils:screenshots
 
-frame the screenshots: (project dir)
+Install frameit_chrome: dart pub global activate frameit_chrome
+
+In admin dir: frame the screenshots:
 create title.strings and key.word.strings with screenshots
 flutter pub global run frameit_chrome \
     --base-dir=android/fastlane/metadata/android \
@@ -16,17 +17,25 @@ flutter pub global run frameit_chrome \
     --chrome-binary="/usr/bin/google-chrome-stable" \
     --pixel-ratio=1
 
-replace unframed with framed images
+adding framed images
 
 create a <projdir>/android/key.properties link to a local file
-(do NOT upload the actual file into git!)
 which contains the following info:
-
 storePassword=xxxxx
 keyPassword=xxxxx
 keyAlias=xxxxx
 storeFile=xxxxxxx
 
+should have local.properties file
+which contains the following info:
+sdk.dir=/home/dell/Android/Sdk
+flutter.sdk=/home/dell/snap/flutter/common/flutter
+flutter.buildMode=debug
+flutter.versionName=0.0.1
+flutter.versionCode=5
+
+(do NOT upload the actual file into git!)
+to create a link in linux:
 command ln -s android/actual_file_name key.properties
 
 build the aab bundle:

@@ -76,7 +76,7 @@ class _HomeFormState extends State<HomeForm> {
             key: scaffoldMessengerKey,
             child: Scaffold(
                 appBar: AppBar(
-                    key: Key('DashBoardUnAuth'),
+                    key: Key('HomeFormUnAuth'),
                     title: companyLogo(context, authenticate,
                         authenticate.company?.name! ?? 'Company??')),
                 body: Center(
