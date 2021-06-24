@@ -1,0 +1,24 @@
+Integration tests using integration test package.(WidgetTest)
+=============================================================
+
+On mobile.
+----------
+
+flutter drive  \
+    --driver=test_driver/integration_test.dart \
+    --target=integration_test/newCompany_test.dart
+
+on chrome (not working yet)
+---------
+
+Download chromedriver and install in path:
+https://flutter.dev/docs/cookbook/testing/integration/introduction#6b-web
+
+start in a terminal: ./chromedriver --port=4444
+
+Separate terminal:
+
+flutter drive  -d web-server \
+    --driver=test_driver/integration_test.dart \
+    --target=integration_test/newCompany_test.dart
+
