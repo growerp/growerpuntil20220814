@@ -14,7 +14,7 @@
 
 import 'package:core/forms/@forms.dart';
 import 'package:core/helper_functions.dart';
-import 'package:core/templates/companyLogo.dart';
+import 'package:core/templates/appBarTitle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/blocs/@blocs.dart';
@@ -77,8 +77,8 @@ class _HomeFormState extends State<HomeForm> {
             child: Scaffold(
                 appBar: AppBar(
                     key: Key('HomeFormUnAuth'),
-                    title: companyLogo(context, authenticate,
-                        authenticate.company?.name! ?? 'Company??')),
+                    title: AppBarTitle(
+                        context, authenticate, 'Login / New company')),
                 body: Center(
                     child: Column(children: <Widget>[
                   SizedBox(height: 100),

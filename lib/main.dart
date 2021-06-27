@@ -58,6 +58,8 @@ class AdminApp extends StatelessWidget {
       value: repos,
       child: MultiBlocProvider(
         providers: [
+          BlocProvider<AuthBloc>(
+              create: (context) => AuthBloc(repos)..add(LoadAuth())),
           BlocProvider<LeadBloc>(
               create: (context) => UserBloc(repos, "GROWERP_M_LEAD")),
           BlocProvider<CustomerBloc>(
@@ -65,13 +67,15 @@ class AdminApp extends StatelessWidget {
           BlocProvider<SupplierBloc>(
               create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER")),
           BlocProvider<AdminBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_ADMIN")),
+              create: (context) => UserBloc(
+                    repos,
+                    "GROWERP_M_ADMIN",
+                    BlocProvider.of<AuthBloc>(context),
+                  )),
           BlocProvider<EmployeeBloc>(
               create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE")),
           BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
           BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
-          BlocProvider<AuthBloc>(
-              create: (context) => AuthBloc(repos)..add(LoadAuth())),
           BlocProvider<SalesOrderBloc>(
               create: (context) => FinDocBloc(repos, true, 'order')),
           BlocProvider<PurchaseOrderBloc>(
