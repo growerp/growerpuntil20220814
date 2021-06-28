@@ -107,7 +107,7 @@ void main() {
       }
 
       //dashboard and check if phone
-      await waitFor(find.byValueKey('DashBoardForm'), expected: true);
+      await waitFor(find.byValueKey('/'), expected: true);
       isPhone = await waitFor(find.byTooltip('Open navigation menu'));
       if (imagePrefix != 'test_driver/screenshots')
         await takeScreenshot('dashboard');
@@ -121,57 +121,57 @@ void main() {
 
       // company logo at the top
       await driver.tap(find.byValueKey('tapCompany'));
-      await waitFor(find.byValueKey('CompanyInfoForm'), expected: true);
+      await waitFor(find.byValueKey('/company'), expected: true);
 
       // crm
       await tapMenuButton('tap/crm');
-      await waitFor(find.byValueKey('OpportunitiesForm'), expected: true);
+      await waitFor(find.byValueKey('/crm'), expected: true);
 
       //company
       await tapMenuButton('tap/company');
-      await waitFor(find.byValueKey('CompanyInfoForm'), expected: true);
+      await waitFor(find.byValueKey('/company'), expected: true);
       if (imagePrefix != 'test_driver/screenshots')
         await takeScreenshot('company');
 
       //catalog
       await tapMenuButton('tap/catalog');
-      await waitFor(find.byValueKey('ProductsForm'), expected: true);
+      await waitFor(find.byValueKey('/catalog'), expected: true);
       if (imagePrefix != 'test_driver/screenshots')
         await takeScreenshot('catalog');
 
       //sales
       await tapMenuButton('tap/sales');
-      await waitFor(find.byValueKey('FinDocsForm'), expected: true);
+      await waitFor(find.byValueKey('/sales'), expected: true);
       if (imagePrefix != 'test_driver/screenshots')
         await takeScreenshot('FinDocsForm');
 
       // purchase
       await tapMenuButton('tap/purchase');
-      await waitFor(find.byValueKey('FinDocsForm'), expected: true);
+      await waitFor(find.byValueKey('/purchase'), expected: true);
 
       //accounting
       await tapMenuButton('tap/accounting');
-      await waitFor(find.byValueKey('AcctDashBoard'), expected: true);
+      await waitFor(find.byValueKey('/accounting'), expected: true);
       if (imagePrefix != 'test_driver/screenshots')
         await takeScreenshot('accounting');
 
       // accounting sales
       await tapMenuButton('tap/acctSales');
-      await waitFor(find.byValueKey('FinDocsForm'), expected: true);
+      await waitFor(find.byValueKey('/acctSales'), expected: true);
 
       // accounting purchase
       await tapMenuButton('tap/acctPurchase');
-      await waitFor(find.byValueKey('FinDocsForm'), expected: true);
+      await waitFor(find.byValueKey('/acctPurchase'), expected: true);
 
       // ledger
       await tapMenuButton('tap/ledger');
-      await waitFor(find.byValueKey('LedgerTreeForm'), expected: true);
+      await waitFor(find.byValueKey('/ledger'), expected: true);
       if (imagePrefix != 'test_driver/screenshots')
         await takeScreenshot('ledger');
 
       // back to main
       await tapMenuButton('tap/');
-      await waitFor(find.byValueKey('DashBoardForm'), expected: true);
+      await waitFor(find.byValueKey('/'), expected: true);
 
       // logout
       await driver.tap(find.byValueKey('logoutButton'));

@@ -34,6 +34,7 @@ class DashBoardForm extends StatelessWidget {
             padding: EdgeInsets.all(3.0),
             children: <Widget>[
               makeDashboardItem(
+                'tap/company',
                 context,
                 menuItems[1],
                 authenticate.company!.name!.length > 20
@@ -44,6 +45,7 @@ class DashBoardForm extends StatelessWidget {
                 "",
               ),
               makeDashboardItem(
+                'tap/crm',
                 context,
                 menuItems[2],
                 "All Opportunities: ${authenticate.stats!.opportunities}",
@@ -52,6 +54,7 @@ class DashBoardForm extends StatelessWidget {
                 "Customers: ${authenticate.stats!.customers}",
               ),
               makeDashboardItem(
+                'tap/catalog',
                 context,
                 menuItems[3],
                 "Categories: ${authenticate.stats!.categories}",
@@ -60,6 +63,7 @@ class DashBoardForm extends StatelessWidget {
                 "",
               ),
               makeDashboardItem(
+                'tap/sales',
                 context,
                 menuItems[4],
                 "Orders: ${authenticate.stats!.openSlsOrders}",
@@ -68,6 +72,7 @@ class DashBoardForm extends StatelessWidget {
                 "",
               ),
               makeDashboardItem(
+                'tap/accounting',
                 context,
                 menuItems[6],
                 "Sls open inv: "
@@ -82,6 +87,7 @@ class DashBoardForm extends StatelessWidget {
                 "",
               ),
               makeDashboardItem(
+                'tap/purchase',
                 context,
                 menuItems[5],
                 "Orders: ${authenticate.stats!.openPurOrders}",
