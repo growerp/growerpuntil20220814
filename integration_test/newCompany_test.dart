@@ -24,6 +24,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:backend/moqui.dart';
+import 'test_functions.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -37,54 +38,6 @@ void main() {
     TextFormField tff =
         find.byKey(Key(key)).evaluate().single.widget as TextFormField;
     return tff.controller!.text;
-  }
-
-  String getTextField(String key) {
-    Text tf = find.byKey(Key(key)).evaluate().single.widget as Text;
-    return tf.data!;
-  }
-
-  String getRandom() {
-    Text tff =
-        find.byKey(Key('appBarCompanyName')).evaluate().single.widget as Text;
-    return tff.data!.replaceAll(new RegExp(r'[^0-9]'), '');
-  }
-
-  bool isPhone() {
-    try {
-      expect(find.byTooltip('Open navigation menu'), findsOneWidget);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  Future<void> login(WidgetTester tester) async {
-    await tester.pumpWidget(
-        RestartWidget(child: AdminApp(repos: Moqui(client: Dio()))));
-    await tester.pumpAndSettle(Duration(seconds: 5));
-    try {
-      expect(find.byKey(Key('DashBoardForm')), findsOneWidget);
-    } catch (_) {
-      await tester.tap(find.byKey(Key('loginButton')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      await tester.enterText(find.byKey(Key('password')), 'qqqqqq9!');
-      await tester.tap(find.byKey(Key('login')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('DashBoardForm')), findsOneWidget);
-    }
-  }
-
-  Future<void> logout(WidgetTester tester) async {
-    if (isPhone()) {
-      await tester.tap(find.byTooltip('Open navigation menu'));
-      await tester.pumpAndSettle(Duration(seconds: 10));
-    }
-    await tester.tap(find.byKey(Key('tap/')));
-    await tester.tap(find.byKey(Key('logoutButton')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
-    expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
-        reason: '>>>logged out home screen not found');
   }
 
   group('Basic tests >>>>>', () {
@@ -135,8 +88,8 @@ void main() {
 
     testWidgets("Test company from appbar update local",
         (WidgetTester tester) async {
-      await login(tester);
-      String random = getRandom();
+      await Test.login(tester);
+      String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       expect(find.byKey(Key('CompanyInfoForm')), findsOneWidget,
@@ -153,7 +106,7 @@ void main() {
           reason: '>>>company vatPerc wrong');
       expect(getTextFormField('salesPerc'), equals(''),
           reason: '>>>company salesperc wrong');
-      expect(getTextField('addressLabel'), equals('No address yet'),
+      expect(Test.getTextField('addressLabel'), equals('No address yet'),
           reason: '>>>company address wrong');
       await tester.tap(find.byKey(Key('updateCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -178,7 +131,7 @@ void main() {
           reason: '>>>company vatPerc wrong');
       expect(getTextFormField('salesPerc'), equals('2'),
           reason: '>>>company salesperc wrong');
-      expect(getTextField('addressLabel'), equals('No address yet'),
+      expect(Test.getTextField('addressLabel'), equals('No address yet'),
           reason: '>>>company address wrong');
       // enter new address entry
       await tester.tap(find.byKey(Key('address')));
@@ -213,7 +166,7 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 5));
       await tester.tap(find.byKey(Key('updateCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(getTextField('addressLabel'), equals('cityu Anguilla'),
+      expect(Test.getTextField('addressLabel'), equals('cityu Anguilla'),
           reason: '>>>company address wrong');
       await tester.tap(find.byKey(Key('address')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -231,8 +184,8 @@ void main() {
 
     testWidgets("Test company from appbar check db update",
         (WidgetTester tester) async {
-      await login(tester);
-      String random = getRandom();
+      await Test.login(tester);
+      String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       expect(getTextFormField('companyName'), equals('companyName${random}u'),
@@ -246,7 +199,7 @@ void main() {
           reason: '>>>company vatPerc wrong');
       expect(getTextFormField('salesPerc'), equals('2'),
           reason: '>>>company salesperc wrong');
-      expect(getTextField('addressLabel'), equals('cityu Anguilla'),
+      expect(Test.getTextField('addressLabel'), equals('cityu Anguilla'),
           reason: '>>>company address wrong');
       await tester.tap(find.byKey(Key('address')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -263,9 +216,9 @@ void main() {
     }, skip: false);
 
     testWidgets("Test user dialog local values", (WidgetTester tester) async {
-      await login(tester);
-      String random = getRandom();
-      if (isPhone()) {
+      await Test.login(tester);
+      String random = Test.getRandom();
+      if (Test.isPhone()) {
         await tester.tap(find.byTooltip('Open navigation menu'));
         await tester.pumpAndSettle(Duration(seconds: 5));
       }
@@ -302,10 +255,10 @@ void main() {
     }, skip: false);
     testWidgets("Test user dialog check data base",
         (WidgetTester tester) async {
-      await login(tester);
-      String random = getRandom();
+      await Test.login(tester);
+      String random = Test.getRandom();
       // force user to refresh scrren
-      if (isPhone()) {
+      if (Test.isPhone()) {
         await tester.tap(find.byTooltip('Open navigation menu'));
         await tester.pumpAndSettle(Duration(seconds: 5));
       }

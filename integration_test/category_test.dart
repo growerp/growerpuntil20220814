@@ -24,6 +24,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:backend/moqui.dart';
+import 'test_functions.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -32,60 +33,6 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
     Bloc.observer = SimpleBlocObserver();
   });
-
-  String getTextFormField(String key) {
-    TextFormField tff =
-        find.byKey(Key(key)).evaluate().single.widget as TextFormField;
-    return tff.controller!.text;
-  }
-
-  String getTextField(String key) {
-    Text tf = find.byKey(Key(key)).evaluate().single.widget as Text;
-    return tf.data!;
-  }
-
-  String getRandom() {
-    Text tff =
-        find.byKey(Key('appBarCompanyName')).evaluate().single.widget as Text;
-    return tff.data!.replaceAll(new RegExp(r'[^0-9]'), '');
-  }
-
-  bool isPhone() {
-    try {
-      expect(find.byTooltip('Open navigation menu'), findsOneWidget);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  Future<void> login(WidgetTester tester) async {
-    await tester.pumpWidget(
-        RestartWidget(child: AdminApp(repos: Moqui(client: Dio()))));
-    await tester.pumpAndSettle(Duration(seconds: 5));
-    try {
-      expect(find.byKey(Key('DashBoardForm')), findsOneWidget);
-    } catch (_) {
-      await tester.tap(find.byKey(Key('loginButton')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      await tester.enterText(find.byKey(Key('password')), 'qqqqqq9!');
-      await tester.tap(find.byKey(Key('login')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('/')), findsOneWidget);
-    }
-  }
-
-  Future<void> logout(WidgetTester tester) async {
-    if (isPhone()) {
-      await tester.tap(find.byTooltip('Open navigation menu'));
-      await tester.pumpAndSettle(Duration(seconds: 10));
-    }
-    await tester.tap(find.byKey(Key('tap/')));
-    await tester.tap(find.byKey(Key('logoutButton')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
-    expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
-        reason: '>>>logged out home screen not found');
-  }
 
   group('Category tests>>>>>', () {
     testWidgets("Create Company and Admin", (WidgetTester tester) async {
@@ -117,8 +64,8 @@ void main() {
     }, skip: false);
 
     testWidgets("test CRM tabs>>>>>", (WidgetTester tester) async {
-      await login(tester);
-      String random = getRandom();
+      await Test.login(tester);
+      String random = Test.getRandom();
       expect(find.byKey(Key('tap/catalog')), findsOneWidget);
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('tap/catalog')));
@@ -129,7 +76,7 @@ void main() {
           reason: '>>>After tap product check screen');
       expect(find.byKey(Key('empty')), findsOneWidget,
           reason: '>>>After tap no categories');
-      if (isPhone())
+      if (Test.isPhone())
         expect(find.byTooltip('2'), findsOneWidget);
       else
         await tester.tap(find.byKey(Key('AssetsForm')));
@@ -139,7 +86,7 @@ void main() {
           reason: '>>>After tap assets check screen');
       expect(find.byKey(Key('empty')), findsOneWidget,
           reason: '>>>After tap no assets');
-      if (isPhone())
+      if (Test.isPhone())
         expect(find.byTooltip('3'), findsOneWidget);
       else
         await tester.tap(find.byKey(Key('CategoriesForm')));
@@ -152,13 +99,13 @@ void main() {
     }, skip: false);
 
     testWidgets("categories test >>>>>", (WidgetTester tester) async {
-      await login(tester);
-      String random = getRandom();
+      await Test.login(tester);
+      String random = Test.getRandom();
       expect(find.byKey(Key('tap/catalog')), findsOneWidget);
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('tap/catalog')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      if (isPhone())
+      if (Test.isPhone())
         await tester.tap(find.byTooltip('3'));
       else
         await tester.tap(find.byKey(Key('CategoriesForm')));
@@ -166,11 +113,13 @@ void main() {
       await tester.tap(find.byKey(Key('addNew')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       expect(find.byKey(Key('CategoryDialog')), findsOneWidget);
+      // enter category 'a'
       await tester.enterText(find.byKey(Key('name')), 'categoryName${random}a');
       await tester.enterText(
           find.byKey(Key('description')), 'categoryDesc${random}a');
       await tester.tap(find.byKey(Key('update')));
       await tester.pumpAndSettle(Duration(seconds: 5));
+      // add another one 'b' to update later to 'd
       await tester.tap(find.byKey(Key('addNew')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       await tester.enterText(find.byKey(Key('name')), 'categoryName${random}b');
@@ -178,39 +127,85 @@ void main() {
           find.byKey(Key('description')), 'categoryDesc${random}b');
       await tester.tap(find.byKey(Key('update')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('categoryItem')), findsNWidgets(2));
-      expect(find.text('categoryName${random}a'), findsOneWidget);
-      expect(find.text('categoryName${random}b'), findsOneWidget);
-      await tester.tap(find.text('categoryName${random}a'));
+      // add another one 'c' to delete
+      await tester.tap(find.byKey(Key('addNew')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(getTextFormField('name'), 'categoryName${random}a');
-      expect(getTextFormField('description'), 'categoryDesc${random}a');
       await tester.enterText(find.byKey(Key('name')), 'categoryName${random}c');
       await tester.enterText(
           find.byKey(Key('description')), 'categoryDesc${random}c');
       await tester.tap(find.byKey(Key('update')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.text('categoryName${random}c'), findsOneWidget);
+      // check list
+      expect(find.byKey(Key('categoryItem')), findsNWidgets(3));
+      expect(Test.getTextField('name0'), equals('categoryName${random}a'));
+      if (!Test.isPhone())
+        expect(Test.getTextField('description0'),
+            equals('categoryDesc${random}a'));
+      expect(Test.getTextField('name1'), equals('categoryName${random}b'));
+      if (!Test.isPhone())
+        expect(Test.getTextField('description1'),
+            equals('categoryDesc${random}b'));
+      expect(Test.getTextField('name2'), equals('categoryName${random}c'));
+      if (!Test.isPhone())
+        expect(Test.getTextField('description2'),
+            equals('categoryDesc${random}c'));
+      // check detail screen 'a'
+      await tester.tap(find.text('categoryName${random}a'));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+      expect(Test.getTextFormField('name'), 'categoryName${random}a');
+      expect(Test.getTextFormField('description'), 'categoryDesc${random}a');
+      await tester.tap(find.byKey(Key('cancel')));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+      // check detail 'b' and update category b -> d
+      await tester.tap(find.text('categoryName${random}b'));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+      expect(Test.getTextFormField('name'), 'categoryName${random}b');
+      expect(Test.getTextFormField('description'), 'categoryDesc${random}b');
+      await tester.enterText(find.byKey(Key('name')), 'categoryName${random}d');
+      await tester.enterText(
+          find.byKey(Key('description')), 'categoryDesc${random}d');
+      await tester.tap(find.byKey(Key('update')));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+      // check list for changed d
+      expect(Test.getTextField('name1'), equals('categoryName${random}d'));
+      if (!Test.isPhone())
+        expect(Test.getTextField('description1'),
+            equals('categoryDesc${random}d'));
+      // delete c at 2
+      await tester.tap(find.byKey(Key('delete2')));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+      expect(find.byKey(Key('categoryItem')), findsNWidgets(2));
     }, skip: false);
 
     testWidgets("categories  reload from database>>>>>",
         (WidgetTester tester) async {
-      await login(tester);
-      String random = getRandom();
+      // 0: a   1: d 2: deleted
+      await Test.login(tester);
+      String random = Test.getRandom();
       expect(find.byKey(Key('tap/catalog')), findsOneWidget);
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('tap/catalog')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      if (isPhone())
+      if (Test.isPhone())
         await tester.tap(find.byTooltip('3'));
       else
         await tester.tap(find.byKey(Key('CategoriesForm')));
       await tester.pumpAndSettle(Duration(seconds: 5));
+      // check list
       expect(find.byKey(Key('categoryItem')), findsNWidgets(2));
-      await tester.tap(find.text('categoryName${random}c'));
+      expect(Test.getTextField('name0'), equals('categoryName${random}a'));
+      if (!Test.isPhone())
+        expect(Test.getTextField('description0'),
+            equals('categoryDesc${random}a'));
+      expect(Test.getTextField('name1'), equals('categoryName${random}d'));
+      if (!Test.isPhone())
+        expect(Test.getTextField('description1'),
+            equals('categoryDesc${random}d'));
+      // check detail screen of d
+      await tester.tap(find.text('categoryName${random}d'));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(getTextFormField('name'), 'categoryName${random}c');
-      expect(getTextFormField('description'), 'categoryDesc${random}c');
+      expect(Test.getTextFormField('name'), 'categoryName${random}d');
+      expect(Test.getTextFormField('description'), 'categoryDesc${random}d');
     }, skip: false);
   });
 }
