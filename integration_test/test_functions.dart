@@ -15,11 +15,22 @@
 import 'package:admin/main.dart';
 import 'package:core/forms/@forms.dart';
 import 'package:dio/dio.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:backend/moqui.dart';
+import 'package:models/@models.dart';
 
 class Test {
+  static String getDropdownSearch(String key) {
+    DropdownSearch tff =
+        find.byKey(Key(key)).evaluate().single.widget as DropdownSearch;
+    if (tff.selectedItem is ProductCategory)
+      return tff.selectedItem.categoryName;
+    if (tff.selectedItem is Product) return tff.selectedItem.productName;
+    return tff.selectedItem.toString();
+  }
+
   static String getTextFormField(String key) {
     TextFormField tff =
         find.byKey(Key(key)).evaluate().single.widget as TextFormField;
@@ -72,5 +83,66 @@ class Test {
     await tester.pumpAndSettle(Duration(seconds: 5));
     expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
         reason: '>>>logged out home screen not found');
+  }
+
+  static Future<void> createCategoryFromMain(WidgetTester tester) async {
+    await tester.tap(find.byKey(Key('dbCatalog')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    if (Test.isPhone())
+      await tester.tap(find.byTooltip('3'));
+    else
+      await tester.tap(find.byKey(Key('CategoriesForm')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    // enter new category
+    await tester.tap(find.byKey(Key('addNew')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tester.enterText(find.byKey(Key('name')), 'categoryName1');
+    await tester.enterText(find.byKey(Key('description')), 'categoryDesc1');
+    await tester.tap(find.byKey(Key('update')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tester.tap(find.byKey(Key('addNew')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tester.enterText(find.byKey(Key('name')), 'categoryName2');
+    await tester.enterText(find.byKey(Key('description')), 'categoryDesc2');
+    await tester.tap(find.byKey(Key('update')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    // back to main
+    if (isPhone()) {
+      await tester.tap(find.byTooltip('Open navigation menu'));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+    }
+    await tester.tap(find.byKey(Key('tap/')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+  }
+
+  static Future<void> createProductFromMain(WidgetTester tester) async {
+    await createCategoryFromMain(tester); // need a category to create test
+    await tester.tap(find.byKey(Key('dbCatalog')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    if (Test.isPhone())
+      await tester.tap(find.byTooltip('1'));
+    else
+      await tester.tap(find.byKey(Key('ProductsForm')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tester.tap(find.byKey(Key('addNew')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    expect(find.byKey(Key('ProductDialog')), findsOneWidget);
+    // enter category
+    await tester.enterText(find.byKey(Key('name')), 'productName1');
+    await tester.enterText(find.byKey(Key('description')), 'productDesc1');
+    await tester.enterText(find.byKey(Key('price')), '11.11');
+    await tester.tap(find.byKey(Key('categoryDropDown')));
+    await tester.pump(Duration(seconds: 1));
+    await tester.tap(find.text('categoryName1').last);
+    await tester.pump(Duration(seconds: 5));
+    await tester.tap(find.byKey(Key('update')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
+    // back to main
+    if (isPhone()) {
+      await tester.tap(find.byTooltip('Open navigation menu'));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+    }
+    await tester.tap(find.byKey(Key('tap/')));
+    await tester.pumpAndSettle(Duration(seconds: 5));
   }
 }

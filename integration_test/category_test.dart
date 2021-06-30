@@ -66,9 +66,9 @@ void main() {
     testWidgets("test CRM tabs>>>>>", (WidgetTester tester) async {
       await Test.login(tester);
       String random = Test.getRandom();
-      expect(find.byKey(Key('tap/catalog')), findsOneWidget);
+      expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
-      await tester.tap(find.byKey(Key('tap/catalog')));
+      await tester.tap(find.byKey(Key('dbCatalog')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       expect(find.byKey(Key('/catalog')), findsOneWidget,
           reason: '>>>After tap product check screen');
@@ -101,7 +101,7 @@ void main() {
     testWidgets("categories test >>>>>", (WidgetTester tester) async {
       await Test.login(tester);
       String random = Test.getRandom();
-      expect(find.byKey(Key('tap/catalog')), findsOneWidget);
+      expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('tap/catalog')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -135,8 +135,9 @@ void main() {
           find.byKey(Key('description')), 'categoryDesc${random}c');
       await tester.tap(find.byKey(Key('update')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      // check list
+      // now have 3 records
       expect(find.byKey(Key('categoryItem')), findsNWidgets(3));
+      // check list
       expect(Test.getTextField('name0'), equals('categoryName${random}a'));
       if (!Test.isPhone())
         expect(Test.getTextField('description0'),
@@ -182,7 +183,7 @@ void main() {
       // 0: a   1: d 2: deleted
       await Test.login(tester);
       String random = Test.getRandom();
-      expect(find.byKey(Key('tap/catalog')), findsOneWidget);
+      expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('tap/catalog')));
       await tester.pumpAndSettle(Duration(seconds: 5));
