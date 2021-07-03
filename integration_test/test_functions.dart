@@ -12,6 +12,8 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'dart:math';
+
 import 'package:admin/main.dart';
 import 'package:core/forms/@forms.dart';
 import 'package:dio/dio.dart';
@@ -22,6 +24,12 @@ import 'package:backend/moqui.dart';
 import 'package:models/@models.dart';
 
 class Test {
+  static String getDropdown(String key) {
+    DropdownButtonFormField tff = find.byKey(Key(key)).evaluate().single.widget
+        as DropdownButtonFormField;
+    return tff.initialValue;
+  }
+
   static String getDropdownSearch(String key) {
     DropdownSearch tff =
         find.byKey(Key(key)).evaluate().single.widget as DropdownSearch;
@@ -76,36 +84,32 @@ class Test {
   static Future<void> logout(WidgetTester tester) async {
     if (isPhone()) {
       await tester.tap(find.byTooltip('Open navigation menu'));
-      await tester.pumpAndSettle(Duration(seconds: 10));
+      await tester.pump(Duration(seconds: 10));
     }
     await tester.tap(find.byKey(Key('tap/')));
     await tester.tap(find.byKey(Key('logoutButton')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tester.pump(Duration(seconds: 5));
     expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
         reason: '>>>logged out home screen not found');
   }
 
   static Future<void> createCategoryFromMain(WidgetTester tester) async {
     await tester.tap(find.byKey(Key('dbCatalog')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tester.pump(Duration(seconds: 5));
     if (Test.isPhone())
       await tester.tap(find.byTooltip('3'));
     else
       await tester.tap(find.byKey(Key('CategoriesForm')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
-    // enter new category
-    await tester.tap(find.byKey(Key('addNew')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
-    await tester.enterText(find.byKey(Key('name')), 'categoryName1');
-    await tester.enterText(find.byKey(Key('description')), 'categoryDesc1');
-    await tester.tap(find.byKey(Key('update')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
-    await tester.tap(find.byKey(Key('addNew')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
-    await tester.enterText(find.byKey(Key('name')), 'categoryName2');
-    await tester.enterText(find.byKey(Key('description')), 'categoryDesc2');
-    await tester.tap(find.byKey(Key('update')));
-    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tester.pump(Duration(seconds: 5));
+    // enter caegories
+    for (int x = 1; x < 3; x++) {
+      await tester.tap(find.byKey(Key('addNew')));
+      await tester.pump(Duration(seconds: 5));
+      await tester.enterText(find.byKey(Key('name')), 'categoryName$x');
+      await tester.enterText(find.byKey(Key('description')), 'categoryDesc$x');
+      await tester.tap(find.byKey(Key('update')));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+    }
     // back to main
     if (isPhone()) {
       await tester.tap(find.byTooltip('Open navigation menu'));
@@ -124,19 +128,79 @@ class Test {
     else
       await tester.tap(find.byKey(Key('ProductsForm')));
     await tester.pumpAndSettle(Duration(seconds: 5));
-    await tester.tap(find.byKey(Key('addNew')));
+    // enter products
+    for (int x = 1; x < 3; x++) {
+      await tester.tap(find.byKey(Key('addNew')));
+      await tester.pump(Duration(seconds: 1));
+      await tester.enterText(find.byKey(Key('name')), 'productName$x');
+      await tester.enterText(find.byKey(Key('description')), 'productDesc$x');
+      await tester.enterText(find.byKey(Key('price')), '$x$x.$x$x');
+      await tester.tap(find.byKey(Key('categoryDropDown')));
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.tap(find.text('categoryName$x').last);
+      await tester.pump(Duration(seconds: 1));
+      await tester.tap(find.byKey(Key('update')));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+    }
+    // back to main
+    if (isPhone()) {
+      await tester.tap(find.byTooltip('Open navigation menu'));
+      await tester.pumpAndSettle(Duration(seconds: 5));
+    }
+    await tester.tap(find.byKey(Key('tap/')));
     await tester.pumpAndSettle(Duration(seconds: 5));
-    expect(find.byKey(Key('ProductDialog')), findsOneWidget);
-    // enter category
-    await tester.enterText(find.byKey(Key('name')), 'productName1');
-    await tester.enterText(find.byKey(Key('description')), 'productDesc1');
-    await tester.enterText(find.byKey(Key('price')), '11.11');
-    await tester.tap(find.byKey(Key('categoryDropDown')));
+  }
+
+  static Future<void> createCompanyAndAdmin(WidgetTester tester) async {
+    String random = Random.secure().nextInt(1024).toString();
+    await tester.pumpWidget(
+        RestartWidget(child: AdminApp(repos: Moqui(client: Dio()))));
+    await tester.pumpAndSettle(Duration(seconds: 10));
+    try {
+      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
+    } catch (_) {
+      // assumes still logged in, so logout
+      print("Dashboard logged in , needs to logout");
+      await tester.tap(find.byKey(Key('logoutButton')));
+      await tester.pump(Duration(seconds: 1));
+      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
+          reason: '>>>logged out home screen not found');
+    }
+    // tap new company button, enter data
+    await tester.tap(find.byKey(Key('newCompButton')));
     await tester.pump(Duration(seconds: 1));
-    await tester.tap(find.text('categoryName1').last);
-    await tester.pump(Duration(seconds: 5));
-    await tester.tap(find.byKey(Key('update')));
+    await tester.enterText(find.byKey(Key('firstName')), 'firstName');
+    await tester.enterText(find.byKey(Key('lastName')), 'lastName');
+    await tester.enterText(find.byKey(Key('email')), 'e$random@example.org');
+    await tester.enterText(
+        find.byKey(Key('companyName')), 'companyName$random');
+    await tester.tap(find.byKey(Key('demoData')));
+    await tester.tap(find.byKey(Key('newCompany')));
     await tester.pumpAndSettle(Duration(seconds: 5));
+  }
+
+  static Future<void> createUser(
+      WidgetTester tester, String userType, String random) async {
+    switch (userType) {
+      case 'employee':
+        await tester.tap(find.byKey(Key('dbCompany')));
+        await tester.pump(Duration(seconds: 5));
+        if (Test.isPhone())
+          await tester.tap(find.byTooltip('3'));
+        else
+          await tester.tap(find.byKey(Key('EmployeeForm')));
+        expect(find.byKey(Key('EmployeeDialog')), findsOneWidget);
+        for (int x in [1, 2]) {
+          await tester.enterText(find.byKey(Key('firstName')), 'firstName$x');
+          await tester.enterText(find.byKey(Key('lasttName')), 'lastName$x');
+          await tester.enterText(find.byKey(Key('username')), '$random$x');
+          await tester.enterText(
+              find.byKey(Key('email')), 'e$random$x@example.org');
+          await tester.tap(find.byKey(Key('updateUser')));
+          await tester.pumpAndSettle(Duration(seconds: 5));
+          break;
+        }
+    }
     // back to main
     if (isPhone()) {
       await tester.tap(find.byTooltip('Open navigation menu'));

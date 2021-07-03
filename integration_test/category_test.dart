@@ -35,35 +35,8 @@ void main() {
   });
 
   group('Category tests>>>>>', () {
-    testWidgets("Create Company and Admin", (WidgetTester tester) async {
-      String random = Random.secure().nextInt(1024).toString();
-      await tester.pumpWidget(
-          RestartWidget(child: AdminApp(repos: Moqui(client: Dio()))));
-      await tester.pumpAndSettle(Duration(seconds: 30));
-      try {
-        expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
-      } catch (_) {
-        // assumes still logged in, so logout
-        print("Dashboard logged in , needs to logout");
-        await tester.tap(find.byKey(Key('logoutButton')));
-        await tester.pumpAndSettle(Duration(seconds: 5));
-        expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
-            reason: '>>>logged out home screen not found');
-      }
-      // tap new company button, enter data
-      await tester.tap(find.byKey(Key('newCompButton')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      await tester.enterText(find.byKey(Key('firstName')), 'firstName');
-      await tester.enterText(find.byKey(Key('lastName')), 'lastName');
-      await tester.enterText(find.byKey(Key('email')), 'e$random@example.org');
-      await tester.enterText(
-          find.byKey(Key('companyName')), 'companyName$random');
-      await tester.tap(find.byKey(Key('demoData')));
-      await tester.tap(find.byKey(Key('newCompany')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-    }, skip: false);
-
     testWidgets("test CRM tabs>>>>>", (WidgetTester tester) async {
+      await Test.createCompanyAndAdmin(tester);
       await Test.login(tester);
       String random = Test.getRandom();
       expect(find.byKey(Key('dbCatalog')), findsOneWidget);
@@ -103,7 +76,7 @@ void main() {
       String random = Test.getRandom();
       expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
-      await tester.tap(find.byKey(Key('tap/catalog')));
+      await tester.tap(find.byKey(Key('dbCatalog')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       if (Test.isPhone())
         await tester.tap(find.byTooltip('3'));
@@ -185,7 +158,7 @@ void main() {
       String random = Test.getRandom();
       expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
-      await tester.tap(find.byKey(Key('tap/catalog')));
+      await tester.tap(find.byKey(Key('dbCatalog')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       if (Test.isPhone())
         await tester.tap(find.byTooltip('3'));

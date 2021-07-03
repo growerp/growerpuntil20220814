@@ -88,9 +88,8 @@ class _HomeFormState extends State<HomeForm> {
                           color: Colors.black,
                           fontWeight: FontWeight.bold)),
                   SizedBox(height: 40),
-                  Visibility(
-                      visible: authenticate.company != null,
-                      child: ElevatedButton(
+                  authenticate.company != null
+                      ? ElevatedButton(
                           key: Key('loginButton'),
                           child: Text('Login with an Existing ID'),
                           onPressed: () async {
@@ -101,7 +100,8 @@ class _HomeFormState extends State<HomeForm> {
                                   return LoginDialog(
                                       formArguments: FormArguments());
                                 });
-                          })),
+                          })
+                      : Text('No companies yet, create one!'),
                   SizedBox(height: 300),
                   ElevatedButton(
                       key: Key('newCompButton'),
