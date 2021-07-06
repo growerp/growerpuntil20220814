@@ -173,7 +173,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                 return index >= state.opportunities!.length
                     ? BottomLoader()
                     : Dismissible(
-                        key: Key(state.opportunities![index].opportunityId!),
+                        key: Key('opportunityItem'),
                         direction: DismissDirection.startToEnd,
                         child: ListTile(
                             leading: CircleAvatar(
