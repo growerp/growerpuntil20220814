@@ -44,7 +44,7 @@ class OpportunityPage extends StatefulWidget {
 }
 
 class _OpportunityState extends State<OpportunityPage> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKeyOpportunity = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _estAmountController = TextEditingController();
@@ -63,32 +63,30 @@ class _OpportunityState extends State<OpportunityPage> {
   void initState() {
     super.initState();
     opportunity = widget.opportunity ?? Opportunity();
-    if (widget.opportunity != null) {
-      _nameController.text = opportunity.opportunityName ?? '';
-      _descriptionController.text = opportunity.description ?? '';
-      _estAmountController.text =
-          opportunity.estAmount != null ? opportunity.estAmount.toString() : '';
-      _estProbabilityController.text = opportunity.estProbability != null
-          ? opportunity.estProbability.toString()
-          : '';
-      _estNextStepController.text = opportunity.nextStep ?? '';
-      if (opportunity.leadPartyId != null) {
-        _selectedLead = User(
-            partyId: opportunity.leadPartyId,
-            email: opportunity.leadEmail,
-            firstName: opportunity.leadFirstName,
-            lastName: opportunity.leadLastName);
-      }
-      if (opportunity.accountPartyId != null) {
-        _selectedAccount = User(
-            partyId: opportunity.accountPartyId,
-            email: opportunity.accountEmail,
-            firstName: opportunity.accountFirstName,
-            lastName: opportunity.accountLastName);
-      }
-      if (opportunity.stageId != null)
-        _selectedStageId = opportunity.stageId ?? opportunityStages[0];
+    _nameController.text = opportunity.opportunityName ?? '';
+    _descriptionController.text = opportunity.description ?? '';
+    _estAmountController.text =
+        opportunity.estAmount != null ? opportunity.estAmount.toString() : '';
+    _estProbabilityController.text = opportunity.estProbability != null
+        ? opportunity.estProbability.toString()
+        : '';
+    _estNextStepController.text = opportunity.nextStep ?? '';
+    if (opportunity.leadPartyId != null) {
+      _selectedLead = User(
+          partyId: opportunity.leadPartyId,
+          email: opportunity.leadEmail,
+          firstName: opportunity.leadFirstName,
+          lastName: opportunity.leadLastName);
     }
+    if (opportunity.accountPartyId != null) {
+      _selectedAccount = User(
+          partyId: opportunity.accountPartyId,
+          email: opportunity.accountEmail,
+          firstName: opportunity.accountFirstName,
+          lastName: opportunity.accountLastName);
+    }
+    if (opportunity.stageId != null)
+      _selectedStageId = opportunity.stageId ?? opportunityStages[0];
   }
 
   @override
@@ -101,8 +99,10 @@ class _OpportunityState extends State<OpportunityPage> {
         HelperFunctions.showMessage(
             context, '${state.errorMessage}', Colors.red);
       }
-      if (state is OpportunityLoading)
+      if (state is OpportunityLoading) {
+        loading = true;
         HelperFunctions.showMessage(context, '${state.message}', Colors.green);
+      }
       if (state is OpportunitySuccess) Navigator.of(context).pop();
     }, builder: (context, state) {
       if (state is OpportunityLoading) return Container();
@@ -144,10 +144,11 @@ class _OpportunityState extends State<OpportunityPage> {
 
   Widget _opportunityForm(Opportunity opportunity, int columns, getData) {
     return Form(
-        key: _formKey,
+        key: _formKeyOpportunity,
         child: Padding(
             padding: EdgeInsets.all(15),
             child: GridView.count(
+                key: Key('listView'),
                 crossAxisCount: columns,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
@@ -158,13 +159,14 @@ class _OpportunityState extends State<OpportunityPage> {
                     decoration: InputDecoration(labelText: 'Opportunity Name'),
                     controller: _nameController,
                     validator: (value) {
-                      if (value!.isEmpty)
-                        return 'Please enter a opportunity name?';
-                      return null;
+                      return value!.isEmpty
+                          ? 'Please enter a opportunity name?'
+                          : null;
                     },
                   ),
                   TextFormField(
                     key: Key('description'),
+                    maxLines: 5,
                     decoration: InputDecoration(labelText: 'Description'),
                     controller: _descriptionController,
                   ),
@@ -178,12 +180,12 @@ class _OpportunityState extends State<OpportunityPage> {
                         InputDecoration(labelText: 'Expected revenue Amount'),
                     controller: _estAmountController,
                     validator: (value) {
-                      if (value!.isEmpty) return 'Please enter an amount?';
-                      return null;
+                      return value!.isEmpty ? 'Please enter an amount?' : null;
                     },
                   ),
                   TextFormField(
                     key: Key('estProbability'),
+                    keyboardType: TextInputType.number,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(
                           RegExp(r'^\d+\.?\d{0,2}')),
@@ -192,9 +194,9 @@ class _OpportunityState extends State<OpportunityPage> {
                         InputDecoration(labelText: 'Estimated Probabilty %'),
                     controller: _estProbabilityController,
                     validator: (value) {
-                      if (value!.isEmpty)
-                        return 'Please enter a probability % (1-100)?';
-                      return null;
+                      return value!.isEmpty
+                          ? 'Please enter a probability % (1-100)?'
+                          : null;
                     },
                   ),
                   TextFormField(
@@ -202,16 +204,16 @@ class _OpportunityState extends State<OpportunityPage> {
                     decoration: InputDecoration(labelText: 'Next step'),
                     controller: _estNextStepController,
                     validator: (value) {
-                      if (value!.isEmpty) return 'Next step?';
-                      return null;
+                      return value!.isEmpty ? 'Next step?' : null;
                     },
                   ),
                   DropdownButtonFormField<String>(
                     key: Key('dropDownStageId'),
-                    hint: Text('Opportunity Stage'),
                     value: _selectedStageId,
-                    validator: (value) =>
-                        value == null ? 'field required' : null,
+                    decoration: InputDecoration(labelText: 'Opportunity Stage'),
+                    validator: (value) {
+                      return value!.isEmpty ? 'field required' : null;
+                    },
                     items: opportunityStages.map((item) {
                       return DropdownMenuItem<String>(
                           child: Text(item), value: item);
@@ -289,7 +291,8 @@ class _OpportunityState extends State<OpportunityPage> {
                           ? 'Create'
                           : 'Update'),
                       onPressed: () {
-                        if (_formKey.currentState!.validate() && !loading) {
+                        if (_formKeyOpportunity.currentState!.validate() &&
+                            !loading) {
                           BlocProvider.of<OpportunityBloc>(context)
                               .add(UpdateOpportunity(Opportunity(
                             opportunityId: opportunity.opportunityId,

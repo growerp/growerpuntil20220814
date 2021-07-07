@@ -55,7 +55,7 @@ List<MenuItem> menuItems = [
       ),
       TabItem(
         form: UsersForm(
-          key: ValueKey("GROWERP_M_ADMIN"),
+          key: Key("Admin"),
           userGroupId: "GROWERP_M_ADMIN",
         ),
         label: "Admins",
@@ -68,7 +68,7 @@ List<MenuItem> menuItems = [
       ),
       TabItem(
         form: UsersForm(
-          key: ValueKey("GROWERP_M_EMPLOYEE"),
+          key: Key("Employee"),
           userGroupId: "GROWERP_M_EMPLOYEE",
         ),
         label: "Employees",
@@ -97,7 +97,7 @@ List<MenuItem> menuItems = [
       ),
       TabItem(
         form: UsersForm(
-          key: ValueKey("GROWERP_M_LEAD"),
+          key: Key("Lead"),
           userGroupId: "GROWERP_M_LEAD",
         ),
         label: "Leads",
@@ -109,7 +109,7 @@ List<MenuItem> menuItems = [
       ),
       TabItem(
         form: UsersForm(
-          key: ValueKey("GROWERP_M_CUSTOMER"),
+          key: Key("Customer"),
           userGroupId: "GROWERP_M_CUSTOMER",
         ),
         label: "Customers",
