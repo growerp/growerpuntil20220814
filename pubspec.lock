@@ -53,11 +53,9 @@ packages:
   backend:
     dependency: transitive
     description:
-      path: backend
-      ref: packages
-      resolved-ref: b1db079e5d393430887d5b96370c5403b62676a0
-      url: "https://github.com/growerp/growerp.git"
-    source: git
+      path: "../packages/backend"
+      relative: true
+    source: path
     version: "0.0.1"
   barcode:
     dependency: transitive
@@ -128,7 +126,7 @@ packages:
       name: cli_util
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.1"
+    version: "0.3.3"
   clock:
     dependency: transitive
     description:
@@ -160,11 +158,9 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: core
-      ref: packages
-      resolved-ref: b1db079e5d393430887d5b96370c5403b62676a0
-      url: "https://github.com/growerp/growerp.git"
-    source: git
+      path: "../packages/core"
+      relative: true
+    source: path
     version: "0.0.1"
   coverage:
     dependency: transitive
@@ -207,7 +203,7 @@ packages:
       name: dropdown_search
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0"
+    version: "0.6.3"
   equatable:
     dependency: "direct main"
     description:
@@ -389,7 +385,7 @@ packages:
       name: io
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.3"
   js:
     dependency: transitive
     description:
@@ -449,11 +445,9 @@ packages:
   models:
     dependency: transitive
     description:
-      path: models
-      ref: packages
-      resolved-ref: b1db079e5d393430887d5b96370c5403b62676a0
-      url: "https://github.com/growerp/growerp.git"
-    source: git
+      path: "../packages/models"
+      relative: true
+    source: path
     version: "0.0.1"
   nested:
     dependency: transitive
@@ -559,7 +553,7 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.4.2"
+    version: "5.4.3"
   process:
     dependency: transitive
     description:
@@ -601,7 +595,7 @@ packages:
       name: responsive_framework
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.2"
+    version: "0.1.4"
   rxdart:
     dependency: transitive
     description:
@@ -788,7 +782,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.7"
+    version: "6.0.9"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -809,7 +803,7 @@ packages:
       name: url_launcher_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   url_launcher_web:
     dependency: transitive
     description:
@@ -829,7 +823,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: fd8039c3d6d6fd3464c7fdd731b050ff1d53e60f
+      resolved-ref: "0ee279ad1a6a4ca429841b16e7ea9bf8ef3c3e51"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
@@ -888,7 +882,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.4"
+    version: "2.2.5"
   xdg_directories:
     dependency: transitive
     description:

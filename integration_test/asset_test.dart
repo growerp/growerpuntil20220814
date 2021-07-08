@@ -39,7 +39,7 @@ void main() {
       if (Test.isPhone())
         await tester.tap(find.byTooltip('2'));
       else
-        await tester.tap(find.byKey(Key('AssetsForm')));
+        await tester.tap(find.byKey(Key('tapAssetsForm')));
       await tester.pump(Duration(seconds: 1));
       // enter 3 records
       List<String> char = ['a', 'b', 'x'];
@@ -47,18 +47,20 @@ void main() {
       for (int x in [0, 1, 2]) {
         // create
         await tester.tap(find.byKey(Key('addNew')));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 5));
         expect(find.byKey(Key('AssetDialog')), findsOneWidget);
         await tester.enterText(
             find.byKey(Key('name')), 'assetName$random${char[x]}');
         await tester.enterText(find.byKey(Key('quantityOnHand')), quantity[x]);
         await tester.tap(find.byKey(Key('productDropDown')));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 5));
         await tester.tap(find.text('productName1').last);
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('statusDropDown')));
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.text('Available').last);
+        await tester.pump(Duration(seconds: 1));
+        await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('update')));
         await tester.pumpAndSettle(Duration(seconds: 5));
@@ -66,8 +68,7 @@ void main() {
         expect(
             Test.getTextField('name$x'), equals('assetName$random${char[x]}'));
         if (!Test.isPhone()) {
-          expect(Test.getTextField('status$x'), equals('Available'));
-          expect(Test.getTextField('quantityOnHand'), equals('${quantity[x]}'));
+          expect(Test.getTextField('statusId$x'), equals('Available'));
         }
         expect(Test.getTextField('product$x'), equals('productName1'));
         // check detail screen
@@ -86,20 +87,21 @@ void main() {
               find.byKey(Key('name')), 'assetName${random}c');
           await tester.enterText(find.byKey(Key('quantityOnHand')), '44');
           await tester.tap(find.byKey(Key('productDropDown')));
-          await tester.pump(Duration(seconds: 1));
+          await tester.pump(Duration(seconds: 5));
           await tester.tap(find.text('productName2').last);
           await tester.pump(Duration(seconds: 1));
           await tester.tap(find.byKey(Key('statusDropDown')));
           await tester.pump(Duration(seconds: 1));
           await tester.tap(find.text('In Use').last);
           await tester.pump(Duration(seconds: 1));
+          await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
+          await tester.pump(Duration(seconds: 1));
           await tester.tap(find.byKey(Key('update')));
           await tester.pumpAndSettle(Duration(seconds: 5));
           // check list
           expect(Test.getTextField('name1'), equals('assetName${random}c'));
           if (!Test.isPhone()) {
-            expect(Test.getTextField('status1'), equals('In Use'));
-            expect(Test.getTextField('quantityOnHand1'), equals('44'));
+            expect(Test.getTextField('statusId1'), equals('In Use'));
           }
           expect(Test.getTextField('product1'), equals('productName2'));
           // check detail screen
@@ -131,15 +133,15 @@ void main() {
       if (Test.isPhone())
         await tester.tap(find.byTooltip('2'));
       else
-        await tester.tap(find.byKey(Key('AssetsForm')));
+        await tester.tap(find.byKey(Key('tapAssetsForm')));
       await tester.pump(Duration(seconds: 1));
       // check list (one record deleted)
       expect(find.byKey(Key('assetItem')), findsNWidgets(2));
       expect(Test.getTextField('name0'), equals('assetName${random}a'));
       expect(Test.getTextField('name1'), equals('assetName${random}c'));
       if (!Test.isPhone()) {
-        expect(Test.getTextField('status0'), equals('Available'));
-        expect(Test.getTextField('status1'), equals('Deactivated'));
+        expect(Test.getTextField('statusId0'), equals('Available'));
+        expect(Test.getTextField('statusId1'), equals('In Use'));
       }
       expect(Test.getTextField('product0'), equals('productName1'));
       expect(Test.getTextField('product1'), equals('productName2'));

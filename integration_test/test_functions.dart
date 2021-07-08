@@ -27,12 +27,14 @@ class Test {
   static String getDropdown(String key) {
     DropdownButtonFormField tff = find.byKey(Key(key)).evaluate().single.widget
         as DropdownButtonFormField;
+    if (tff.initialValue is Currency) return tff.initialValue.description;
     return tff.initialValue;
   }
 
   static String getDropdownSearch(String key) {
     DropdownSearch tff =
         find.byKey(Key(key)).evaluate().single.widget as DropdownSearch;
+    if (tff.selectedItem is Country) return tff.selectedItem.name;
     if (tff.selectedItem is ProductCategory)
       return tff.selectedItem.categoryName;
     if (tff.selectedItem is Product) return tff.selectedItem.productName;
@@ -99,7 +101,7 @@ class Test {
     if (Test.isPhone())
       await tester.tap(find.byTooltip('3'));
     else
-      await tester.tap(find.byKey(Key('CategoriesForm')));
+      await tester.tap(find.byKey(Key('tapCategoriesForm')));
     await tester.pump(Duration(seconds: 5));
     // enter caegories
     for (int x = 1; x < 3; x++) {
@@ -126,7 +128,7 @@ class Test {
     if (Test.isPhone())
       await tester.tap(find.byTooltip('1'));
     else
-      await tester.tap(find.byKey(Key('ProductsForm')));
+      await tester.tap(find.byKey(Key('tapProductsForm')));
     await tester.pumpAndSettle(Duration(seconds: 5));
     // enter products
     for (int x = 1; x < 3; x++) {
@@ -138,6 +140,8 @@ class Test {
       await tester.tap(find.byKey(Key('categoryDropDown')));
       await tester.pumpAndSettle(Duration(seconds: 1));
       await tester.tap(find.text('categoryName$x').last);
+      await tester.pump(Duration(seconds: 1));
+      await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
       await tester.pump(Duration(seconds: 1));
       await tester.tap(find.byKey(Key('update')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -162,7 +166,7 @@ class Test {
       // assumes still logged in, so logout
       print("Dashboard logged in , needs to logout");
       await tester.tap(find.byKey(Key('logoutButton')));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump(Duration(seconds: 5));
       expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
           reason: '>>>logged out home screen not found');
     }
@@ -174,6 +178,8 @@ class Test {
     await tester.enterText(find.byKey(Key('email')), 'e$random@example.org');
     await tester.enterText(
         find.byKey(Key('companyName')), 'companyName$random');
+    await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
+    await tester.pump(Duration(seconds: 1));
     await tester.tap(find.byKey(Key('demoData')));
     await tester.tap(find.byKey(Key('newCompany')));
     await tester.pumpAndSettle(Duration(seconds: 5));
@@ -188,18 +194,78 @@ class Test {
         if (Test.isPhone())
           await tester.tap(find.byTooltip('3'));
         else
-          await tester.tap(find.byKey(Key('EmployeeForm')));
-        expect(find.byKey(Key('EmployeeDialog')), findsOneWidget);
+          await tester.tap(find.byKey(Key('tapUsersFormEmployee')));
+        await tester.pump(Duration(seconds: 5));
+        expect(find.byKey(Key('UsersFormEmployee')), findsOneWidget);
         for (int x in [1, 2]) {
+          await tester.tap(find.byKey(Key('addNew')));
+          await tester.pumpAndSettle(Duration(seconds: 5));
           await tester.enterText(find.byKey(Key('firstName')), 'firstName$x');
-          await tester.enterText(find.byKey(Key('lasttName')), 'lastName$x');
+          await tester.enterText(find.byKey(Key('lastName')), 'employee$x');
           await tester.enterText(find.byKey(Key('username')), '$random$x');
           await tester.enterText(
               find.byKey(Key('email')), 'e$random$x@example.org');
+          await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
+          await tester.pump(Duration(seconds: 5));
           await tester.tap(find.byKey(Key('updateUser')));
           await tester.pumpAndSettle(Duration(seconds: 5));
-          break;
         }
+        break;
+
+      case 'lead':
+        await tester.tap(find.byKey(Key('dbCrm')));
+        await tester.pump(Duration(seconds: 5));
+        if (Test.isPhone())
+          await tester.tap(find.byTooltip('2'));
+        else
+          await tester.tap(find.byKey(Key('tapUsersFormLead')));
+        await tester.pump(Duration(seconds: 5));
+        expect(find.byKey(Key('UsersFormLead')), findsOneWidget);
+        for (int x in [3, 4]) {
+          await tester.tap(find.byKey(Key('addNew')));
+          await tester.pumpAndSettle(Duration(seconds: 5));
+          await tester.enterText(
+              find.byKey(Key('firstName')), 'firstName${x - 2}');
+          await tester.enterText(find.byKey(Key('lastName')), 'lead${x - 2}');
+          await tester.enterText(find.byKey(Key('username')), '$random$x');
+          await tester.enterText(
+              find.byKey(Key('email')), 'e$random$x@example.org');
+          await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
+          await tester.pump(Duration(seconds: 1));
+          await tester.enterText(find.byKey(Key('newCompanyName')),
+              'newCompanyName$random${x - 2}');
+          await tester.tap(find.byKey(Key('updateUser')));
+          await tester.pumpAndSettle(Duration(seconds: 5));
+        }
+        break;
+
+      case 'customer':
+        await tester.tap(find.byKey(Key('dbCrm')));
+        await tester.pump(Duration(seconds: 5));
+        if (Test.isPhone())
+          await tester.tap(find.byTooltip('3'));
+        else
+          await tester.tap(find.byKey(Key('tapUsersFormCustomer')));
+        await tester.pump(Duration(seconds: 5));
+        expect(find.byKey(Key('UsersFormCustomer')), findsOneWidget);
+        for (int x in [5, 6]) {
+          await tester.tap(find.byKey(Key('addNew')));
+          await tester.pumpAndSettle(Duration(seconds: 5));
+          await tester.enterText(
+              find.byKey(Key('firstName')), 'firstName${x - 4}');
+          await tester.enterText(
+              find.byKey(Key('lastName')), 'customer${x - 4}');
+          await tester.enterText(find.byKey(Key('username')), '$random$x');
+          await tester.enterText(
+              find.byKey(Key('email')), 'e$random$x@example.org');
+          await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
+          await tester.pump(Duration(seconds: 1));
+          await tester.enterText(find.byKey(Key('newCompanyName')),
+              'newCompanyName$random${x - 4}');
+          await tester.tap(find.byKey(Key('updateUser')));
+          await tester.pumpAndSettle(Duration(seconds: 5));
+        }
+        break;
     }
     // back to main
     if (isPhone()) {

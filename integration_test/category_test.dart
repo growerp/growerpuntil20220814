@@ -12,18 +12,12 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:math';
-
-import 'package:admin/main.dart';
-import 'package:core/forms/@forms.dart';
 import 'package:core/widgets/observer.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:backend/moqui.dart';
 import 'test_functions.dart';
 
 void main() {
@@ -35,40 +29,30 @@ void main() {
   });
 
   group('Category tests>>>>>', () {
-    testWidgets("test CRM tabs>>>>>", (WidgetTester tester) async {
+    testWidgets("test Catalog tabs>>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(tester);
       await Test.login(tester);
-      String random = Test.getRandom();
       expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('dbCatalog')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('/catalog')), findsOneWidget,
-          reason: '>>>After tap product check screen');
-      expect(find.byKey(Key('ProductsForm')), findsOneWidget,
-          reason: '>>>After tap product check screen');
-      expect(find.byKey(Key('empty')), findsOneWidget,
-          reason: '>>>After tap no categories');
+      await tester.pump(Duration(seconds: 5));
+      expect(find.byKey(Key('/catalog')), findsOneWidget);
+      expect(find.byKey(Key('ProductsForm')), findsOneWidget);
+      expect(find.byKey(Key('empty')), findsOneWidget);
       if (Test.isPhone())
-        expect(find.byTooltip('2'), findsOneWidget);
+        await tester.tap(find.byTooltip('2'));
       else
-        await tester.tap(find.byKey(Key('AssetsForm')));
-      await tester.tap(find.byTooltip('2'));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('AssetsForm')), findsOneWidget,
-          reason: '>>>After tap assets check screen');
-      expect(find.byKey(Key('empty')), findsOneWidget,
-          reason: '>>>After tap no assets');
+        await tester.tap(find.byKey(Key('tapAssetsForm')));
+      await tester.pump(Duration(seconds: 5));
+      expect(find.byKey(Key('AssetsForm')), findsOneWidget);
+      expect(find.byKey(Key('empty')), findsOneWidget);
       if (Test.isPhone())
-        expect(find.byTooltip('3'), findsOneWidget);
+        await tester.tap(find.byTooltip('3'));
       else
-        await tester.tap(find.byKey(Key('CategoriesForm')));
-      await tester.tap(find.byTooltip('3'));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('CategoriesForm')), findsOneWidget,
-          reason: '>>>After tap categories check screen');
-      expect(find.byKey(Key('empty')), findsOneWidget,
-          reason: '>>>After tap no categories');
+        await tester.tap(find.byKey(Key('tapCategoriesForm')));
+      await tester.pump(Duration(seconds: 5));
+      expect(find.byKey(Key('CategoriesForm')), findsOneWidget);
+      expect(find.byKey(Key('empty')), findsOneWidget);
     }, skip: false);
 
     testWidgets("categories test >>>>>", (WidgetTester tester) async {
@@ -81,7 +65,7 @@ void main() {
       if (Test.isPhone())
         await tester.tap(find.byTooltip('3'));
       else
-        await tester.tap(find.byKey(Key('CategoriesForm')));
+        await tester.tap(find.byKey(Key('tapCategoriesForm')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       await tester.tap(find.byKey(Key('addNew')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -163,7 +147,7 @@ void main() {
       if (Test.isPhone())
         await tester.tap(find.byTooltip('3'));
       else
-        await tester.tap(find.byKey(Key('CategoriesForm')));
+        await tester.tap(find.byKey(Key('tapCategoriesForm')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check list
       expect(find.byKey(Key('categoryItem')), findsNWidgets(2));

@@ -27,5 +27,6 @@ Separate terminal:
 
 flutter drive  -d web-server \
     --driver=test_driver/integration_test.dart \
-    --target=integration_test/newCompany_test.dart
+    --target=integration_test/newCompany_test.dart \
+    --no-headless
 

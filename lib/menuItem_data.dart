@@ -166,7 +166,8 @@ List<MenuItem> menuItems = [
     writeGroups: ["GROWERP_M_ADMIN"],
     tabItems: [
       TabItem(
-        form: FinDocsForm(sales: true, docType: 'order'),
+        form:
+            FinDocsForm(key: Key("SalesOrder"), sales: true, docType: 'order'),
         label: "Sales orders",
         icon: Icon(Icons.home),
         floatButtonForm: FinDocDialog(
@@ -197,7 +198,8 @@ List<MenuItem> menuItems = [
     readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
     tabItems: [
       TabItem(
-        form: FinDocsForm(sales: false, docType: 'order'),
+        form: FinDocsForm(
+            key: Key("PurchaseOrder"), sales: false, docType: 'order'),
         label: "Purchase orders",
         icon: Icon(Icons.home),
         floatButtonForm: FinDocDialog(

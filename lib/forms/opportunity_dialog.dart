@@ -143,177 +143,181 @@ class _OpportunityState extends State<OpportunityPage> {
   }
 
   Widget _opportunityForm(Opportunity opportunity, int columns, getData) {
+    List<Widget> widgets = [
+      TextFormField(
+        key: Key('name'),
+        decoration: InputDecoration(labelText: 'Opportunity Name'),
+        controller: _nameController,
+        validator: (value) {
+          return value!.isEmpty ? 'Please enter a opportunity name?' : null;
+        },
+      ),
+      TextFormField(
+        key: Key('description'),
+        maxLines: 5,
+        decoration: InputDecoration(labelText: 'Description'),
+        controller: _descriptionController,
+      ),
+      TextFormField(
+        key: Key('estAmount'),
+        keyboardType: TextInputType.number,
+        inputFormatters: <TextInputFormatter>[
+          FilteringTextInputFormatter.allow(RegExp('[0-9.,]+'))
+        ],
+        decoration: InputDecoration(labelText: 'Expected revenue Amount'),
+        controller: _estAmountController,
+        validator: (value) {
+          return value!.isEmpty ? 'Please enter an amount?' : null;
+        },
+      ),
+      TextFormField(
+        key: Key('estProbability'),
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+        ],
+        decoration: InputDecoration(labelText: 'Estimated Probabilty %'),
+        controller: _estProbabilityController,
+        validator: (value) {
+          return value!.isEmpty
+              ? 'Please enter a probability % (1-100)?'
+              : null;
+        },
+      ),
+      TextFormField(
+        key: Key('nextStep'),
+        decoration: InputDecoration(labelText: 'Next step'),
+        controller: _estNextStepController,
+        validator: (value) {
+          return value!.isEmpty ? 'Next step?' : null;
+        },
+      ),
+      DropdownButtonFormField<String>(
+        key: Key('stageId'),
+        value: _selectedStageId,
+        decoration: InputDecoration(labelText: 'Opportunity Stage'),
+        validator: (value) {
+          return value!.isEmpty ? 'field required' : null;
+        },
+        items: opportunityStages.map((item) {
+          return DropdownMenuItem<String>(child: Text(item), value: item);
+        }).toList(),
+        onChanged: (String? newValue) {
+          _selectedStageId = newValue;
+        },
+        isExpanded: true,
+      ),
+      DropdownSearch<User>(
+        label: 'Lead',
+        dialogMaxWidth: 300,
+        autoFocusSearchBox: true,
+        selectedItem: _selectedLead,
+        dropdownSearchDecoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
+        ),
+        searchBoxDecoration: InputDecoration(
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
+        ),
+        showSearchBox: true,
+        searchBoxController: _leadSearchBoxController,
+        isFilteredOnline: true,
+        showClearButton: true,
+        key: Key('lead'),
+        itemAsString: (User? u) => "${u?.firstName}, ${u?.lastName} "
+            "${u?.companyName}",
+        onFind: (String filter) =>
+            getData("GROWERP_M_LEAD", _leadSearchBoxController.text),
+        onChanged: (User? newValue) {
+          _selectedLead = newValue;
+        },
+      ),
+      Visibility(
+          visible: opportunity.opportunityId != null,
+          child: DropdownSearch<User>(
+              label: 'Account Employee',
+              dialogMaxWidth: 300,
+              autoFocusSearchBox: true,
+              selectedItem: _selectedAccount,
+              dropdownSearchDecoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0)),
+              ),
+              searchBoxDecoration: InputDecoration(
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25.0)),
+              ),
+              showSearchBox: true,
+              searchBoxController: _accountSearchBoxController,
+              isFilteredOnline: true,
+              showClearButton: true,
+              key: Key('account'),
+              itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
+                  "${u?.companyName}",
+              onFind: (String filter) => getData(
+                  "GROWERP_M_EMPLOYEE", _accountSearchBoxController.text),
+              onChanged: (User? newValue) {
+                _selectedAccount = newValue;
+              })),
+      ElevatedButton(
+          key: Key('cancel'),
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          }),
+      ElevatedButton(
+          key: Key('update'),
+          child: Text(opportunity.opportunityId == null ? 'Create' : 'Update'),
+          onPressed: () {
+            if (_formKeyOpportunity.currentState!.validate() && !loading) {
+              BlocProvider.of<OpportunityBloc>(context)
+                  .add(UpdateOpportunity(Opportunity(
+                opportunityId: opportunity.opportunityId,
+                opportunityName: _nameController.text,
+                description: _descriptionController.text,
+                estAmount: Decimal.parse(_estAmountController.text),
+                estProbability: int.parse(_estProbabilityController.text),
+                stageId: _selectedStageId,
+                nextStep: _estNextStepController.text,
+                accountPartyId: _selectedAccount?.partyId,
+                accountFirstName: _selectedAccount?.firstName,
+                accountLastName: _selectedAccount?.lastName,
+                accountEmail: _selectedAccount?.email,
+                leadPartyId: _selectedLead?.partyId,
+                leadFirstName: _selectedLead?.firstName,
+                leadLastName: _selectedLead?.lastName,
+                leadEmail: _selectedLead?.email,
+              )));
+            }
+          }),
+    ];
+
+    List<Widget> rows = [];
+    if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET)) {
+      // change list in two columns
+      for (var i = 0; i < widgets.length; i++)
+        rows.add(Row(
+          children: [
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    child: widgets[i++])),
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    child: i < widgets.length ? widgets[i] : Container()))
+          ],
+        ));
+    }
+    List<Widget> column = [];
+    for (var i = 0; i < widgets.length; i++)
+      column.add(Padding(
+          padding: EdgeInsets.fromLTRB(10, 10, 10, 10), child: widgets[i]));
+
     return Form(
         key: _formKeyOpportunity,
-        child: Padding(
-            padding: EdgeInsets.all(15),
-            child: GridView.count(
-                key: Key('listView'),
-                crossAxisCount: columns,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: (5.5),
-                children: <Widget>[
-                  TextFormField(
-                    key: Key('name'),
-                    decoration: InputDecoration(labelText: 'Opportunity Name'),
-                    controller: _nameController,
-                    validator: (value) {
-                      return value!.isEmpty
-                          ? 'Please enter a opportunity name?'
-                          : null;
-                    },
-                  ),
-                  TextFormField(
-                    key: Key('description'),
-                    maxLines: 5,
-                    decoration: InputDecoration(labelText: 'Description'),
-                    controller: _descriptionController,
-                  ),
-                  TextFormField(
-                    key: Key('estAmount'),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.allow(RegExp('[0-9.,]+'))
-                    ],
-                    decoration:
-                        InputDecoration(labelText: 'Expected revenue Amount'),
-                    controller: _estAmountController,
-                    validator: (value) {
-                      return value!.isEmpty ? 'Please enter an amount?' : null;
-                    },
-                  ),
-                  TextFormField(
-                    key: Key('estProbability'),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'^\d+\.?\d{0,2}')),
-                    ],
-                    decoration:
-                        InputDecoration(labelText: 'Estimated Probabilty %'),
-                    controller: _estProbabilityController,
-                    validator: (value) {
-                      return value!.isEmpty
-                          ? 'Please enter a probability % (1-100)?'
-                          : null;
-                    },
-                  ),
-                  TextFormField(
-                    key: Key('nextStep'),
-                    decoration: InputDecoration(labelText: 'Next step'),
-                    controller: _estNextStepController,
-                    validator: (value) {
-                      return value!.isEmpty ? 'Next step?' : null;
-                    },
-                  ),
-                  DropdownButtonFormField<String>(
-                    key: Key('dropDownStageId'),
-                    value: _selectedStageId,
-                    decoration: InputDecoration(labelText: 'Opportunity Stage'),
-                    validator: (value) {
-                      return value!.isEmpty ? 'field required' : null;
-                    },
-                    items: opportunityStages.map((item) {
-                      return DropdownMenuItem<String>(
-                          child: Text(item), value: item);
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      _selectedStageId = newValue;
-                    },
-                    isExpanded: true,
-                  ),
-                  DropdownSearch<User>(
-                    label: 'Lead',
-                    dialogMaxWidth: 300,
-                    autoFocusSearchBox: true,
-                    selectedItem: _selectedLead,
-                    dropdownSearchDecoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
-                    ),
-                    searchBoxDecoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
-                    ),
-                    showSearchBox: true,
-                    searchBoxController: _leadSearchBoxController,
-                    isFilteredOnline: true,
-                    showClearButton: true,
-                    key: Key('dropDownLead'),
-                    itemAsString: (User? u) =>
-                        "${u?.firstName}, ${u?.lastName} "
-                        "${u?.companyName}",
-                    onFind: (String filter) => getData(
-                        "GROWERP_M_LEAD", _leadSearchBoxController.text),
-                    onChanged: (User? newValue) {
-                      _selectedLead = newValue;
-                    },
-                  ),
-                  Visibility(
-                      visible: opportunity.opportunityId != null,
-                      child: DropdownSearch<User>(
-                          label: 'Account Employee',
-                          dialogMaxWidth: 300,
-                          autoFocusSearchBox: true,
-                          selectedItem: _selectedAccount,
-                          dropdownSearchDecoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0)),
-                          ),
-                          searchBoxDecoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0)),
-                          ),
-                          showSearchBox: true,
-                          searchBoxController: _accountSearchBoxController,
-                          isFilteredOnline: true,
-                          showClearButton: true,
-                          key: Key('dropDownAccount'),
-                          itemAsString: (User? u) =>
-                              "${u?.firstName} ${u?.lastName} "
-                              "${u?.companyName}",
-                          onFind: (String filter) => getData(
-                              "GROWERP_M_EMPLOYEE",
-                              _accountSearchBoxController.text),
-                          onChanged: (User? newValue) {
-                            _selectedAccount = newValue;
-                          })),
-                  ElevatedButton(
-                      key: Key('cancel'),
-                      child: Text('Cancel'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                  ElevatedButton(
-                      key: Key('update'),
-                      child: Text(opportunity.opportunityId == null
-                          ? 'Create'
-                          : 'Update'),
-                      onPressed: () {
-                        if (_formKeyOpportunity.currentState!.validate() &&
-                            !loading) {
-                          BlocProvider.of<OpportunityBloc>(context)
-                              .add(UpdateOpportunity(Opportunity(
-                            opportunityId: opportunity.opportunityId,
-                            opportunityName: _nameController.text,
-                            description: _descriptionController.text,
-                            estAmount: Decimal.parse(_estAmountController.text),
-                            estProbability:
-                                int.parse(_estProbabilityController.text),
-                            stageId: _selectedStageId,
-                            nextStep: _estNextStepController.text,
-                            accountPartyId: _selectedAccount?.partyId,
-                            accountFirstName: _selectedAccount?.firstName,
-                            accountLastName: _selectedAccount?.lastName,
-                            accountEmail: _selectedAccount?.email,
-                            leadPartyId: _selectedLead?.partyId,
-                            leadFirstName: _selectedLead?.firstName,
-                            leadLastName: _selectedLead?.lastName,
-                            leadEmail: _selectedLead?.email,
-                          )));
-                        }
-                      }),
-                ])));
+        child: SingleChildScrollView(
+            key: Key('listView'),
+            padding: EdgeInsets.all(20),
+            child: Column(children: (rows.isEmpty ? column : rows))));
   }
 }

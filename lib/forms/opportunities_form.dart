@@ -130,7 +130,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               Row(children: <Widget>[
                                 Expanded(
                                     child: Text(
-                                  "Opportunity Name[ID]",
+                                  "Opportunity Name",
                                 )),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
@@ -143,8 +143,8 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                       child: Text("Est. Probability %",
                                           textAlign: TextAlign.center)),
                                 Expanded(
-                                    child: Text("Lead Name[ID]",
-                                        textAlign: TextAlign.right)),
+                                    child: Text("Lead Name",
+                                        textAlign: TextAlign.left)),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
@@ -185,28 +185,29 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               children: <Widget>[
                                 Expanded(
                                     child: Text(
-                                  "${opportunities![index].opportunityName}"
-                                  "[${opportunities[index].opportunityId}]",
-                                )),
+                                        "${opportunities![index].opportunityName}",
+                                        key: Key('name$index'))),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
                                       child: Text(
                                           "${opportunities[index].estAmount.toString()}",
+                                          key: Key('estAmount$index'),
                                           textAlign: TextAlign.center)),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
                                       child: Text(
                                           "${opportunities[index].estProbability.toString()}",
+                                          key: Key('estProbability$index'),
                                           textAlign: TextAlign.center)),
                                 Expanded(
                                     child: Text(
                                   (opportunities[index].leadPartyId != null
                                       ? "${opportunities[index].leadFirstName} "
                                           "${opportunities[index].leadLastName}"
-                                          "[${opportunities[index].leadPartyId}]"
                                       : ""),
+                                  key: Key('lead$index'),
                                 )),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
@@ -215,10 +216,12 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                     opportunities[index].leadPartyId != null
                                         ? "${opportunities[index].leadEmail}"
                                         : "",
+                                    key: Key('leadEmail$index'),
                                   )),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(TABLET))
                                   Text("${opportunities[index].stageId}",
+                                      key: Key('stageId$index'),
                                       textAlign: TextAlign.center),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
@@ -227,6 +230,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                           opportunities[index].nextStep != null
                                               ? "${opportunities[index].nextStep}"
                                               : "",
+                                          key: Key('nextStep$index'),
                                           textAlign: TextAlign.center)),
                               ],
                             ),
@@ -241,6 +245,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                   });
                             },
                             trailing: IconButton(
+                              key: Key('delete$index'),
                               icon: Icon(Icons.delete_forever),
                               onPressed: () {
                                 _opportunityBloc.add(DeleteOpportunity(index));

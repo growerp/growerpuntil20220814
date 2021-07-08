@@ -34,12 +34,6 @@ void main() {
     Bloc.observer = SimpleBlocObserver();
   });
 
-  String getTextFormField(String key) {
-    TextFormField tff =
-        find.byKey(Key(key)).evaluate().single.widget as TextFormField;
-    return tff.controller!.text;
-  }
-
   group('Basic tests >>>>>', () {
     testWidgets("Create Company and Admin", (WidgetTester tester) async {
       String random = Random.secure().nextInt(1024).toString();
@@ -67,23 +61,20 @@ void main() {
       await tester.tap(find.byKey(Key('demoData')));
       await tester.tap(find.byKey(Key('newCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
-          reason: '>>>Not logged in after registration');
+      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
       // login with new username
       await tester.tap(find.byKey(Key('loginButton')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(getTextFormField('username'), equals('e$random@example.org'),
+      expect(Test.getTextFormField('username'), equals('e$random@example.org'),
           reason: '>>>username not remembered (or wrong) after register');
       await tester.enterText(find.byKey(Key('password')), 'qqqqqq9!');
       await tester.tap(find.byKey(Key('login')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('DashBoardForm')), findsOneWidget,
-          reason: '>>>After logged in should show dasboard');
+      expect(find.byKey(Key('DashBoardForm')), findsOneWidget);
       // logout
       await tester.tap(find.byKey(Key('logoutButton')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
-          reason: '>>>logged out home screen not found');
+      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
     }, skip: false);
 
     testWidgets("Test company from appbar update local",
@@ -92,22 +83,15 @@ void main() {
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('CompanyInfoForm')), findsOneWidget,
-          reason: '>>>After tap company check screen');
+      expect(find.byKey(Key('CompanyInfoForm')), findsOneWidget);
       // check fields as result from initial create
-      expect(getTextFormField('companyName'), equals('companyName$random'),
-          reason: '>>>company name wrong}');
-      expect(getTextFormField('email'), equals('e$random@example.org'),
-          reason: '>>>company email wrong');
-//      expect(getTextField('currency'), equals('European Euro'),
-//          reason: '>>>company currency should be: European Euro '
-//              'is: ${getTextField('currency')} ');
-      expect(getTextFormField('vatPerc'), equals(''),
-          reason: '>>>company vatPerc wrong');
-      expect(getTextFormField('salesPerc'), equals(''),
-          reason: '>>>company salesperc wrong');
-      expect(Test.getTextField('addressLabel'), equals('No address yet'),
-          reason: '>>>company address wrong');
+      expect(
+          Test.getTextFormField('companyName'), equals('companyName$random'));
+      expect(Test.getTextFormField('email'), equals('e$random@example.org'));
+      expect(Test.getDropdown('currency'), equals('European Euro'));
+      expect(Test.getTextFormField('vatPerc'), equals(''));
+      expect(Test.getTextFormField('salesPerc'), equals(''));
+      expect(Test.getTextField('addressLabel'), equals('No address yet'));
       await tester.tap(find.byKey(Key('updateCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // enter updated values in fields
@@ -120,19 +104,12 @@ void main() {
       await tester.tap(find.byKey(Key('updateCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // and check them
-      expect(getTextFormField('companyName'), equals('companyName${random}u'),
-          reason: '>>>company name wrong}');
-      expect(getTextFormField('email'), equals('e${random}u@example.org'),
-          reason: '>>>company email wrong');
-//      expect(getTextField('currency'), equals('European Euro'),
-//          reason: '>>>company currency should be: European Euro '
-//              'is: ${getTextField('currency')} ');
-      expect(getTextFormField('vatPerc'), equals('1'),
-          reason: '>>>company vatPerc wrong');
-      expect(getTextFormField('salesPerc'), equals('2'),
-          reason: '>>>company salesperc wrong');
-      expect(Test.getTextField('addressLabel'), equals('No address yet'),
-          reason: '>>>company address wrong');
+      expect(Test.getTextFormField('companyName'),
+          equals('companyName${random}u'));
+      expect(Test.getTextFormField('email'), equals('e${random}u@example.org'));
+      expect(Test.getTextFormField('vatPerc'), equals('1'));
+      expect(Test.getTextFormField('salesPerc'), equals('2'));
+      expect(Test.getTextField('addressLabel'), equals('No address yet'));
       // enter new address entry
       await tester.tap(find.byKey(Key('address')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -141,45 +118,45 @@ void main() {
       await tester.enterText(find.byKey(Key('postal')), 'postal');
       await tester.enterText(find.byKey(Key('city')), 'city');
       await tester.enterText(find.byKey(Key('province')), 'province');
+      await tester.tap(find.byKey(Key('country')));
+      await tester.pump(Duration(seconds: 5));
+      await tester.tap(find.text('Anguilla').last);
+      await tester.pump(Duration(seconds: 5));
       await tester.tap(find.byKey(Key('updateAddress')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
+      await tester.pump(Duration(seconds: 5));
       await tester.tap(find.byKey(Key('updateCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
+      // check address
       await tester.tap(find.byKey(Key('address')));
-      expect(getTextFormField('address1'), equals('address1'),
-          reason: '>>>after create address1 wrong');
-      expect(getTextFormField('address2'), equals('address2'),
-          reason: '>>>after create address2 wrong');
-      expect(getTextFormField('postal'), equals('postal'),
-          reason: '>>>after create postal wrong');
-      expect(getTextFormField('city'), equals('city'),
-          reason: '>>>after create city wrong');
-      expect(getTextFormField('province'), equals('province'),
-          reason: '>>>after create province wrong');
-      // update address
+      await tester.pump(Duration(seconds: 5));
+      expect(Test.getTextFormField('address1'), equals('address1'));
+      expect(Test.getTextFormField('address2'), equals('address2'));
+      expect(Test.getTextFormField('postal'), equals('postal'));
+      expect(Test.getTextFormField('city'), equals('city'));
+      expect(Test.getTextFormField('province'), equals('province'));
+      expect(Test.getDropdownSearch('country'), equals('Anguilla'));
       await tester.enterText(find.byKey(Key('address1')), 'address1u');
       await tester.enterText(find.byKey(Key('address2')), 'address2u');
       await tester.enterText(find.byKey(Key('postal')), 'postalu');
       await tester.enterText(find.byKey(Key('city')), 'cityu');
       await tester.enterText(find.byKey(Key('province')), 'provinceu');
+      await tester.tap(find.byKey(Key('country')));
+      await tester.pump(Duration(seconds: 5));
+      await tester.tap(find.text('Angola').last);
+      await tester.pump(Duration(seconds: 5));
       await tester.tap(find.byKey(Key('updateAddress')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       await tester.tap(find.byKey(Key('updateCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(Test.getTextField('addressLabel'), equals('cityu Anguilla'),
-          reason: '>>>company address wrong');
+      expect(Test.getTextField('addressLabel'), equals('cityu Angola'));
       await tester.tap(find.byKey(Key('address')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(getTextFormField('address1'), equals('address1u'),
-          reason: '>>>after update address1 wrong');
-      expect(getTextFormField('address2'), equals('address2u'),
-          reason: '>>> after update address2 wrong');
-      expect(getTextFormField('postal'), equals('postalu'),
-          reason: '>>> after update postal wrong');
-      expect(getTextFormField('city'), equals('cityu'),
-          reason: '>>> after update city wrong');
-      expect(getTextFormField('province'), equals('provinceu'),
-          reason: '>>> after update province wrong');
+      expect(Test.getTextFormField('address1'), equals('address1u'));
+      expect(Test.getTextFormField('address2'), equals('address2u'));
+      expect(Test.getTextFormField('postal'), equals('postalu'));
+      expect(Test.getTextFormField('city'), equals('cityu'));
+      expect(Test.getTextFormField('province'), equals('provinceu'));
+      expect(Test.getDropdownSearch('country'), equals('Angola'));
     }, skip: false);
 
     testWidgets("Test company from appbar check db update",
@@ -188,31 +165,25 @@ void main() {
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(getTextFormField('companyName'), equals('companyName${random}u'),
+      expect(
+          Test.getTextFormField('companyName'), equals('companyName${random}u'),
           reason: '>>>company name wrong}');
-      expect(getTextFormField('email'), equals('e${random}u@example.org'),
+      expect(Test.getTextFormField('email'), equals('e${random}u@example.org'),
           reason: '>>>company email wrong');
-//      expect(getTextField('currency'), equals('European Euro'),
-//          reason: '>>>company currency should be: European Euro '
-//              'is: ${getTextField('currency')} ');
-      expect(getTextFormField('vatPerc'), equals('1'),
+      expect(Test.getTextFormField('vatPerc'), equals('1'),
           reason: '>>>company vatPerc wrong');
-      expect(getTextFormField('salesPerc'), equals('2'),
+      expect(Test.getTextFormField('salesPerc'), equals('2'),
           reason: '>>>company salesperc wrong');
-      expect(Test.getTextField('addressLabel'), equals('cityu Anguilla'),
+      expect(Test.getTextField('addressLabel'), equals('cityu Angola'),
           reason: '>>>company address wrong');
       await tester.tap(find.byKey(Key('address')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(getTextFormField('address1'), equals('address1u'),
-          reason: '>>>after update address1 wrong');
-      expect(getTextFormField('address2'), equals('address2u'),
-          reason: '>>> after update address2 wrong');
-      expect(getTextFormField('postal'), equals('postalu'),
-          reason: '>>> after update postal wrong');
-      expect(getTextFormField('city'), equals('cityu'),
-          reason: '>>> after update city wrong');
-      expect(getTextFormField('province'), equals('provinceu'),
-          reason: '>>> after update province wrong');
+      expect(Test.getTextFormField('address1'), equals('address1u'));
+      expect(Test.getTextFormField('address2'), equals('address2u'));
+      expect(Test.getTextFormField('postal'), equals('postalu'));
+      expect(Test.getTextFormField('city'), equals('cityu'));
+      expect(Test.getTextFormField('province'), equals('provinceu'));
+      expect(Test.getDropdownSearch('country'), equals('Angola'));
     }, skip: false);
 
     testWidgets("Test user dialog local values", (WidgetTester tester) async {
@@ -225,16 +196,12 @@ void main() {
       await tester.tap(find.byKey(Key('tapUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check user data from registration
-      expect(find.byKey(Key('AdminUserDialog')), findsOneWidget,
+      expect(find.byKey(Key('UserDialogAdmin')), findsOneWidget,
           reason: '>>>After tap user at menu/drawer show user dialog');
-      expect(getTextFormField('firstName'), equals('firstName'),
-          reason: '>>>firstName wrong after register');
-      expect(getTextFormField('lastName'), equals('lastName'),
-          reason: '>>>lastName wrong after register');
-      expect(getTextFormField('username'), equals('e$random@example.org'),
-          reason: '>>>username wrong after register');
-      expect(getTextFormField('email'), equals('e$random@example.org'),
-          reason: '>>>email wrong after register');
+      expect(Test.getTextFormField('firstName'), equals('firstName'));
+      expect(Test.getTextFormField('lastName'), equals('lastName'));
+      expect(Test.getTextFormField('username'), equals('e$random@example.org'));
+      expect(Test.getTextFormField('email'), equals('e$random@example.org'));
       // update fields
       await tester.enterText(find.byKey(Key('firstName')), 'firstNameu');
       await tester.enterText(find.byKey(Key('lastName')), 'lastNameu');
@@ -244,14 +211,10 @@ void main() {
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check updated fields
-      expect(getTextFormField('firstName'), equals('firstNameu'),
-          reason: '>>>firstName wrong after update');
-      expect(getTextFormField('lastName'), equals('lastNameu'),
-          reason: '>>>lastName wrong after update');
-      expect(getTextFormField('username'), equals('${random}u'),
-          reason: '>>>username wrong after update');
-      expect(getTextFormField('email'), equals('e${random}u@example.org'),
-          reason: '>>>email wrong after update');
+      expect(Test.getTextFormField('firstName'), equals('firstNameu'));
+      expect(Test.getTextFormField('lastName'), equals('lastNameu'));
+      expect(Test.getTextFormField('username'), equals('${random}u'));
+      expect(Test.getTextFormField('email'), equals('e${random}u@example.org'));
     }, skip: false);
     testWidgets("Test user dialog check data base",
         (WidgetTester tester) async {
@@ -264,16 +227,11 @@ void main() {
       }
       await tester.tap(find.byKey(Key('tapUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('AdminUserDialog')), findsOneWidget,
-          reason: '>>>After tap user at menu/drawer show user dialog');
-      expect(getTextFormField('firstName'), equals('firstNameu'),
-          reason: '>>>firstName wrong db check');
-      expect(getTextFormField('lastName'), equals('lastNameu'),
-          reason: '>>>lastName wrong db check');
-      expect(getTextFormField('username'), equals('${random}u'),
-          reason: '>>>username wrong db check');
-      expect(getTextFormField('email'), equals('e${random}u@example.org'),
-          reason: '>>>email wrong db check');
+      expect(find.byKey(Key('UserDialogAdmin')), findsOneWidget);
+      expect(Test.getTextFormField('firstName'), equals('firstNameu'));
+      expect(Test.getTextFormField('lastName'), equals('lastNameu'));
+      expect(Test.getTextFormField('username'), equals('${random}u'));
+      expect(Test.getTextFormField('email'), equals('e${random}u@example.org'));
     }, skip: false);
   });
 }
