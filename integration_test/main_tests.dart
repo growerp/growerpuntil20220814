@@ -4,6 +4,7 @@ import 'category_test.dart' as category;
 import 'product_test.dart' as product;
 import 'asset_test.dart' as asset;
 import 'opportunity_test.dart' as opportunity;
+import 'order_test.dart' as order;
 
 /// all integration tests can be ran independantly
 /// They start with a new company create the items needed for the tes
@@ -15,4 +16,5 @@ void main() {
   product.main();
   asset.main();
   opportunity.main();
+  order.main();
 }

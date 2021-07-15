@@ -53,9 +53,11 @@ packages:
   backend:
     dependency: transitive
     description:
-      path: "../packages/backend"
-      relative: true
-    source: path
+      path: backend
+      ref: packages
+      resolved-ref: "47834edd839a6cb4d84aefb08faa933400caca90"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   barcode:
     dependency: transitive
@@ -158,9 +160,11 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: "../packages/core"
-      relative: true
-    source: path
+      path: core
+      ref: packages
+      resolved-ref: "47834edd839a6cb4d84aefb08faa933400caca90"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   coverage:
     dependency: transitive
@@ -445,9 +449,11 @@ packages:
   models:
     dependency: transitive
     description:
-      path: "../packages/models"
-      relative: true
-    source: path
+      path: models
+      ref: packages
+      resolved-ref: ce3576c2f45ca5a3b0376927e1c61802b2f18a53
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   nested:
     dependency: transitive
@@ -539,7 +545,7 @@ packages:
       name: plugin_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   pool:
     dependency: transitive
     description:
@@ -823,7 +829,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: "0ee279ad1a6a4ca429841b16e7ea9bf8ef3c3e51"
+      resolved-ref: ce3576c2f45ca5a3b0376927e1c61802b2f18a53
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"

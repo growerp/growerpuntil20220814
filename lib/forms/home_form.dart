@@ -102,7 +102,7 @@ class _HomeFormState extends State<HomeForm> {
                                 });
                           })
                       : Text('No companies yet, create one!'),
-                  SizedBox(height: 300),
+                  SizedBox(height: 100),
                   ElevatedButton(
                       key: Key('newCompButton'),
                       child: Text('Create a new company and admin'),

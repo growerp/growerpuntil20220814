@@ -88,18 +88,6 @@ class AdminApp extends StatelessWidget {
               create: (context) => FinDocBloc(repos, true, 'payment')),
           BlocProvider<PurchPaymentBloc>(
               create: (context) => FinDocBloc(repos, false, 'payment')),
-          BlocProvider<SalesCartBloc>(
-              create: (context) => CartBloc(
-                  repos: repos,
-                  sales: true,
-                  finDocBloc:
-                      BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc)),
-          BlocProvider<PurchCartBloc>(
-              create: (context) => CartBloc(
-                  repos: repos,
-                  sales: false,
-                  finDocBloc:
-                      BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc)),
           BlocProvider<OpportunityBloc>(
               create: (context) => OpportunityBloc(repos)),
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(repos)),

@@ -136,7 +136,7 @@ class _OpportunityState extends State<OpportunityPage> {
                           ),
                           child: Container(
                               width: columns.toDouble() * 400,
-                              height: 1 / columns.toDouble() * 900,
+                              height: 1 / columns.toDouble() * 1000,
                               child: _opportunityForm(
                                   opportunity, columns, getData)),
                         ))))));
@@ -298,20 +298,18 @@ class _OpportunityState extends State<OpportunityPage> {
         rows.add(Row(
           children: [
             Expanded(
-                child: Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                    child: widgets[i++])),
+                child:
+                    Padding(padding: EdgeInsets.all(10), child: widgets[i++])),
             Expanded(
                 child: Padding(
-                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    padding: EdgeInsets.all(10),
                     child: i < widgets.length ? widgets[i] : Container()))
           ],
         ));
     }
     List<Widget> column = [];
     for (var i = 0; i < widgets.length; i++)
-      column.add(Padding(
-          padding: EdgeInsets.fromLTRB(10, 10, 10, 10), child: widgets[i]));
+      column.add(Padding(padding: EdgeInsets.all(10), child: widgets[i]));
 
     return Form(
         key: _formKeyOpportunity,
