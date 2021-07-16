@@ -13,18 +13,17 @@
  */
 
 import 'dart:math';
-
 import 'package:admin/main.dart';
+import 'package:dio/dio.dart';
+import 'package:core/integration_test/test_functions.dart';
+import 'package:backend/moqui.dart';
 import 'package:core/forms/@forms.dart';
 import 'package:core/widgets/observer.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:backend/moqui.dart';
-import 'test_functions.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -79,7 +78,7 @@ void main() {
 
     testWidgets("Test company from appbar update local",
         (WidgetTester tester) async {
-      await Test.login(tester);
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -161,7 +160,7 @@ void main() {
 
     testWidgets("Test company from appbar check db update",
         (WidgetTester tester) async {
-      await Test.login(tester);
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -187,7 +186,7 @@ void main() {
     }, skip: false);
 
     testWidgets("Test user dialog local values", (WidgetTester tester) async {
-      await Test.login(tester);
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       if (Test.isPhone()) {
         await tester.tap(find.byTooltip('Open navigation menu'));
@@ -218,7 +217,7 @@ void main() {
     }, skip: false);
     testWidgets("Test user dialog check data base",
         (WidgetTester tester) async {
-      await Test.login(tester);
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       // force user to refresh scrren
       if (Test.isPhone()) {

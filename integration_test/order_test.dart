@@ -12,13 +12,16 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:admin/main.dart';
+import 'package:dio/dio.dart';
+import 'package:core/integration_test/test_functions.dart';
+import 'package:backend/moqui.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
-import 'test_functions.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -32,8 +35,9 @@ void main() {
 
   group('Order tests>>>>>', () {
     testWidgets("order add/mod/del >>>>>", (WidgetTester tester) async {
-      await Test.createCompanyAndAdmin(tester);
-      await Test.login(tester);
+      await Test.createCompanyAndAdmin(
+          tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
       await Test.createProductFromMain(tester);
@@ -142,7 +146,7 @@ void main() {
     testWidgets("orders  reload from database>>>>>",
         (WidgetTester tester) async {
       // 0: a   1: d 2: deleted
-      await Test.login(tester);
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pumpAndSettle(Duration(seconds: 1));
@@ -163,7 +167,6 @@ void main() {
 
       // detail screens
       for (int x in [0, 1]) {
-        print("======================x: $x");
         await tester.tap(find.byKey(Key('edit$x')));
         await tester.pump(Duration(seconds: 10));
         expect(find.byKey(Key('FinDocDialogSalesorder')), findsOneWidget);

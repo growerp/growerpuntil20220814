@@ -12,13 +12,16 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:admin/main.dart';
+import 'package:dio/dio.dart';
+import 'package:core/integration_test/test_functions.dart';
+import 'package:backend/moqui.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
-import 'test_functions.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -30,8 +33,9 @@ void main() {
 
   group('Product tests>>>>>', () {
     testWidgets("product test >>>>>", (WidgetTester tester) async {
-      await Test.createCompanyAndAdmin(tester);
-      await Test.login(tester);
+      await Test.createCompanyAndAdmin(
+          tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       // create a categories
       await Test.createCategoryFromMain(tester);
       String random = Test.getRandom();
@@ -123,7 +127,7 @@ void main() {
     testWidgets("products  reload from database>>>>>",
         (WidgetTester tester) async {
       // 0: a   1: d 2: deleted
-      await Test.login(tester);
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('dbCatalog')));

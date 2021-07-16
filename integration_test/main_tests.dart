@@ -7,8 +7,8 @@ import 'opportunity_test.dart' as opportunity;
 import 'order_test.dart' as order;
 
 /// all integration tests can be ran independantly
-/// They start with a new company create the items needed for the tes
-/// and do the actual test
+/// They start with a new company and create the items needed for the test,
+/// then do the actual test
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   newCompany.main();
