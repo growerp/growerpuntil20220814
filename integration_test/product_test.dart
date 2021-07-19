@@ -22,6 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:models/@models.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -57,6 +58,10 @@ void main() {
         await tester.pump(Duration(seconds: 5));
         await tester.tap(find.text('categoryName1').last); // sometimes fail...
         await tester.pump(Duration(seconds: 1));
+        await tester.tap(find.byKey(Key('productTypeDropDown')));
+        await tester.pumpAndSettle(Duration(seconds: 1));
+        await tester.tap(find.text(productTypes[0]).last);
+        await tester.pump(Duration(seconds: 1));
         await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('update')));
@@ -84,6 +89,7 @@ void main() {
             'productDesc$random${char[x]}');
         expect(Test.getTextFormField('price'), price[x]);
         expect(Test.getDropdownSearch('categoryDropDown'), 'categoryName1');
+        expect(Test.getDropdown('productTypeDropDown'), productTypes[0]);
         await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('cancel')));
@@ -100,6 +106,10 @@ void main() {
       await tester.pump(Duration(seconds: 5));
       await tester.tap(find.text('categoryName2').last); // sometimes fail...
       await tester.pump(Duration(seconds: 1));
+      await tester.tap(find.byKey(Key('productTypeDropDown')));
+      await tester.pump(Duration(seconds: 1));
+      await tester.tap(find.text(productTypes[2]).last);
+      await tester.pump(Duration(seconds: 1));
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
       await tester.pump(Duration(seconds: 1));
       await tester.tap(find.byKey(Key('update')));
@@ -115,6 +125,7 @@ void main() {
       expect(Test.getTextFormField('description'), 'productDesc${random}d');
       expect(Test.getTextFormField('price'), '4.4');
       expect(Test.getDropdownSearch('categoryDropDown'), 'categoryName2');
+      expect(Test.getDropdown('productTypeDropDown'), productTypes[2]);
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
       await tester.pump(Duration(seconds: 1));
       await tester.tap(find.byKey(Key('cancel')));
@@ -149,6 +160,7 @@ void main() {
       expect(Test.getTextFormField('description'), 'productDesc${random}d');
       expect(Test.getTextFormField('price'), '4.4');
       expect(Test.getDropdownSearch('categoryDropDown'), 'categoryName2');
+      expect(Test.getDropdown('productTypeDropDown'), productTypes[2]);
     }, skip: false);
   });
 }

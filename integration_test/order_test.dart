@@ -34,13 +34,20 @@ void main() {
   });
 
   group('Order tests>>>>>', () {
-    testWidgets("order add/mod/del >>>>>", (WidgetTester tester) async {
+    testWidgets("order prepare >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
           tester, AdminApp(repos: Moqui(client: Dio())));
       await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
       await Test.createProductFromMain(tester);
+      await Test.createRentalProduct(tester);
+    }, skip: false);
+
+    testWidgets("order add/mod/del with product >>>>>",
+        (WidgetTester tester) async {
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pumpAndSettle(Duration(seconds: 1));
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
