@@ -33,18 +33,17 @@ void main() {
     Bloc.observer = SimpleBlocObserver();
   });
 
-  group('Order tests>>>>>', () {
-    testWidgets("order prepare >>>>>", (WidgetTester tester) async {
+  group('Order Product twets>>>>>', () {
+    testWidgets("prepare >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
           tester, AdminApp(repos: Moqui(client: Dio())));
       await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
       await Test.createProductFromMain(tester);
-      await Test.createRentalProduct(tester);
     }, skip: false);
 
-    testWidgets("order add/mod/del with product >>>>>",
+    testWidgets("order add/mod/del with physical product >>>>>",
         (WidgetTester tester) async {
       await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
       String random = Test.getRandom();
@@ -150,7 +149,7 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 1));
     }, skip: false);
 
-    testWidgets("orders  reload from database>>>>>",
+    testWidgets("orders  with physical products reload from database>>>>>",
         (WidgetTester tester) async {
       // 0: a   1: d 2: deleted
       await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));

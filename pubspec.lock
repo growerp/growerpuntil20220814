@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: fe201602560e13c6bca8f8193dae0b1b3236dad5
+      resolved-ref: "640103bcf0766b9fc2201b4a5686b01841d8de87"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -142,7 +142,7 @@ packages:
       name: code_builder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.1.0"
   collection:
     dependency: transitive
     description:
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: fe201602560e13c6bca8f8193dae0b1b3236dad5
+      resolved-ref: "640103bcf0766b9fc2201b4a5686b01841d8de87"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -370,7 +370,7 @@ packages:
       name: image_picker_for_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.1.1"
   image_picker_platform_interface:
     dependency: transitive
     description:
@@ -836,7 +836,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: "5fda551a4e61dd9d2f8d744bcee9587c023d9e8e"
+      resolved-ref: fe201602560e13c6bca8f8193dae0b1b3236dad5
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
