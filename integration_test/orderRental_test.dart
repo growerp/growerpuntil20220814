@@ -31,7 +31,6 @@ void main() {
   var usFormat = new DateFormat('M/d/yyyy');
   var intlFormat = new DateFormat('yyyy-MM-dd');
   String plus2StringUs = usFormat.format(plus2);
-  String todayStringUs = usFormat.format(today);
   String todayStringIntl = intlFormat.format(today);
   String plus2StringIntl = intlFormat.format(plus2);
 
@@ -50,7 +49,7 @@ void main() {
       await Test.createUser(tester, 'customer', random);
     }, skip: false);
 
-    testWidgets("prepare create 2 rental orders >>>>>",
+    testWidgets("prepare &&  create 2 rental orders >>>>>",
         (WidgetTester tester) async {
       await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
 //          username: 'e771@example.org');
@@ -67,7 +66,7 @@ void main() {
         await tester.tap(find.byKey(Key('itemRental')));
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('product')));
-        await tester.pump(Duration(seconds: 5));
+        await tester.pump(Duration(seconds: 3));
         await tester.tap(find.textContaining('productName$x').last);
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('setDate')));
@@ -124,7 +123,7 @@ void main() {
       await tester.tap(find.byKey(Key('itemRental')));
       await tester.pump(Duration(seconds: 1));
       await tester.tap(find.byKey(Key('product')));
-      await tester.pump(Duration(seconds: 5));
+      await tester.pump(Duration(seconds: 3));
       await tester.tap(find.textContaining('productName2').last);
       await tester.pump(Duration(seconds: 1));
       await tester.tap(find.byKey(Key('setDate')));

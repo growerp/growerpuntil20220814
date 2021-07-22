@@ -64,17 +64,19 @@ void main() {
         await tester.tap(find.byKey(Key('addProduct')));
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('product')));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 3));
         await tester.tap(find.textContaining('productName1').last);
         await tester.pump(Duration(seconds: 1));
         await tester.enterText(find.byKey(Key('quantity')), '${quantity[x]}');
         await tester.pump();
         await tester.tap(find.byKey(Key('ok')));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 3));
         expect(Test.getTextField('itemDescription1'), equals('productName1'));
         expect(Test.getTextField('itemPrice1'),
             equals('${quantity[0]}.${quantity[0]}'));
         expect(Test.getTextField('itemQuantity1'), equals('${quantity[x]}'));
+        await tester.drag(find.byKey(Key('listView1')), Offset(0.0, -500.0));
+        await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('update')));
         await tester.pumpAndSettle(Duration(seconds: 10));
       }
@@ -88,7 +90,9 @@ void main() {
             contains('newCompanyName${random}1'));
         if (!Test.isPhone()) {
           expect(
-              Test.getTextField('email$x'), equals('e${random}1@example.org'));
+              Test.getTextField('email$x'), equals('e${random}5@example.org'));
+          expect(Test.getTextField('description$x'),
+              equals('orderName$random${char[x]}'));
         }
       }
       //check detail and update second record, delete last one
@@ -123,7 +127,7 @@ void main() {
           await tester.tap(find.byKey(Key('addProduct')));
           await tester.pump(Duration(seconds: 1));
           await tester.tap(find.byKey(Key('product')));
-          await tester.pump(Duration(seconds: 1));
+          await tester.pump(Duration(seconds: 3));
           await tester.tap(find.textContaining('productName2').last);
           await tester.pump(Duration(seconds: 1));
           await tester.enterText(find.byKey(Key('quantity')), '44');
@@ -136,6 +140,8 @@ void main() {
           expect(Test.getTextField('itemPrice2'), equals('22.22'));
           expect(Test.getTextField('itemQuantity2'), equals('44'));
           expect(find.byKey(Key('productItem')), findsNWidgets(2));
+          await tester.drag(find.byKey(Key('listView1')), Offset(0.0, -500.0));
+          await tester.pump(Duration(seconds: 1));
           await tester.tap(find.byKey(Key('update')));
           await tester.pumpAndSettle(Duration(seconds: 10));
         } else {
@@ -166,8 +172,10 @@ void main() {
             contains('newCompanyName$random${x + 1}'));
         expect(Test.getTextField('otherUser$x'), contains('customer${x + 1}'));
         if (!Test.isPhone()) {
-          expect(
-              Test.getTextField('email$x'), equals('e${random}1@example.org'));
+          expect(Test.getTextField('email$x'),
+              equals('e$random${x + 5}@example.org'));
+          expect(Test.getTextField('description$x'),
+              equals('orderName$random${char[x]}'));
         }
       }
 
