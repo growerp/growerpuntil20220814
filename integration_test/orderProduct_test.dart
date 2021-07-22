@@ -33,7 +33,7 @@ void main() {
     Bloc.observer = SimpleBlocObserver();
   });
 
-  group('Order Product twets>>>>>', () {
+  group('Order Product tests>>>>>', () {
     testWidgets("prepare >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
           tester, AdminApp(repos: Moqui(client: Dio())));

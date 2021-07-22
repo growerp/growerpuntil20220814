@@ -120,6 +120,7 @@ void main() {
         await tester.tap(find.byKey(Key('cancel')));
         await tester.pump(Duration(seconds: 1));
       }
+      expect(find.byKey(Key('assetItem')), findsNWidgets(3));
       // delete record 'c' x=2
       await tester.tap(find.byKey(Key('delete2')));
       await tester.pumpAndSettle(Duration(seconds: 1));

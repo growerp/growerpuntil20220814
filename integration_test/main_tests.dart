@@ -1,5 +1,6 @@
 import 'package:integration_test/integration_test.dart';
 import 'newCompany_test.dart' as newCompany;
+import 'newCompanyDemo_test.dart' as newCompanyDemo;
 import 'category_test.dart' as category;
 import 'product_test.dart' as product;
 import 'asset_test.dart' as asset;
@@ -13,6 +14,7 @@ import 'orderRental_test.dart' as orderRental;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   newCompany.main();
+  newCompanyDemo.main();
   category.main();
   product.main();
   asset.main();
