@@ -160,11 +160,9 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: core
-      ref: packages
-      resolved-ref: "8e8e2b9df11bcf4e2f0260aa6c98dc53ce478a0f"
-      url: "https://github.com/growerp/growerp.git"
-    source: git
+      path: "../packages/core"
+      relative: true
+    source: path
     version: "0.0.1"
   coverage:
     dependency: transitive
@@ -193,7 +191,7 @@ packages:
       name: dart_style
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   decimal:
     dependency: "direct main"
     description:
@@ -836,7 +834,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: "10f2b9115bed862c097115182a377170b1fd1c82"
+      resolved-ref: "8e8e2b9df11bcf4e2f0260aa6c98dc53ce478a0f"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
