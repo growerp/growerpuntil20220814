@@ -94,7 +94,7 @@ void main() {
       if (Test.isPhone())
         await tester.tap(find.byTooltip('2'));
       else
-        await tester.tap(find.byKey(Key('tapUsersFormEmployee')));
+        await tester.tap(find.byKey(Key('tapUsersFormAdmin')));
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('userItem')), findsOneWidget);
       await tester.tap(find.byKey(Key('addNew')));
