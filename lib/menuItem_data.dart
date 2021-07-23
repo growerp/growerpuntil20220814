@@ -177,7 +177,7 @@ List<MenuItem> menuItems = [
       ),
       TabItem(
         form: UsersForm(
-          key: ValueKey("GROWERP_M_CUSTOMER"),
+          key: Key("Customer"),
           userGroupId: "GROWERP_M_CUSTOMER",
         ),
         label: "Customers",
@@ -209,7 +209,7 @@ List<MenuItem> menuItems = [
       ),
       TabItem(
         form: UsersForm(
-          key: ValueKey("GROWERP_M_SUPPLIER"),
+          key: Key("Supplier"),
           userGroupId: "GROWERP_M_SUPPLIER",
         ),
         label: "Suppliers",

@@ -195,8 +195,7 @@ void main() {
       await tester.tap(find.byKey(Key('tapUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check user data from registration
-      expect(find.byKey(Key('UserDialogAdmin')), findsOneWidget,
-          reason: '>>>After tap user at menu/drawer show user dialog');
+      expect(find.byKey(Key('UserDialogAdmin')), findsOneWidget);
       expect(Test.getTextFormField('firstName'), equals('firstName'));
       expect(Test.getTextFormField('lastName'), equals('lastName'));
       expect(Test.getTextFormField('username'), equals('e$random@example.org'));
