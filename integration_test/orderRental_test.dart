@@ -28,11 +28,14 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   DateTime today = DateTime.now();
   DateTime plus2 = today.add(Duration(days: 2));
+  DateTime plus4 = today.add(Duration(days: 4));
   var usFormat = new DateFormat('M/d/yyyy');
   var intlFormat = new DateFormat('yyyy-MM-dd');
   String plus2StringUs = usFormat.format(plus2);
+  String plus4StringUs = usFormat.format(plus4);
   String todayStringIntl = intlFormat.format(today);
   String plus2StringIntl = intlFormat.format(plus2);
+  String plus4StringIntl = intlFormat.format(plus4);
 
   setUp(() async {
     await GlobalConfiguration().loadFromAsset("app_settings");
@@ -49,25 +52,25 @@ void main() {
       await Test.createUser(tester, 'customer', random);
     }, skip: false);
 
-    testWidgets("prepare &&  create 2 rental orders >>>>>",
+    testWidgets("prepare &&  create 3 rental orders >>>>>",
         (WidgetTester tester) async {
       await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
-//          username: 'e771@example.org');
+      // username: 'e547@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
-      for (int x in [1, 2]) {
+      for (int x in [1, 2, 3]) {
         await tester.tap(find.byKey(Key('addNew')));
         await tester.pump();
         await tester.tap(find.byKey(Key('customer')));
         await tester.pumpAndSettle(Duration(seconds: 5));
-        await tester.tap(find.textContaining('customer$x').last);
+        await tester.tap(find.textContaining('customer1').last);
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('itemRental')));
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('product')));
         await tester.pump(Duration(seconds: 3));
-        await tester.tap(find.textContaining('productName$x').last);
+        await tester.tap(find.textContaining('productName2').last);
         await tester.pump(Duration(seconds: 1));
         await tester.tap(find.byKey(Key('setDate')));
         await tester.pump(Duration(seconds: 1));
@@ -75,14 +78,15 @@ void main() {
         await tester.pump(Duration(seconds: 1));
         if (x == 2) // x== 1 todays date filled in by default
           await tester.enterText(find.byType(TextField).last, plus2StringUs);
+        if (x == 3)
+          await tester.enterText(find.byType(TextField).last, plus4StringUs);
         await tester.pump();
         await tester.tap(find.text('OK'));
         await tester.pump(Duration(seconds: 1));
         DateTime textField = DateTime.parse(Test.getTextField('date'));
-        if (x == 1)
-          expect(usFormat.format(textField), usFormat.format(today));
-        else
-          expect(usFormat.format(textField), usFormat.format(plus2));
+        if (x == 1) expect(usFormat.format(textField), usFormat.format(today));
+        if (x == 2) expect(usFormat.format(textField), usFormat.format(plus2));
+        if (x == 3) expect(usFormat.format(textField), usFormat.format(plus4));
         await tester.pump(Duration(seconds: 1));
         await tester.enterText(find.byKey(Key('quantity')), x.toString());
         await tester.tap(find.byKey(Key('okRental')));
@@ -92,7 +96,7 @@ void main() {
         await tester.tap(find.byKey(Key('update')));
         await tester.pumpAndSettle(Duration(seconds: 10));
       }
-      expect(find.byKey(Key('finDocItem')), findsNWidgets(2));
+      expect(find.byKey(Key('finDocItem')), findsNWidgets(3));
     }, skip: false);
 
     testWidgets("check orders for rental data >>>>>",
@@ -103,18 +107,23 @@ void main() {
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
       // check list
-      for (int x in [0, 1]) {
+      for (int x in [0, 1, 2]) {
         expect(Test.getTextField('statusId$x'), equals('in Preparation'));
         await tester.tap(find.byKey(Key('ID$x')));
         await tester.pump(Duration(seconds: 10));
-        expect(Test.getTextField('itemLine$x'),
-            contains(x == 0 ? '$todayStringIntl' : '$plus2StringIntl'));
+        expect(
+            Test.getTextField('itemLine$x'),
+            contains(x == 0
+                ? '$todayStringIntl'
+                : x == 1
+                    ? '$plus2StringIntl'
+                    : '$plus4StringIntl'));
       }
     }, skip: false);
     testWidgets("check blocked dates for new reservation>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())),
-          username: 'e841@example.org');
+      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      //    username: 'e841@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
