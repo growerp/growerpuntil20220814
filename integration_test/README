@@ -7,12 +7,13 @@ On mobile.
 single test:
 flutter drive  \
     --driver=test_driver/integration_test.dart \
-    --target=integration_test/newCompany_test.dart
-
-to run all tests:
+    --target=integration_test/newCompany_test.dar
+    
+to run all tests with screenshot on error:
 flutter drive \
   --driver=test_driver/integration_test.dart \
-  --target=integration_test/main_tests.dart 
+  --target=integration_test/main_tests.dart \ 
+  --screenshot=.
 
 
 on chrome (not working yet)

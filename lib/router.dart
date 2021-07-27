@@ -15,7 +15,6 @@
 import 'package:core/coreRouter.dart';
 import 'package:core/templates/displayMenuList.dart';
 import 'package:flutter/material.dart';
-import 'forms/@forms.dart' as local;
 import 'package:core/forms/@forms.dart';
 import 'package:models/@models.dart';
 
@@ -26,7 +25,8 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       "with: ${settings.arguments.toString()} }");
   switch (settings.name) {
     case '/':
-      return MaterialPageRoute(builder: (context) => local.HomeForm());
+      return MaterialPageRoute(
+          builder: (context) => HomeForm(menuItems: menuItems));
     case '/company':
       return MaterialPageRoute(
           builder: (context) =>

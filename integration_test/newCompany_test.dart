@@ -36,8 +36,9 @@ void main() {
   group('Basic tests >>>>>', () {
     testWidgets("Create Company and Admin", (WidgetTester tester) async {
       String random = Random.secure().nextInt(1024).toString();
-      await tester.pumpWidget(
-          RestartWidget(child: AdminApp(repos: Moqui(client: Dio()))));
+      await tester.pumpWidget(RestartWidget(
+          child: AdminApp(
+              repos: Moqui(client: Dio(), classificationId: 'AppAdmin'))));
       await tester.pumpAndSettle(Duration(seconds: 30));
       try {
         expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
@@ -78,7 +79,8 @@ void main() {
 
     testWidgets("Test company from appbar update local",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -160,7 +162,8 @@ void main() {
 
     testWidgets("Test company from appbar check db update",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -186,7 +189,8 @@ void main() {
     }, skip: false);
 
     testWidgets("Test user dialog local values", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
       String random = Test.getRandom();
       if (Test.isPhone()) {
         await tester.tap(find.byTooltip('Open navigation menu'));
@@ -216,7 +220,8 @@ void main() {
     }, skip: false);
     testWidgets("Test user dialog check data base",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
       String random = Test.getRandom();
       // force user to refresh scrren
       if (Test.isPhone()) {

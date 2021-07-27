@@ -42,7 +42,7 @@ packages:
       name: args
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.2.0"
   async:
     dependency: transitive
     description:
@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: "8e8e2b9df11bcf4e2f0260aa6c98dc53ce478a0f"
+      resolved-ref: "033094aae5fef26ab1dd60ca2da91a58c4e2ff96"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -79,7 +79,7 @@ packages:
       name: bloc_test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.0.2"
+    version: "8.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -160,9 +160,11 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: "../packages/core"
-      relative: true
-    source: path
+      path: core
+      ref: packages
+      resolved-ref: "033094aae5fef26ab1dd60ca2da91a58c4e2ff96"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   coverage:
     dependency: transitive
@@ -271,7 +273,7 @@ packages:
       name: flutter_launcher_icons
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.0"
+    version: "0.9.1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -456,7 +458,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: "8e8e2b9df11bcf4e2f0260aa6c98dc53ce478a0f"
+      resolved-ref: "033094aae5fef26ab1dd60ca2da91a58c4e2ff96"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -834,7 +836,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: "8e8e2b9df11bcf4e2f0260aa6c98dc53ce478a0f"
+      resolved-ref: "033094aae5fef26ab1dd60ca2da91a58c4e2ff96"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"

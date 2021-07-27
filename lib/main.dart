@@ -26,8 +26,9 @@ import 'package:backend/@backend.dart';
 import 'package:core/styles/themes.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
-import 'forms/@forms.dart';
-import 'package:core/forms/@forms.dart' as core;
+import 'menuItem_data.dart';
+//import 'forms/@forms.dart';
+import 'package:core/forms/@forms.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +37,7 @@ Future main() async {
   await GlobalConfiguration().loadFromAsset("app_settings");
   String backend = GlobalConfiguration().getValue("backend");
   var repos = backend == 'moqui'
-      ? Moqui(client: Dio())
+      ? Moqui(client: Dio(), classificationId: 'AppAdmin')
 //      : backend == 'ofbiz'
 //          ? Ofbiz(client: Dio())
       : null;
@@ -75,7 +76,9 @@ class AdminApp extends StatelessWidget {
           BlocProvider<EmployeeBloc>(
               create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE")),
           BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
-          BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
+          BlocProvider<ProductBloc>(
+              create: (context) =>
+                  ProductBloc(repos, BlocProvider.of<AuthBloc>(context))),
           BlocProvider<SalesOrderBloc>(
               create: (context) => FinDocBloc(repos, true, 'order')),
           BlocProvider<PurchaseOrderBloc>(
@@ -93,7 +96,9 @@ class AdminApp extends StatelessWidget {
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(repos)),
           BlocProvider<TransactionBloc>(
               create: (context) => FinDocBloc(repos, false, 'transaction')),
-          BlocProvider<AssetBloc>(create: (context) => AssetBloc(repos)),
+          BlocProvider<AssetBloc>(
+              create: (context) =>
+                  AssetBloc(repos, BlocProvider.of<AuthBloc>(context))),
         ],
         child: MyApp(),
       ),
@@ -102,6 +107,7 @@ class AdminApp extends StatelessWidget {
 }
 
 class MyApp extends StatelessWidget {
+  static String title = "GrowERP administrator.";
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -130,12 +136,14 @@ class MyApp extends StatelessWidget {
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
             if (state is AuthProblem)
-              return core.FatalErrorForm("Internet or server problem?");
+              return FatalErrorForm("Internet or server problem?");
             if (state is AuthAuthenticated)
-              return HomeForm(message: state.message);
+              return HomeForm(
+                  message: state.message, menuItems: menuItems, title: title);
             if (state is AuthUnauthenticated)
-              return HomeForm(message: state.message);
-            return core.SplashForm();
+              return HomeForm(
+                  message: state.message, menuItems: menuItems, title: title);
+            return SplashForm();
           },
         ));
   }

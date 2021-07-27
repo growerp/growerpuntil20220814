@@ -44,9 +44,10 @@ void main() {
 
   group('Order Rental tests>>>>>', () {
     testWidgets("Prepare>>>>>>", (WidgetTester tester) async {
-      await Test.createCompanyAndAdmin(
-          tester, AdminApp(repos: Moqui(client: Dio())));
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.createCompanyAndAdmin(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
+      await Test.login(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
       await Test.createAssetFromMain(tester);
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
@@ -54,7 +55,8 @@ void main() {
 
     testWidgets("prepare &&  create 3 rental orders >>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
       // username: 'e547@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
@@ -101,7 +103,8 @@ void main() {
 
     testWidgets("check orders for rental data >>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
       //    username: 'e953@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
@@ -122,7 +125,8 @@ void main() {
     }, skip: false);
     testWidgets("check blocked dates for new reservation>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
       //    username: 'e841@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
