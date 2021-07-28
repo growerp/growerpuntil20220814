@@ -114,7 +114,7 @@ void main() {
 
       // user top left
       await tapMenuButton('tapUser');
-      await waitFor(find.byValueKey('AdminUserDialog'), expected: true);
+      await waitFor(find.byValueKey('UserDialogAdmin'), expected: true);
       await driver.tap(find.byValueKey('cancel'));
       // close drawer for phone
       if (isPhone) await driver.tap(find.byValueKey('tap/'));
