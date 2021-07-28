@@ -59,6 +59,11 @@ Functions coming up:
 * Inventory
 * Project management
 
+# Single company use.
+
+This frontend can be used for a single company, set the company partyId in the assets/cfg frontend dir.
+
+
 Phone                                                                                         |  Tablet/PC
 :--------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:
 ![](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/phoneDashboard.png) | ![](https://raw.githubusercontent.com/growerp/growerp/master/screenPrints/pcDashboard.png)
