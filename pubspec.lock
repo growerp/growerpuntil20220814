@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: "019acfc6f9cae0ad8d919e39f9aaa16043be1b06"
+      resolved-ref: c3f33751698a865684c5ba5daaa5275744e40d3c
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: "019acfc6f9cae0ad8d919e39f9aaa16043be1b06"
+      resolved-ref: c3f33751698a865684c5ba5daaa5275744e40d3c
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -836,7 +836,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: ef65a6da7d3b969b286d95d25aec5c46fcf885c8
+      resolved-ref: "019acfc6f9cae0ad8d919e39f9aaa16043be1b06"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
@@ -853,7 +853,7 @@ packages:
       name: very_good_analysis
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.2.0"
   vm_service:
     dependency: transitive
     description:

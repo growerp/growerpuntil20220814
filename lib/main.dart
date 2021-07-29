@@ -62,11 +62,23 @@ class AdminApp extends StatelessWidget {
           BlocProvider<AuthBloc>(
               create: (context) => AuthBloc(repos)..add(LoadAuth())),
           BlocProvider<LeadBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_LEAD")),
+              create: (context) => UserBloc(
+                    repos,
+                    "GROWERP_M_LEAD",
+                    BlocProvider.of<AuthBloc>(context),
+                  )),
           BlocProvider<CustomerBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_CUSTOMER")),
+              create: (context) => UserBloc(
+                    repos,
+                    "GROWERP_M_CUSTOMER",
+                    BlocProvider.of<AuthBloc>(context),
+                  )),
           BlocProvider<SupplierBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER")),
+              create: (context) => UserBloc(
+                    repos,
+                    "GROWERP_M_SUPPLIER",
+                    BlocProvider.of<AuthBloc>(context),
+                  )),
           BlocProvider<AdminBloc>(
               create: (context) => UserBloc(
                     repos,
@@ -74,7 +86,11 @@ class AdminApp extends StatelessWidget {
                     BlocProvider.of<AuthBloc>(context),
                   )),
           BlocProvider<EmployeeBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE")),
+              create: (context) => UserBloc(
+                    repos,
+                    "GROWERP_M_EMPLOYEE",
+                    BlocProvider.of<AuthBloc>(context),
+                  )),
           BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
           BlocProvider<ProductBloc>(
               create: (context) =>

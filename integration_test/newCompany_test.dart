@@ -34,47 +34,9 @@ void main() {
   });
 
   group('Basic tests >>>>>', () {
-    testWidgets("Create Company and Admin", (WidgetTester tester) async {
-      String random = Random.secure().nextInt(1024).toString();
-      await tester.pumpWidget(RestartWidget(
-          child: AdminApp(
-              repos: Moqui(client: Dio(), classificationId: 'AppAdmin'))));
-      await tester.pumpAndSettle(Duration(seconds: 30));
-      try {
-        expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
-      } catch (_) {
-        // assumes still logged in, so logout
-        print("Dashboard logged in , needs to logout");
-        await tester.tap(find.byKey(Key('logoutButton')));
-        await tester.pumpAndSettle(Duration(seconds: 5));
-        expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget,
-            reason: '>>>logged out home screen not found');
-      }
-      // tap new company button, enter data
-      await tester.tap(find.byKey(Key('newCompButton')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      await tester.enterText(find.byKey(Key('firstName')), 'firstName');
-      await tester.enterText(find.byKey(Key('lastName')), 'lastName');
-      await tester.enterText(find.byKey(Key('email')), 'e$random@example.org');
-      await tester.enterText(
-          find.byKey(Key('companyName')), 'companyName$random');
-      await tester.tap(find.byKey(Key('demoData')));
-      await tester.tap(find.byKey(Key('newCompany')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
-      // login with new username
-      await tester.tap(find.byKey(Key('loginButton')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(Test.getTextFormField('username'), equals('e$random@example.org'),
-          reason: '>>>username not remembered (or wrong) after register');
-      await tester.enterText(find.byKey(Key('password')), 'qqqqqq9!');
-      await tester.tap(find.byKey(Key('login')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('DashBoardForm')), findsOneWidget);
-      // logout
-      await tester.tap(find.byKey(Key('logoutButton')));
-      await tester.pumpAndSettle(Duration(seconds: 5));
-      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
+    testWidgets("prepare >>>>>", (WidgetTester tester) async {
+      await Test.createCompanyAndAdmin(tester,
+          AdminApp(repos: Moqui(client: Dio(), classificationId: 'AppAdmin')));
     }, skip: false);
 
     testWidgets("Test company from appbar update local",
@@ -158,7 +120,7 @@ void main() {
       expect(Test.getTextFormField('city'), equals('cityu'));
       expect(Test.getTextFormField('province'), equals('provinceu'));
       expect(Test.getDropdownSearch('country'), equals('Angola'));
-    }, skip: false);
+    }, skip: true);
 
     testWidgets("Test company from appbar check db update",
         (WidgetTester tester) async {
@@ -186,7 +148,7 @@ void main() {
       expect(Test.getTextFormField('city'), equals('cityu'));
       expect(Test.getTextFormField('province'), equals('provinceu'));
       expect(Test.getDropdownSearch('country'), equals('Angola'));
-    }, skip: false);
+    }, skip: true);
 
     testWidgets("Test user dialog local values", (WidgetTester tester) async {
       await Test.login(tester,
