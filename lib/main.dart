@@ -27,7 +27,6 @@ import 'package:core/styles/themes.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'menuItem_data.dart';
-//import 'forms/@forms.dart';
 import 'package:core/forms/@forms.dart';
 
 Future main() async {
@@ -60,7 +59,8 @@ class AdminApp extends StatelessWidget {
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(
-              create: (context) => AuthBloc(repos)..add(LoadAuth())),
+              create: (context) => AuthBloc(repos)..add(LoadAuth()),
+              lazy: false),
           BlocProvider<LeadBloc>(
               create: (context) => UserBloc(
                     repos,

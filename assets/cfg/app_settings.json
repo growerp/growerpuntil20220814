@@ -1,5 +1,6 @@
 {
     "version": 0.1, "build": 10,
+    "classificationId": "AppAdmin",
     "_________________comment__backend": "moqui / ofbiz",
     "backend": "moqui",
     "_________________comment__production url _end forwardslash!": "https://rest.example.com/",
