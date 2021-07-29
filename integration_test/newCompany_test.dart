@@ -120,7 +120,7 @@ void main() {
       expect(Test.getTextFormField('city'), equals('cityu'));
       expect(Test.getTextFormField('province'), equals('provinceu'));
       expect(Test.getDropdownSearch('country'), equals('Angola'));
-    }, skip: true);
+    }, skip: false);
 
     testWidgets("Test company from appbar check db update",
         (WidgetTester tester) async {
@@ -148,7 +148,7 @@ void main() {
       expect(Test.getTextFormField('city'), equals('cityu'));
       expect(Test.getTextFormField('province'), equals('provinceu'));
       expect(Test.getDropdownSearch('country'), equals('Angola'));
-    }, skip: true);
+    }, skip: false);
 
     testWidgets("Test user dialog local values", (WidgetTester tester) async {
       await Test.login(tester,
