@@ -66,7 +66,7 @@ void main() {
         await tester.tap(find.text('Available').last);
         await tester.pump(Duration(seconds: 1));
         await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 3));
         await tester.tap(find.byKey(Key('update')));
         await tester.pumpAndSettle(Duration(seconds: 5));
         // check list
@@ -100,7 +100,7 @@ void main() {
           await tester.tap(find.text('In Use').last);
           await tester.pump(Duration(seconds: 1));
           await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-          await tester.pump(Duration(seconds: 1));
+          await tester.pump(Duration(seconds: 3));
           await tester.tap(find.byKey(Key('update')));
           await tester.pumpAndSettle(Duration(seconds: 5));
           // check list

@@ -10,10 +10,9 @@ flutter drive  \
     --target=integration_test/newCompany_test.dar
     
 to run all tests with screenshot on error:
-flutter drive \
+flutter drive --screenshot=. \
   --driver=test_driver/integration_test.dart \
-  --target=integration_test/main_tests.dart \ 
-  --screenshot=.
+  --target=integration_test/main_tests.dart 
 
 
 on chrome (not working yet)

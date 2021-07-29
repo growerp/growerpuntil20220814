@@ -161,7 +161,7 @@ void main() {
       await tester.enterText(
           find.byKey(Key('newCompanyName')), 'leadCompany$random');
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump(Duration(seconds: 3));
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist
@@ -216,7 +216,7 @@ void main() {
       await tester.enterText(
           find.byKey(Key('newCompanyName')), 'customerCompany$random');
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump(Duration(seconds: 3));
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist
@@ -273,7 +273,7 @@ void main() {
       await tester.enterText(
           find.byKey(Key('newCompanyName')), 'customerCompany$random');
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump(Duration(seconds: 3));
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist
@@ -330,7 +330,7 @@ void main() {
       await tester.enterText(
           find.byKey(Key('newCompanyName')), 'supplierCompany$random');
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump(Duration(seconds: 3));
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist

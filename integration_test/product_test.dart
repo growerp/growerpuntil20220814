@@ -64,7 +64,7 @@ void main() {
         await tester.tap(find.text(productTypes[0]).last);
         await tester.pump(Duration(seconds: 1));
         await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 3));
         await tester.tap(find.byKey(Key('update')));
         await tester.pumpAndSettle(Duration(seconds: 5));
       }
@@ -92,7 +92,7 @@ void main() {
         expect(Test.getDropdownSearch('categoryDropDown'), 'categoryName1');
         expect(Test.getDropdown('productTypeDropDown'), productTypes[0]);
         await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 3));
         await tester.tap(find.byKey(Key('cancel')));
         await tester.pumpAndSettle(Duration(seconds: 1));
       }
@@ -112,7 +112,7 @@ void main() {
       await tester.tap(find.text(productTypes[2]).last);
       await tester.pump(Duration(seconds: 1));
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump(Duration(seconds: 3));
       await tester.tap(find.byKey(Key('update')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check update from b -> d in list
@@ -128,7 +128,7 @@ void main() {
       expect(Test.getDropdownSearch('categoryDropDown'), 'categoryName2');
       expect(Test.getDropdown('productTypeDropDown'), productTypes[2]);
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump(Duration(seconds: 3));
       await tester.tap(find.byKey(Key('cancel')));
       await tester.pumpAndSettle(Duration(seconds: 1));
       // delete record 'x'

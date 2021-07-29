@@ -71,7 +71,7 @@ void main() {
 //        await tester.tap(find.text('employee1'));
 //        await tester.pump(Duration(seconds: 1));
         await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 3));
         await tester.tap(find.byKey(Key('update')));
         await tester.pumpAndSettle(Duration(seconds: 5));
       }
@@ -127,7 +127,7 @@ void main() {
           await tester.tap(find.textContaining('lead2').last);
           await tester.pump(Duration(seconds: 1));
           await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-          await tester.pump(Duration(seconds: 1));
+          await tester.pump(Duration(seconds: 3));
           await tester.tap(find.byKey(Key('update')));
           await tester.pumpAndSettle(Duration(seconds: 5));
           // check list
@@ -153,7 +153,7 @@ void main() {
           expect(Test.getDropdownSearch('lead'), contains('firstName2 lead2'));
         }
         await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 3));
         await tester.tap(find.byKey(Key('cancel')));
         await tester.pump(Duration(seconds: 5));
       }
@@ -212,7 +212,7 @@ void main() {
         expect(Test.getDropdownSearch('lead'),
             contains('firstName${x + 1} lead${x + 1}'));
         await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pump(Duration(seconds: 3));
         await tester.tap(find.byKey(Key('cancel')));
         await tester.pump(Duration(seconds: 5));
       }
