@@ -196,9 +196,7 @@ class _OpportunityState extends State<OpportunityPage> {
         key: Key('stageId'),
         value: _selectedStageId,
         decoration: InputDecoration(labelText: 'Opportunity Stage'),
-        validator: (value) {
-          return value!.isEmpty ? 'field required' : null;
-        },
+        validator: (value) => value == null ? 'field required' : null,
         items: opportunityStages.map((item) {
           return DropdownMenuItem<String>(child: Text(item), value: item);
         }).toList(),
