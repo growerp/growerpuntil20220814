@@ -71,19 +71,11 @@ class _OpportunityState extends State<OpportunityPage> {
         ? opportunity.estProbability.toString()
         : '';
     _estNextStepController.text = opportunity.nextStep ?? '';
-    if (opportunity.leadPartyId != null) {
-      _selectedLead = User(
-          partyId: opportunity.leadPartyId,
-          email: opportunity.leadEmail,
-          firstName: opportunity.leadFirstName,
-          lastName: opportunity.leadLastName);
+    if (opportunity.leadUser != null) {
+      _selectedLead = opportunity.leadUser;
     }
-    if (opportunity.accountPartyId != null) {
-      _selectedAccount = User(
-          partyId: opportunity.accountPartyId,
-          email: opportunity.accountEmail,
-          firstName: opportunity.accountFirstName,
-          lastName: opportunity.accountLastName);
+    if (opportunity.employeeUser != null) {
+      _selectedAccount = opportunity.employeeUser;
     }
     if (opportunity.stageId != null)
       _selectedStageId = opportunity.stageId ?? opportunityStages[0];
@@ -113,9 +105,8 @@ class _OpportunityState extends State<OpportunityPage> {
   }
 
   Widget _showForm(repos) {
-    Future<List<User>> getData(userGroupId, filter) async {
-      var response = await repos.getUser(
-          userGroupId: userGroupId, filter: _leadSearchBoxController.text);
+    Future<List<User>> getData(filter) async {
+      var response = await repos.getUser(filter: _leadSearchBoxController.text);
       return response;
     }
 
@@ -223,8 +214,7 @@ class _OpportunityState extends State<OpportunityPage> {
         key: Key('lead'),
         itemAsString: (User? u) => "${u?.firstName}, ${u?.lastName} "
             "${u?.companyName}",
-        onFind: (String filter) =>
-            getData("GROWERP_M_LEAD", _leadSearchBoxController.text),
+        onFind: (String filter) => getData(_leadSearchBoxController.text),
         onChanged: (User? newValue) {
           _selectedLead = newValue;
         },
@@ -256,37 +246,40 @@ class _OpportunityState extends State<OpportunityPage> {
               onChanged: (User? newValue) {
                 _selectedAccount = newValue;
               })),
-      ElevatedButton(
-          key: Key('cancel'),
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          }),
-      ElevatedButton(
-          key: Key('update'),
-          child: Text(opportunity.opportunityId == null ? 'Create' : 'Update'),
-          onPressed: () {
-            if (_formKeyOpportunity.currentState!.validate() && !loading) {
-              BlocProvider.of<OpportunityBloc>(context)
-                  .add(UpdateOpportunity(Opportunity(
-                opportunityId: opportunity.opportunityId,
-                opportunityName: _nameController.text,
-                description: _descriptionController.text,
-                estAmount: Decimal.parse(_estAmountController.text),
-                estProbability: int.parse(_estProbabilityController.text),
-                stageId: _selectedStageId,
-                nextStep: _estNextStepController.text,
-                accountPartyId: _selectedAccount?.partyId,
-                accountFirstName: _selectedAccount?.firstName,
-                accountLastName: _selectedAccount?.lastName,
-                accountEmail: _selectedAccount?.email,
-                leadPartyId: _selectedLead?.partyId,
-                leadFirstName: _selectedLead?.firstName,
-                leadLastName: _selectedLead?.lastName,
-                leadEmail: _selectedLead?.email,
-              )));
-            }
-          }),
+      Row(
+        children: [
+          ElevatedButton(
+              key: Key('cancel'),
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              }),
+          SizedBox(width: 10),
+          Expanded(
+              child: ElevatedButton(
+                  key: Key('update'),
+                  child: Text(
+                      opportunity.opportunityId == null ? 'Create' : 'Update'),
+                  onPressed: () {
+                    if (_formKeyOpportunity.currentState!.validate() &&
+                        !loading) {
+                      BlocProvider.of<OpportunityBloc>(context)
+                          .add(UpdateOpportunity(Opportunity(
+                        opportunityId: opportunity.opportunityId,
+                        opportunityName: _nameController.text,
+                        description: _descriptionController.text,
+                        estAmount: Decimal.parse(_estAmountController.text),
+                        estProbability:
+                            int.parse(_estProbabilityController.text),
+                        stageId: _selectedStageId,
+                        nextStep: _estNextStepController.text,
+                        employeeUser: _selectedAccount,
+                        leadUser: _selectedLead,
+                      )));
+                    }
+                  }))
+        ],
+      )
     ];
 
     List<Widget> rows = [];

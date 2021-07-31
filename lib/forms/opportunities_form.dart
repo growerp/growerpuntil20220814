@@ -33,7 +33,8 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
   ScrollController _scrollController = ScrollController();
   double _scrollThreshold = 200.0;
   late OpportunityBloc _opportunityBloc;
-  Authenticate? authenticate;
+  late Authenticate authenticate;
+  List<Opportunity> opportunities = [];
   int limit = 20;
   late bool searchField;
   String? searchString;
@@ -72,9 +73,9 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
           if (state is OpportunitySuccess) {
             isLoading = false;
             bool hasReachedMax = state.hasReachedMax ?? true;
-            List<Opportunity>? opportunities = state.opportunities;
+            opportunities = state.opportunities ?? [];
             return ListView.builder(
-              itemCount: hasReachedMax && opportunities!.isNotEmpty
+              itemCount: hasReachedMax && opportunities.isNotEmpty
                   ? state.opportunities!.length + 1
                   : state.opportunities!.length + 2,
               controller: _scrollController,
@@ -143,7 +144,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                       child: Text("Est. Probability %",
                                           textAlign: TextAlign.center)),
                                 Expanded(
-                                    child: Text("Lead Name",
+                                    child: Text("Lead Name & Company",
                                         textAlign: TextAlign.left)),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
@@ -164,7 +165,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               Divider(color: Colors.black),
                             ]),
                       trailing: Text(' '));
-                if (index == 1 && opportunities!.isEmpty)
+                if (index == 1 && opportunities.isEmpty)
                   return Center(
                       heightFactor: 20,
                       child: Text("no records found!",
@@ -185,7 +186,7 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                               children: <Widget>[
                                 Expanded(
                                     child: Text(
-                                        "${opportunities![index].opportunityName}",
+                                        "${opportunities[index].opportunityName}",
                                         key: Key('name$index'))),
                                 if (!ResponsiveWrapper.of(context)
                                     .isSmallerThan(DESKTOP))
@@ -203,9 +204,10 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                           textAlign: TextAlign.center)),
                                 Expanded(
                                     child: Text(
-                                  (opportunities[index].leadPartyId != null
-                                      ? "${opportunities[index].leadFirstName} "
-                                          "${opportunities[index].leadLastName}"
+                                  (opportunities[index].leadUser != null
+                                      ? "${opportunities[index].leadUser!.firstName} "
+                                          "${opportunities[index].leadUser!.lastName}, "
+                                          "${opportunities[index].leadUser!.companyName}"
                                       : ""),
                                   key: Key('lead$index'),
                                 )),
@@ -213,8 +215,8 @@ class _OpportunitiesState extends State<OpportunitiesForm> {
                                     .isSmallerThan(DESKTOP))
                                   Expanded(
                                       child: Text(
-                                    opportunities[index].leadPartyId != null
-                                        ? "${opportunities[index].leadEmail}"
+                                    opportunities[index].leadUser != null
+                                        ? "${opportunities[index].leadUser!.email}"
                                         : "",
                                     key: Key('leadEmail$index'),
                                   )),
