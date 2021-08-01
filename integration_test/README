@@ -1,6 +1,10 @@
 Integration tests using integration test package.(WidgetTest)
 =============================================================
 
+Automated run:
+in the admin directory, Moqui in:  growerpMoqui
+flutter pub run utils:runIntegration.dart
+
 On mobile.
 ----------
 
