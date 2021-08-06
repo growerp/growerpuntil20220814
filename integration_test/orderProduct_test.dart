@@ -14,7 +14,7 @@
 
 import 'package:admin/main.dart';
 import 'package:dio/dio.dart';
-import 'package:core/integration_test/test_functions.dart';
+import 'package:core/integration_test/widgetTest_functions.dart';
 import 'package:backend/moqui.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +97,7 @@ void main() {
               equals('orderName$random${char[x]}'));
         }
       }
-      //check detail and update second record, delete last one
+      //check detail and update second record, delete last one (not phone)
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
       for (int x in [0, 1, 2]) {
         await tester.tap(find.byKey(Key('edit$x')));
@@ -152,9 +152,11 @@ void main() {
         }
       }
       expect(find.byKey(Key('finDocItem')), findsNWidgets(3));
-      // delete record 'x' x=2
-      await tester.tap(find.byKey(Key('delete2')));
-      await tester.pumpAndSettle(Duration(seconds: 1));
+      if (!Test.isPhone()) {
+        // delete record 'x' x=2
+        await tester.tap(find.byKey(Key('delete2')));
+        await tester.pumpAndSettle(Duration(seconds: 1));
+      }
     }, skip: false);
 
     testWidgets("orders  with physical products reload from database>>>>>",
@@ -166,7 +168,8 @@ void main() {
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pumpAndSettle(Duration(seconds: 1));
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
-      expect(find.byKey(Key('finDocItem')), findsNWidgets(2));
+      expect(
+          find.byKey(Key('finDocItem')), findsNWidgets(Test.isPhone() ? 3 : 2));
       // check list
       char = ['a', 'd'];
       for (int x in [0, 1]) {
