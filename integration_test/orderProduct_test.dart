@@ -14,7 +14,7 @@
 
 import 'package:admin/main.dart';
 import 'package:dio/dio.dart';
-import 'package:core/integration_test/widgetTest_functions.dart';
+import 'package:core/integration_test/test_functions.dart';
 import 'package:backend/moqui.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
