@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: "7773766a69c38871d14a1cd2dcbeb38d668480ce"
+      resolved-ref: "5801b796def9b632407574d1872d94d892c44e91"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -93,7 +93,7 @@ packages:
       name: build
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.1.0"
   built_collection:
     dependency: transitive
     description:
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: "7773766a69c38871d14a1cd2dcbeb38d668480ce"
+      resolved-ref: "5801b796def9b632407574d1872d94d892c44e91"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -285,7 +285,7 @@ packages:
       name: flutter_markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3"
+    version: "0.6.4"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -445,7 +445,7 @@ packages:
       name: mockito
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.12"
+    version: "5.0.13"
   mocktail:
     dependency: transitive
     description:
@@ -458,7 +458,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: "7773766a69c38871d14a1cd2dcbeb38d668480ce"
+      resolved-ref: "5801b796def9b632407574d1872d94d892c44e91"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -834,9 +834,11 @@ packages:
   utils:
     dependency: "direct dev"
     description:
-      path: "../packages/utils"
-      relative: true
-    source: path
+      path: utils
+      ref: packages
+      resolved-ref: "5801b796def9b632407574d1872d94d892c44e91"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.0"
   vector_math:
     dependency: transitive
@@ -851,7 +853,7 @@ packages:
       name: very_good_analysis
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0"
+    version: "2.3.0"
   vm_service:
     dependency: transitive
     description:

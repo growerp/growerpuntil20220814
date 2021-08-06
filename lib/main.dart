@@ -62,23 +62,11 @@ class AdminApp extends StatelessWidget {
               create: (context) => AuthBloc(repos)..add(LoadAuth()),
               lazy: false),
           BlocProvider<LeadBloc>(
-              create: (context) => UserBloc(
-                    repos,
-                    "GROWERP_M_LEAD",
-                    BlocProvider.of<AuthBloc>(context),
-                  )),
+              create: (context) => UserBloc(repos, "GROWERP_M_LEAD")),
           BlocProvider<CustomerBloc>(
-              create: (context) => UserBloc(
-                    repos,
-                    "GROWERP_M_CUSTOMER",
-                    BlocProvider.of<AuthBloc>(context),
-                  )),
+              create: (context) => UserBloc(repos, "GROWERP_M_CUSTOMER")),
           BlocProvider<SupplierBloc>(
-              create: (context) => UserBloc(
-                    repos,
-                    "GROWERP_M_SUPPLIER",
-                    BlocProvider.of<AuthBloc>(context),
-                  )),
+              create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER")),
           BlocProvider<AdminBloc>(
               create: (context) => UserBloc(
                     repos,
@@ -86,15 +74,9 @@ class AdminApp extends StatelessWidget {
                     BlocProvider.of<AuthBloc>(context),
                   )),
           BlocProvider<EmployeeBloc>(
-              create: (context) => UserBloc(
-                    repos,
-                    "GROWERP_M_EMPLOYEE",
-                    BlocProvider.of<AuthBloc>(context),
-                  )),
+              create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE")),
           BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
-          BlocProvider<ProductBloc>(
-              create: (context) =>
-                  ProductBloc(repos, BlocProvider.of<AuthBloc>(context))),
+          BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
           BlocProvider<SalesOrderBloc>(
               create: (context) => FinDocBloc(repos, true, 'order')),
           BlocProvider<PurchaseOrderBloc>(
@@ -112,9 +94,7 @@ class AdminApp extends StatelessWidget {
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(repos)),
           BlocProvider<TransactionBloc>(
               create: (context) => FinDocBloc(repos, false, 'transaction')),
-          BlocProvider<AssetBloc>(
-              create: (context) =>
-                  AssetBloc(repos, BlocProvider.of<AuthBloc>(context))),
+          BlocProvider<AssetBloc>(create: (context) => AssetBloc(repos)),
         ],
         child: MyApp(),
       ),
