@@ -28,7 +28,7 @@ void main() {
 
   Future<void> takeScreenshot([String? name]) async {
     String fileName = name ?? '${random.toString()}-${(++seq).toString()}';
-    fileName = '$imagePrefix/$fileName.jpg';
+    fileName = '$imagePrefix$fileName.jpg';
     final List<int> pixels = await driver.screenshot();
     final File file = File(fileName);
     await file.writeAsBytes(pixels);

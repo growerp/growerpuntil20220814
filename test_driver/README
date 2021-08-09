@@ -24,5 +24,8 @@ flutter drive -d web-server \
     --driver=test_driver/menu_test.dart \
     --target=test_driver/target.dart
 
+To make screenshots see: master(admin) android or ios/fastlane/README
+---------------------------------------------------------------------
+
 
 
