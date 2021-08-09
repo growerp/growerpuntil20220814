@@ -1,15 +1,37 @@
-Running fastlane
-=================
+Running fastlane to upload in Playstore
+=======================================
 
-create screenshots and frame them:
-1. create emulators in android studio
-    they can be listed with the command:
-    flutter emulators.
-2. In admin dir: flutter pub run utils:screenshots
+Steps AFTER preparation below:
+1. create screenshots and frame them, in admin home directory: 
+    flutter pub run utils:screenshots
+2. Move the framed images to the respective directories 
+    under: metadata/android/en-US/images: phoneScreenshots, seveninchScreenshots,teninchScreenshots 
+3. increase in local properties:
+    flutter.versionName=0.0.1
+    flutter.versionCode=6
+4. in web/index.html increase version:
+    main.dart.js?version=6
+5. create app bundle in admin home:
+    flutter build appbundle
+6. Upload in Play store: (in android dir)
+    (everything including build/meta/screenshots)
+    fastlane supply \
+        --aab ../build/app/outputs/bundle/release/app-release.aab \
+        --track beta --in_app_update_priority 3 \
+        --version_code 6
+
+To prepare before running screenshots and upload to playstore
+-------------------------------------------------------------
+1. make sure the menutest works, see test_driver directory
+use these emulators:
+
+Nexus_10_API_30         • Nexus 10 API 30           • Google • android
+Nexus_7_2012_API_30     • Nexus 7 (2012) API 30     • Google • android
+Pixel_4_Edited_1_API_30 • Pixel 4 (Edited) 1 API 30 • User   • android
 
 Install frameit_chrome: dart pub global activate frameit_chrome
 
-In admin dir: frame the screenshots:
+In admin dir: frame the screenshots single run:
 create title.strings and key.word.strings with screenshots
 flutter pub global run frameit_chrome \
     --base-dir=android/fastlane/metadata/android \
@@ -19,29 +41,51 @@ flutter pub global run frameit_chrome \
 
 adding framed images
 
+Other requirements:
+====================
+
 create a <projdir>/android/key.properties link to a local file
+--------------------------------------------------------------
 which contains the following info:
 storePassword=xxxxx
 keyPassword=xxxxx
 keyAlias=xxxxx
 storeFile=xxxxxxx
 
+(do NOT upload the actual file into git!)
+to create a link in linux in the android directory:
+    ln -s key.properties here/your/actual/file
+
 should have local.properties file
+---------------------------------
 which contains the following info:
 sdk.dir=/home/dell/Android/Sdk
 flutter.sdk=/home/dell/snap/flutter/common/flutter
-flutter.buildMode=debug
+flutter.buildMode=release
 flutter.versionName=0.0.1
 flutter.versionCode=5
 
-(do NOT upload the actual file into git!)
-to create a link in linux:
-command ln -s android/actual_file_name key.properties
+make sure this file is referenced in build.gradle:
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '3'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
 
 build the aab bundle:
+----------------------
 flutter build appbundle
 
 First time upload by hand, make sure bundle id is set correctly:
+----------------------------------------------------------------
 flutter create --org org/growerp/admin .
 init: fastlane supply init
 
