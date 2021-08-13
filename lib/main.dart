@@ -62,19 +62,20 @@ class AdminApp extends StatelessWidget {
               create: (context) => AuthBloc(repos)..add(LoadAuth()),
               lazy: false),
           BlocProvider<LeadBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_LEAD")),
-          BlocProvider<CustomerBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_CUSTOMER")),
-          BlocProvider<SupplierBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER")),
-          BlocProvider<AdminBloc>(
               create: (context) => UserBloc(
-                    repos,
-                    "GROWERP_M_ADMIN",
-                    BlocProvider.of<AuthBloc>(context),
-                  )),
+                  repos, "GROWERP_M_LEAD", BlocProvider.of<AuthBloc>(context))),
+          BlocProvider<CustomerBloc>(
+              create: (context) => UserBloc(repos, "GROWERP_M_CUSTOMER",
+                  BlocProvider.of<AuthBloc>(context))),
+          BlocProvider<SupplierBloc>(
+              create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER",
+                  BlocProvider.of<AuthBloc>(context))),
+          BlocProvider<AdminBloc>(
+              create: (context) => UserBloc(repos, "GROWERP_M_ADMIN",
+                  BlocProvider.of<AuthBloc>(context))),
           BlocProvider<EmployeeBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE")),
+              create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE",
+                  BlocProvider.of<AuthBloc>(context))),
           BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
           BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
           BlocProvider<SalesOrderBloc>(
