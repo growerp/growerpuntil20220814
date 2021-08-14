@@ -36,7 +36,7 @@ Future main() async {
   await GlobalConfiguration().loadFromAsset("app_settings");
   String backend = GlobalConfiguration().getValue("backend");
   var repos = backend == 'moqui'
-      ? Moqui(client: Dio(), classificationId: 'AppAdmin')
+      ? Moqui(client: Dio())
 //      : backend == 'ofbiz'
 //          ? Ofbiz(client: Dio())
       : null;
