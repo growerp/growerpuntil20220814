@@ -39,12 +39,13 @@ Future main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String prodUrl = prefs.getString("prodUrl") ?? '';
   if (prodUrl.isNotEmpty) GlobalConfiguration().updateValue("prodUrl", prodUrl);
+
   // here you switch backends
   String backend = GlobalConfiguration().getValue("backend");
   var repos = backend == 'moqui'
       ? Moqui(client: Dio())
 //      : backend == 'ofbiz'
-//          ? Ofbiz(client: Dio(), prodUrl: prodUrl)
+//          ? Ofbiz(client: Dio())
       : null;
 
   runApp(AdminApp(repos: repos!));
