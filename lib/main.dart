@@ -12,9 +12,10 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'package:core/forms/fatalError_form.dart';
+import 'package:core/forms/changeIp_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'generated/l10n.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:bloc/bloc.dart';
@@ -33,15 +34,20 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
 
+  // see if an alternative backend is saved, is so, change globalconfig
   await GlobalConfiguration().loadFromAsset("app_settings");
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String prodUrl = prefs.getString("prodUrl") ?? '';
+  if (prodUrl.isNotEmpty) GlobalConfiguration().updateValue("prodUrl", prodUrl);
+  // here you switch backends
   String backend = GlobalConfiguration().getValue("backend");
   var repos = backend == 'moqui'
       ? Moqui(client: Dio())
 //      : backend == 'ofbiz'
-//          ? Ofbiz(client: Dio())
+//          ? Ofbiz(client: Dio(), prodUrl: prodUrl)
       : null;
 
-  runApp(RestartWidget(child: AdminApp(repos: repos!)));
+  runApp(AdminApp(repos: repos!));
 }
 
 class AdminApp extends StatelessWidget {
@@ -140,6 +146,7 @@ class MyApp extends StatelessWidget {
             if (state is AuthUnauthenticated)
               return HomeForm(
                   message: state.message, menuItems: menuItems, title: title);
+            if (state is AuthChangeIp) return ChangeIpForm();
             return SplashForm();
           },
         ));

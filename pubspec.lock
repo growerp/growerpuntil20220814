@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: d03b9558a93c5fb1b5831ddca78f42490d4eb21d
+      resolved-ref: "40bf730a254100ffec0a0a24895fe5da392aee95"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: d03b9558a93c5fb1b5831ddca78f42490d4eb21d
+      resolved-ref: "40bf730a254100ffec0a0a24895fe5da392aee95"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -458,7 +458,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: fa4db6473f23809d77b968459ba461f2dab5ed2b
+      resolved-ref: d03b9558a93c5fb1b5831ddca78f42490d4eb21d
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -836,7 +836,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: fa4db6473f23809d77b968459ba461f2dab5ed2b
+      resolved-ref: d03b9558a93c5fb1b5831ddca78f42490d4eb21d
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
