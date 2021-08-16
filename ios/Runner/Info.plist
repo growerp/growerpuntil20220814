@@ -9,7 +9,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
+	<string>8.0</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -20,19 +20,21 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.0.6</string>
+	<string>0.0.8</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>6</string>
+	<string>15</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app will access an ERP backend system for data storage and backend processing.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>The image you upload will be used on Business documents like invoices or shown on screen with the relevant data.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>The app needs the camera to take pictures of persons and paper documents to show later as reference in the app.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -48,5 +50,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<ITSAppUsesNonExemptEncryption>
+	<true>
 </dict>
 </plist>
