@@ -6,9 +6,7 @@ Steps AFTER preparation below:
     flutter pub run utils:screenshots
 2. Move the framed images to the respective directories 
     under: metadata/android/en-US/images: phoneScreenshots, seveninchScreenshots,teninchScreenshots 
-3. increase in local properties:
-    flutter.versionName=0.0.1
-    flutter.versionCode=6
+3. increase in pubspec.yaml version+build
 4. in web/index.html increase version:
     main.dart.js?version=6
 5. create app bundle in admin home:
@@ -18,7 +16,11 @@ Steps AFTER preparation below:
     fastlane supply \
         --aab ../build/app/outputs/bundle/release/app-release.aab \
         --track beta --in_app_update_priority 3 \
-        --version_code 6
+        --version_code 7
+   upload just binary:
+    fastlane upload
+
+check file fastfile for another actions.
 
 To prepare before running screenshots and upload to playstore
 -------------------------------------------------------------
