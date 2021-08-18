@@ -72,7 +72,7 @@ packages:
       name: bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "7.0.0"
+    version: "7.1.0"
   bloc_test:
     dependency: "direct dev"
     description:
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: e35b8999a234a8cc741765af5c4302d28133b5fb
+      resolved-ref: "1eec1e82403a829199cc5988affad2701afb088f"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"

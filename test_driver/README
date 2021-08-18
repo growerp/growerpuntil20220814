@@ -19,10 +19,13 @@ download chromedriver and install in path: https://flutter.dev/docs/cookbook/tes
 start in a terminal:
 ./chromedriver --port=4444
 
-another terminal :
-flutter drive -d web-server \
+another terminal : (only works on release mode)
+    flutter drive \
     --driver=test_driver/menu_test.dart \
-    --target=test_driver/target.dart
+    --target=test_driver/target.dart \
+    --browser-name=chrome \
+    --no-headless --release
+
 
 To make screenshots see: master(admin) android or ios/fastlane/README
 ---------------------------------------------------------------------

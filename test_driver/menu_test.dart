@@ -73,6 +73,45 @@ void main() {
     await driver.tap(buttonKey);
   }
 
+  Future<void> createCompany() async {
+    await driver.tap(find.byValueKey('newCompButton'));
+    // firstname
+    await driver.waitFor(find.byValueKey('firstName'));
+    await driver.tap(find.byValueKey('firstName'));
+    await driver.enterText('Peter');
+    // lastname
+    await driver.waitFor(find.byValueKey('lastName'));
+    await driver.tap(find.byValueKey('lastName'));
+    await driver.enterText('Pan');
+    // email
+    await driver.waitFor(find.byValueKey('email'));
+    await driver.tap(find.byValueKey('email'));
+    await driver.enterText('test@example.org');
+    // companyName
+    await driver.waitFor(find.byValueKey('companyName'));
+    await driver.tap(find.byValueKey('companyName'));
+    await driver.enterText('Peter Pan test company');
+    await driver.tap(find.byValueKey('newCompany'));
+    // demodata
+    await driver.waitFor(find.byValueKey('demoData'));
+    await driver.tap(find.byValueKey('demoData'));
+    // create company
+    await driver.tap(find.byValueKey('newCompany'));
+    // allow demo data to be created
+    await Future.delayed(const Duration(seconds: 20));
+  }
+
+  Future<void> login() async {
+    await driver.tap(find.byValueKey('loginButton'));
+    await driver.waitFor(find.byValueKey('username'));
+    await driver.tap(find.byValueKey('username'));
+    await driver.enterText('test@example.org');
+    await driver.waitFor(find.text('test@example.org'));
+    await driver.tap(find.byValueKey('password'));
+    await driver.enterText('qqqqqq9!');
+    await driver.tap(find.byValueKey('login'));
+  }
+
   group('Admin Home Page test', () {
     setUpAll(() async {
       driver = await FlutterDriver.connect();
@@ -89,21 +128,19 @@ void main() {
     });
 
     test('Debug data Test', () async {
-      // check first if already logged in
-      if (await waitFor(find.byValueKey('DashBoardForm'))) {
-      } else {
-        // check if company exist when not create
-        if (await waitFor(find.byValueKey('loginButton'))) {
+      if (!await waitFor(find.byValueKey('/'))) {
+        // check if any company exist when not create
+        if (!await waitFor(find.byValueKey('loginButton'))) {
+          await createCompany();
+          await login();
         } else {
-          await driver.tap(find.byValueKey('newCompButton'));
-          await driver.tap(find.byValueKey('newCompany'));
-          // allow demo data to be created
-          await Future.delayed(const Duration(seconds: 20));
+          await login();
+          if (!await waitFor(find.byValueKey('/'))) {
+            await tapMenuButton('cancel');
+            await createCompany();
+            await login();
+          }
         }
-
-        // login
-        await driver.tap(find.byValueKey('loginButton'));
-        await driver.tap(find.byValueKey('login'));
       }
 
       //dashboard and check if phone
