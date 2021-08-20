@@ -13,6 +13,7 @@
  */
 
 import 'package:core/forms/changeIp_form.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -34,11 +35,23 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
 
-  // see if an alternative backend is saved, is so, change globalconfig
   await GlobalConfiguration().loadFromAsset("app_settings");
+  // on mobile shared pref can have an updated url from the startup screen
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String prodUrl = prefs.getString("prodUrl") ?? '';
   if (prodUrl.isNotEmpty) GlobalConfiguration().updateValue("prodUrl", prodUrl);
+
+  // running on the web in a container can set api address in external file
+  if (kIsWeb) {
+    try {
+      await GlobalConfiguration().loadFromPath("/app_settings.json");
+      if (GlobalConfiguration().getValue("prodUrl") != null) {
+        String prodUrl = prefs.getString("prodUrl") ?? '';
+        if (prodUrl.isNotEmpty)
+          GlobalConfiguration().updateValue("prodUrl", prodUrl);
+      }
+    } catch (_) {}
+  }
 
   // here you switch backends
   String backend = GlobalConfiguration().getValue("backend");
