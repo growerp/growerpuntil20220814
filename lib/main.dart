@@ -41,15 +41,12 @@ Future main() async {
   String prodUrl = prefs.getString("prodUrl") ?? '';
   if (prodUrl.isNotEmpty) GlobalConfiguration().updateValue("prodUrl", prodUrl);
 
-  // running on the web in a container can set api address in external file
+  // running on the web in a docker container can set api address in external file
   if (kIsWeb) {
     try {
+      print("try getting local url");
       await GlobalConfiguration().loadFromPath("/app_settings.json");
-      if (GlobalConfiguration().getValue("prodUrl") != null) {
-        String prodUrl = prefs.getString("prodUrl") ?? '';
-        if (prodUrl.isNotEmpty)
-          GlobalConfiguration().updateValue("prodUrl", prodUrl);
-      }
+      print("local url: ${GlobalConfiguration().getValue('prodUrl')}");
     } catch (_) {}
   }
 
