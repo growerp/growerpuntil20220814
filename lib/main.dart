@@ -30,24 +30,31 @@ import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'menuItem_data.dart';
 import 'package:core/forms/@forms.dart';
+import 'package:http/http.dart' as http;
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Bloc.observer = SimpleBlocObserver();
 
   await GlobalConfiguration().loadFromAsset("app_settings");
-  // on mobile shared pref can have an updated url from the startup screen
+
+  // can change backend url by pressing long the title on the home screen.
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String prodUrl = prefs.getString("prodUrl") ?? '';
-  if (prodUrl.isNotEmpty) GlobalConfiguration().updateValue("prodUrl", prodUrl);
-
-  // running on the web in a docker container can set api address in external file
-  if (kIsWeb) {
+  if (prodUrl.isNotEmpty) {
+    if (!prodUrl.startsWith('https://')) prodUrl = 'https://$prodUrl';
+    if (!prodUrl.endsWith('/')) prodUrl = '$prodUrl/';
+    late http.Response response;
     try {
-      print("try getting local url");
-      await GlobalConfiguration().loadFromPath("/app_settings.json");
-      print("local url: ${GlobalConfiguration().getValue('prodUrl')}");
-    } catch (_) {}
+      response = await http.get(Uri.parse('${prodUrl}rest/s1/growerp/Ping'));
+      if (response.statusCode == 200) {
+        GlobalConfiguration().updateValue("prodUrl", prodUrl);
+      } else {
+        await prefs.setString("prodUrl", '');
+      }
+    } catch (error) {
+      await prefs.setString("prodUrl", '');
+    }
   }
 
   // here you switch backends
