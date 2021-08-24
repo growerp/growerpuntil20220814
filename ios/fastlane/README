@@ -35,5 +35,6 @@ Fastlane:
 3. compile and sign (in ios dir)
     fastlane gym
 4. upload: (in ios dir)
-    fastlane deliver
+    fastlane upload
 
+login to the appstore console, give reason of update and subit for review
