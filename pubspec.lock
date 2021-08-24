@@ -53,9 +53,11 @@ packages:
   backend:
     dependency: transitive
     description:
-      path: "../packages/backend"
-      relative: true
-    source: path
+      path: backend
+      ref: packages
+      resolved-ref: "4e5ba50a21b94d3c6348aff533e75ae2c97a8981"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   barcode:
     dependency: transitive
@@ -158,9 +160,11 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: "../packages/core"
-      relative: true
-    source: path
+      path: core
+      ref: packages
+      resolved-ref: "4e5ba50a21b94d3c6348aff533e75ae2c97a8981"
+      url: "https://github.com/growerp/growerp.git"
+    source: git
     version: "0.0.1"
   coverage:
     dependency: transitive
@@ -441,7 +445,7 @@ packages:
       name: mockito
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.14"
+    version: "5.0.15"
   mocktail:
     dependency: transitive
     description:
@@ -454,7 +458,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: "1eec1e82403a829199cc5988affad2701afb088f"
+      resolved-ref: "4e5ba50a21b94d3c6348aff533e75ae2c97a8981"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -625,7 +629,7 @@ packages:
       name: shared_preferences
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.6"
+    version: "2.0.7"
   shared_preferences_linux:
     dependency: transitive
     description:
@@ -839,7 +843,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: "1eec1e82403a829199cc5988affad2701afb088f"
+      resolved-ref: "4e5ba50a21b94d3c6348aff533e75ae2c97a8981"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
@@ -898,7 +902,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.5"
+    version: "2.2.6"
   xdg_directories:
     dependency: transitive
     description:
