@@ -11,7 +11,7 @@
 coverage/
 .flutter-plugins-dependencies
 .flutter-plugins
-.ipa
+*.ipa
 
 # IntelliJ related
 *.iml

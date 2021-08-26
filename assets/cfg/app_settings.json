@@ -1,5 +1,6 @@
 {
-    "version": 0.1, "build": 9,
+    "version": 0.1,
+    "build": 10,
     "classificationId": "AppAdmin",
     "_________________comment__backend": "moqui / ofbiz",
     "backend": "moqui",
