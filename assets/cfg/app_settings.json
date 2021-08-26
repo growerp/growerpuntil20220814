@@ -1,10 +1,10 @@
 {
-    "version": 0.1, "build": 10,
+    "version": 0.1, "build": 9,
     "classificationId": "AppAdmin",
     "_________________comment__backend": "moqui / ofbiz",
     "backend": "moqui",
     "_________________comment__production url _end forwardslash!": "https://rest.example.com/",
-    "prodUrl": "https://putYour.backendurl.here",
+    "prodUrl": "https://test.growerp.org/",
     "____________": "show debug banner on top right ",
     "test": true,
     "_____________": "If defined the system is used for a single company and this is the partyId of the main internal organization",
