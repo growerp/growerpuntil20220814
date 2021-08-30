@@ -21,11 +21,15 @@ where you can create your own company, demo data will be provided.
 
 # To run the system locally.
 ## After installation of [Java 11](https://openjdk.java.net/install/):
+  
 ### Moqui backend: (preferred)
   https://github.com/growerp/growerp-moqui/README.md
 
 ### OR...Apache OFBiz backend:
   https://github.com/growerp/growerp-ofbiz/blob/master/README.adoc
+
+### clone and run the WebSocket chat server
+  https://github.com/growerp/growerp-chat  
 
 ### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
 ```

@@ -15,7 +15,7 @@
 import 'package:admin/main.dart';
 import 'package:dio/dio.dart';
 import 'package:core/integration_test/test_functions.dart';
-import 'package:backend/moqui.dart';
+import 'package:backend/@backend.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,10 +34,9 @@ void main() {
 
   group('Product tests>>>>>', () {
     testWidgets("product test >>>>>", (WidgetTester tester) async {
-      await Test.createCompanyAndAdmin(tester,
-          AdminApp(repos: Moqui(client: Dio())));
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.createCompanyAndAdmin(
+          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       // create a categories
       await Test.createCategoryFromMain(tester);
       String random = Test.getRandom();
@@ -139,8 +138,7 @@ void main() {
     testWidgets("products  reload from database>>>>>",
         (WidgetTester tester) async {
       // 0: a   1: d 2: deleted
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       String random = Test.getRandom();
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('dbCatalog')));

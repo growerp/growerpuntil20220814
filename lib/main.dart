@@ -31,6 +31,7 @@ import 'router.dart' as router;
 import 'menuItem_data.dart';
 import 'package:core/forms/@forms.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,67 +60,77 @@ Future main() async {
 
   // here you switch backends
   String backend = GlobalConfiguration().getValue("backend");
-  var repos = backend == 'moqui'
-      ? Moqui(client: Dio())
+  var dbServer = backend == 'moqui'
+      ? MoquiServer(client: Dio())
 //      : backend == 'ofbiz'
 //          ? Ofbiz(client: Dio())
       : null;
 
-  runApp(AdminApp(repos: repos!));
+  ChatServer chatServer = ChatServer();
+
+  runApp(Phoenix(child: AdminApp(dbServer: dbServer!, chatServer: chatServer)));
 }
 
 class AdminApp extends StatelessWidget {
-  const AdminApp({
-    Key? key,
-    required this.repos,
-  }) : super(key: key);
+  const AdminApp({Key? key, required this.dbServer, this.chatServer})
+      : super(key: key);
 
-  final Object repos;
+  final Object dbServer;
+  final ChatServer? chatServer;
 
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider.value(
-      value: repos,
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider(create: (context) => dbServer),
+        RepositoryProvider(create: (context) => chatServer),
+      ],
       child: MultiBlocProvider(
         providers: [
           BlocProvider<AuthBloc>(
-              create: (context) => AuthBloc(repos)..add(LoadAuth()),
+              create: (context) =>
+                  AuthBloc(dbServer, chatServer)..add(LoadAuth()),
               lazy: false),
           BlocProvider<LeadBloc>(
-              create: (context) => UserBloc(
-                  repos, "GROWERP_M_LEAD", BlocProvider.of<AuthBloc>(context))),
+              create: (context) => UserBloc(dbServer, "GROWERP_M_LEAD",
+                  BlocProvider.of<AuthBloc>(context))),
           BlocProvider<CustomerBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_CUSTOMER",
+              create: (context) => UserBloc(dbServer, "GROWERP_M_CUSTOMER",
                   BlocProvider.of<AuthBloc>(context))),
           BlocProvider<SupplierBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_SUPPLIER",
+              create: (context) => UserBloc(dbServer, "GROWERP_M_SUPPLIER",
                   BlocProvider.of<AuthBloc>(context))),
           BlocProvider<AdminBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_ADMIN",
+              create: (context) => UserBloc(dbServer, "GROWERP_M_ADMIN",
                   BlocProvider.of<AuthBloc>(context))),
           BlocProvider<EmployeeBloc>(
-              create: (context) => UserBloc(repos, "GROWERP_M_EMPLOYEE",
+              create: (context) => UserBloc(dbServer, "GROWERP_M_EMPLOYEE",
                   BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<CategoryBloc>(create: (context) => CategoryBloc(repos)),
-          BlocProvider<ProductBloc>(create: (context) => ProductBloc(repos)),
+          BlocProvider<ChatRoomBloc>(
+              create: (context) => ChatRoomBloc(dbServer)),
+          BlocProvider<ChatMessageBloc>(
+              create: (context) => ChatMessageBloc(dbServer)),
+          BlocProvider<CategoryBloc>(
+              create: (context) => CategoryBloc(dbServer)),
+          BlocProvider<ProductBloc>(create: (context) => ProductBloc(dbServer)),
           BlocProvider<SalesOrderBloc>(
-              create: (context) => FinDocBloc(repos, true, 'order')),
+              create: (context) => FinDocBloc(dbServer, true, 'order')),
           BlocProvider<PurchaseOrderBloc>(
-              create: (context) => FinDocBloc(repos, false, 'order')),
+              create: (context) => FinDocBloc(dbServer, false, 'order')),
           BlocProvider<SalesInvoiceBloc>(
-              create: (context) => FinDocBloc(repos, true, 'invoice')),
+              create: (context) => FinDocBloc(dbServer, true, 'invoice')),
           BlocProvider<PurchInvoiceBloc>(
-              create: (context) => FinDocBloc(repos, false, 'invoice')),
+              create: (context) => FinDocBloc(dbServer, false, 'invoice')),
           BlocProvider<SalesPaymentBloc>(
-              create: (context) => FinDocBloc(repos, true, 'payment')),
+              create: (context) => FinDocBloc(dbServer, true, 'payment')),
           BlocProvider<PurchPaymentBloc>(
-              create: (context) => FinDocBloc(repos, false, 'payment')),
+              create: (context) => FinDocBloc(dbServer, false, 'payment')),
           BlocProvider<OpportunityBloc>(
-              create: (context) => OpportunityBloc(repos)),
-          BlocProvider<AccntBloc>(create: (context) => AccntBloc(repos)),
+              create: (context) => OpportunityBloc(dbServer)),
+          BlocProvider<AccntBloc>(create: (context) => AccntBloc(dbServer)),
           BlocProvider<TransactionBloc>(
-              create: (context) => FinDocBloc(repos, false, 'transaction')),
-          BlocProvider<AssetBloc>(create: (context) => AssetBloc(repos)),
+              create: (context) => FinDocBloc(dbServer, false, 'transaction')),
+          BlocProvider<AssetBloc>(create: (context) => AssetBloc(dbServer)),
         ],
         child: MyApp(),
       ),

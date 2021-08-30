@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: "396049627d77c3540757041444bea878d29bc85e"
+      resolved-ref: "0e6083aafe6da4dc481ffb1f64ead841418bd95c"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: "396049627d77c3540757041444bea878d29bc85e"
+      resolved-ref: "0e6083aafe6da4dc481ffb1f64ead841418bd95c"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -286,6 +286,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.5"
+  flutter_phoenix:
+    dependency: "direct main"
+    description:
+      name: flutter_phoenix
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -458,7 +465,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: "396049627d77c3540757041444bea878d29bc85e"
+      resolved-ref: "0e6083aafe6da4dc481ffb1f64ead841418bd95c"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -609,13 +616,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.4"
-  restart_app:
-    dependency: transitive
-    description:
-      name: restart_app
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   rxdart:
     dependency: transitive
     description:
@@ -902,7 +902,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.6"
+    version: "2.2.7"
   xdg_directories:
     dependency: transitive
     description:

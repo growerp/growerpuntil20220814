@@ -26,6 +26,7 @@ dependencies:
   printing: ^5.0.4
   pdf: ^3.0.0
   dropdown_search: ^0.6.3
+  flutter_phoenix: ^1.0.0
   core:
 #    path: ../packages/core
     git:
@@ -66,5 +67,9 @@ flutter:
     - assets/images/
     - assets/cfg/
     - ./
+    - packages/core/images/info.png
+    - packages/core/images/infoGrey.png
+    - packages/core/images/chat.png
+    - packages/core/images/chatGrey.png
 flutter_intl:
   enabled: true

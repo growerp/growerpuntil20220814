@@ -15,7 +15,7 @@
 import 'package:admin/main.dart';
 import 'package:dio/dio.dart';
 import 'package:core/integration_test/test_functions.dart';
-import 'package:backend/moqui.dart';
+import 'package:backend/@backend.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -44,10 +44,9 @@ void main() {
 
   group('Order Rental tests>>>>>', () {
     testWidgets("Prepare>>>>>>", (WidgetTester tester) async {
-      await Test.createCompanyAndAdmin(tester,
-          AdminApp(repos: Moqui(client: Dio())));
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.createCompanyAndAdmin(
+          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       await Test.createAssetFromMain(tester);
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
@@ -55,8 +54,7 @@ void main() {
 
     testWidgets("prepare &&  create 3 rental orders >>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       // username: 'e547@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
@@ -103,8 +101,7 @@ void main() {
 
     testWidgets("check orders for rental data >>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //    username: 'e953@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
@@ -125,8 +122,7 @@ void main() {
     }, skip: false);
     testWidgets("check blocked dates for new reservation>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //    username: 'e841@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));

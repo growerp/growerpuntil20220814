@@ -15,7 +15,7 @@
 import 'package:admin/main.dart';
 import 'package:dio/dio.dart';
 import 'package:core/integration_test/test_functions.dart';
-import 'package:backend/moqui.dart';
+import 'package:backend/@backend.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,11 +35,11 @@ void main() {
     testWidgets("Prepare new company with admin>>>>>>",
         (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
-          tester, AdminApp(repos: Moqui(client: Dio())));
+          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
     }, skip: false);
 
     testWidgets("create/delete employee >>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //  username: 'e771@example.org');
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbCompany')));
@@ -73,7 +73,7 @@ void main() {
       expect(find.byKey(Key('userItem')), findsNothing);
     }, skip: false);
     testWidgets("check delete employee>>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //  username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCompany')));
       await tester.pump(Duration(seconds: 5));
@@ -86,7 +86,7 @@ void main() {
     }, skip: false);
 
     testWidgets("create/delete admin >>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //  username: 'e771@example.org');
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbCompany')));
@@ -121,7 +121,7 @@ void main() {
     }, skip: false);
 
     testWidgets("check delete admin>>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //  username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCompany')));
       await tester.pump(Duration(seconds: 5));
@@ -134,7 +134,7 @@ void main() {
     }, skip: false);
 
     testWidgets("create/delete lead >>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //          username: 'e771@example.org');
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbCrm')));
@@ -173,7 +173,7 @@ void main() {
       expect(find.byKey(Key('userItem')), findsNothing);
     }, skip: false);
     testWidgets("check delete lead>>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCrm')));
       await tester.pump(Duration(seconds: 1));
@@ -187,7 +187,7 @@ void main() {
 
     testWidgets("create/delete CRM customer >>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //    username: 'e852@example.org');
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbCrm')));
@@ -228,7 +228,7 @@ void main() {
     }, skip: false);
     testWidgets("check delete CRM customer >>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCrm')));
       await tester.pump(Duration(seconds: 1));
@@ -242,7 +242,7 @@ void main() {
 
     testWidgets("create/delete sales customer >>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //          username: 'e771@example.org');
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbSales')));
@@ -283,7 +283,7 @@ void main() {
     }, skip: false);
     testWidgets("check delete sales customer>>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 5));
@@ -297,7 +297,7 @@ void main() {
 
     testWidgets("create/delete purchase supplier >>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //          username: 'e771@example.org');
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbPurchase')));
@@ -338,7 +338,7 @@ void main() {
     }, skip: false);
     testWidgets("check delete purchase supplier>>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbPurchase')));
       await tester.pump(Duration(seconds: 1));

@@ -15,7 +15,7 @@
 import 'package:admin/main.dart';
 import 'package:dio/dio.dart';
 import 'package:core/integration_test/test_functions.dart';
-import 'package:backend/moqui.dart';
+import 'package:backend/@backend.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,12 +34,12 @@ void main() {
   group('Basic tests >>>>>', () {
     testWidgets("prepare >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
-          tester, AdminApp(repos: Moqui(client: Dio())));
+          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
     }, skip: false);
 
     testWidgets("Test company from appbar update local",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -121,7 +121,7 @@ void main() {
 
     testWidgets("Test company from appbar check db update",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -147,7 +147,7 @@ void main() {
     }, skip: false);
 
     testWidgets("Test user dialog local values", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       String random = Test.getRandom();
       if (Test.isPhone()) {
         await tester.tap(find.byTooltip('Open navigation menu'));
@@ -177,7 +177,7 @@ void main() {
     }, skip: false);
     testWidgets("Test user dialog check data base",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       String random = Test.getRandom();
       // force user to refresh scrren
       if (Test.isPhone()) {

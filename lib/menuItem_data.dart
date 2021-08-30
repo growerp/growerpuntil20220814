@@ -228,6 +228,12 @@ List<MenuItem> menuItems = [
       title: "Accounting",
       route: '/accounting',
       readGroups: ["GROWERP_M_ADMIN", "ADMIN"]),
+  MenuItem(
+      image: "packages/core/images/infoGrey.png",
+      selectedImage: "packages/core/images/info.png",
+      title: "About",
+      route: '/about',
+      readGroups: ["GROWERP_M_ADMIN", "ADMIN"]),
 ];
 List<MenuItem> acctMenuItems = [
   MenuItem(
@@ -256,14 +262,6 @@ List<MenuItem> acctMenuItems = [
       route: '/ledger',
       readGroups: ["GROWERP_M_ADMIN", "ADMIN"],
       writeGroups: ["GROWERP_M_ADMIN"]),
-/*  MenuItem(
-      image: "assets/images/accountingGrey.png",
-      selectedImage: "assets/images/accounting.png",
-      title: "Reports",
-      route: '/reports',
-      readGroups: ["GROWERP_M_ADMIN", "ADMIN"],
-      writeGroups: ["GROWERP_M_ADMIN"]),
-*/
   MenuItem(
       image: "assets/images/dashBoardGrey.png",
       selectedImage: "assets/images/dashBoard.png",

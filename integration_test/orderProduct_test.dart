@@ -15,7 +15,7 @@
 import 'package:admin/main.dart';
 import 'package:dio/dio.dart';
 import 'package:core/integration_test/test_functions.dart';
-import 'package:backend/moqui.dart';
+import 'package:backend/@backend.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,10 +35,9 @@ void main() {
 
   group('Order Product tests>>>>>', () {
     testWidgets("prepare >>>>>", (WidgetTester tester) async {
-      await Test.createCompanyAndAdmin(tester,
-          AdminApp(repos: Moqui(client: Dio())));
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.createCompanyAndAdmin(
+          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
       await Test.createProductFromMain(tester);
@@ -46,8 +45,7 @@ void main() {
 
     testWidgets("order add/mod/del with physical product >>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pumpAndSettle(Duration(seconds: 1));
@@ -162,8 +160,7 @@ void main() {
     testWidgets("orders  with physical products reload from database>>>>>",
         (WidgetTester tester) async {
       // 0: a   1: d 2: deleted
-      await Test.login(tester,
-          AdminApp(repos: Moqui(client: Dio())));
+      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pumpAndSettle(Duration(seconds: 1));

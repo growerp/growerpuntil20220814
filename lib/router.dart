@@ -13,7 +13,7 @@
  */
 
 import 'package:core/coreRouter.dart';
-import 'package:core/templates/displayMenuList.dart';
+import 'package:core/templates/@templates.dart';
 import 'package:flutter/material.dart';
 import 'package:core/forms/@forms.dart';
 import 'package:models/@models.dart';
@@ -30,19 +30,19 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/company':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuList(menuList: menuItems, menuIndex: 1, tabIndex: 0));
+              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 0));
     case '/catalog':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuList(menuList: menuItems, menuIndex: 3, tabIndex: 0));
+              DisplayMenuItem(menuList: menuItems, menuIndex: 3, tabIndex: 0));
     case '/sales':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuList(menuList: menuItems, menuIndex: 4, tabIndex: 0));
+              DisplayMenuItem(menuList: menuItems, menuIndex: 4, tabIndex: 0));
     case '/purchase':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuList(menuList: menuItems, menuIndex: 5, tabIndex: 0));
+              DisplayMenuItem(menuList: menuItems, menuIndex: 5, tabIndex: 0));
     case '/finDoc':
       return MaterialPageRoute(
           builder: (context) =>
@@ -50,7 +50,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/crm':
       return MaterialPageRoute(
           builder: (context) =>
-              DisplayMenuList(menuList: menuItems, menuIndex: 2, tabIndex: 0));
+              DisplayMenuItem(menuList: menuItems, menuIndex: 2, tabIndex: 0));
     default:
       return coreRoute(settings);
   }
