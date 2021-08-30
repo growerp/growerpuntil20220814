@@ -55,7 +55,11 @@ packages:
     description:
       path: backend
       ref: packages
+<<<<<<< HEAD
       resolved-ref: "0e6083aafe6da4dc481ffb1f64ead841418bd95c"
+=======
+      resolved-ref: b83b422caae8acb70ecaea992ddb25c9ac3f0a96
+>>>>>>> move about to memnu and install first version of chat, now working
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -100,7 +104,7 @@ packages:
       name: built_collection
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.1"
   built_value:
     dependency: transitive
     description:
@@ -162,7 +166,11 @@ packages:
     description:
       path: core
       ref: packages
+<<<<<<< HEAD
       resolved-ref: "0e6083aafe6da4dc481ffb1f64ead841418bd95c"
+=======
+      resolved-ref: b83b422caae8acb70ecaea992ddb25c9ac3f0a96
+>>>>>>> move about to memnu and install first version of chat, now working
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -285,7 +293,11 @@ packages:
       name: flutter_markdown
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "0.6.5"
+=======
+    version: "0.6.6"
+>>>>>>> move about to memnu and install first version of chat, now working
   flutter_phoenix:
     dependency: "direct main"
     description:
@@ -299,7 +311,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.2"
+    version: "2.0.3"
   flutter_simple_treeview:
     dependency: "direct main"
     description:
@@ -465,7 +477,11 @@ packages:
     description:
       path: models
       ref: packages
+<<<<<<< HEAD
       resolved-ref: "0e6083aafe6da4dc481ffb1f64ead841418bd95c"
+=======
+      resolved-ref: b83b422caae8acb70ecaea992ddb25c9ac3f0a96
+>>>>>>> move about to memnu and install first version of chat, now working
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -531,7 +547,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.4.2"
+    version: "3.5.0"
   pedantic:
     dependency: transitive
     description:
@@ -802,21 +818,21 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.9"
+    version: "6.0.10"
   url_launcher_linux:
     dependency: transitive
     description:
       name: url_launcher_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   url_launcher_macos:
     dependency: transitive
     description:
       name: url_launcher_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   url_launcher_platform_interface:
     dependency: transitive
     description:
@@ -843,7 +859,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: "396049627d77c3540757041444bea878d29bc85e"
+      resolved-ref: "2ce40e2c8ff75d07c17f19e0e24113f23b489861"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
@@ -902,7 +918,11 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
+<<<<<<< HEAD
     version: "2.2.7"
+=======
+    version: "2.2.8"
+>>>>>>> move about to memnu and install first version of chat, now working
   xdg_directories:
     dependency: transitive
     description:

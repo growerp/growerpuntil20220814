@@ -91,6 +91,14 @@ class AdminApp extends StatelessWidget {
               create: (context) =>
                   AuthBloc(dbServer, chatServer)..add(LoadAuth()),
               lazy: false),
+          BlocProvider<ChatRoomBloc>(
+            create: (context) =>
+                ChatRoomBloc(dbServer, chatServer!)..add(FetchChatRoom()),
+          ),
+          BlocProvider<ChatMessageBloc>(
+            create: (context) => ChatMessageBloc(dbServer, chatServer!),
+            lazy: false,
+          ),
           BlocProvider<LeadBloc>(
               create: (context) => UserBloc(dbServer, "GROWERP_M_LEAD",
                   BlocProvider.of<AuthBloc>(context))),
@@ -106,10 +114,6 @@ class AdminApp extends StatelessWidget {
           BlocProvider<EmployeeBloc>(
               create: (context) => UserBloc(dbServer, "GROWERP_M_EMPLOYEE",
                   BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<ChatRoomBloc>(
-              create: (context) => ChatRoomBloc(dbServer)),
-          BlocProvider<ChatMessageBloc>(
-              create: (context) => ChatMessageBloc(dbServer)),
           BlocProvider<CategoryBloc>(
               create: (context) => CategoryBloc(dbServer)),
           BlocProvider<ProductBloc>(create: (context) => ProductBloc(dbServer)),
