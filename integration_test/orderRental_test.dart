@@ -45,8 +45,13 @@ void main() {
   group('Order Rental tests>>>>>', () {
     testWidgets("Prepare>>>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
-          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       await Test.createAssetFromMain(tester);
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
@@ -54,7 +59,10 @@ void main() {
 
     testWidgets("prepare &&  create 3 rental orders >>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       // username: 'e547@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
@@ -101,7 +109,10 @@ void main() {
 
     testWidgets("check orders for rental data >>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       //    username: 'e953@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));
@@ -122,7 +133,10 @@ void main() {
     }, skip: false);
     testWidgets("check blocked dates for new reservation>>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       //    username: 'e841@example.org');
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pump(Duration(seconds: 1));

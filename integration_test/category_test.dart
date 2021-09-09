@@ -34,8 +34,13 @@ void main() {
   group('Category tests>>>>>', () {
     testWidgets("test Catalog tabs>>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
-          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('dbCatalog')));
@@ -60,7 +65,10 @@ void main() {
     }, skip: false);
 
     testWidgets("categories test >>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
@@ -142,7 +150,10 @@ void main() {
     testWidgets("categories  reload from database>>>>>",
         (WidgetTester tester) async {
       // 0: a   1: d 2: deleted
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard

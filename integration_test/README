@@ -11,7 +11,7 @@ On mobile.
 single test:
 flutter drive  \
     --driver=test_driver/integration_test.dart \
-    --target=integration_test/newCompany_test.dar
+    --target=integration_test/newCompany_test.d
     
 to run all tests with screenshot on error:
 flutter drive --screenshot=. \
@@ -19,7 +19,7 @@ flutter drive --screenshot=. \
   --target=integration_test/main_tests.dart 
 
 
-on chrome (not working yet)
+on chrome
 ---------
 
 Download chromedriver and install in path:
@@ -30,7 +30,8 @@ start in a terminal: ./chromedriver --port=4444
 Separate terminal:
 
 flutter drive  -d web-server \
+    --no-headless \
     --driver=test_driver/integration_test.dart \
-    --target=integration_test/newCompany_test.dart \
-    --no-headless
+    --target=integration_test/newCompany_test.dart
+
 

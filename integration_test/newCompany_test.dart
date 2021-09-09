@@ -34,12 +34,17 @@ void main() {
   group('Basic tests >>>>>', () {
     testWidgets("prepare >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
-          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
     }, skip: false);
 
     testWidgets("Test company from appbar update local",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -121,7 +126,10 @@ void main() {
 
     testWidgets("Test company from appbar check db update",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('tapCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
@@ -147,7 +155,10 @@ void main() {
     }, skip: false);
 
     testWidgets("Test user dialog local values", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       if (Test.isPhone()) {
         await tester.tap(find.byTooltip('Open navigation menu'));
@@ -177,7 +188,10 @@ void main() {
     }, skip: false);
     testWidgets("Test user dialog check data base",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       // force user to refresh scrren
       if (Test.isPhone()) {

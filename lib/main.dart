@@ -72,11 +72,11 @@ Future main() async {
 }
 
 class AdminApp extends StatelessWidget {
-  const AdminApp({Key? key, required this.dbServer, this.chatServer})
+  const AdminApp({Key? key, required this.dbServer, required this.chatServer})
       : super(key: key);
 
   final Object dbServer;
-  final ChatServer? chatServer;
+  final ChatServer chatServer;
 
   @override
   Widget build(BuildContext context) {
@@ -93,10 +93,10 @@ class AdminApp extends StatelessWidget {
               lazy: false),
           BlocProvider<ChatRoomBloc>(
             create: (context) =>
-                ChatRoomBloc(dbServer, chatServer!)..add(FetchChatRoom()),
+                ChatRoomBloc(dbServer, chatServer)..add(FetchChatRoom()),
           ),
           BlocProvider<ChatMessageBloc>(
-            create: (context) => ChatMessageBloc(dbServer, chatServer!),
+            create: (context) => ChatMessageBloc(dbServer, chatServer),
             lazy: false,
           ),
           BlocProvider<LeadBloc>(

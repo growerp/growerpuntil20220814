@@ -36,8 +36,13 @@ void main() {
   group('Order Product tests>>>>>', () {
     testWidgets("prepare >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
-          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
       await Test.createProductFromMain(tester);
@@ -45,7 +50,10 @@ void main() {
 
     testWidgets("order add/mod/del with physical product >>>>>",
         (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pumpAndSettle(Duration(seconds: 1));
@@ -160,7 +168,10 @@ void main() {
     testWidgets("orders  with physical products reload from database>>>>>",
         (WidgetTester tester) async {
       // 0: a   1: d 2: deleted
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbSales')));
       await tester.pumpAndSettle(Duration(seconds: 1));

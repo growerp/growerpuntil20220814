@@ -36,8 +36,13 @@ void main() {
   group('Opportunity tests>>>>>', () {
     testWidgets("opportunity add/mod/del >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
-          tester, AdminApp(dbServer: MoquiServer(client: Dio())));
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await Test.createUser(tester, 'lead', random);
       await Test.createUser(tester, 'employee', random);
@@ -165,7 +170,10 @@ void main() {
     testWidgets("opportunities  reload from database>>>>>",
         (WidgetTester tester) async {
       // 0: a   1: d 2: deleted
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       // use the CRM tap dashboard
       await tester.tap(find.byKey(Key('dbCrm')));

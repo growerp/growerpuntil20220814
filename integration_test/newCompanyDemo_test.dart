@@ -34,12 +34,17 @@ void main() {
   group('New Company demo data test repare>>>>>', () {
     testWidgets("Prepare>>>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
-          tester, AdminApp(dbServer: MoquiServer(client: Dio())),
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()),
           demo: true);
     }, skip: false);
 
     testWidgets("check categories >>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCatalog')));
       await tester.pump(Duration(seconds: 5));
@@ -52,7 +57,10 @@ void main() {
     }, skip: false);
 
     testWidgets("check assets >>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCatalog')));
       await tester.pump(Duration(seconds: 5));
@@ -65,7 +73,10 @@ void main() {
     }, skip: false);
 
     testWidgets("check products >>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCatalog')));
       await tester.pump(Duration(seconds: 5));
@@ -73,7 +84,10 @@ void main() {
     }, skip: false);
 
     testWidgets("check opportunities >>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCrm')));
       await tester.pump(Duration(seconds: 5));
@@ -81,7 +95,10 @@ void main() {
     }, skip: false);
 
     testWidgets("check users >>>>>>", (WidgetTester tester) async {
-      await Test.login(tester, AdminApp(dbServer: MoquiServer(client: Dio())));
+      await Test.login(
+          tester,
+          AdminApp(
+              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCompany')));
       await tester.pump(Duration(seconds: 5));
