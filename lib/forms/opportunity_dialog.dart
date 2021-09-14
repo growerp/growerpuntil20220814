@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -120,17 +121,22 @@ class _OpportunityState extends State<OpportunityPage> {
                     builder: (context) => GestureDetector(
                         onTap: () {},
                         child: Dialog(
-                          key: Key('OpportunityDialog'),
-                          insetPadding: EdgeInsets.all(10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Container(
-                              width: columns.toDouble() * 400,
-                              height: 1 / columns.toDouble() * 1000,
-                              child: _opportunityForm(
-                                  opportunity, columns, getData)),
-                        ))))));
+                            key: Key('OpportunityDialog'),
+                            insetPadding: EdgeInsets.all(10),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Stack(clipBehavior: Clip.none, children: [
+                              Container(
+                                  width: columns.toDouble() * 400,
+                                  height: 1 / columns.toDouble() * 1000,
+                                  child: _opportunityForm(
+                                      opportunity, columns, getData)),
+                              Positioned(
+                                  top: -10,
+                                  right: -10,
+                                  child: DialogCloseButton())
+                            ])))))));
   }
 
   Widget _opportunityForm(Opportunity opportunity, int columns, getData) {
@@ -248,13 +254,6 @@ class _OpportunityState extends State<OpportunityPage> {
               })),
       Row(
         children: [
-          ElevatedButton(
-              key: Key('cancel'),
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }),
-          SizedBox(width: 10),
           Expanded(
               child: ElevatedButton(
                   key: Key('update'),

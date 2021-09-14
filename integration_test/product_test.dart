@@ -38,10 +38,6 @@ void main() {
           tester,
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
-      await Test.login(
-          tester,
-          AdminApp(
-              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       // create a categories
       await Test.createCategoryFromMain(tester);
       String random = Test.getRandom();
@@ -51,24 +47,21 @@ void main() {
       List<String> char = ['a', 'b', 'x'];
       List<String> price = ['1.1', '2.2', '3.3'];
       for (int x in [0, 1, 2]) {
-        await tester.tap(find.byKey(Key('addNew')));
-        await tester.pump();
+        await Test.tap(tester, 'addNew');
         expect(find.byKey(Key('ProductDialog')), findsOneWidget);
-        await tester.enterText(
-            find.byKey(Key('name')), 'productName$random${char[x]}');
-        await tester.enterText(
-            find.byKey(Key('description')), 'productDesc$random${char[x]}');
-        await tester.enterText(find.byKey(Key('price')), price[x]);
-        await tester.tap(find.byKey(Key('categoryDropDown')));
-        await tester.pump(Duration(seconds: 5));
-        await tester.tap(find.text('categoryName1').last); // sometimes fail...
-        await tester.pump(Duration(seconds: 1));
-        await tester.tap(find.byKey(Key('productTypeDropDown')));
+        await Test.enterText(tester, 'name', 'productName$random${char[x]}');
+        await Test.enterText(
+            tester, 'description', 'productDesc$random${char[x]}');
+        await Test.drag(tester);
+        await Test.enterText(tester, 'price', price[x]);
+        await Test.tap(tester, 'categoryDropDown');
         await tester.pumpAndSettle(Duration(seconds: 1));
+        await tester.tap(find.text('categoryName1').last);
+        await tester.pumpAndSettle(Duration(seconds: 1));
+        await Test.tap(tester, 'productTypeDropDown');
         await tester.tap(find.text(productTypes[0]).last);
-        await tester.pump(Duration(seconds: 1));
-        await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 3));
+        await tester.pumpAndSettle(Duration(seconds: 1));
+        await Test.drag(tester);
         await tester.tap(find.byKey(Key('update')));
         await tester.pumpAndSettle(Duration(seconds: 5));
       }
@@ -87,37 +80,33 @@ void main() {
       }
       // check detail screens
       for (int x in [0, 1, 2]) {
-        await tester.tap(find.byKey(Key('name$x')));
-        await tester.pump(Duration(seconds: 1));
+        await Test.tap(tester, 'name$x');
         expect(Test.getTextFormField('name'), 'productName$random${char[x]}');
         expect(Test.getTextFormField('description'),
             'productDesc$random${char[x]}');
+        await Test.drag(tester);
         expect(Test.getTextFormField('price'), price[x]);
         expect(Test.getDropdownSearch('categoryDropDown'), 'categoryName1');
         expect(Test.getDropdown('productTypeDropDown'), productTypes[0]);
-        await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 3));
-        await tester.tap(find.byKey(Key('cancel')));
-        await tester.pumpAndSettle(Duration(seconds: 1));
+        await Test.tap(tester, 'cancel');
       }
       // update detail screen b to record 'd'
-      await tester.tap(find.byKey(Key('name1')));
-      await tester.pump(Duration(seconds: 1));
-      await tester.enterText(find.byKey(Key('name')), 'productName${random}d');
-      await tester.enterText(
-          find.byKey(Key('description')), 'productDesc${random}d');
-      await tester.enterText(find.byKey(Key('price')), '4.4');
-      await tester.tap(find.byKey(Key('categoryDropDown')));
-      await tester.pump(Duration(seconds: 5));
-      await tester.tap(find.text('categoryName2').last); // sometimes fail...
-      await tester.pump(Duration(seconds: 1));
-      await tester.tap(find.byKey(Key('productTypeDropDown')));
-      await tester.pump(Duration(seconds: 1));
+      await Test.tap(tester, 'name1');
+      await Test.enterText(tester, 'name', 'productName${random}d');
+      await Test.enterText(tester, 'description', 'productDesc${random}d');
+      await Test.drag(tester);
+      await Test.enterText(tester, 'price', '4.4');
+      await Test.tap(tester, 'categoryDropDown');
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      await tester.tap(find.text('categoryName2').last);
+      await tester.pumpAndSettle(Duration(seconds: 1));
+      await Test.drag(tester);
+      await Test.tap(tester, 'productTypeDropDown');
+      await tester.pumpAndSettle(Duration(seconds: 1));
       await tester.tap(find.text(productTypes[2]).last);
       await tester.pump(Duration(seconds: 1));
-      await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 3));
-      await tester.tap(find.byKey(Key('update')));
+//      await Test.drag(tester);
+      await Test.tap(tester, 'update');
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check update from b -> d in list
       expect(Test.getTextField('name1'), equals('productName${random}d'));

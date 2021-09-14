@@ -39,46 +39,36 @@ void main() {
           tester,
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
-      await Test.login(
-          tester,
-          AdminApp(
-              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await Test.createUser(tester, 'lead', random);
       await Test.createUser(tester, 'employee', random);
-      await tester.tap(find.byKey(Key('dbCrm')));
+      await Test.tap(tester, 'dbCrm');
       await tester.pumpAndSettle(Duration(seconds: 1));
       expect(find.byKey(Key('OpportunitiesForm')), findsOneWidget);
       // enter 3 records
       for (int x in [0, 1, 2]) {
-        await tester.tap(find.byKey(Key('addNew')));
-        await tester.pump();
+        await Test.tap(tester, 'addNew');
         expect(find.byKey(Key('OpportunityDialog')), findsOneWidget);
-        await tester.enterText(
-            find.byKey(Key('name')), 'opportunityName$random${char[x]}');
-        await tester.enterText(
-            find.byKey(Key('description')), 'description$random${char[x]}');
-        await tester.enterText(find.byKey(Key('estAmount')), '${quantity[x]}');
-        await tester.enterText(
-            find.byKey(Key('estProbability')), '${quantity[x]}');
-        await tester.tap(find.byKey(Key('stageId')));
-        await tester.pump(Duration(seconds: 1));
+        await Test.enterText(
+            tester, 'name', 'opportunityName$random${char[x]}');
+        await Test.enterText(
+            tester, 'description', 'description$random${char[x]}');
+        await Test.enterText(tester, 'estAmount', '${quantity[x]}');
+        await Test.enterText(tester, 'estProbability', '${quantity[x]}');
+        await Test.enterText(tester, 'nextStep', 'nextStep1');
+        await Test.drag(tester);
+        await Test.tap(tester, 'stageId');
         await tester.tap(find.text('Prospecting').last);
-        await tester.pump(Duration(seconds: 1));
-        await tester.enterText(find.byKey(Key('nextStep')), 'nextStep1');
-        await tester.tap(find.byKey(Key('lead')));
-        await tester.pump(Duration(seconds: 5));
+        await tester.pumpAndSettle(Duration(seconds: 3));
+        await Test.drag(tester);
+        await Test.tap(tester, 'lead');
+        await tester.pumpAndSettle(Duration(seconds: 3));
         await tester.tap(find.textContaining('lead1').last);
-        await tester.pump(Duration(seconds: 1));
-//        await tester.tap(find.byKey(Key('account')));
-//        await tester.pump(Duration(seconds: 5));
-//        await tester.tap(find.text('employee1'));
-//        await tester.pump(Duration(seconds: 1));
-        await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
+        await tester.pumpAndSettle(Duration(seconds: 3));
+        await Test.tap(tester, 'update');
         await tester.pump(Duration(seconds: 3));
-        await tester.tap(find.byKey(Key('update')));
-        await tester.pumpAndSettle(Duration(seconds: 5));
       }
+      await tester.pump(Duration(seconds: 5));
       expect(find.byKey(Key('opportunityItem')), findsNWidgets(3));
       // check list
       for (int x in [0, 1, 2]) {
@@ -98,8 +88,7 @@ void main() {
       //check detail and update record 1
       for (int x in [0, 1, 2]) {
         expect(find.byKey(Key('OpportunitiesForm')), findsOneWidget);
-        await tester.tap(find.byKey(Key('name$x')));
-        await tester.pump(Duration(seconds: 1));
+        await Test.tap(tester, 'name$x');
         expect(find.byKey(Key('OpportunityDialog')), findsOneWidget);
         expect(Test.getTextFormField('name'),
             equals('opportunityName$random${char[x]}'));
@@ -115,25 +104,21 @@ void main() {
 
         if (x == 1) {
           // update record 1 = b -> d
-          await tester.enterText(
-              find.byKey(Key('name')), 'opportunityName${random}d');
-          await tester.enterText(
-              find.byKey(Key('description')), 'description${random}d');
-          await tester.enterText(find.byKey(Key('estAmount')), '23');
-          await tester.enterText(find.byKey(Key('estProbability')), '29');
-          await tester.tap(find.byKey(Key('stageId')));
-          await tester.pump(Duration(seconds: 1));
+          await Test.enterText(tester, 'name', 'opportunityName${random}d');
+          await Test.enterText(tester, 'description', 'description${random}d');
+          await Test.enterText(tester, 'estAmount', '23');
+          await Test.enterText(tester, 'estProbability', '29');
+          await Test.enterText(tester, 'nextStep', 'nextStep2');
+          await Test.drag(tester);
+          await Test.tap(tester, 'stageId');
           await tester.tap(find.text('Qualification').last);
-          await tester.pump(Duration(seconds: 1));
-          await tester.enterText(find.byKey(Key('nextStep')), 'nextStep2');
-          await tester.tap(find.byKey(Key('lead')));
-          await tester.pump(Duration(seconds: 2));
-          await tester.tap(find.textContaining('lead2').last);
-          await tester.pump(Duration(seconds: 1));
-          await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
           await tester.pumpAndSettle(Duration(seconds: 3));
-          await tester.tap(find.byKey(Key('update')));
-          await tester.pumpAndSettle(Duration(seconds: 5));
+          await Test.drag(tester);
+          await Test.tap(tester, 'lead');
+          await tester.tap(find.textContaining('lead2').last);
+          await Test.drag(tester);
+          await Test.tap(tester, 'update');
+          await tester.pumpAndSettle(Duration(seconds: 3));
           // check list
           expect(
               Test.getTextField('name$x'), equals('opportunityName${random}d'));
@@ -144,8 +129,7 @@ void main() {
             expect(Test.getTextField('stageId$x'), equals('Qualification'));
           }
           // check detail screen
-          await tester.tap(find.byKey(Key('name1')));
-          await tester.pump(Duration(seconds: 1));
+          await Test.tap(tester, 'name1');
           expect(Test.getTextFormField('name'), 'opportunityName${random}d');
           expect(Test.getTextFormField('description'),
               equals('description${random}d'));
@@ -156,14 +140,12 @@ void main() {
               contains('firstName lastName'));
           expect(Test.getDropdownSearch('lead'), contains('firstName2 lead2'));
         }
-        await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
+        await Test.drag(tester);
         await tester.pumpAndSettle(Duration(seconds: 5));
-        await tester.tap(find.byKey(Key('cancel')));
-        await tester.pump(Duration(seconds: 5));
+        await Test.tap(tester, 'cancel');
       }
       // delete record 'x' x=2
-      await tester.tap(find.byKey(Key('delete2')));
-      await tester.pumpAndSettle(Duration(seconds: 1));
+      await Test.tap(tester, 'delete2');
       expect(find.byKey(Key('opportunityItem')), findsNWidgets(2));
     }, skip: false);
 
@@ -176,14 +158,12 @@ void main() {
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       // use the CRM tap dashboard
-      await tester.tap(find.byKey(Key('dbCrm')));
-      await tester.pump(Duration(seconds: 1));
+      await Test.tap(tester, 'dbCrm');
       // get to opportunity list
       if (Test.isPhone())
         await tester.tap(find.byTooltip('1'));
       else
-        await tester.tap(find.byKey(Key('tapOpportunitiesForm')));
-      await tester.pump(Duration(seconds: 1));
+        await Test.tap(tester, 'tapOpportunitiesForm');
       // check list
       char = ['a', 'd'];
       List<String> estAmount = ['11', '23'];
@@ -203,8 +183,7 @@ void main() {
       }
       // detail screens
       for (int x in [0, 1]) {
-        await tester.tap(find.byKey(Key('name$x')));
-        await tester.pump(Duration(seconds: 1));
+        await Test.tap(tester, 'name$x');
         expect(Test.getTextFormField('name'),
             equals('opportunityName$random${char[x]}'));
         expect(Test.getTextFormField('description'),
@@ -217,10 +196,8 @@ void main() {
             Test.getDropdownSearch('account'), contains('firstName lastName'));
         expect(Test.getDropdownSearch('lead'),
             contains('firstName${x + 1} lead${x + 1}'));
-        await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 3));
-        await tester.tap(find.byKey(Key('cancel')));
-        await tester.pump(Duration(seconds: 5));
+        await Test.drag(tester);
+        await Test.tap(tester, 'cancel');
       }
     }, skip: false);
   });

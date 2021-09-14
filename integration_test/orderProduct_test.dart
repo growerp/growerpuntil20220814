@@ -39,10 +39,6 @@ void main() {
           tester,
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
-      await Test.login(
-          tester,
-          AdminApp(
-              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
       await Test.createProductFromMain(tester);
@@ -51,41 +47,34 @@ void main() {
     testWidgets("order add/mod/del with physical product >>>>>",
         (WidgetTester tester) async {
       await Test.login(
-          tester,
-          AdminApp(
-              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
+        tester,
+        AdminApp(
+            dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()),
+        //    username: 'e194@example.org'
+      );
       String random = Test.getRandom();
-      await tester.tap(find.byKey(Key('dbSales')));
-      await tester.pumpAndSettle(Duration(seconds: 1));
+      await Test.tap(tester, 'dbSales');
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
       // enter 3 records
       for (int x in [0, 1, 2]) {
-        await tester.tap(find.byKey(Key('addNew')));
-        await tester.pump();
+        await Test.tap(tester, 'addNew');
         expect(find.byKey(Key('FinDocDialogSalesorder')), findsOneWidget);
-        await tester.tap(find.byKey(Key('customer')));
-        await tester.pump(Duration(seconds: 5));
+        await Test.tap(tester, 'customer');
         await tester.tap(find.textContaining('customer1').last);
         await tester.pump(Duration(seconds: 1));
-        await tester.enterText(
-            find.byKey(Key('description')), 'orderName$random${char[x]}');
-        await tester.tap(find.byKey(Key('addProduct')));
-        await tester.pump(Duration(seconds: 1));
-        await tester.tap(find.byKey(Key('product')));
-        await tester.pump(Duration(seconds: 3));
+        await Test.enterText(
+            tester, 'description', 'orderName$random${char[x]}');
+        await Test.tap(tester, 'addProduct');
+        await Test.tap(tester, 'product');
         await tester.tap(find.textContaining('productName1').last);
-        await tester.pump(Duration(seconds: 1));
-        await tester.enterText(find.byKey(Key('quantity')), '${quantity[x]}');
-        await tester.pump();
-        await tester.tap(find.byKey(Key('ok')));
-        await tester.pump(Duration(seconds: 3));
+        await Test.enterText(tester, 'quantity', '${quantity[x]}');
+        await Test.tap(tester, 'ok');
         expect(Test.getTextField('itemDescription1'), equals('productName1'));
         expect(Test.getTextField('itemPrice1'),
             equals('${quantity[0]}.${quantity[0]}'));
         expect(Test.getTextField('itemQuantity1'), equals('${quantity[x]}'));
-        await tester.drag(find.byKey(Key('listView1')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 1));
-        await tester.tap(find.byKey(Key('update')));
+        await Test.drag(tester);
+        await Test.tap(tester, 'update');
         await tester.pumpAndSettle(Duration(seconds: 10));
       }
       expect(find.byKey(Key('finDocItem')), findsNWidgets(3));
@@ -106,7 +95,7 @@ void main() {
       //check detail and update second record, delete last one (not phone)
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
       for (int x in [0, 1, 2]) {
-        await tester.tap(find.byKey(Key('edit$x')));
+        await Test.tap(tester, 'edit$x');
         await tester.pump(Duration(seconds: 10));
         expect(find.byKey(Key('FinDocDialogSalesorder')), findsOneWidget);
         expect(Test.getTextFormField('description'),
@@ -124,23 +113,19 @@ void main() {
 
         if (x == 1) {
           // update record 1 = b -> d, add product
-          await tester.enterText(
-              find.byKey(Key('description')), 'orderName${random}d');
-          await tester.tap(find.byKey(Key('customer')));
+          await Test.enterText(tester, 'description', 'orderName${random}d');
+          await Test.tap(tester, 'customer');
           await tester.pump(Duration(seconds: 5));
           await tester.tap(find.textContaining('customer2').last);
           await tester.pump(Duration(seconds: 1));
-          await tester.enterText(
-              find.byKey(Key('description')), 'orderName${random}d');
-          await tester.tap(find.byKey(Key('addProduct')));
-          await tester.pump(Duration(seconds: 1));
-          await tester.tap(find.byKey(Key('product')));
-          await tester.pump(Duration(seconds: 3));
+          await Test.enterText(tester, 'description', 'orderName${random}d');
+          await Test.tap(tester, 'addProduct');
+
+          await Test.tap(tester, 'product');
           await tester.tap(find.textContaining('productName2').last);
           await tester.pump(Duration(seconds: 1));
-          await tester.enterText(find.byKey(Key('quantity')), '44');
-          await tester.tap(find.byKey(Key('ok')));
-          await tester.pump(Duration(seconds: 3));
+          await Test.enterText(tester, 'quantity', '44');
+          await Test.tap(tester, 'ok');
           expect(Test.getDropdownSearch('customer'), contains('customer2'));
           expect(Test.getDropdownSearch('customer'),
               contains('newCompanyName${random}2'));
@@ -148,19 +133,18 @@ void main() {
           expect(Test.getTextField('itemPrice2'), equals('22.22'));
           expect(Test.getTextField('itemQuantity2'), equals('44'));
           expect(find.byKey(Key('productItem')), findsNWidgets(2));
-          await tester.drag(find.byKey(Key('listView1')), Offset(0.0, -500.0));
+          await Test.drag(tester);
           await tester.pump(Duration(seconds: 1));
-          await tester.tap(find.byKey(Key('update')));
+          await Test.tap(tester, 'update');
           await tester.pumpAndSettle(Duration(seconds: 10));
         } else {
-          await tester.tap(find.byKey(Key('cancel')));
-          await tester.pump(Duration(seconds: 5));
+          await Test.tap(tester, 'cancel');
         }
       }
       expect(find.byKey(Key('finDocItem')), findsNWidgets(3));
       if (!Test.isPhone()) {
         // delete record 'x' x=2
-        await tester.tap(find.byKey(Key('delete2')));
+        await Test.tap(tester, 'delete2');
         await tester.pumpAndSettle(Duration(seconds: 1));
       }
     }, skip: false);
@@ -173,8 +157,7 @@ void main() {
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
-      await tester.tap(find.byKey(Key('dbSales')));
-      await tester.pumpAndSettle(Duration(seconds: 1));
+      await Test.tap(tester, 'dbSales');
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
       expect(
           find.byKey(Key('finDocItem')), findsNWidgets(Test.isPhone() ? 3 : 2));
@@ -195,7 +178,7 @@ void main() {
 
       // detail screens
       for (int x in [0, 1]) {
-        await tester.tap(find.byKey(Key('edit$x')));
+        await Test.tap(tester, 'edit$x');
         await tester.pump(Duration(seconds: 10));
         expect(find.byKey(Key('FinDocDialogSalesorder')), findsOneWidget);
         expect(Test.getTextFormField('description'),
@@ -215,8 +198,7 @@ void main() {
         if (!Test.isPhone()) {
           expect(Test.getTextField('itemType${x + 1}'), equals('Product'));
         }
-        await tester.tap(find.byKey(Key('cancel')));
-        await tester.pump(Duration(seconds: 5));
+        await Test.tap(tester, 'cancel');
       }
     }, skip: false);
   });

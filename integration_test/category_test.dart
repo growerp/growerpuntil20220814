@@ -37,10 +37,6 @@ void main() {
           tester,
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
-      await Test.login(
-          tester,
-          AdminApp(
-              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       expect(find.byKey(Key('dbCatalog')), findsOneWidget);
       // use the catalog tap dashboard
       await tester.tap(find.byKey(Key('dbCatalog')));

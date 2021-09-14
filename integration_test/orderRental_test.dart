@@ -48,10 +48,6 @@ void main() {
           tester,
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
-      await Test.login(
-          tester,
-          AdminApp(
-              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       await Test.createAssetFromMain(tester);
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
@@ -60,48 +56,43 @@ void main() {
     testWidgets("prepare &&  create 3 rental orders >>>>>",
         (WidgetTester tester) async {
       await Test.login(
-          tester,
-          AdminApp(
-              dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
-      // username: 'e547@example.org');
-      await tester.tap(find.byKey(Key('dbSales')));
-      await tester.pump(Duration(seconds: 1));
+        tester,
+        AdminApp(
+            dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()),
+        //    username: 'e194@example.org'
+      );
+      await Test.tap(tester, 'dbSales');
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
       for (int x in [1, 2, 3]) {
-        await tester.tap(find.byKey(Key('addNew')));
-        await tester.pump();
-        await tester.tap(find.byKey(Key('customer')));
+        await Test.tap(tester, 'addNew');
+        await Test.tap(tester, 'customer');
         await tester.pumpAndSettle(Duration(seconds: 5));
         await tester.tap(find.textContaining('customer1').last);
-        await tester.pump(Duration(seconds: 1));
-        await tester.tap(find.byKey(Key('itemRental')));
-        await tester.pump(Duration(seconds: 1));
-        await tester.tap(find.byKey(Key('product')));
-        await tester.pump(Duration(seconds: 3));
+        await tester.pumpAndSettle();
+        await Test.tap(tester, 'itemRental');
+        await tester.pumpAndSettle();
+        await Test.tap(tester, 'product');
+        await tester.pumpAndSettle();
         await tester.tap(find.textContaining('productName2').last);
         await tester.pump(Duration(seconds: 1));
-        await tester.tap(find.byKey(Key('setDate')));
-        await tester.pump(Duration(seconds: 1));
+        await Test.tap(tester, 'setDate');
         await tester.tap(find.byTooltip('Switch to input'));
-        await tester.pump(Duration(seconds: 1));
         if (x == 2) // x== 1 todays date filled in by default
           await tester.enterText(find.byType(TextField).last, plus2StringUs);
         if (x == 3)
           await tester.enterText(find.byType(TextField).last, plus4StringUs);
         await tester.pump();
         await tester.tap(find.text('OK'));
-        await tester.pump(Duration(seconds: 1));
+        await tester.pumpAndSettle();
         DateTime textField = DateTime.parse(Test.getTextField('date'));
         if (x == 1) expect(usFormat.format(textField), usFormat.format(today));
         if (x == 2) expect(usFormat.format(textField), usFormat.format(plus2));
         if (x == 3) expect(usFormat.format(textField), usFormat.format(plus4));
         await tester.pump(Duration(seconds: 1));
-        await tester.enterText(find.byKey(Key('quantity')), x.toString());
-        await tester.tap(find.byKey(Key('okRental')));
-        await tester.pump();
-        await tester.drag(find.byKey(Key('listView1')), Offset(0.0, -500.0));
-        await tester.pump(Duration(seconds: 1));
-        await tester.tap(find.byKey(Key('update')));
+        await Test.enterText(tester, 'quantity', x.toString());
+        await Test.tap(tester, 'okRental');
+        await Test.drag(tester);
+        await Test.tap(tester, 'update');
         await tester.pumpAndSettle(Duration(seconds: 10));
       }
       expect(find.byKey(Key('finDocItem')), findsNWidgets(3));
@@ -114,13 +105,12 @@ void main() {
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       //    username: 'e953@example.org');
-      await tester.tap(find.byKey(Key('dbSales')));
-      await tester.pump(Duration(seconds: 1));
+      await Test.tap(tester, 'dbSales');
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
       // check list
       for (int x in [0, 1, 2]) {
         expect(Test.getTextField('statusId$x'), equals('in Preparation'));
-        await tester.tap(find.byKey(Key('ID$x')));
+        await Test.tap(tester, 'ID$x');
         await tester.pump(Duration(seconds: 10));
         expect(
             Test.getTextField('itemLine$x'),
@@ -138,32 +128,26 @@ void main() {
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       //    username: 'e841@example.org');
-      await tester.tap(find.byKey(Key('dbSales')));
-      await tester.pump(Duration(seconds: 1));
+      await Test.tap(tester, 'dbSales');
       expect(find.byKey(Key('FinDocsFormSalesOrder')), findsOneWidget);
-      await tester.tap(find.byKey(Key('addNew')));
-      await tester.pump();
-      await tester.tap(find.byKey(Key('itemRental')));
-      await tester.pump(Duration(seconds: 1));
-      await tester.tap(find.byKey(Key('product')));
-      await tester.pump(Duration(seconds: 3));
+      await Test.tap(tester, 'addNew');
+      await Test.tap(tester, 'itemRental');
+      await tester.pumpAndSettle();
+      await Test.tap(tester, 'product');
+      await tester.pumpAndSettle();
       await tester.tap(find.textContaining('productName2').last);
-      await tester.pump(Duration(seconds: 1));
-      await tester.tap(find.byKey(Key('setDate')));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      await Test.tap(tester, 'setDate');
       await tester.tap(find.byTooltip('Switch to input'));
-      await tester.pump(Duration(seconds: 1));
       await tester.enterText(find.byType(TextField).last, plus2StringUs);
-      await tester.pump(Duration(seconds: 1));
+      await tester.pump();
       await tester.tap(find.text('OK'));
-      await tester.pump(Duration(seconds: 1));
+      await tester.pumpAndSettle();
       expect(find.text('Out of range.'), findsOneWidget);
       await tester.tap(find.text('CANCEL'));
       await tester.pump(Duration(seconds: 1));
-      await tester.tap(find.byKey(Key('cancelRental')));
-      await tester.pump(Duration(seconds: 1));
-      await tester.tap(find.byKey(Key('cancel')));
-      await tester.pump(Duration(seconds: 1));
+      await Test.tap(tester, 'cancelRental');
+      await Test.tap(tester, 'cancel');
     }, skip: false);
   });
 }

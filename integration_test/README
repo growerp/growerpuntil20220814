@@ -11,7 +11,7 @@ On mobile.
 single test:
 flutter drive  \
     --driver=test_driver/integration_test.dart \
-    --target=integration_test/newCompany_test.d
+    --target=integration_test/newCompany_test.dart
     
 to run all tests with screenshot on error:
 flutter drive --screenshot=. \

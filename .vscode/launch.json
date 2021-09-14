@@ -5,6 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Dart: Run newcomp Tests",
+            "type": "dart",
+            "request": "launch",
+            "program": "./test/newCompanyTest.dart"
+        },
+        {
             "name": "admin",
             "request": "launch",
             "type": "dart"
@@ -26,6 +32,12 @@
             "cwd": "build/unit_test_assets",
             "request": "launch",
             "type": "dart"
+        },
+        {
+            "name": "Flutter (integration_test/newCompany_test.dart)",
+            "type": "dart",
+            "request": "launch",
+            "program": "integration_test/newCompany_test.dart"
         }
     ]
 }
