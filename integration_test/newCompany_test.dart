@@ -63,17 +63,13 @@ void main() {
       await tester.tap(find.byKey(Key('updateCompany')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // enter updated values in fields
-      await tester.tap(find.byKey(Key('companyName')));
-      await tester.pump();
-      await tester.enterText(
-          find.byKey(Key('companyName')), 'companyName${random}u');
-      await tester.enterText(
-          find.byKey(Key('email')), 'e${random}u@example.org');
-      await tester.enterText(find.byKey(Key('vatPerc')), '1');
-      await tester.enterText(find.byKey(Key('salesPerc')), '2');
-      await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 5));
-      await tester.tap(find.byKey(Key('updateCompany')));
+      await Test.enterText(tester, 'companyName', 'companyName${random}u');
+      await Test.enterText(tester, 'email', 'e${random}u@example.org');
+      await Test.enterText(tester, 'vatPerc', '1');
+      await Test.enterText(tester, 'salesPerc', '2');
+      await tester.pumpAndSettle();
+      await Test.drag(tester);
+      await Test.tap(tester, 'updateCompany');
       await tester.pumpAndSettle(Duration(seconds: 5));
       // and check them
       expect(Test.getTextFormField('companyName'),
@@ -87,25 +83,19 @@ void main() {
       await tester.pumpAndSettle(Duration(seconds: 5));
       await tester.tap(find.byKey(Key('address1')));
       await tester.pump();
-      await tester.enterText(find.byKey(Key('address1')), 'address1');
-      await tester.enterText(find.byKey(Key('address2')), 'address2');
-      await tester.enterText(find.byKey(Key('postal')), 'postal');
-      await tester.enterText(find.byKey(Key('city')), 'city');
-      await tester.enterText(find.byKey(Key('province')), 'province');
-      await tester.pump();
-      await tester.drag(find.byKey(Key('listView'), skipOffstage: false).last,
-          Offset(0.0, -500.0));
-      await tester.pump(Duration(seconds: 1));
-      await tester.tap(find.byKey(Key('country')));
-      await tester.pumpAndSettle(Duration(seconds: 1));
+      await Test.enterText(tester, 'address1', 'address1');
+      await Test.enterText(tester, 'address2', 'address2');
+      await Test.enterText(tester, 'postal', 'postal');
+      await Test.enterText(tester, 'city', 'city');
+      await Test.enterText(tester, 'province', 'province');
+      await tester.pumpAndSettle();
+      await Test.drag(tester);
+      await Test.tap(tester, 'country');
       await tester.tap(find.text('Algeria').last);
       await tester.pumpAndSettle(Duration(seconds: 1));
-      await tester.drag(find.byKey(Key('listView'), skipOffstage: false).last,
-          Offset(0.0, -300.0));
-      await tester.pump(Duration(seconds: 1));
-      await tester.tap(find.byKey(Key('updateAddress')));
-      await tester.pump(Duration(seconds: 1));
-      await tester.tap(find.byKey(Key('updateCompany')));
+      await Test.drag(tester);
+      await Test.tap(tester, 'updateAddress');
+      await Test.tap(tester, 'updateCompany');
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check address
       await tester.tap(find.byKey(Key('address')));
