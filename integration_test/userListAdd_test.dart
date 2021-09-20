@@ -45,7 +45,7 @@ void main() {
           tester,
           AdminApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
-      //  username: 'e771@example.org');
+      //    username: 'e452@example.org');
       String random = Test.getRandom();
       await tester.tap(find.byKey(Key('dbCompany')));
       await tester.pump(Duration(seconds: 5));
@@ -56,11 +56,13 @@ void main() {
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('userItem')), findsNothing);
       await tester.tap(find.byKey(Key('addNew')));
-      await tester.pump();
+      await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('UserDialogEmployee')), findsOneWidget);
       await tester.enterText(find.byKey(Key('firstName')), 'firstName');
       await tester.enterText(find.byKey(Key('lastName')), 'lastName');
       await tester.enterText(find.byKey(Key('username')), '${random}1');
+      await tester.pumpAndSettle();
+      await Test.drag(tester);
       await tester.enterText(
           find.byKey(Key('email')), 'e${random}1@example.org');
       await tester.tap(find.byKey(Key('updateUser')));
@@ -109,13 +111,15 @@ void main() {
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('userItem')), findsOneWidget);
       await tester.tap(find.byKey(Key('addNew')));
-      await tester.pump();
+      await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('UserDialogAdmin')), findsOneWidget);
       await tester.enterText(find.byKey(Key('firstName')), 'firstName');
       await tester.enterText(find.byKey(Key('lastName')), 'lastName');
       await tester.enterText(find.byKey(Key('username')), '${random}2');
       await tester.enterText(
           find.byKey(Key('email')), 'e${random}2@example.org');
+      await tester.pumpAndSettle();
+      await Test.drag(tester);
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist
@@ -163,7 +167,7 @@ void main() {
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('userItem')), findsNothing);
       await tester.tap(find.byKey(Key('addNew')));
-      await tester.pump();
+      await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('UserDialogLead')), findsOneWidget);
       await tester.enterText(find.byKey(Key('firstName')), 'firstName');
       await tester.enterText(find.byKey(Key('lastName')), 'lastName');
@@ -174,6 +178,7 @@ void main() {
           find.byKey(Key('newCompanyName')), 'leadCompany$random');
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
       await tester.pump(Duration(seconds: 3));
+      await Test.drag(tester);
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist
@@ -222,7 +227,7 @@ void main() {
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('userItem')), findsNothing);
       await tester.tap(find.byKey(Key('addNew')));
-      await tester.pump();
+      await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('UserDialogCustomer')), findsOneWidget);
       await tester.enterText(find.byKey(Key('firstName')), 'firstName');
       await tester.enterText(find.byKey(Key('lastName')), 'lastName');
@@ -233,6 +238,7 @@ void main() {
           find.byKey(Key('newCompanyName')), 'customerCompany$random');
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
       await tester.pump(Duration(seconds: 3));
+      await Test.drag(tester);
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist
@@ -283,7 +289,7 @@ void main() {
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('userItem')), findsNothing);
       await tester.tap(find.byKey(Key('addNew')));
-      await tester.pump();
+      await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('UserDialogCustomer')), findsOneWidget);
       await tester.enterText(find.byKey(Key('firstName')), 'firstName');
       await tester.enterText(find.byKey(Key('lastName')), 'lastName');
@@ -294,6 +300,7 @@ void main() {
           find.byKey(Key('newCompanyName')), 'customerCompany$random');
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
       await tester.pump(Duration(seconds: 3));
+      await Test.drag(tester);
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist
@@ -344,7 +351,7 @@ void main() {
       await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('userItem')), findsNothing);
       await tester.tap(find.byKey(Key('addNew')));
-      await tester.pump();
+      await tester.pump(Duration(seconds: 1));
       expect(find.byKey(Key('UserDialogSupplier')), findsOneWidget);
       await tester.enterText(find.byKey(Key('firstName')), 'firstName');
       await tester.enterText(find.byKey(Key('lastName')), 'lastName');
@@ -355,6 +362,7 @@ void main() {
           find.byKey(Key('newCompanyName')), 'supplierCompany$random');
       await tester.drag(find.byKey(Key('listView')), Offset(0.0, -500.0));
       await tester.pump(Duration(seconds: 3));
+      await Test.drag(tester);
       await tester.tap(find.byKey(Key('updateUser')));
       await tester.pumpAndSettle(Duration(seconds: 5));
       // check userlist
