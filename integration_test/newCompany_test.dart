@@ -182,6 +182,7 @@ void main() {
       expect(Test.getTextFormField('username'), equals('e$random@example.org'));
       expect(Test.getTextFormField('email'), equals('e$random@example.org'));
       // update fields
+      await tester.pump();
       await Test.enterText(tester, 'firstName', 'firstNameu');
       await Test.enterText(tester, 'lastName', 'lastNameu');
       await Test.enterText(tester, 'username', '${random}u');
@@ -189,7 +190,7 @@ void main() {
       await tester.pumpAndSettle();
       await Test.enterText(tester, 'email', 'e${random}u@example.org');
       await tester.tap(find.byKey(Key('updateUser')));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(Duration(seconds: 5));
       // check updated fields
       expect(Test.getTextFormField('firstName'), equals('firstNameu'));
       expect(Test.getTextFormField('lastName'), equals('lastNameu'));

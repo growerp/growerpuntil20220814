@@ -5,10 +5,11 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Dart: Run newcomp Tests",
+            "name": "Dart: Run chat echo",
             "type": "dart",
             "request": "launch",
-            "program": "./test/newCompanyTest.dart"
+            "program": "integration_test/chatEcho_main.dart",
+            "deviceId": "emulator-5554"
         },
         {
             "name": "admin",

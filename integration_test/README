@@ -35,3 +35,14 @@ flutter drive  -d web-server \
     --target=integration_test/newCompany_test.dart
 
 
+Chat test
+---------
+
+1. make sure the debug company of John doe exists
+2. start the chat echo: flutter run integration_test/chatEcho_test.dart
+    and login with default debud parameters.
+3. run the chat test in a separate process: 
+flutter drive  \
+    --driver=test_driver/integration_test.dart \
+    --target=integration_test/chat_test.dart
+    

@@ -90,14 +90,16 @@ class AdminApp extends StatelessWidget {
           BlocProvider<AuthBloc>(
               create: (context) =>
                   AuthBloc(dbServer, chatServer)..add(LoadAuth()),
-              lazy: false),
+              lazy: true),
           BlocProvider<ChatRoomBloc>(
-            create: (context) =>
-                ChatRoomBloc(dbServer, chatServer)..add(FetchChatRoom()),
+            create: (context) => ChatRoomBloc(
+                dbServer, chatServer, BlocProvider.of<AuthBloc>(context))
+              ..add(FetchChatRoom()),
           ),
           BlocProvider<ChatMessageBloc>(
-            create: (context) => ChatMessageBloc(dbServer, chatServer),
-            lazy: false,
+            create: (context) => ChatMessageBloc(
+                dbServer, chatServer, BlocProvider.of<AuthBloc>(context)),
+            lazy: true,
           ),
           BlocProvider<LeadBloc>(
               create: (context) => UserBloc(dbServer, "GROWERP_M_LEAD",
@@ -146,42 +148,55 @@ class MyApp extends StatelessWidget {
   static String title = "GrowERP administrator.";
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
-        builder: (context, widget) => ResponsiveWrapper.builder(
-            BouncingScrollWrapper.builder(context, widget!),
-            maxWidth: 2460,
-            minWidth: 450,
-            defaultScale: true,
-            breakpoints: [
-              ResponsiveBreakpoint.resize(450, name: MOBILE),
-              ResponsiveBreakpoint.autoScale(800, name: TABLET),
-              ResponsiveBreakpoint.resize(1200, name: DESKTOP),
-              ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+    return GestureDetector(
+        // close keyboard
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+        },
+        child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
             ],
-            background: Container(color: Color(0xFFF5F5F5))),
-        theme: Themes.formTheme,
-        onGenerateRoute: router.generateRoute,
-        home: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            if (state is AuthProblem)
-              return FatalErrorForm("Internet or server problem?");
-            if (state is AuthAuthenticated)
-              return HomeForm(
-                  message: state.message, menuItems: menuItems, title: title);
-            if (state is AuthUnauthenticated)
-              return HomeForm(
-                  message: state.message, menuItems: menuItems, title: title);
-            if (state is AuthChangeIp) return ChangeIpForm();
-            return SplashForm();
-          },
-        ));
+            supportedLocales: S.delegate.supportedLocales,
+            builder: (context, widget) => ResponsiveWrapper.builder(
+                BouncingScrollWrapper.builder(context, widget!),
+                maxWidth: 2460,
+                minWidth: 450,
+                defaultScale: true,
+                breakpoints: [
+                  ResponsiveBreakpoint.resize(450, name: MOBILE),
+                  ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                  ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+                  ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+                ],
+                background: Container(color: Color(0xFFF5F5F5))),
+            theme: Themes.formTheme,
+            onGenerateRoute: router.generateRoute,
+            home: BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                if (state is AuthProblem)
+                  return FatalErrorForm("Internet or server problem?");
+                if (state is AuthAuthenticated)
+                  return HomeForm(
+                      message: state.message,
+                      menuItems: menuItems,
+                      title: title);
+                if (state is AuthUnauthenticated)
+                  return HomeForm(
+                      message: state.message,
+                      menuItems: menuItems,
+                      title: title);
+                if (state is AuthChangeIp) return ChangeIpForm();
+                return SplashForm();
+              },
+            )));
   }
 }
