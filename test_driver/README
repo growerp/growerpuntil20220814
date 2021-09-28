@@ -1,9 +1,14 @@
 Integration tests using  flutter driver.
 ========================================
 
+Before running this test, remove all data from the backend system:
+terminal:   ./gradlew cleandb
+            java -jar moqui.war load types=seed,seed-initial,install
+            java -jar moqui.war
+
 flutter driver On mobile. (can make screenshots)
 -------------------------
-start your mobile emulator 
+start your mobile emulator:
 list: flutter emulators
 launch: flutter emulators --launch >>name<<
 
@@ -27,8 +32,8 @@ another terminal : (only works on release mode)
     --no-headless --release
 
 
-To make screenshots see: master(admin) android or ios/fastlane/README
----------------------------------------------------------------------
+To make screenshots see: android/fastlane/README or ios/fastlane/README
+-----------------------------------------------------------------------
 
 
 

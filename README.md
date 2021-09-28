@@ -63,6 +63,9 @@ Functions coming up:
 * Inventory
 * Project management
 
+# registering in the app/play stores
+Please see the android/fastlane/REDME and ios/fastlane/README files 
+
 # Single company use.
 
 This frontend can be used for a single company, set the company partyId in the assets/cfg frontend dir.
