@@ -6,9 +6,10 @@ Steps AFTER preparation below:
     flutter pub run utils:screenshots
 2. Move the framed images to the respective directories 
     under: metadata/android/en-US/images: phoneScreenshots, seveninchScreenshots,teninchScreenshots 
-3. increase in pubspec.yaml version+build
+3. increase in pubspec.yaml version+buildnr
+    buildnr should always increase, version is shown to the user
 4. in web/index.html increase version:
-    main.dart.js?version=6
+    main.dart.js?version=?
 5. create app bundle in admin home:
     flutter build appbundle
 6. Upload in Play store: (in android dir)
