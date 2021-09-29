@@ -41,20 +41,21 @@ Future main() async {
 
   // can change backend url by pressing long the title on the home screen.
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String prodUrl = prefs.getString("prodUrl") ?? '';
-  if (prodUrl.isNotEmpty) {
-    if (!prodUrl.startsWith('https://')) prodUrl = 'https://$prodUrl';
-    if (!prodUrl.endsWith('/')) prodUrl = '$prodUrl/';
+  String ip = prefs.getString("ip") ?? '';
+  String chat = prefs.getString("chat") ?? '';
+  String singleCompany = prefs.getString("companyPartyId") ?? '';
+  if (ip.isNotEmpty) {
     late http.Response response;
     try {
-      response = await http.get(Uri.parse('${prodUrl}rest/s1/growerp/Ping'));
+      response = await http.get(Uri.parse('${ip}rest/s1/growerp/Ping'));
       if (response.statusCode == 200) {
-        GlobalConfiguration().updateValue("prodUrl", prodUrl);
-      } else {
-        await prefs.setString("prodUrl", '');
+        GlobalConfiguration().updateValue("databaseUrl", ip);
+        GlobalConfiguration().updateValue("chatUrl", chat);
+        GlobalConfiguration().updateValue("singleCompany", singleCompany);
+        print("=== New ip: $ip , chat: $chat company: $singleCompany Updated!");
       }
     } catch (error) {
-      await prefs.setString("prodUrl", '');
+      print("===$ip does not respond...not updating databaseUrl: $error");
     }
   }
 

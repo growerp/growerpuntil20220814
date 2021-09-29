@@ -162,7 +162,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: "2ea2b615759a0da0c83226ae9b2e1c9373b384cb"
+      resolved-ref: c7198a220c293eb6a47ed8acf0cf3b63ff8daeac
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
