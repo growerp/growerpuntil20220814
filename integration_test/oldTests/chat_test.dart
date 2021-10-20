@@ -40,7 +40,7 @@ void main() {
     testWidgets("create chat user to login >>>>>", (WidgetTester tester) async {
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()),
           username: "test@example.com");
       // create chat user
@@ -69,7 +69,7 @@ void main() {
     testWidgets("Screen handling>>>>>>", (WidgetTester tester) async {
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()),
           username: '$random');
       // chatrooms screen
@@ -110,7 +110,7 @@ void main() {
         (WidgetTester tester) async {
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()),
               chatServer: ChatServer()), //),
           username: '$random');

@@ -1,5 +1,0 @@
-import 'dart:async';
-
-Future<void> testExecutable(FutureOr<void> Function() testMain) async {
-  static bool hitTestWarningShouldBeFatal = true;
-}

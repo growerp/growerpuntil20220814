@@ -17,7 +17,6 @@ import 'package:models/@models.dart';
 
 import 'forms/@forms.dart' as local;
 import 'package:core/forms/@forms.dart';
-import 'forms/opportunities_form.dart';
 
 const MENU_DASHBOARD = 0;
 const MENU_COMPANY = 1;
@@ -92,7 +91,7 @@ List<MenuItem> menuItems = [
         form: OpportunitiesForm(),
         label: "My Opportunities",
         icon: Icon(Icons.home),
-        floatButtonForm: local.OpportunityDialog(
+        floatButtonForm: OpportunityDialog(
             formArguments: FormArguments(object: Opportunity())),
       ),
       TabItem(

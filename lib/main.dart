@@ -69,11 +69,11 @@ Future main() async {
 
   ChatServer chatServer = ChatServer();
 
-  runApp(Phoenix(child: AdminApp(dbServer: dbServer!, chatServer: chatServer)));
+  runApp(Phoenix(child: TopApp(dbServer: dbServer!, chatServer: chatServer)));
 }
 
-class AdminApp extends StatelessWidget {
-  const AdminApp({Key? key, required this.dbServer, required this.chatServer})
+class TopApp extends StatelessWidget {
+  const TopApp({Key? key, required this.dbServer, required this.chatServer})
       : super(key: key);
 
   final Object dbServer;

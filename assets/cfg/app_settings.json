@@ -7,6 +7,8 @@
     "_________________comment__production url NOT _end forwardslash!": "https://rest.example.com",
     "databaseUrl": "https://test.growerp.org",
     "chatUrl": "wss://chat.growerp.org",
+    "databaseUrlDebug": "http://localhost:8080",
+    "chatUrlDebug": "ws://localhost:8081",
     "____________": "show debug banner on top right ",
     "test": false,
     "_____________": "If defined the system is used for a single company and this is the partyId of the main internal organization",

@@ -47,7 +47,7 @@ Although all screens work on IOS/Anderoid/Web devices however a smaller screen w
 It is a simplified frontend however with the ability to still use with, or in addition to the original ERP system screens.
 The system is a true multicompany system and can support virtually any ERP backend as long as it has a REST interface.
 
-The system is implemented with https://pub.dev/packages/flutter_bloc state management with the https://bloclibrary.dev documentation, data models, automated integration tests and a separated rest interface for the different systems. 
+The system is implemented with https://pub.dev/packages/flutter_bloc state management with the https://bloclibrary.dev documentation, data models, automated integration tests and a separated rest interface for the different backend systems. 
 
 The system configuration file is in /assets/cfg/app_settings.json. Select OFBiz or Moqui here.
 
@@ -62,9 +62,10 @@ The implementation time is 40+ hours.
 Functions coming up:
 * Inventory
 * Project management
+* Knowledge base iniialy containing system help
 
 # registering in the app/play stores
-Please see the android/fastlane/REDME and ios/fastlane/README files 
+Please see the android/fastlane/README and ios/fastlane/README files 
 
 # Single company use.
 

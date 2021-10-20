@@ -37,7 +37,7 @@ void main() {
     testWidgets("prepare >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await Test.createUser(tester, 'customer', random);
@@ -48,8 +48,7 @@ void main() {
         (WidgetTester tester) async {
       await Test.login(
         tester,
-        AdminApp(
-            dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()),
+        TopApp(dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()),
         //    username: 'e194@example.org'
       );
       String random = Test.getRandom();
@@ -154,7 +153,7 @@ void main() {
       // 0: a   1: d 2: deleted
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       await Test.tap(tester, 'dbSales');

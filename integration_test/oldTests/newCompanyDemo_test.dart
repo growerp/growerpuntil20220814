@@ -35,7 +35,7 @@ void main() {
     testWidgets("Prepare>>>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()),
           demo: true);
     }, skip: false);
@@ -43,7 +43,7 @@ void main() {
     testWidgets("check categories >>>>>>", (WidgetTester tester) async {
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCatalog')));
@@ -59,7 +59,7 @@ void main() {
     testWidgets("check assets >>>>>>", (WidgetTester tester) async {
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCatalog')));
@@ -75,7 +75,7 @@ void main() {
     testWidgets("check products >>>>>>", (WidgetTester tester) async {
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCatalog')));
@@ -86,7 +86,7 @@ void main() {
     testWidgets("check opportunities >>>>>>", (WidgetTester tester) async {
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCrm')));
@@ -97,7 +97,7 @@ void main() {
     testWidgets("check users >>>>>>", (WidgetTester tester) async {
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
 //          username: 'e771@example.org');
       await tester.tap(find.byKey(Key('dbCompany')));

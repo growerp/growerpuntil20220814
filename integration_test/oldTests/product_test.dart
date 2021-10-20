@@ -36,7 +36,7 @@ void main() {
     testWidgets("product test >>>>>", (WidgetTester tester) async {
       await Test.createCompanyAndAdmin(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       // create a categories
       await Test.createCategoryFromMain(tester);
@@ -134,7 +134,7 @@ void main() {
       // 0: a   1: d 2: deleted
       await Test.login(
           tester,
-          AdminApp(
+          TopApp(
               dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
       String random = Test.getRandom();
       // use the catalog tap dashboard
