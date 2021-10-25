@@ -17,28 +17,10 @@
             "type": "dart"
         },
         {
-            "name": "help",
-            "cwd": "help",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "flutter_assets",
-            "cwd": "build/flutter_assets",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "unit_test_assets",
-            "cwd": "build/unit_test_assets",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "Flutter (integration_test/newCompany_test.dart)",
+            "name": "Flutter (integration_test/admin_test.dart)",
             "type": "dart",
             "request": "launch",
-            "program": "integration_test/newCompany_test.dart"
+            "program": "integration_test/admin_test.dart"
         }
     ]
 }

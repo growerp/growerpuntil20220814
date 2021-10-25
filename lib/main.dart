@@ -11,7 +11,7 @@
  * along with this software (see the LICENSE.md file). If not, see
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-
+import 'menuItem_data.dart';
 import 'package:core/forms/changeIp_form.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,6 @@ import 'package:backend/@backend.dart';
 import 'package:core/styles/themes.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
-import 'menuItem_data.dart';
 import 'package:core/forms/@forms.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -132,8 +131,6 @@ class TopApp extends StatelessWidget {
               create: (context) => FinDocBloc(dbServer, true, 'payment')),
           BlocProvider<PurchPaymentBloc>(
               create: (context) => FinDocBloc(dbServer, false, 'payment')),
-          BlocProvider<OpportunityBloc>(
-              create: (context) => OpportunityBloc(dbServer)),
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(dbServer)),
           BlocProvider<TransactionBloc>(
               create: (context) => FinDocBloc(dbServer, false, 'transaction')),

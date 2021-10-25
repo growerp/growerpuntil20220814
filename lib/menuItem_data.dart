@@ -12,22 +12,13 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'package:flutter/material.dart';
 import 'package:models/@models.dart';
+import 'package:core/domains/common/common.dart';
+import 'package:core/domains/opportunities/opportunities.dart';
+import 'package:flutter/material.dart';
 
 import 'forms/@forms.dart' as local;
 import 'package:core/forms/@forms.dart';
-
-const MENU_DASHBOARD = 0;
-const MENU_COMPANY = 1;
-const MENU_CRM = 2;
-const MENU_CATALOG = 3;
-const MENU_SALES = 4;
-const MENU_PURCHASE = 5;
-const MENU_ACCOUNTING = 6;
-const MENU_ACCTSALES = 1;
-const MENU_ACCTPURCHASE = 2;
-const MENU_ACCTLEDGER = 3;
 
 List<MenuItem> menuItems = [
   MenuItem(
@@ -37,7 +28,7 @@ List<MenuItem> menuItems = [
     route: '/',
     readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
     writeGroups: ["GROWERP_M_ADMIN", "ADMIN"],
-    child: local.DashBoardForm(),
+    child: local.AdminDbForm(),
   ),
   MenuItem(
     image: "assets/images/companyGrey.png",
@@ -88,11 +79,9 @@ List<MenuItem> menuItems = [
     readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
     tabItems: [
       TabItem(
-        form: OpportunitiesForm(),
+        form: OpportunityListForm(),
         label: "My Opportunities",
         icon: Icon(Icons.home),
-        floatButtonForm: OpportunityDialog(
-            formArguments: FormArguments(object: Opportunity())),
       ),
       TabItem(
         form: UsersForm(

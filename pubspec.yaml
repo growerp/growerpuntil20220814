@@ -33,7 +33,7 @@ dependencies:
       url: https://github.com/growerp/growerp.git
       ref: packages
       path: core
-
+      
 dev_dependencies:
   flutter_test:
     sdk: flutter

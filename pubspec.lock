@@ -7,28 +7,28 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "29.0.0"
+    version: "30.0.0"
   about:
     dependency: "direct main"
     description:
       name: about
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.1.0"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.6.0"
+    version: "2.7.0"
   animations:
     dependency: "direct main"
     description:
       name: animations
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.0.2"
   archive:
     dependency: transitive
     description:
@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: cbd909539dd19595be8e9b57aa3256f7ae637511
+      resolved-ref: "09f33f9aa6de9e73f759157d4e17d7f30d265f47"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -218,7 +218,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: cbd909539dd19595be8e9b57aa3256f7ae637511
+      resolved-ref: "09f33f9aa6de9e73f759157d4e17d7f30d265f47"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -341,7 +341,7 @@ packages:
       name: flutter_markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.7"
+    version: "0.6.8"
   flutter_phoenix:
     dependency: "direct main"
     description:
@@ -355,7 +355,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.4"
   flutter_simple_treeview:
     dependency: "direct main"
     description:
@@ -542,7 +542,7 @@ packages:
     description:
       path: models
       ref: packages
-      resolved-ref: cbd909539dd19595be8e9b57aa3256f7ae637511
+      resolved-ref: "09f33f9aa6de9e73f759157d4e17d7f30d265f47"
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -608,7 +608,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.6.0"
+    version: "3.6.1"
   pedantic:
     dependency: transitive
     description:
@@ -958,7 +958,7 @@ packages:
       name: very_good_analysis
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.4.0"
   vm_service:
     dependency: transitive
     description:
