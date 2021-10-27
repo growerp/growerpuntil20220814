@@ -10,14 +10,18 @@ import 'package:core/domains/opportunities/integration_test/opportunity_test.dar
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group('''Start App with new company''', () {
-    testWidgets('''if loggedin log out and create new company''',
-        (tester) async {
-      await startApp(tester);
+  testWidgets('''Admin Opportunity test''', (tester) async {
+    print("========== Admin test: Opportunity preparation");
+    bool newRandom = true; // run test with new random number or not
+    await startApp(tester, newRandom: newRandom);
+    if (newRandom == true) {
       await AuthTest.createNewCompany(tester);
       await AuthTest.login(tester);
       await UserTest.createUsers(tester, leads, 'dbCrm', '2');
-      await OpportunityTest.opportunityTest(tester);
-    });
-  });
+      await UserTest.createUsers(tester, administrators, 'dbCompany', '2');
+    } else
+      AuthTest.loginIfRequired(tester);
+    print("========== Admin test: Opportunity test start");
+    await OpportunityTest.opportunityTest(tester);
+  }, skip: false);
 }
