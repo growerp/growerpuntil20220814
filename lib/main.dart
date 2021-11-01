@@ -116,9 +116,6 @@ class TopApp extends StatelessWidget {
           BlocProvider<EmployeeBloc>(
               create: (context) => UserBloc(dbServer, "GROWERP_M_EMPLOYEE",
                   BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<CategoryBloc>(
-              create: (context) => CategoryBloc(dbServer)),
-          BlocProvider<ProductBloc>(create: (context) => ProductBloc(dbServer)),
           BlocProvider<SalesOrderBloc>(
               create: (context) => FinDocBloc(dbServer, true, 'order')),
           BlocProvider<PurchaseOrderBloc>(
@@ -134,7 +131,6 @@ class TopApp extends StatelessWidget {
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(dbServer)),
           BlocProvider<TransactionBloc>(
               create: (context) => FinDocBloc(dbServer, false, 'transaction')),
-          BlocProvider<AssetBloc>(create: (context) => AssetBloc(dbServer)),
         ],
         child: MyApp(),
       ),

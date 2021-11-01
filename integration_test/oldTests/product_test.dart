@@ -13,6 +13,7 @@
  */
 
 import 'package:admin/main.dart';
+import 'package:core/domains/domains.dart';
 import 'package:dio/dio.dart';
 import 'package:core/integration_test/test_functions.dart';
 import 'package:backend/@backend.dart';

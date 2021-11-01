@@ -1,4 +1,3 @@
-import 'package:core/domains/common/integration_test/commonTest.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import '../lib/main.dart';
 import 'package:backend/@backend.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:core/domains/common/integration_test/data.dart';
+import 'package:core/domains/common/integration_test/commonTest.dart';
 
 Future<void> startApp(WidgetTester tester, {bool newRandom = true}) async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 
 import 'forms/@forms.dart' as local;
 import 'package:core/forms/@forms.dart';
+import 'package:core/domains/catalog/catalog.dart';
 
 List<MenuItem> menuItems = [
   MenuItem(
@@ -125,24 +126,19 @@ List<MenuItem> menuItems = [
       ],
       tabItems: [
         TabItem(
-          form: ProductsForm(),
+          form: ProductListForm(),
           label: "Products",
           icon: Icon(Icons.home),
-          floatButtonForm:
-              ProductDialog(formArguments: FormArguments(object: Product())),
         ),
         TabItem(
-          form: AssetsForm(),
+          form: AssetListForm(),
           label: "Assets",
           icon: Icon(Icons.money),
-          floatButtonForm: AssetDialog(formArguments: FormArguments()),
         ),
         TabItem(
-          form: CategoriesForm(),
+          form: CategoryListForm(),
           label: "Categories",
           icon: Icon(Icons.business),
-          floatButtonForm: CategoryDialog(
-              formArguments: FormArguments(object: ProductCategory())),
         ),
       ]),
   MenuItem(
