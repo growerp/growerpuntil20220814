@@ -12,14 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/domains/domains.dart';
 import 'package:models/@models.dart';
-import 'package:core/domains/common/common.dart';
-import 'package:core/domains/opportunities/opportunities.dart';
 import 'package:flutter/material.dart';
-
 import 'forms/@forms.dart' as local;
 import 'package:core/forms/@forms.dart';
-import 'package:core/domains/catalog/catalog.dart';
 
 List<MenuItem> menuItems = [
   MenuItem(
@@ -144,20 +141,16 @@ List<MenuItem> menuItems = [
   MenuItem(
     image: "assets/images/orderGrey.png",
     selectedImage: "assets/images/order.png",
-    title: "Sales",
-    route: '/sales',
+    title: "Orders",
+    route: '/orders',
     readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
     writeGroups: ["GROWERP_M_ADMIN"],
     tabItems: [
       TabItem(
-        form:
-            FinDocsForm(key: Key("SalesOrder"), sales: true, docType: 'order'),
+        form: FinDocListForm(
+            key: Key("SalesOrder"), sales: true, docType: 'order'),
         label: "Sales orders",
         icon: Icon(Icons.home),
-        floatButtonForm: FinDocDialog(
-          formArguments: FormArguments(
-              object: FinDoc(sales: true, docType: 'order', items: [])),
-        ),
       ),
       TabItem(
         form: UsersForm(
@@ -172,24 +165,11 @@ List<MenuItem> menuItems = [
                     userGroupId: "GROWERP_M_CUSTOMER",
                     groupDescription: "Customer"))),
       ),
-    ],
-  ),
-  MenuItem(
-    image: "assets/images/supplierGrey.png",
-    selectedImage: "assets/images/supplier.png",
-    title: "Purchase",
-    route: '/purchase',
-    readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
-    tabItems: [
       TabItem(
-        form: FinDocsForm(
+        form: FinDocListForm(
             key: Key("PurchaseOrder"), sales: false, docType: 'order'),
         label: "Purchase orders",
         icon: Icon(Icons.home),
-        floatButtonForm: FinDocDialog(
-          formArguments: FormArguments(
-              object: FinDoc(sales: false, docType: 'order', items: [])),
-        ),
       ),
       TabItem(
         form: UsersForm(
@@ -203,6 +183,32 @@ List<MenuItem> menuItems = [
                 object: User(
                     userGroupId: "GROWERP_M_SUPPLIER",
                     groupDescription: "Supplier"))),
+      ),
+    ],
+  ),
+  MenuItem(
+    image: "assets/images/supplierGrey.png",
+    selectedImage: "assets/images/supplier.png",
+    title: "Warehouse",
+    route: '/warehouse',
+    readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
+    tabItems: [
+      TabItem(
+        form: LocationListForm(),
+        label: "WH Locations",
+        icon: Icon(Icons.transform_outlined),
+      ),
+      TabItem(
+        form: FinDocListForm(
+            key: Key("ShipmentsOut"), sales: true, docType: 'shipment'),
+        label: "Outgoing shipments",
+        icon: Icon(Icons.transform_outlined),
+      ),
+      TabItem(
+        form: FinDocListForm(
+            key: Key("ShipmentsIn"), sales: false, docType: 'shipment'),
+        label: "Incoming shipments",
+        icon: Icon(Icons.transform_outlined),
       ),
     ],
   ),

@@ -145,7 +145,7 @@ void main() {
       expect(find.text('Out of range.'), findsOneWidget);
       await tester.tap(find.text('CANCEL'));
       await tester.pump(Duration(seconds: 1));
-      await Test.tap(tester, 'cancelRental');
+      await Test.tap(tester, 'cancel');
       await Test.tap(tester, 'cancel');
     }, skip: false);
   });

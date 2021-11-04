@@ -116,21 +116,7 @@ class TopApp extends StatelessWidget {
           BlocProvider<EmployeeBloc>(
               create: (context) => UserBloc(dbServer, "GROWERP_M_EMPLOYEE",
                   BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<SalesOrderBloc>(
-              create: (context) => FinDocBloc(dbServer, true, 'order')),
-          BlocProvider<PurchaseOrderBloc>(
-              create: (context) => FinDocBloc(dbServer, false, 'order')),
-          BlocProvider<SalesInvoiceBloc>(
-              create: (context) => FinDocBloc(dbServer, true, 'invoice')),
-          BlocProvider<PurchInvoiceBloc>(
-              create: (context) => FinDocBloc(dbServer, false, 'invoice')),
-          BlocProvider<SalesPaymentBloc>(
-              create: (context) => FinDocBloc(dbServer, true, 'payment')),
-          BlocProvider<PurchPaymentBloc>(
-              create: (context) => FinDocBloc(dbServer, false, 'payment')),
           BlocProvider<AccntBloc>(create: (context) => AccntBloc(dbServer)),
-          BlocProvider<TransactionBloc>(
-              create: (context) => FinDocBloc(dbServer, false, 'transaction')),
         ],
         child: MyApp(),
       ),
