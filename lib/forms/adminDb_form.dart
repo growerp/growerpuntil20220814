@@ -57,12 +57,21 @@ class AdminDbForm extends StatelessWidget {
             "",
           ),
           makeDashboardItem(
-            'dbSales',
+            'dbOrders',
             context,
             menuItems[4],
-            "Orders: ${authenticate.stats!.openSlsOrders}",
+            "Sales Orders: ${authenticate.stats!.openSlsOrders}",
             "Customers: ${authenticate.stats!.customers}",
-            "",
+            "Purchase Orders: ${authenticate.stats!.openPurOrders}",
+            "Suppliers: ${authenticate.stats!.suppliers}",
+          ),
+          makeDashboardItem(
+            'dbWarehouse',
+            context,
+            menuItems[5],
+            "Incoming Shipments: ${authenticate.stats!.incomingShipments}",
+            "Outgoing Shipments: ${authenticate.stats!.outgoingShipments}",
+            "Wh Locations: ${authenticate.stats!.whLocations}",
             "",
           ),
           makeDashboardItem(
@@ -77,15 +86,6 @@ class AdminDbForm extends StatelessWidget {
                 "${authenticate.company!.currencyId} "
                 "${authenticate.stats!.purchInvoicesNotPaidAmount ?? '0.00'} "
                 "(${authenticate.stats!.purchInvoicesNotPaidCount})",
-            "",
-            "",
-          ),
-          makeDashboardItem(
-            'dbPurchase',
-            context,
-            menuItems[5],
-            "Orders: ${authenticate.stats!.openPurOrders}",
-            "Suppliers: ${authenticate.stats!.suppliers}",
             "",
             "",
           ),
