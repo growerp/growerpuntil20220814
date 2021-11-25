@@ -79,11 +79,11 @@ class AdminDbForm extends StatelessWidget {
             context,
             menuItems[6],
             "Sales open invoices: \n"
-                "${authenticate.company!.currencyId} "
+                "${authenticate.company!.currency?.currencyId} "
                 "${authenticate.stats!.salesInvoicesNotPaidAmount ?? '0.00'} "
                 "(${authenticate.stats!.salesInvoicesNotPaidCount})",
             "Purchase unpaid invoices: \n"
-                "${authenticate.company!.currencyId} "
+                "${authenticate.company!.currency?.currencyId} "
                 "${authenticate.stats!.purchInvoicesNotPaidAmount ?? '0.00'} "
                 "(${authenticate.stats!.purchInvoicesNotPaidCount})",
             "",

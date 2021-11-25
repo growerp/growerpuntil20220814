@@ -196,19 +196,19 @@ List<MenuItem> menuItems = [
       TabItem(
         form: LocationListForm(),
         label: "WH Locations",
-        icon: Icon(Icons.transform_outlined),
+        icon: Icon(Icons.location_pin),
       ),
       TabItem(
         form: FinDocListForm(
             key: Key("ShipmentsOut"), sales: true, docType: 'shipment'),
         label: "Outgoing shipments",
-        icon: Icon(Icons.transform_outlined),
+        icon: Icon(Icons.send),
       ),
       TabItem(
         form: FinDocListForm(
             key: Key("ShipmentsIn"), sales: false, docType: 'shipment'),
         label: "Incoming shipments",
-        icon: Icon(Icons.transform_outlined),
+        icon: Icon(Icons.call_received),
       ),
     ],
   ),

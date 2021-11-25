@@ -14,13 +14,25 @@
         {
             "name": "admin",
             "request": "launch",
-            "type": "dart"
-        },
+            "type": "dart",
+            "program": "lib/main.dart"        },
         {
             "name": "Flutter (integration_test/admin_test.dart)",
             "type": "dart",
             "request": "launch",
             "program": "integration_test/admin_test.dart"
+        },
+        {
+            "name": "Accugeo test",
+            "type": "dart",
+            "request": "attach",
+            "program": "integration_test/accugeoMobileTest/main_test.dart"
+        },
+        {
+            "name": "Flutter (lib/main_test.dart)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main_test.dart"
         }
     ]
 }

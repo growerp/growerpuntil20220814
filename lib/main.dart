@@ -89,18 +89,15 @@ class TopApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(
               create: (context) =>
-                  AuthBloc(dbServer, chatServer)..add(LoadAuth()),
-              lazy: true),
+                  AuthBloc(dbServer, chatServer)..add(LoadAuth())),
           BlocProvider<ChatRoomBloc>(
             create: (context) => ChatRoomBloc(
                 dbServer, chatServer, BlocProvider.of<AuthBloc>(context))
               ..add(FetchChatRoom()),
           ),
           BlocProvider<ChatMessageBloc>(
-            create: (context) => ChatMessageBloc(
-                dbServer, chatServer, BlocProvider.of<AuthBloc>(context)),
-            lazy: true,
-          ),
+              create: (context) => ChatMessageBloc(
+                  dbServer, chatServer, BlocProvider.of<AuthBloc>(context))),
           BlocProvider<LeadBloc>(
               create: (context) => UserBloc(dbServer, "GROWERP_M_LEAD",
                   BlocProvider.of<AuthBloc>(context))),
