@@ -12,13 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'package:core/forms/@forms.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:core/blocs/@blocs.dart';
-import 'package:models/@models.dart';
 import 'package:core/widgets/@widgets.dart';
 import '../menuItem_data.dart';
+import 'package:core/domains/domains.dart';
 
 class AdminDbForm extends StatelessWidget {
   @override
@@ -34,44 +32,44 @@ class AdminDbForm extends StatelessWidget {
             authenticate.company!.name!.length > 20
                 ? "${authenticate.company!.name!.substring(0, 20)}..."
                 : "${authenticate.company!.name}",
-            "Administrators: ${authenticate.stats!.admins}",
-            "Other Employees: ${authenticate.stats!.employees}",
+            "Administrators: ${authenticate.stats?.admins}",
+            "Other Employees: ${authenticate.stats?.employees}",
             "",
           ),
           makeDashboardItem(
             'dbCrm',
             context,
             menuItems[2],
-            "All Opportunities: ${authenticate.stats!.opportunities}",
-            "My Opportunities: ${authenticate.stats!.myOpportunities}",
-            "Leads: ${authenticate.stats!.leads}",
-            "Customers: ${authenticate.stats!.customers}",
+            "All Opportunities: ${authenticate.stats?.opportunities}",
+            "My Opportunities: ${authenticate.stats?.myOpportunities}",
+            "Leads: ${authenticate.stats?.leads}",
+            "Customers: ${authenticate.stats?.customers}",
           ),
           makeDashboardItem(
             'dbCatalog',
             context,
             menuItems[3],
-            "Categories: ${authenticate.stats!.categories}",
-            "Products: ${authenticate.stats!.products}",
-            "Assets: ${authenticate.stats!.products}",
+            "Categories: ${authenticate.stats?.categories}",
+            "Products: ${authenticate.stats?.products}",
+            "Assets: ${authenticate.stats?.products}",
             "",
           ),
           makeDashboardItem(
             'dbOrders',
             context,
             menuItems[4],
-            "Sales Orders: ${authenticate.stats!.openSlsOrders}",
-            "Customers: ${authenticate.stats!.customers}",
-            "Purchase Orders: ${authenticate.stats!.openPurOrders}",
-            "Suppliers: ${authenticate.stats!.suppliers}",
+            "Sales Orders: ${authenticate.stats?.openSlsOrders}",
+            "Customers: ${authenticate.stats?.customers}",
+            "Purchase Orders: ${authenticate.stats?.openPurOrders}",
+            "Suppliers: ${authenticate.stats?.suppliers}",
           ),
           makeDashboardItem(
             'dbWarehouse',
             context,
             menuItems[5],
-            "Incoming Shipments: ${authenticate.stats!.incomingShipments}",
-            "Outgoing Shipments: ${authenticate.stats!.outgoingShipments}",
-            "Wh Locations: ${authenticate.stats!.whLocations}",
+            "Incoming Shipments: ${authenticate.stats?.incomingShipments}",
+            "Outgoing Shipments: ${authenticate.stats?.outgoingShipments}",
+            "Wh Locations: ${authenticate.stats?.whLocations}",
             "",
           ),
           makeDashboardItem(
@@ -80,12 +78,12 @@ class AdminDbForm extends StatelessWidget {
             menuItems[6],
             "Sales open invoices: \n"
                 "${authenticate.company!.currency?.currencyId} "
-                "${authenticate.stats!.salesInvoicesNotPaidAmount ?? '0.00'} "
-                "(${authenticate.stats!.salesInvoicesNotPaidCount})",
+                "${authenticate.stats?.salesInvoicesNotPaidAmount ?? '0.00'} "
+                "(${authenticate.stats?.salesInvoicesNotPaidCount})",
             "Purchase unpaid invoices: \n"
                 "${authenticate.company!.currency?.currencyId} "
-                "${authenticate.stats!.purchInvoicesNotPaidAmount ?? '0.00'} "
-                "(${authenticate.stats!.purchInvoicesNotPaidCount})",
+                "${authenticate.stats?.purchInvoicesNotPaidAmount ?? '0.00'} "
+                "(${authenticate.stats?.purchInvoicesNotPaidCount})",
             "",
             "",
           ),

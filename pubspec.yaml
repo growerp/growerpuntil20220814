@@ -28,7 +28,7 @@ dependencies:
   dropdown_search: ^0.6.3
   flutter_phoenix: ^1.0.0
   core:
-#    path: ../accugeoPackages/core
+#    path: ../packages/core
     git:
       url: https://github.com/growerp/growerp.git
       ref: packages

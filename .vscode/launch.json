@@ -12,7 +12,7 @@
             "deviceId": "emulator-5554"
         },
         {
-            "name": "admin",
+            "name": "lib/main",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart"        },

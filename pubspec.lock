@@ -55,7 +55,7 @@ packages:
     description:
       path: backend
       ref: packages
-      resolved-ref: bbd217701b4aa1567785b0a5d36814b5b2dffa05
+      resolved-ref: f53ddc0cb9a8a1c9c2d1ad8fc02da2b745ea046a
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -128,7 +128,7 @@ packages:
       name: build_resolvers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   build_runner:
     dependency: "direct dev"
     description:
@@ -218,7 +218,7 @@ packages:
     description:
       path: core
       ref: packages
-      resolved-ref: bbd217701b4aa1567785b0a5d36814b5b2dffa05
+      resolved-ref: f53ddc0cb9a8a1c9c2d1ad8fc02da2b745ea046a
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.1"
@@ -270,7 +270,7 @@ packages:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.3"
+    version: "4.0.4"
   dropdown_search:
     dependency: "direct main"
     description:
@@ -362,7 +362,7 @@ packages:
       name: flutter_plugin_android_lifecycle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.4"
+    version: "2.0.5"
   flutter_simple_treeview:
     dependency: "direct main"
     description:
@@ -508,7 +508,7 @@ packages:
       name: markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "4.0.1"
   matcher:
     dependency: transitive
     description:
@@ -544,15 +544,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0"
-  models:
-    dependency: transitive
-    description:
-      path: models
-      ref: packages
-      resolved-ref: bbd217701b4aa1567785b0a5d36814b5b2dffa05
-      url: "https://github.com/growerp/growerp.git"
-    source: git
-    version: "0.0.1"
   nested:
     dependency: transitive
     description:
@@ -615,7 +606,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.6.2"
+    version: "3.6.3"
   pedantic:
     dependency: transitive
     description:
@@ -657,7 +648,7 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.6.2"
+    version: "5.6.3"
   process:
     dependency: transitive
     description:
@@ -718,6 +709,20 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.9"
+  shared_preferences_android:
+    dependency: transitive
+    description:
+      name: shared_preferences_android
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.9"
+  shared_preferences_ios:
+    dependency: transitive
+    description:
+      name: shared_preferences_ios
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.8"
@@ -907,7 +912,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.13"
+    version: "6.0.15"
   url_launcher_linux:
     dependency: transitive
     description:
@@ -948,7 +953,7 @@ packages:
     description:
       path: utils
       ref: packages
-      resolved-ref: b6fa4fa10ba41fc501a79a727807568fbbe38606
+      resolved-ref: bbd217701b4aa1567785b0a5d36814b5b2dffa05
       url: "https://github.com/growerp/growerp.git"
     source: git
     version: "0.0.0"
@@ -1007,7 +1012,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.1"
   xdg_directories:
     dependency: transitive
     description:

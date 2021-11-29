@@ -15,9 +15,8 @@
 // start with: flutter run -t lib/chatEcho_app.dart
 
 import 'dart:async';
-import 'package:models/@models.dart';
+
 import 'package:core/domains/common/common.dart';
-import 'package:core/forms/changeIp_form.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -28,13 +27,12 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:core/blocs/@blocs.dart';
 import 'package:backend/@backend.dart';
 import 'package:core/styles/themes.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
-import 'package:core/forms/@forms.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:core/domains/domains.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
