@@ -28,12 +28,8 @@ dependencies:
   dropdown_search: ^0.6.3
   flutter_phoenix: ^1.0.0
   core:
-#    path: ../packages/core
-    git:
-      url: https://github.com/growerp/growerp.git
-      ref: packages
-      path: core
-      
+    path: ./packages/core
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -44,12 +40,7 @@ dev_dependencies:
   build_runner:
   bdd_widget_test: ^1.2.0     
   utils:
-#    path: ../packages/utils
-    git:
-      url: https://github.com/growerp/growerp.git
-      ref: packages
-      path: utils
-
+    path: packages/utils
   mockito: ^5.0.2
   very_good_analysis: ^2.0.0
 

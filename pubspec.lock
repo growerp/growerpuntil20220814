@@ -50,15 +50,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.8.1"
-  backend:
-    dependency: transitive
-    description:
-      path: backend
-      ref: packages
-      resolved-ref: "7734936082e6bb69fa945e3de98a0e20145764a8"
-      url: "https://github.com/growerp/growerp.git"
-    source: git
-    version: "0.0.1"
   barcode:
     dependency: transitive
     description:
@@ -244,7 +235,7 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: "../packages/core"
+      path: "packages/core"
       relative: true
     source: path
     version: "0.0.1"
@@ -1005,11 +996,9 @@ packages:
   utils:
     dependency: "direct dev"
     description:
-      path: utils
-      ref: packages
-      resolved-ref: "7734936082e6bb69fa945e3de98a0e20145764a8"
-      url: "https://github.com/growerp/growerp.git"
-    source: git
+      path: "packages/utils"
+      relative: true
+    source: path
     version: "0.0.0"
   vector_math:
     dependency: transitive

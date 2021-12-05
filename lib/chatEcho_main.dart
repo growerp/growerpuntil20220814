@@ -17,6 +17,7 @@
 import 'dart:async';
 
 import 'package:core/domains/common/common.dart';
+import 'package:core/widgets/observer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -25,22 +26,21 @@ import 'package:global_configuration/global_configuration.dart';
 import 'generated/l10n.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:backend/@backend.dart';
+import 'package:core/api_repository.dart';
+import 'package:core/services/chat_server.dart';
 import 'package:core/styles/themes.dart';
-import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/domains/domains.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = SimpleBlocObserver();
+  Bloc.observer = AppBlocObserver();
 
   await GlobalConfiguration().loadFromAsset("app_settings");
 
-  var dbServer = MoquiServer(client: Dio());
+  var dbServer = APIRepository();
   ChatServer chatServer = ChatServer();
 
   runApp(Phoenix(child: ChatApp(dbServer: dbServer, chatServer: chatServer)));
@@ -64,7 +64,7 @@ class ChatApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(
               create: (context) =>
-                  AuthBloc(dbServer, chatServer)..add(LoadAuth()),
+                  AuthBloc(dbServer, chatServer)..add(AuthLoad()),
               lazy: false),
           BlocProvider<ChatRoomBloc>(
             create: (context) => ChatRoomBloc(
@@ -112,15 +112,15 @@ class MyChatApp extends StatelessWidget {
         onGenerateRoute: router.generateRoute,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
-            if (state is AuthProblem)
+            if (state.status == AuthStatus.failure)
               return FatalErrorForm("Internet or server problem?");
-            if (state is AuthAuthenticated)
+            if (state.status == AuthStatus.authenticated)
               return HomeForm(
                   message: state.message, menuItems: menuItems, title: title);
-            if (state is AuthUnauthenticated)
+            if (state.status == AuthStatus.unAuthenticated)
               return HomeForm(
                   message: state.message, menuItems: menuItems, title: title);
-            if (state is AuthChangeIp) return ChangeIpForm();
+            if (state.status == AuthStatus.changeIp) return ChangeIpForm();
             return SplashForm();
           },
         ));
@@ -180,8 +180,8 @@ class _ChatRoomsState extends State<ChatRooms> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) {
-        authenticate = state.authenticate;
+      if (state.status == AuthStatus.authenticated) {
+        authenticate = state.authenticate!;
         return BlocBuilder<ChatRoomBloc, ChatRoomState>(
             builder: (context, state) {
           if (state is ChatRoomSuccess) {

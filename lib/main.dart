@@ -11,6 +11,8 @@
  * along with this software (see the LICENSE.md file). If not, see
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import 'package:core/api_repository.dart';
+import 'package:core/services/chat_server.dart';
 import 'menuItem_data.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +22,7 @@ import 'generated/l10n.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:backend/@backend.dart';
 import 'package:core/styles/themes.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
@@ -32,7 +32,6 @@ import 'package:core/domains/domains.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = SimpleBlocObserver();
 
   await GlobalConfiguration().loadFromAsset("app_settings");
 
@@ -58,15 +57,11 @@ Future main() async {
 
   // here you switch backends
   String backend = GlobalConfiguration().getValue("backend");
-  var dbServer = backend == 'moqui'
-      ? MoquiServer(client: Dio())
-//      : backend == 'ofbiz'
-//          ? Ofbiz(client: Dio())
-      : null;
+  var dbServer = APIRepository();
 
   ChatServer chatServer = ChatServer();
-
-  runApp(Phoenix(child: TopApp(dbServer: dbServer!, chatServer: chatServer)));
+  Bloc.observer = AppBlocObserver();
+  runApp(Phoenix(child: TopApp(dbServer: dbServer, chatServer: chatServer)));
 }
 
 class TopApp extends StatelessWidget {
@@ -87,7 +82,7 @@ class TopApp extends StatelessWidget {
         providers: [
           BlocProvider<AuthBloc>(
               create: (context) =>
-                  AuthBloc(dbServer, chatServer)..add(LoadAuth())),
+                  AuthBloc(dbServer, chatServer)..add(AuthLoad())),
           BlocProvider<ChatRoomBloc>(
             create: (context) => ChatRoomBloc(
                 dbServer, chatServer, BlocProvider.of<AuthBloc>(context))
@@ -157,19 +152,19 @@ class MyApp extends StatelessWidget {
             onGenerateRoute: router.generateRoute,
             home: BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
-                if (state is AuthProblem)
+                if (state.status == AuthStatus.failure)
                   return FatalErrorForm("Internet or server problem?");
-                if (state is AuthAuthenticated)
+                if (state.status == AuthStatus.authenticated)
                   return HomeForm(
                       message: state.message,
                       menuItems: menuItems,
                       title: title);
-                if (state is AuthUnauthenticated)
+                if (state.status == AuthStatus.unAuthenticated)
                   return HomeForm(
                       message: state.message,
                       menuItems: menuItems,
                       title: title);
-                if (state is AuthChangeIp) return ChangeIpForm();
+                if (state.status == AuthStatus.changeIp) return ChangeIpForm();
                 return SplashForm();
               },
             )));

@@ -22,8 +22,8 @@ class AdminDbForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) {
-        Authenticate authenticate = state.authenticate;
+      if (state.status == AuthStatus.authenticated) {
+        Authenticate authenticate = state.authenticate!;
         return DashBoardForm(dashboardItems: [
           makeDashboardItem(
             'dbCompany',
