@@ -59,9 +59,11 @@ Future main() async {
   String backend = GlobalConfiguration().getValue("backend");
   var dbServer = APIRepository();
 
-  ChatServer chatServer = ChatServer();
-  Bloc.observer = AppBlocObserver();
-  runApp(Phoenix(child: TopApp(dbServer: dbServer, chatServer: chatServer)));
+  BlocOverrides.runZoned(
+    () => runApp(
+        Phoenix(child: TopApp(dbServer: dbServer, chatServer: ChatServer()))),
+    blocObserver: AppBlocObserver(),
+  );
 }
 
 class TopApp extends StatelessWidget {
@@ -86,27 +88,11 @@ class TopApp extends StatelessWidget {
           BlocProvider<ChatRoomBloc>(
             create: (context) => ChatRoomBloc(
                 dbServer, chatServer, BlocProvider.of<AuthBloc>(context))
-              ..add(FetchChatRoom()),
+              ..add(ChatRoomFetch()),
           ),
           BlocProvider<ChatMessageBloc>(
               create: (context) => ChatMessageBloc(
                   dbServer, chatServer, BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<LeadBloc>(
-              create: (context) => UserBloc(dbServer, "GROWERP_M_LEAD",
-                  BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<CustomerBloc>(
-              create: (context) => UserBloc(dbServer, "GROWERP_M_CUSTOMER",
-                  BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<SupplierBloc>(
-              create: (context) => UserBloc(dbServer, "GROWERP_M_SUPPLIER",
-                  BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<AdminBloc>(
-              create: (context) => UserBloc(dbServer, "GROWERP_M_ADMIN",
-                  BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<EmployeeBloc>(
-              create: (context) => UserBloc(dbServer, "GROWERP_M_EMPLOYEE",
-                  BlocProvider.of<AuthBloc>(context))),
-          BlocProvider<AccntBloc>(create: (context) => AccntBloc(dbServer)),
         ],
         child: MyApp(),
       ),

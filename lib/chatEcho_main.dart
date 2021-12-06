@@ -17,14 +17,12 @@
 import 'dart:async';
 
 import 'package:core/domains/common/common.dart';
-import 'package:core/widgets/observer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'generated/l10n.dart';
-import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/api_repository.dart';
@@ -36,7 +34,6 @@ import 'package:core/domains/domains.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Bloc.observer = AppBlocObserver();
 
   await GlobalConfiguration().loadFromAsset("app_settings");
 
@@ -69,7 +66,7 @@ class ChatApp extends StatelessWidget {
           BlocProvider<ChatRoomBloc>(
             create: (context) => ChatRoomBloc(
                 dbServer, chatServer, BlocProvider.of<AuthBloc>(context))
-              ..add(FetchChatRoom()),
+              ..add(ChatRoomFetch()),
           ),
           BlocProvider<ChatMessageBloc>(
             create: (context) => ChatMessageBloc(
@@ -172,7 +169,7 @@ class _ChatRoomsState extends State<ChatRooms> {
     super.initState();
     entityName = classificationId == 'AppHotel' ? 'Room' : 'ChatRoom';
     _chatRoomBloc = BlocProvider.of<ChatRoomBloc>(context)
-      ..add(FetchChatRoom(limit: limit));
+      ..add(ChatRoomFetch(limit: limit));
     search = false;
     limit = 20;
   }
@@ -184,7 +181,7 @@ class _ChatRoomsState extends State<ChatRooms> {
         authenticate = state.authenticate!;
         return BlocBuilder<ChatRoomBloc, ChatRoomState>(
             builder: (context, state) {
-          if (state is ChatRoomSuccess) {
+          if (state.status == ChatRoomStatus.success) {
             chatRooms = state.chatRooms;
             if (chatRooms.length == 0)
               return Center(
@@ -193,21 +190,21 @@ class _ChatRoomsState extends State<ChatRooms> {
                       key: Key('empty'), textAlign: TextAlign.center));
             // receive chat message (caused chatroom added on the list)
             _chatMessageBloc = BlocProvider.of<ChatMessageBloc>(context)
-              ..add(FetchChatMessage(
+              ..add(ChatMessageFetch(
                   chatRoomId: chatRooms[0].chatRoomId!, limit: limit));
             return BlocBuilder<ChatMessageBloc, ChatMessageState>(
                 builder: (context, state) {
-              if (state is ChatMessageSuccess) {
+              if (state.status == ChatMessageStatus.success) {
                 messages = state.chatMessages;
                 if (messages.length > 0) {
                   // echo message
                   print("####receive => echo message");
-                  _chatMessageBloc.add(SendWsChatMessage(WsChatMessage(
+                  _chatMessageBloc.add(ChatMessageSendWs(WsChatMessage(
                       toUserId:
                           chatRooms[0].getToUserId(authenticate.user!.userId!),
                       fromUserId: authenticate.user!.userId!,
                       chatRoomId: chatRooms[0].chatRoomId,
-                      content: messages[0].content)));
+                      content: messages[0].content!)));
                   // remove chat room from list, reset isActive flag
                   print("#### remove room from list");
                   int ind =
@@ -220,7 +217,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                   newMembers[ind] = newMember;
                   // copy members pdate copy
                   _chatRoomBloc.add(
-                    UpdateChatRoom(chatRooms[0].copyWith(members: newMembers),
+                    ChatRoomUpdate(chatRooms[0].copyWith(members: newMembers),
                         authenticate.user!.userId!),
                   );
                 }

@@ -17,7 +17,6 @@ Future<void> startApp(WidgetTester tester,
     await prefs.remove('PurchaseOrders');
   }
   await GlobalConfiguration().loadFromAsset("app_settings");
-  Bloc.observer = AppBlocObserver();
   await tester
       .pumpWidget(TopApp(dbServer: APIRepository(), chatServer: ChatServer()));
   if (newRandom = false) seq = CommonTest.getRandom();
