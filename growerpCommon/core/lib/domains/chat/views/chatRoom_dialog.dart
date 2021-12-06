@@ -50,7 +50,6 @@ class _ChatRoomState extends State<ChatRoomPage> {
   TextEditingController _userSearchBoxController = TextEditingController();
 
   bool loading = false;
-  ChatRoom? _selectedChatRoom;
   User? _selectedUser;
   Authenticate? authenticate;
 

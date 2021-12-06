@@ -373,7 +373,7 @@ class APIRepository {
       String? docType,
       DateTime? startDate,
       String? finDocId,
-      String? search,
+      String? searchString,
       String? customerCompanyPartyId}) async {
     try {
       final response = await dioClient
@@ -387,7 +387,7 @@ class APIRepository {
             '${startDate?.day.toString().padLeft(2, '0')}',
         'start': start,
         'limit': limit,
-        'search': search,
+        'search': searchString,
         'classificationId': classificationId,
         'customerCompanyPartyId': customerCompanyPartyId,
       });
@@ -668,12 +668,13 @@ class APIRepository {
     }
   }
 
-  Future<ApiResult<List<Opportunity>>> getOpportunity(
-      {int? start,
-      int? limit,
-      String? opportunityId,
-      bool? my,
-      String? search}) async {
+  Future<ApiResult<List<Opportunity>>> getOpportunity({
+    int? start,
+    int? limit,
+    String? opportunityId,
+    bool? my,
+    String? searchString,
+  }) async {
     try {
       final response = await dioClient
           .get('rest/s1/growerp/100/Opportunity', apiKey!, queryParameters: {
@@ -681,7 +682,7 @@ class APIRepository {
         'start': start,
         'limit': limit,
         'my': my.toString(),
-        'search': search
+        'search': searchString
       });
       return ApiResult.success(
           data: opportunitiesFromJson(response.toString()));
@@ -748,7 +749,7 @@ class APIRepository {
       String? chatRoomName,
       String? userId,
       bool? isPrivate,
-      String? search,
+      String? searchString,
       String? filter}) async {
     try {
       final response = await dioClient
@@ -759,7 +760,7 @@ class APIRepository {
         'start': start,
         'limit': limit,
         'isPrivate': isPrivate,
-        'search': search,
+        'search': searchString,
         'filter': filter,
       });
       return ApiResult.success(data: chatRoomsFromJson(response.toString()));
@@ -810,14 +811,14 @@ class APIRepository {
       {required String chatRoomId,
       int? start,
       int? limit,
-      String? search}) async {
+      String? searchString}) async {
     try {
-      final response = await dioClient.get(
-          'rest/s1/growerp/100/ChatMessage', apiKey!, queryParameters: {
+      final response = await dioClient
+          .get('rest/s1/growerp/100/ChatMessage', apiKey!, queryParameters: {
         'chatRoomId': chatRoomId,
         'start': start,
         'limit': limit,
-        'search': search
+        'search': searchString,
       });
       return ApiResult.success(data: chatMessagesFromJson(response.toString()));
     } catch (e) {
@@ -825,12 +826,13 @@ class APIRepository {
     }
   }
 
-  Future<ApiResult<List<Task>>> getTask(
-      {int? start,
-      int? limit,
-      String? taskId,
-      bool? open,
-      String? search}) async {
+  Future<ApiResult<List<Task>>> getTask({
+    int? start,
+    int? limit,
+    String? taskId,
+    bool? open,
+    String? searchString,
+  }) async {
     try {
       final response = await dioClient
           .get('rest/s1/growerp/100/Task', apiKey!, queryParameters: {
@@ -838,7 +840,7 @@ class APIRepository {
         'start': start,
         'limit': limit,
         'open': open.toString(),
-        'search': search
+        'search': searchString
       });
       return ApiResult.success(data: tasksFromJson(response.toString()));
     } catch (e) {

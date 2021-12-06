@@ -76,8 +76,8 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
     try {
       // start from record zero for initial and refresh
       if (state.status == FinDocStatus.initial || event.refresh) {
-        ApiResult<List<FinDoc>> compResult =
-            await repos.getFinDoc(searchString: event.searchString);
+        ApiResult<List<FinDoc>> compResult = await repos.getFinDoc(
+            sales: sales, docType: docType, searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: FinDocStatus.success,
@@ -92,8 +92,8 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
       if (event.searchString.isNotEmpty && state.searchString.isEmpty ||
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
-        ApiResult<List<FinDoc>> compResult =
-            await repos.getFinDoc(searchString: event.searchString);
+        ApiResult<List<FinDoc>> compResult = await repos.getFinDoc(
+            sales: sales, docType: docType, searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: FinDocStatus.success,
@@ -106,8 +106,8 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
       }
       // get next page also for search
 
-      ApiResult<List<FinDoc>> compResult =
-          await repos.getFinDoc(searchString: event.searchString);
+      ApiResult<List<FinDoc>> compResult = await repos.getFinDoc(
+          sales: sales, docType: docType, searchString: event.searchString);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: FinDocStatus.success,
