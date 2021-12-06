@@ -1,0 +1,9 @@
+export 'authenticate/integration_test/auth_test.dart';
+export 'accounting/integration_test/accountingTest.dart';
+export 'common/integration_test/commonTest.dart';
+export 'catalog/integration_test/catalogTest.dart';
+export 'findoc/integration_test/orderTest.dart';
+export 'opportunities/integration_test/opportunity_test.dart';
+export 'tasks/integration_test/taskTest.dart';
+export 'users/integration_test/userTest.dart';
+export 'warehouse/integration_test/warehouseTest.dart';

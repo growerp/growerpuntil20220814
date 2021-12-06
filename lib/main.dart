@@ -55,13 +55,9 @@ Future main() async {
     }
   }
 
-  // here you switch backends
-  String backend = GlobalConfiguration().getValue("backend");
-  var dbServer = APIRepository();
-
   BlocOverrides.runZoned(
-    () => runApp(
-        Phoenix(child: TopApp(dbServer: dbServer, chatServer: ChatServer()))),
+    () => runApp(Phoenix(
+        child: TopApp(dbServer: APIRepository(), chatServer: ChatServer()))),
     blocObserver: AppBlocObserver(),
   );
 }

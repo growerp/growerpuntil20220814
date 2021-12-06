@@ -235,7 +235,7 @@ packages:
   core:
     dependency: "direct main"
     description:
-      path: "packages/core"
+      path: "growerpCommon/core"
       relative: true
     source: path
     version: "0.0.1"
@@ -996,7 +996,7 @@ packages:
   utils:
     dependency: "direct dev"
     description:
-      path: "packages/utils"
+      path: "growerpCommon/utils"
       relative: true
     source: path
     version: "0.0.0"
