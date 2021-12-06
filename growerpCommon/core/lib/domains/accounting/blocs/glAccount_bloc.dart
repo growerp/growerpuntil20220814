@@ -53,10 +53,9 @@ class GlAccountBloc extends Bloc<GlAccountEvent, GlAccountState> {
     try {
       // start from record zero for initial and refresh
       if (state.status == GlAccountStatus.initial || event.refresh) {
-        ApiResult<List<GlAccount>> compResult =
-            await repos.getGlAccount(searchString: event.searchString);
+        ApiResult<List<GlAccount>> compResult = await repos.getGlAccount();
         return emit(compResult.when(
-            success: (data) => state.copyWith(
+            success: (List<GlAccount> data) => state.copyWith(
                   status: GlAccountStatus.success,
                   glAccounts: data,
                   hasReachedMax: data.length < _accntLimit ? true : false,

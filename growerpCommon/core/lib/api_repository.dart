@@ -731,12 +731,13 @@ class APIRepository {
     }
   }
 
-  Future<ApiResult<GlAccount>> getGlAccount() async {
+  Future<ApiResult<List<GlAccount>>> getGlAccount() async {
     try {
       final response =
           await dioClient.get('rest/s1/growerp/100/Ledger', apiKey!);
       //    return glAccountListFromJson(response.toString());
-      return ApiResult.success(data: glAccountFromJson(response.toString()));
+      return ApiResult.success(
+          data: glAccountListFromJson(response.toString()));
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

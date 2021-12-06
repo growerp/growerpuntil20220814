@@ -29,7 +29,7 @@ class _$GlAccountTearOff {
       String? accountName,
       double? postedBalance,
       double? rollUp,
-      List<GlAccount>? children}) {
+      List<GlAccount> children = const []}) {
     return _GlAccount(
       id: id,
       l: l,
@@ -59,7 +59,7 @@ mixin _$GlAccount {
   String? get accountName => throw _privateConstructorUsedError;
   double? get postedBalance => throw _privateConstructorUsedError;
   double? get rollUp => throw _privateConstructorUsedError;
-  List<GlAccount>? get children => throw _privateConstructorUsedError;
+  List<GlAccount> get children => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -79,7 +79,7 @@ abstract class $GlAccountCopyWith<$Res> {
       String? accountName,
       double? postedBalance,
       double? rollUp,
-      List<GlAccount>? children});
+      List<GlAccount> children});
 }
 
 /// @nodoc
@@ -133,7 +133,7 @@ class _$GlAccountCopyWithImpl<$Res> implements $GlAccountCopyWith<$Res> {
       children: children == freezed
           ? _value.children
           : children // ignore: cast_nullable_to_non_nullable
-              as List<GlAccount>?,
+              as List<GlAccount>,
     ));
   }
 }
@@ -152,7 +152,7 @@ abstract class _$GlAccountCopyWith<$Res> implements $GlAccountCopyWith<$Res> {
       String? accountName,
       double? postedBalance,
       double? rollUp,
-      List<GlAccount>? children});
+      List<GlAccount> children});
 }
 
 /// @nodoc
@@ -207,7 +207,7 @@ class __$GlAccountCopyWithImpl<$Res> extends _$GlAccountCopyWithImpl<$Res>
       children: children == freezed
           ? _value.children
           : children // ignore: cast_nullable_to_non_nullable
-              as List<GlAccount>?,
+              as List<GlAccount>,
     ));
   }
 }
@@ -223,7 +223,7 @@ class _$_GlAccount extends _GlAccount with DiagnosticableTreeMixin {
       this.accountName,
       this.postedBalance,
       this.rollUp,
-      this.children})
+      this.children = const []})
       : super._();
 
   factory _$_GlAccount.fromJson(Map<String, dynamic> json) =>
@@ -243,8 +243,9 @@ class _$_GlAccount extends _GlAccount with DiagnosticableTreeMixin {
   final double? postedBalance;
   @override
   final double? rollUp;
+  @JsonKey(defaultValue: const [])
   @override
-  final List<GlAccount>? children;
+  final List<GlAccount> children;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -315,7 +316,7 @@ abstract class _GlAccount extends GlAccount {
       String? accountName,
       double? postedBalance,
       double? rollUp,
-      List<GlAccount>? children}) = _$_GlAccount;
+      List<GlAccount> children}) = _$_GlAccount;
   _GlAccount._() : super._();
 
   factory _GlAccount.fromJson(Map<String, dynamic> json) =
@@ -336,7 +337,7 @@ abstract class _GlAccount extends GlAccount {
   @override
   double? get rollUp;
   @override
-  List<GlAccount>? get children;
+  List<GlAccount> get children;
   @override
   @JsonKey(ignore: true)
   _$GlAccountCopyWith<_GlAccount> get copyWith =>

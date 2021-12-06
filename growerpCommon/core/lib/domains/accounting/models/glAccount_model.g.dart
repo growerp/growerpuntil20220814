@@ -15,8 +15,9 @@ _$_GlAccount _$$_GlAccountFromJson(Map<String, dynamic> json) => _$_GlAccount(
       postedBalance: (json['postedBalance'] as num?)?.toDouble(),
       rollUp: (json['rollUp'] as num?)?.toDouble(),
       children: (json['children'] as List<dynamic>?)
-          ?.map((e) => GlAccount.fromJson(e as Map<String, dynamic>))
-          .toList(),
+              ?.map((e) => GlAccount.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
 
 Map<String, dynamic> _$$_GlAccountToJson(_$_GlAccount instance) =>

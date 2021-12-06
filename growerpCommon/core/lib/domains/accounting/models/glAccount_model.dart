@@ -40,7 +40,7 @@ class GlAccount with _$GlAccount {
     String? accountName,
     double? postedBalance,
     double? rollUp,
-    List<GlAccount>? children,
+    @Default([]) List<GlAccount> children,
   }) = _GlAccount;
 
   factory GlAccount.fromJson(Map<String, dynamic> json) =>

@@ -75,7 +75,7 @@ class _LedgerTreeFormState extends State<LedgerTreeListForm> {
                     NumberFormat.simpleCurrency().format(glAccount.rollUp),
                     textAlign: TextAlign.right))
           ]),
-          children: glAccount.children!.map((x) => getTreeNode(x)).toList(),
+          children: glAccount.children.map((x) => getTreeNode(x)).toList(),
         );
         return result;
       }
