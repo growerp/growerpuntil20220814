@@ -16,7 +16,6 @@ class APIRepository {
   String databaseUrlDebug = GlobalConfiguration().get("databaseUrlDebug");
   String? sessionToken;
   String? apiKey;
-  bool useApiKey = true;
 
   late DioClient dioClient;
   late String _baseUrl;
@@ -48,12 +47,6 @@ class APIRepository {
     List<Interceptor> interceptors = [];
     interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
       // print("====interceptor apiKey: ${this.apiKey}");
-      if (this.apiKey != null && useApiKey)
-        options.headers["api_key"] = this.apiKey;
-      else {
-        options.headers.remove("api_key");
-        useApiKey = true; // one time only
-      }
       if (restRequestLogs) {
         print(
             '===Outgoing dio request path: ${options.baseUrl}${options.path}');
@@ -111,12 +104,12 @@ class APIRepository {
 
   Future<ApiResult<bool>> checkCompany(String partyId) async {
     try {
-      useApiKey =
-          false; // no apykey required, if not valid will report no company
-      Response response = await dioClient.get(
-          'rest/s1/growerp/100/CheckCompany', apiKey!,
+      // no apykey required, if not valid will report no company
+      final response = await dioClient.get(
+          'rest/s1/growerp/100/CheckCompany', null,
           queryParameters: {'partyId': partyId});
-      return ApiResult.success(data: response.data["ok"] == "ok");
+      return ApiResult.success(
+          data: jsonDecode(response.toString())["ok"] == "ok");
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -735,7 +728,6 @@ class APIRepository {
     try {
       final response =
           await dioClient.get('rest/s1/growerp/100/Ledger', apiKey!);
-      //    return glAccountListFromJson(response.toString());
       return ApiResult.success(
           data: glAccountListFromJson(response.toString()));
     } catch (e) {

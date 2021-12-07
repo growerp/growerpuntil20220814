@@ -65,7 +65,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         failure: (_) => Company());
     // get session data from last time
     var localAuthenticate = await PersistFunctions.getAuthenticate();
-    if (localAuthenticate != null && localAuthenticate.apiKey != null) {
+    if (localAuthenticate != null &&
+        localAuthenticate.apiKey != null &&
+        localAuthenticate.company?.partyId != null) {
+      // check if company still valid
+      ApiResult<bool> checkResult =
+          await repos.checkCompany(localAuthenticate.company?.partyId);
+      bool ok = (checkResult.when(
+          success: (bool data) => data, failure: (_) => false));
+      if (!ok)
+        return emit(state.copyWith(
+            status: AuthStatus.unAuthenticated,
+            authenticate: Authenticate(company: defaultCompany)));
       // test apiKey and get Authenticate
       repos.setApiKey(
           localAuthenticate.apiKey, localAuthenticate.moquiSessionToken);
@@ -175,7 +186,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           state.authenticate!.copyWith(apiKey: null));
   }
 
-  // notified from the login bloc
   Future<void> _onAuthLogin(
     AuthLogin event,
     Emitter<AuthState> emit,
