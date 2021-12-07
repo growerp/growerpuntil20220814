@@ -13,6 +13,7 @@
  */
 
 import 'package:core/domains/common/functions/helper_functions.dart';
+import 'package:core/services/api_result.dart';
 import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart';
@@ -125,9 +126,11 @@ class _OpportunityState extends State<OpportunityDialog> {
 
   Widget _opportunityForm() {
     Future<List<User>> getData(List<String> userGroupIds, String filter) async {
-      var response = await repos.getUser(
+      ApiResult<List<User>> result = await repos.getUser(
           userGroupIds: userGroupIds, filter: _leadSearchBoxController.text);
-      return usersFromJson(response.toString());
+      return result.when(
+          success: (data) => data,
+          failure: (_) => [User(lastName: 'get data error!')]);
     }
 
     List<Widget> widgets = [

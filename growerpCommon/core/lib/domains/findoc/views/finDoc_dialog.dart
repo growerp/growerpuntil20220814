@@ -12,11 +12,10 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:core/domains/common/functions/helper_functions.dart';
 import 'package:core/extensions.dart';
+import 'package:core/services/api_result.dart';
 import 'package:core/widgets/dialogCloseButton.dart';
-import 'package:dio/dio.dart';
 import 'package:core/domains/domains.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -217,11 +216,15 @@ class _MyFinDocState extends State<FinDocPage> {
                 itemAsString: (User? u) =>
                     "${u!.companyName},\n${u.firstName} ${u.lastName}",
                 onFind: (String filter) async {
-                  dynamic response = await repos.getUser(userGroupIds: [
-                    "GROWERP_M_CUSTOMER",
-                    "GROWERP_M_SUPPLIER"
-                  ], filter: _userSearchBoxController.text);
-                  return usersFromJson(response.toString());
+                  ApiResult<List<User>> result = await repos.getUser(
+                      userGroupIds: [
+                        "GROWERP_M_CUSTOMER",
+                        "GROWERP_M_SUPPLIER"
+                      ],
+                      filter: _userSearchBoxController.text);
+                  return result.when(
+                      success: (data) => data,
+                      failure: (_) => [User(lastName: 'get data error!')]);
                 },
                 onChanged: (User? newValue) {
                   setState(() {
@@ -461,11 +464,10 @@ Future addAnotherItemDialog(
   final _itemDescriptionController = TextEditingController();
   final _quantityController = TextEditingController();
   ItemType? _selectedItemType;
-  List<ItemType> itemTypes = [];
-  var response = await repos.getItemTypes(sales: sales);
-  var result = itemTypesFromJson(response.toString());
-  if (result is List<ItemType>) itemTypes = result;
-  if (itemTypes.isEmpty) LoadingIndicator();
+  ApiResult<List<ItemType>> result = await repos.getItemTypes(sales: sales);
+  List<ItemType> itemTypes = result.when(
+      success: (data) => data,
+      failure: (_) => [ItemType(itemTypeName: 'get data error!')]);
   return showDialog<FinDocItem>(
     context: context,
     barrierDismissible: true,
@@ -602,10 +604,17 @@ Future addProductItemDialog(BuildContext context, repos) async {
                               itemAsString: (Product u) =>
                                   "${u.pseudoId}\n${u.productName}",
                               onFind: (String filter) async {
-                                var response = await repos.getProduct(
-                                    filter: _productSearchBoxController.text,
-                                    limit: 3);
-                                return productsFromJson(response.toString());
+                                ApiResult<List<Product>> result =
+                                    await repos.getProduct(
+                                        filter:
+                                            _productSearchBoxController.text,
+                                        limit: 3);
+                                return result.when(
+                                    success: (data) => data,
+                                    failure: (_) => [
+                                          Product(
+                                              productName: 'get data error!')
+                                        ]);
                               },
                               onChanged: (Product? newValue) {
                                 setState(() {
@@ -766,15 +775,22 @@ Future addRentalItemDialog(BuildContext context, repos) async {
                                 itemAsString: (Product? u) =>
                                     "${u!.productName}",
                                 onFind: (String filter) async {
-                                  var response = await repos.getProduct(
-                                      filter: _productSearchBoxController.text,
-                                      assetClassId:
-                                          classificationId == 'AppHotel'
-                                              ? 'Hotel Room'
-                                              : null,
-                                      productTypeId: 'Rental',
-                                      limit: 3);
-                                  return productsFromJson(response.toString());
+                                  ApiResult<List<Product>> result =
+                                      await repos.getProduct(
+                                          filter:
+                                              _productSearchBoxController.text,
+                                          assetClassId:
+                                              classificationId == 'AppHotel'
+                                                  ? 'Hotel Room'
+                                                  : null,
+                                          productTypeId: 'Rental',
+                                          limit: 3);
+                                  return result.when(
+                                      success: (data) => data,
+                                      failure: (_) => [
+                                            Product(
+                                                productName: 'get data error!')
+                                          ]);
                                 },
                                 onChanged: (Product? newValue) async {
                                   _selectedProduct = newValue;
@@ -872,17 +888,10 @@ Future addRentalItemDialog(BuildContext context, repos) async {
 
 Future<List<String>> getRentalOccupancy({repos, String? productId}) async {
   if (productId != null) {
-    Response response = await repos.getRentalOccupancy(productId: productId);
-    if (response is Response && response.statusCode == 200) {
-      var json = jsonDecode(response.toString())['rentalFullDates'];
-      List<dynamic> list = List.from(json);
-      List<String> stringList = [];
-      // change members from dynamic to string
-      for (String string in list) stringList.add(string);
-      if (stringList is List<String>) return stringList;
-      return [];
-    }
-    throw Exception(response);
+    ApiResult<List<String>> result =
+        await repos.getRentalOccupancy(productId: productId);
+    return result.when(
+        success: (data) => data, failure: (_) => ['get data error!']);
   }
   return [];
 }

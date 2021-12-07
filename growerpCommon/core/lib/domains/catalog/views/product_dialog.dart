@@ -15,6 +15,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:core/domains/common/functions/helper_functions.dart';
+import 'package:core/services/api_result.dart';
 import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -278,9 +279,16 @@ class _ProductState extends State<ProductDialog> {
                               itemAsString: (Category? u) =>
                                   "${u?.categoryName}",
                               onFind: (String filter) async {
-                                var result = await repos.getCategory(
-                                    filter: _categorySearchBoxController.text);
-                                return categoriesFromJson(result.toString());
+                                ApiResult<List<Category>> result =
+                                    await repos.getCategory(
+                                        filter:
+                                            _categorySearchBoxController.text);
+                                return result.when(
+                                    success: (data) => data,
+                                    failure: (_) => [
+                                          Category(
+                                              categoryName: 'get data error')
+                                        ]);
                               },
                               validator: (value) {
                                 return value == null

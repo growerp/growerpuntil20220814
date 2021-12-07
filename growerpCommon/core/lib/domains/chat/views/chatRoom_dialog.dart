@@ -13,6 +13,7 @@
  */
 
 import 'package:core/domains/common/functions/helper_functions.dart';
+import 'package:core/services/api_result.dart';
 import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
@@ -157,9 +158,11 @@ class _ChatRoomState extends State<ChatRoomPage> {
                     showClearButton: false,
                     itemAsString: (User? u) => "${u!.firstName} ${u.lastName}",
                     onFind: (String filter) async {
-                      dynamic response = await repos.getUser(
+                      ApiResult<List<User>> result = await repos.getUser(
                           filter: _chatRoomSearchBoxController.text);
-                      return usersFromJson(response.toString());
+                      return result.when(
+                          success: (data) => data,
+                          failure: (_) => [User(lastName: 'get data error!')]);
                     },
                     validator: (value) =>
                         _nameController.text.isEmpty && value == null

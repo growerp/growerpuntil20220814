@@ -13,6 +13,7 @@
  */
 
 import 'package:core/domains/common/functions/helper_functions.dart';
+import 'package:core/services/api_result.dart';
 import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -187,12 +188,15 @@ class _AssetState extends State<AssetDialog> {
                     showClearButton: false,
                     itemAsString: (Product? u) => "${u!.productName}",
                     onFind: (String filter) async {
-                      var result = await repos.getProduct(
+                      ApiResult<List<Product>> result = await repos.getProduct(
                           filter: _productSearchBoxController.text,
                           assetClassId: classificationId == 'AppHotel'
                               ? 'Hotel Room'
                               : null);
-                      return productsFromJson(result.toString());
+                      return result.when(
+                          success: (data) => data,
+                          failure: (_) =>
+                              [Product(productName: 'get data error!')]);
                     },
                     validator: (value) =>
                         value == null ? 'field required' : null,
