@@ -19,7 +19,6 @@ import 'package:decimal/decimal.dart';
 import 'address_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:core/services/jsonConverters.dart';
-import 'package:flutter/foundation.dart';
 
 part 'company_model.freezed.dart';
 part 'company_model.g.dart';
@@ -58,4 +57,9 @@ class Company with _$Company {
   Company fromJson(Map<String, dynamic> json) {
     return Company.fromJson(json);
   }
+
+  @override
+  String toString() => 'Company name: $name[$partyId] '
+      'Curr: ${currency?.currencyId} '
+      'imgSize: ${image?.length}';
 }

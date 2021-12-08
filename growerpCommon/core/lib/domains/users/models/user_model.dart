@@ -17,7 +17,6 @@ import 'dart:typed_data';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'address_model.dart';
 import 'package:core/services/jsonConverters.dart';
-import 'package:flutter/foundation.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -62,4 +61,8 @@ class User with _$User {
   User fromJson(Map<String, dynamic> json) {
     return User.fromJson(json);
   }
+
+  @override
+  String toString() => 'User $firstName $lastName [$partyId] sec: $userGroupId '
+      'company: $companyName[$companyPartyId] size: ${image?.length}';
 }

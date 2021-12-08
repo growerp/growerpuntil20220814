@@ -68,7 +68,7 @@ class CommonTest {
   }
 
   static Future<void> closeSearch(WidgetTester tester) async {
-    if (find
+    if (!find
         .byKey(Key('searchButton'))
         .toString()
         .startsWith('zero widgets with key')) {

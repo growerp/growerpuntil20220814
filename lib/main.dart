@@ -135,7 +135,7 @@ class MyApp extends StatelessWidget {
             home: BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
                 if (state.status == AuthStatus.failure)
-                  return FatalErrorForm("Internet or server problem?");
+                  return FatalErrorForm("server connection problem");
                 if (state.status == AuthStatus.authenticated)
                   return HomeForm(
                       message: state.message,

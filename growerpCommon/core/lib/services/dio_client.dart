@@ -48,7 +48,10 @@ class DioClient {
     ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      if (apiKey != null) _dio.options.headers['api_key'] = apiKey;
+      if (apiKey != null)
+        _dio.options.headers['api_key'] = apiKey;
+      else
+        _dio.options.headers.remove('Api_key');
       var response = await _dio.get(
         uri,
         queryParameters: queryParameters,
@@ -77,7 +80,10 @@ class DioClient {
     ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      if (apiKey != null) _dio.options.headers['api_key'] = apiKey;
+      if (apiKey != null)
+        _dio.options.headers['api_key'] = apiKey;
+      else
+        _dio.options.headers.remove('Api_key');
       var response = await _dio.post(
         uri,
         data: data,
@@ -106,7 +112,10 @@ class DioClient {
     ProgressCallback? onReceiveProgress,
   }) async {
     try {
-      if (apiKey != null) _dio.options.headers['api_key'] = apiKey;
+      if (apiKey != null)
+        _dio.options.headers['api_key'] = apiKey;
+      else
+        _dio.options.headers.remove('Api_key');
       var response = await _dio.patch(
         uri,
         data: data,
@@ -133,7 +142,10 @@ class DioClient {
     CancelToken? cancelToken,
   }) async {
     try {
-      if (apiKey != null) _dio.options.headers['api_key'] = apiKey;
+      if (apiKey != null)
+        _dio.options.headers['api_key'] = apiKey;
+      else
+        _dio.options.headers.remove('Api_key');
       var response = await _dio.delete(
         uri,
         data: data,

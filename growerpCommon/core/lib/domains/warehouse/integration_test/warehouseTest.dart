@@ -23,8 +23,7 @@ class WarehouseTest {
         tester, 'dbWarehouse', 'FinDocListFormShipmentsIn', '3');
   }
 
-  static Future<void> checkIncomingShipments(
-      WidgetTester tester, List<FinDoc> orders) async {
+  static Future<void> checkIncomingShipments(WidgetTester tester) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var str = prefs.getString('PurchaseOrders');
     expect(str != null, true,

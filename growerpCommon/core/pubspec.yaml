@@ -31,7 +31,7 @@ dependencies:
   shared_preferences: ^2.0.6
 
   #NETWORK
-  json_annotation: ^4.3.0
+  json_annotation: ^4.4.0
   dio: ^4.0.4
 
   #UTITILES

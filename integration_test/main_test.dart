@@ -71,14 +71,12 @@ void main() {
   testWidgets('''Business Purchase test''', (tester) async {
     await startApp(tester, clear: true); //clear test data = recreate data
     await CommonTest.login(tester, loginName, password);
-    await CatalogTest.selectCatalog(tester);
-    await CatalogTest.updateProduct(tester, products); // set useWarehouse flag
     await OrderTest.selectPurchaseOrder(tester);
     await OrderTest.createPurchaseOrder(tester, purchaseOrders);
     await OrderTest.checkPurchaseOrder(tester);
     await OrderTest.sendPurchaseOrder(tester, purchaseOrders);
     await WarehouseTest.selectIncomingShipments(tester);
-    await WarehouseTest.checkIncomingShipments(tester, purchaseOrders);
+    await WarehouseTest.checkIncomingShipments(tester);
     await WarehouseTest.acceptInWarehouse(tester);
     await AccountingTest.selectPurchaseInvoices(tester);
     await AccountingTest.checkPurchaseInvoices(tester);

@@ -50,6 +50,8 @@ class AuthState extends Equatable {
   List<Object?> get props => [status, authenticate, message];
 
   @override
-  String toString() =>
-      "$status { company: ${authenticate?.company} , user: ${authenticate?.user}";
+  String toString() => "$status { company: ${authenticate?.company?.name}"
+      "[${authenticate?.company?.partyId}] , "
+      "user: ${authenticate?.user?.firstName} ${authenticate?.user?.lastName}"
+      "[${authenticate?.user?.partyId}] ";
 }

@@ -19,6 +19,7 @@ import 'package:core/domains/domains.dart';
 import 'package:core/services/api_result.dart';
 import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 part 'finDoc_event.dart';
@@ -61,11 +62,14 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
     on<FinDocSearchOff>(((event, emit) => emit(state.copyWith(search: false))));
     on<FinDocUpdate>(_onFinDocUpdate);
     on<FinDocDelete>(_onFinDocDelete);
+    on<FinDocShipmentReceive>(_onFinDocShipmentReceive);
   }
 
   final repos;
   final bool sales;
   final String docType;
+
+  String classificationId = GlobalConfiguration().get("classificationId");
 
   Future<void> _onFinDocFetch(
     FinDocFetch event,
@@ -129,7 +133,21 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
     try {
       List<FinDoc> finDocs = List.from(state.finDocs);
       if (event.finDoc.idIsNull()) {
-        ApiResult<FinDoc> compResult = await repos.updateFinDoc(event.finDoc);
+        // create
+        ApiResult<FinDoc> compResult = await repos.createFinDoc(
+            event.finDoc.copyWith(classificationId: classificationId));
+        return emit(compResult.when(
+            success: (data) {
+              finDocs.insert(0, data);
+              return state.copyWith(
+                  status: FinDocStatus.success, finDocs: finDocs);
+            },
+            failure: (NetworkExceptions error) => state.copyWith(
+                status: FinDocStatus.failure, message: error.toString())));
+      } else {
+        // update
+        ApiResult<FinDoc> compResult = await repos.updateFinDoc(
+            event.finDoc.copyWith(classificationId: classificationId));
         return emit(compResult.when(
             success: (data) {
               late int index;
@@ -161,17 +179,6 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: FinDocStatus.failure, message: error.toString())));
-      } else {
-        // add
-        ApiResult<FinDoc> compResult = await repos.createFinDoc(event.finDoc);
-        return emit(compResult.when(
-            success: (data) {
-              finDocs.insert(0, data);
-              return state.copyWith(
-                  status: FinDocStatus.success, finDocs: finDocs);
-            },
-            failure: (NetworkExceptions error) => state.copyWith(
-                status: FinDocStatus.failure, message: error.toString())));
       }
     } catch (error) {
       emit(state.copyWith(
@@ -190,6 +197,29 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
           success: (data) {
             int index =
                 finDocs.indexWhere((element) => element.id == event.finDoc.id);
+            finDocs.removeAt(index);
+            return state.copyWith(
+                status: FinDocStatus.success, finDocs: finDocs);
+          },
+          failure: (NetworkExceptions error) => state.copyWith(
+              status: FinDocStatus.failure, message: error.toString())));
+    } catch (error) {
+      emit(state.copyWith(
+          status: FinDocStatus.failure, message: error.toString()));
+    }
+  }
+
+  Future<void> _onFinDocShipmentReceive(
+    FinDocShipmentReceive event,
+    Emitter<FinDocState> emit,
+  ) async {
+    try {
+      ApiResult<FinDoc> shipResult = await repos.receiveShipment(event.finDoc);
+      return emit(shipResult.when(
+          success: (data) {
+            List<FinDoc> finDocs = List.from(state.finDocs);
+            int index = finDocs
+                .indexWhere((element) => element.id() == event.finDoc.id());
             finDocs.removeAt(index);
             return state.copyWith(
                 status: FinDocStatus.success, finDocs: finDocs);

@@ -341,7 +341,7 @@ class __$UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_User extends _User with DiagnosticableTreeMixin {
+class _$_User extends _User {
   _$_User(
       {this.partyId,
       this.userId,
@@ -393,33 +393,6 @@ class _$_User extends _User with DiagnosticableTreeMixin {
   final String? companyName;
   @override
   final Address? companyAddress;
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'User(partyId: $partyId, userId: $userId, firstName: $firstName, lastName: $lastName, loginDisabled: $loginDisabled, loginName: $loginName, email: $email, groupDescription: $groupDescription, userGroupId: $userGroupId, language: $language, externalId: $externalId, image: $image, companyPartyId: $companyPartyId, companyName: $companyName, companyAddress: $companyAddress)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'User'))
-      ..add(DiagnosticsProperty('partyId', partyId))
-      ..add(DiagnosticsProperty('userId', userId))
-      ..add(DiagnosticsProperty('firstName', firstName))
-      ..add(DiagnosticsProperty('lastName', lastName))
-      ..add(DiagnosticsProperty('loginDisabled', loginDisabled))
-      ..add(DiagnosticsProperty('loginName', loginName))
-      ..add(DiagnosticsProperty('email', email))
-      ..add(DiagnosticsProperty('groupDescription', groupDescription))
-      ..add(DiagnosticsProperty('userGroupId', userGroupId))
-      ..add(DiagnosticsProperty('language', language))
-      ..add(DiagnosticsProperty('externalId', externalId))
-      ..add(DiagnosticsProperty('image', image))
-      ..add(DiagnosticsProperty('companyPartyId', companyPartyId))
-      ..add(DiagnosticsProperty('companyName', companyName))
-      ..add(DiagnosticsProperty('companyAddress', companyAddress));
-  }
 
   @override
   bool operator ==(dynamic other) {

@@ -243,7 +243,7 @@ class __$CompanyCopyWithImpl<$Res> extends _$CompanyCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_Company extends _Company with DiagnosticableTreeMixin {
+class _$_Company extends _Company {
   _$_Company(
       {this.partyId,
       this.name,
@@ -275,26 +275,6 @@ class _$_Company extends _Company with DiagnosticableTreeMixin {
   final Decimal? vatPerc;
   @override
   final Decimal? salesPerc;
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Company(partyId: $partyId, name: $name, email: $email, currency: $currency, image: $image, address: $address, vatPerc: $vatPerc, salesPerc: $salesPerc)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'Company'))
-      ..add(DiagnosticsProperty('partyId', partyId))
-      ..add(DiagnosticsProperty('name', name))
-      ..add(DiagnosticsProperty('email', email))
-      ..add(DiagnosticsProperty('currency', currency))
-      ..add(DiagnosticsProperty('image', image))
-      ..add(DiagnosticsProperty('address', address))
-      ..add(DiagnosticsProperty('vatPerc', vatPerc))
-      ..add(DiagnosticsProperty('salesPerc', salesPerc));
-  }
 
   @override
   bool operator ==(dynamic other) {

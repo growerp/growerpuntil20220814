@@ -50,14 +50,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     // test connection and get session token
     ApiResult<dynamic> connectResult = await repos.getConnected();
-    var connectOk = connectResult.when(
+    var connect = connectResult.when(
         success: (data) => data,
         failure: (NetworkExceptions error) => error.toString());
-    if (connectOk == String) // error
-      emit(state.copyWith(status: AuthStatus.failure, message: connectOk));
-    else if (!connectOk)
-      emit(state.copyWith(
-          status: AuthStatus.failure, message: "Not ok from server received"));
+    if (connect is String) return emit(// no connection
+          state.copyWith(status: AuthStatus.failure, message: connect));
     // get default company
     ApiResult<List<Company>> defResult = await repos.getCompanies(limit: 1);
     Company defaultCompany = defResult.when(
@@ -84,7 +81,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(authResult.when(
           success: (Authenticate data) => state.copyWith(
               status: AuthStatus.authenticated, authenticate: data),
-          failure: (_) => state.copyWith(status: AuthStatus.unAuthenticated)));
+          failure: (_) => state.copyWith(
+              status: AuthStatus.unAuthenticated,
+              authenticate: Authenticate(company: localAuthenticate.company))));
       if (state.status == AuthStatus.authenticated) {
         await PersistFunctions.persistAuthenticate(state.authenticate!);
         repos.setApiKey(
