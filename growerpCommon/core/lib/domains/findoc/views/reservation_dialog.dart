@@ -216,9 +216,12 @@ class _ReservationState extends State<ReservationDialog> {
                                       barrierDismissible: true,
                                       context: context,
                                       builder: (BuildContext context) {
-                                        return UserDialog(
-                                            formArguments: FormArguments(
-                                                object: User(
+                                        return BlocProvider.value(
+                                            value:
+                                                BlocProvider.of<CustomerBloc>(
+                                                    context) as UserBloc,
+                                            child: UserDialog(
+                                                user: User(
                                                     userGroupId:
                                                         "GROWERP_M_CUSTOMER")));
                                       });

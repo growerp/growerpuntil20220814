@@ -27,19 +27,18 @@ import 'package:core/domains/domains.dart';
 
 /// User dialog with a required User class input containing the userGroupId
 class UserDialog extends StatelessWidget {
-  final FormArguments formArguments;
-  const UserDialog({Key? key, required this.formArguments}) : super(key: key);
+  final User user;
+  const UserDialog({Key? key, required this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return UserPage(formArguments.message, formArguments.object as User);
+    return UserPage(user);
   }
 }
 
 class UserPage extends StatefulWidget {
-  final String? message;
   final User user;
-  UserPage(this.message, this.user);
+  UserPage(this.user);
   @override
   _UserState createState() => _UserState();
 }
@@ -146,35 +145,18 @@ class _UserState extends State<UserPage> {
                     child: Scaffold(
                         floatingActionButton:
                             imageButtons(context, _onImageButtonPressed),
-                        body: user.userGroupId == "GROWERP_M_EMPLOYEE"
-                            ? BlocListener<EmployeeBloc, UserState>(
-                                listener: (context, state) {
-                                  listListener(state);
-                                },
-                                child: listChild())
-                            : user.userGroupId == "GROWERP_M_ADMIN"
-                                ? BlocListener<AdminBloc, UserState>(
-                                    listener: (context, state) {
-                                      listListener(state);
-                                    },
-                                    child: listChild())
-                                : user.userGroupId == "GROWERP_M_SUPPLIER"
-                                    ? BlocListener<SupplierBloc, UserState>(
-                                        listener: (context, state) {
-                                          listListener(state);
-                                        },
-                                        child: listChild())
-                                    : user.userGroupId == "GROWERP_M_LEAD"
-                                        ? BlocListener<LeadBloc, UserState>(
-                                            listener: (context, state) {
-                                              listListener(state);
-                                            },
-                                            child: listChild())
-                                        : BlocListener<CustomerBloc, UserState>(
-                                            listener: (context, state) {
-                                              listListener(state);
-                                            },
-                                            child: listChild())));
+                        body: BlocListener<UserBloc, UserState>(
+                            listener: (context, state) {
+                              if (state.status == UserStatus.failure) {
+                                loading = false;
+                                HelperFunctions.showMessage(
+                                    context, '${state.message}', Colors.red);
+                              }
+                              if (state.status == UserStatus.success) {
+                                Navigator.of(context).pop(updatedUser);
+                              }
+                            },
+                            child: listChild())));
               })),
           Positioned(top: -10, right: -10, child: DialogCloseButton())
         ]));
@@ -198,16 +180,6 @@ class _UserState extends State<UserPage> {
             : _showForm(),
       );
     }));
-  }
-
-  listListener(UserState state) {
-    if (state.status == UserStatus.failure) {
-      loading = false;
-      HelperFunctions.showMessage(context, '${state.message}', Colors.red);
-    }
-    if (state.status == UserStatus.success) {
-      Navigator.of(context).pop(updatedUser);
-    }
   }
 
   Text? _getRetrieveErrorWidget() {
@@ -457,33 +429,10 @@ class _UserState extends State<UserPage> {
                                   "Image upload error or larger than 200K",
                                   Colors.red);
                             else
-                              updatedUser.userGroupId == "GROWERP_M_EMPLOYEE"
-                                  ? BlocProvider.of<EmployeeBloc>(context)
-                                      .add(UserUpdate(updatedUser))
-                                  : updatedUser.userGroupId == "GROWERP_M_ADMIN"
-                                      ? BlocProvider.of<AdminBloc>(context)
-                                          .add(UserUpdate(updatedUser))
-                                      : updatedUser.userGroupId ==
-                                              "GROWERP_M_SUPPLIER"
-                                          ? BlocProvider.of<SupplierBloc>(
-                                                  context)
-                                              .add(UserUpdate(updatedUser))
-                                          : updatedUser.userGroupId ==
-                                                  "GROWERP_M_LEAD"
-                                              ? BlocProvider.of<LeadBloc>(
-                                                      context)
-                                                  .add(UserUpdate(updatedUser))
-                                              : updatedUser.userGroupId ==
-                                                      "GROWERP_M_CUSTOMER"
-                                                  ? BlocProvider.of<
-                                                          CustomerBloc>(context)
-                                                      .add(UserUpdate(
-                                                          updatedUser))
-                                                  : print(
-                                                      "Not recognized usergroupId: "
-                                                      "${updatedUser.userGroupId}");
+                              BlocProvider.of<UserBloc>(context)
+                                  .add(UserUpdate(updatedUser));
                           }
-                        })),
+                        }))
               ])
             ])));
   }

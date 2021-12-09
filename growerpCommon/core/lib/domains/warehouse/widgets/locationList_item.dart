@@ -14,7 +14,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:responsive_framework/responsive_wrapper.dart';
 import '../warehouse.dart';
 
 class LocationListItem extends StatelessWidget {

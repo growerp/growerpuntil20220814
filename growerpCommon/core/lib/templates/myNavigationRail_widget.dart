@@ -52,9 +52,7 @@ Widget myNavigationRail(BuildContext context, Authenticate authenticate,
                                 barrierDismissible: true,
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return UserDialog(
-                                      formArguments: FormArguments(
-                                          object: authenticate.user));
+                                  return UserDialog(user: authenticate.user!);
                                 });
                           },
                           child: Column(children: [

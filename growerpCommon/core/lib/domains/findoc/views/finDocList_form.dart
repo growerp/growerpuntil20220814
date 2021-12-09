@@ -144,31 +144,38 @@ class FinDocListState extends State<FinDocList> {
         ? 'Reservation'
         : widget.docType;
     _scrollController.addListener(_onScroll);
-    if (widget.docType == 'order')
-      widget.sales
-          ? _finDocBloc = BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc
-          : _finDocBloc =
-              BlocProvider.of<PurchaseOrderBloc>(context) as FinDocBloc;
-    if (widget.docType == 'invoice')
-      widget.sales
-          ? _finDocBloc =
-              BlocProvider.of<SalesInvoiceBloc>(context) as FinDocBloc
-          : _finDocBloc =
-              BlocProvider.of<PurchaseInvoiceBloc>(context) as FinDocBloc;
-    if (widget.docType == 'payment')
-      widget.sales
-          ? _finDocBloc =
-              BlocProvider.of<SalesPaymentBloc>(context) as FinDocBloc
-          : _finDocBloc =
-              BlocProvider.of<PurchasePaymentBloc>(context) as FinDocBloc;
-    if (widget.docType == 'shipment')
-      widget.sales
-          ? _finDocBloc =
-              BlocProvider.of<OutgoingShipmentBloc>(context) as FinDocBloc
-          : _finDocBloc =
-              BlocProvider.of<IncomingShipmentBloc>(context) as FinDocBloc;
-    if (widget.docType == 'transaction')
-      _finDocBloc = BlocProvider.of<TransactionBloc>(context) as FinDocBloc;
+    switch (widget.docType) {
+      case 'order':
+        widget.sales
+            ? _finDocBloc =
+                BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc
+            : _finDocBloc =
+                BlocProvider.of<PurchaseOrderBloc>(context) as FinDocBloc;
+        break;
+      case 'invoice':
+        widget.sales
+            ? _finDocBloc =
+                BlocProvider.of<SalesInvoiceBloc>(context) as FinDocBloc
+            : _finDocBloc =
+                BlocProvider.of<PurchaseInvoiceBloc>(context) as FinDocBloc;
+        break;
+      case 'payment':
+        widget.sales
+            ? _finDocBloc =
+                BlocProvider.of<SalesPaymentBloc>(context) as FinDocBloc
+            : _finDocBloc =
+                BlocProvider.of<PurchasePaymentBloc>(context) as FinDocBloc;
+        break;
+      case 'shipment':
+        widget.sales
+            ? _finDocBloc =
+                BlocProvider.of<OutgoingShipmentBloc>(context) as FinDocBloc
+            : _finDocBloc =
+                BlocProvider.of<IncomingShipmentBloc>(context) as FinDocBloc;
+        break;
+      case 'transaction':
+        _finDocBloc = BlocProvider.of<TransactionBloc>(context) as FinDocBloc;
+    }
   }
 
   @override

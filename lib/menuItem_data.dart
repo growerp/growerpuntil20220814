@@ -47,11 +47,6 @@ List<MenuItem> menuItems = [
         ),
         label: "Admins",
         icon: Icon(Icons.business),
-        floatButtonForm: UserDialog(
-            formArguments: FormArguments(
-                object: User(
-                    userGroupId: "GROWERP_M_ADMIN",
-                    groupDescription: "Admin"))),
       ),
       TabItem(
         form: UserListForm(
@@ -60,11 +55,6 @@ List<MenuItem> menuItems = [
         ),
         label: "Employees",
         icon: Icon(Icons.school),
-        floatButtonForm: UserDialog(
-            formArguments: FormArguments(
-                object: User(
-                    userGroupId: "GROWERP_M_EMPLOYEE",
-                    groupDescription: "Employee"))),
       ),
     ],
   ),
@@ -87,10 +77,6 @@ List<MenuItem> menuItems = [
         ),
         label: "Leads",
         icon: Icon(Icons.business),
-        floatButtonForm: UserDialog(
-            formArguments: FormArguments(
-                object: User(
-                    userGroupId: "GROWERP_M_LEAD", groupDescription: "Lead"))),
       ),
       TabItem(
         form: UserListForm(
@@ -99,11 +85,6 @@ List<MenuItem> menuItems = [
         ),
         label: "Customers",
         icon: Icon(Icons.school),
-        floatButtonForm: UserDialog(
-            formArguments: FormArguments(
-                object: User(
-                    userGroupId: "GROWERP_M_CUSTOMER",
-                    groupDescription: "Customer"))),
       ),
     ],
   ),
@@ -158,11 +139,6 @@ List<MenuItem> menuItems = [
         ),
         label: "Customers",
         icon: Icon(Icons.business),
-        floatButtonForm: UserDialog(
-            formArguments: FormArguments(
-                object: User(
-                    userGroupId: "GROWERP_M_CUSTOMER",
-                    groupDescription: "Customer"))),
       ),
       TabItem(
         form: FinDocListForm(
@@ -177,11 +153,6 @@ List<MenuItem> menuItems = [
         ),
         label: "Suppliers",
         icon: Icon(Icons.business),
-        floatButtonForm: UserDialog(
-            formArguments: FormArguments(
-                object: User(
-                    userGroupId: "GROWERP_M_SUPPLIER",
-                    groupDescription: "Supplier"))),
       ),
     ],
   ),
