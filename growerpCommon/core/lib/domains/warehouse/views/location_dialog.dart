@@ -83,7 +83,7 @@ class _LocationState extends State<LocationDialog> {
                               Container(
                                   padding: EdgeInsets.all(20),
                                   width: 400,
-                                  height: 500,
+                                  height: 200,
                                   child: Center(
                                     child: _showForm(repos, isPhone),
                                   )),

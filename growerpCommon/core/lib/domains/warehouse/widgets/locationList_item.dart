@@ -36,22 +36,23 @@ class LocationListItem extends StatelessWidget {
                   ? "${location.locationName![0]}"
                   : "?"),
             ),
-            title: Row(
-              children: <Widget>[
-                Expanded(
-                    child: Text("${location.locationName}",
-                        key: Key('name$index'))),
-                if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                  Expanded(
-                      child: Text("${location.assets![0].assetName}",
-                          key: Key('statusId$index'),
-                          textAlign: TextAlign.center)),
-                Expanded(
-                    child: Text("${location.assets![0].product?.productName}",
-                        key: Key('product$index'),
-                        textAlign: TextAlign.center)),
-              ],
-            ),
+            title: Row(children: <Widget>[
+              Expanded(
+                  child: Text("${location.locationName}",
+                      key: Key('locName$index'))),
+              Expanded(
+                  child: Visibility(
+                      visible: location.assets![0].assetId.isNotEmpty,
+                      child: Row(children: [
+                        Expanded(
+                            child: Text("${location.assets![0].assetName}",
+                                key: Key('statusId$index'))),
+                        Expanded(
+                            child: Text(
+                                "${location.assets![0].product?.productName}",
+                                key: Key('productName$index'))),
+                      ])))
+            ]),
             onTap: () async {
               await showDialog(
                   barrierDismissible: true,

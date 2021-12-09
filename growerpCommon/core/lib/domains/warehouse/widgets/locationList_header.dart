@@ -69,13 +69,11 @@ class LocationListHeader extends StatelessWidget {
                   ])
                 : Column(children: [
                     Row(children: <Widget>[
-                      Expanded(
-                          child: Text("Name[ID]", textAlign: TextAlign.center)),
+                      Expanded(child: Text("Loc.Name")),
+                      Expanded(child: Text("Asset Name")),
                       if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                        Expanded(
-                            child: Text("Status", textAlign: TextAlign.center)),
-                      Expanded(
-                          child: Text("Product", textAlign: TextAlign.center)),
+                        Expanded(child: Text("Status")),
+                      Expanded(child: Text("Product name")),
                     ]),
                     Divider(color: Colors.black),
                   ]),
