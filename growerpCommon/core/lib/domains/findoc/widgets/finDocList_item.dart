@@ -173,8 +173,7 @@ class FinDocListItem extends StatelessWidget {
                                   builder: (BuildContext context) {
                                     return BlocProvider.value(
                                         value: finDocBloc,
-                                        child: ShipmentReceiveDialog(
-                                            finDoc: finDoc));
+                                        child: ShipmentReceiveDialog(finDoc));
                                   });
                             }))
                     : classificationId == 'AppHotel' &&
