@@ -124,6 +124,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthRegisterCompanyAndAdmin event,
     Emitter<AuthState> emit,
   ) async {
+    emit(state.copyWith(status: AuthStatus.loading));
     ApiResult<Authenticate> apiResult = await repos.register(
         companyName: event.user.companyName,
         currencyId: event.currencyId,
@@ -141,7 +142,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                   ' you can now login with the password sent by email');
         },
         failure: (NetworkExceptions error) => state.copyWith(
-            status: AuthStatus.failure, message: error.toString())));
+            status: AuthStatus.failure,
+            message: NetworkExceptions.getErrorMessage(error))));
     if (state.status == AuthStatus.unAuthenticated)
       await PersistFunctions.persistAuthenticate(state.authenticate!);
   }
@@ -189,6 +191,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthLogin event,
     Emitter<AuthState> emit,
   ) async {
+    emit(state.copyWith(status: AuthStatus.loading));
     ApiResult<Authenticate> apiResult = await repos.login(
       username: event.username,
       password: event.password,

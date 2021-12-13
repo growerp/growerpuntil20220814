@@ -15,9 +15,6 @@
 // start with: flutter run -t lib/chatEcho_app.dart
 
 import 'dart:async';
-
-import 'package:core/domains/common/common.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -29,7 +26,6 @@ import 'package:core/api_repository.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:core/styles/themes.dart';
 import 'router.dart' as router;
-import 'package:flutter_test/flutter_test.dart';
 import 'package:core/domains/domains.dart';
 
 Future main() async {

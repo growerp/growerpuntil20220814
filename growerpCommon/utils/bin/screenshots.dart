@@ -14,7 +14,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:io' show Platform;
 import 'package:path/path.dart';
 
 /// making screen shots with frames for IOS/Android

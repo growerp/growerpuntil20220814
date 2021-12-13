@@ -18,7 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
-import 'chat_dialog.dart';
 import 'package:core/domains/domains.dart';
 
 class ChatRoomsDialog extends StatefulWidget {

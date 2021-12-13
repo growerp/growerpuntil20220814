@@ -56,7 +56,7 @@ class CartBloc extends Bloc<CartEvent, CartState>
         if (event.finDoc.idIsNull()) {
           FinDoc? result =
               await getCart(event.finDoc.sales, event.finDoc.docType);
-          if (result != null && result is FinDoc) finDoc = result;
+          if (result != null) finDoc = result;
         }
         emit(
           state.copyWith(

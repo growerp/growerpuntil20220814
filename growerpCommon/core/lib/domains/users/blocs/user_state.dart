@@ -14,7 +14,7 @@
 
 part of 'user_bloc.dart';
 
-enum UserStatus { initial, success, failure }
+enum UserStatus { initial, loading, success, failure }
 
 class UserState extends Equatable {
   const UserState({
@@ -53,7 +53,7 @@ class UserState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [users, hasReachedMax, search];
+  List<Object?> get props => [message, status, users, hasReachedMax, search];
 
   @override
   String toString() => '$status { #users: ${users.length}, '

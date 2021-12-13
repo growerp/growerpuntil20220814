@@ -115,6 +115,7 @@ class UserBloc extends Bloc<UserEvent, UserState>
     Emitter<UserState> emit,
   ) async {
     try {
+      emit(state.copyWith(status: UserStatus.loading));
       List<User> users = List.from(state.users);
       if (event.user.partyId != null) {
         ApiResult<User> compResult = await repos.updateUser(event.user);

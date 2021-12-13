@@ -60,6 +60,7 @@ class _LoginHeaderState extends State<LoginDialog> {
         default:
       }
     }, builder: (context, state) {
+      if (state.status == AuthStatus.loading) return LoadingIndicator();
       authenticate = state.authenticate!;
       companyPartyId = authenticate.company!.partyId;
       companyName = authenticate.company!.name;

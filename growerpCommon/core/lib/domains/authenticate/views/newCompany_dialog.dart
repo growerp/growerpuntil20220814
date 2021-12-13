@@ -76,35 +76,31 @@ class _NewCompanyHeaderState extends State<NewCompanyHeader> {
         Navigator.pop(context);
       }
     }, child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      switch (state.status) {
-        case AuthStatus.unAuthenticated:
-          return GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
-              child: Scaffold(
-                  backgroundColor: Colors.transparent,
-                  body: Builder(
-                      builder: (context) => GestureDetector(
-                          onTap: () {},
-                          child: Dialog(
-                              insetPadding: EdgeInsets.all(10),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Stack(clipBehavior: Clip.none, children: [
-                                Container(
-                                    padding: EdgeInsets.all(20),
-                                    width: 400,
-                                    height: 700,
-                                    child: _registerForm(
-                                        widget.authenticate, state)),
-                                Positioned(
-                                    top: -10,
-                                    right: -10,
-                                    child: DialogCloseButton())
-                              ]))))));
-        default:
-          return LoadingIndicator();
-      }
+      if (state.status == AuthStatus.loading) return LoadingIndicator();
+      return GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Builder(
+                  builder: (context) => GestureDetector(
+                      onTap: () {},
+                      child: Dialog(
+                          insetPadding: EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Stack(clipBehavior: Clip.none, children: [
+                            Container(
+                                padding: EdgeInsets.all(20),
+                                width: 400,
+                                height: 700,
+                                child:
+                                    _registerForm(widget.authenticate, state)),
+                            Positioned(
+                                top: -10,
+                                right: -10,
+                                child: DialogCloseButton())
+                          ]))))));
     }));
   }
 

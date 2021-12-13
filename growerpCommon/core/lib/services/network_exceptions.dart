@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -9,7 +10,8 @@ part 'network_exceptions.freezed.dart';
 abstract class NetworkExceptions with _$NetworkExceptions {
   const factory NetworkExceptions.requestCancelled() = RequestCancelled;
 
-  const factory NetworkExceptions.unauthorizedRequest() = UnauthorizedRequest;
+  const factory NetworkExceptions.unauthorizedRequest(String message) =
+      UnauthorizedRequest;
 
   const factory NetworkExceptions.badRequest() = BadRequest;
 
@@ -41,12 +43,13 @@ abstract class NetworkExceptions with _$NetworkExceptions {
 
   const factory NetworkExceptions.unexpectedError() = UnexpectedError;
 
-  static NetworkExceptions handleResponse(int statusCode) {
+  static NetworkExceptions handleResponse(
+      int statusCode, String statusMessage) {
     switch (statusCode) {
       case 400:
       case 401:
       case 403:
-        return NetworkExceptions.unauthorizedRequest();
+        return NetworkExceptions.unauthorizedRequest(statusMessage);
       case 404:
         return NetworkExceptions.notFound("Not found");
       case 409:
@@ -81,8 +84,9 @@ abstract class NetworkExceptions with _$NetworkExceptions {
               networkExceptions = NetworkExceptions.sendTimeout();
               break;
             case DioErrorType.response:
+              Map errors = json.decode(error.response!.data);
               networkExceptions = NetworkExceptions.handleResponse(
-                  error.response!.statusCode ?? -1);
+                  error.response!.statusCode ?? -1, errors['errors']);
               break;
             case DioErrorType.sendTimeout:
               networkExceptions = NetworkExceptions.sendTimeout();
@@ -128,8 +132,8 @@ abstract class NetworkExceptions with _$NetworkExceptions {
       errorMessage = "Method Allowed";
     }, badRequest: () {
       errorMessage = "Bad request";
-    }, unauthorizedRequest: () {
-      errorMessage = "Unauthorized request";
+    }, unauthorizedRequest: (String message) {
+      errorMessage = message;
     }, unexpectedError: () {
       errorMessage = "Unexpected error occurred";
     }, requestTimeout: () {

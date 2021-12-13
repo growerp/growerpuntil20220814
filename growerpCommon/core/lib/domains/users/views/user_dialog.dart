@@ -132,7 +132,17 @@ class _UserState extends State<UserPage> {
               padding: EdgeInsets.all(20),
               width: 400,
               height: 750,
-              child:
+              child: BlocListener<UserBloc, UserState>(listener:
+                  (context, state) {
+                if (state.status == UserStatus.failure) {
+                  loading = false;
+                  HelperFunctions.showMessage(
+                      context, '${state.message}', Colors.red);
+                }
+                if (state.status == UserStatus.success) {
+                  Navigator.of(context).pop(updatedUser);
+                }
+              }, child:
                   BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
                 if (state.status == AuthStatus.authenticated) {
                   authenticate = state.authenticate!;
@@ -145,19 +155,8 @@ class _UserState extends State<UserPage> {
                     child: Scaffold(
                         floatingActionButton:
                             imageButtons(context, _onImageButtonPressed),
-                        body: BlocListener<UserBloc, UserState>(
-                            listener: (context, state) {
-                              if (state.status == UserStatus.failure) {
-                                loading = false;
-                                HelperFunctions.showMessage(
-                                    context, '${state.message}', Colors.red);
-                              }
-                              if (state.status == UserStatus.success) {
-                                Navigator.of(context).pop(updatedUser);
-                              }
-                            },
-                            child: listChild())));
-              })),
+                        body: listChild()));
+              }))),
           Positioned(top: -10, right: -10, child: DialogCloseButton())
         ]));
   }
