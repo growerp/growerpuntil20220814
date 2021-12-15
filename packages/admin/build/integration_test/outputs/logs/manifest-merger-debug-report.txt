@@ -1,0 +1,19 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml:5:1-7:12
+INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml:5:1-7:12
+INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml:5:1-7:12
+	package
+		ADDED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml:6:3-41
+		INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml
+		INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml:5:11-69
+uses-sdk
+INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml
+INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml
+		ADDED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml
+		INJECTED from /home/dell/snap/flutter/common/flutter/packages/integration_test/android/src/main/AndroidManifest.xml

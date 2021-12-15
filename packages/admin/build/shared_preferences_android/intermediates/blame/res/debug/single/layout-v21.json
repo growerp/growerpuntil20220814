@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/dell/growerp/packages/admin/build/shared_preferences_android/intermediates/res/merged/debug/layout-v21/notification_template_custom_big.xml",
+        "source": "/home/dell/.gradle/caches/transforms-2/files-2.1/f90299ff420036e311b84c728802cd71/core-1.6.0/res/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/dell/growerp/packages/admin/build/shared_preferences_android/intermediates/res/merged/debug/layout-v21/notification_template_icon_group.xml",
+        "source": "/home/dell/.gradle/caches/transforms-2/files-2.1/f90299ff420036e311b84c728802cd71/core-1.6.0/res/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/home/dell/growerp/packages/admin/build/shared_preferences_android/intermediates/res/merged/debug/layout-v21/notification_action_tombstone.xml",
+        "source": "/home/dell/.gradle/caches/transforms-2/files-2.1/f90299ff420036e311b84c728802cd71/core-1.6.0/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/dell/growerp/packages/admin/build/shared_preferences_android/intermediates/res/merged/debug/layout-v21/notification_action.xml",
+        "source": "/home/dell/.gradle/caches/transforms-2/files-2.1/f90299ff420036e311b84c728802cd71/core-1.6.0/res/layout-v21/notification_action.xml"
+    }
+]

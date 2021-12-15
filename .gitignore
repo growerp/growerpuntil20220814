@@ -1,3 +1,7 @@
+# Ignoring generated files, as they pollute pull requests and can create merge conflicts
+*.g.dart
+*.freezed.dart
+
 # Miscellaneous
 *.class
 *.log
@@ -8,10 +12,6 @@
 .buildlog/
 .history
 .svn/
-coverage/
-.flutter-plugins-dependencies
-.flutter-plugins
-*.ipa
 
 # IntelliJ related
 *.iml
@@ -26,7 +26,6 @@ coverage/
 
 # Flutter/Dart/Pub related
 **/doc/api/
-**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -37,12 +36,6 @@ coverage/
 
 # Web related
 lib/generated_plugin_registrant.dart
-
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages

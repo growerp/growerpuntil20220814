@@ -1,0 +1,143 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="org.growerp.admin"
+4    android:versionCode="13"
+5    android:versionName="0.0.2" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+9        android:targetSdkVersion="29" />
+10    <!--
+11         Flutter needs it to communicate with the running application
+12         to allow setting breakpoints, to provide hot reload, etc.
+13    -->
+14    <uses-permission android:name="android.permission.INTERNET" />
+14-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:47:5-67
+14-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:47:22-64
+15    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+15-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:48:5-79
+15-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:48:22-76
+16    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+16-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-80
+16-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-77
+17    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+17-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-81
+17-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:22-78
+18
+19    <application
+19-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:8:5-46:19
+20        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+20-->[androidx.core:core:1.6.0] /home/dell/.gradle/caches/transforms-2/files-2.1/f90299ff420036e311b84c728802cd71/core-1.6.0/AndroidManifest.xml:24:18-86
+21        android:debuggable="true"
+22        android:icon="@mipmap/launcher_icon"
+22-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:11:9-45
+23        android:label="admin"
+23-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:10:9-30
+24        android:usesCleartextTraffic="true" >
+24-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:9:9-44
+25        <activity
+25-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:12:9-40:20
+26            android:name="org.growerp.admin.MainActivity"
+26-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:13:13-41
+27            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+27-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:16:13-163
+28            android:hardwareAccelerated="true"
+28-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:17:13-47
+29            android:launchMode="singleTop"
+29-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:14:13-43
+30            android:theme="@style/LaunchTheme"
+30-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:15:13-47
+31            android:windowSoftInputMode="adjustResize" >
+31-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:18:13-55
+32
+33            <!--
+34                 Specifies an Android theme to apply to this Activity as soon as
+35                 the Android process has started. This theme is visible to the user
+36                 while the Flutter UI initializes. After that, this theme continues
+37                 to determine the Window background behind the Flutter UI.
+38            -->
+39            <meta-data
+39-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:23:13-26:17
+40                android:name="io.flutter.embedding.android.NormalTheme"
+40-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:24:15-70
+41                android:resource="@style/NormalTheme" />
+41-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:25:15-52
+42            <!--
+43            Displays an Android View that continues showing the launch screen
+44                 Drawable until Flutter paints its first frame, then this splash
+45                 screen fades out. A splash screen is useful to avoid any visual
+46                 gap between the end of Android's launch screen and the painting of
+47                 Flutter's first frame.
+48            <meta-data
+49              android:name="io.flutter.embedding.android.SplashScreenDrawable"
+50              android:resource="@drawable/launch_background"
+51              /
+52            -->
+53            <intent-filter>
+53-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:36:13-39:29
+54                <action android:name="android.intent.action.MAIN" />
+54-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:37:17-68
+54-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:37:25-66
+55
+56                <category android:name="android.intent.category.LAUNCHER" />
+56-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:38:17-76
+56-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:38:27-74
+57            </intent-filter>
+58        </activity>
+59        <!--
+60 Don't delete the meta-data below.
+61             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+62        -->
+63        <meta-data
+63-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:43:9-45:33
+64            android:name="flutterEmbedding"
+64-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:44:13-44
+65            android:value="2" />
+65-->/home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:45:13-30
+66
+67        <provider
+67-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:11:9-19:20
+68            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+68-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:12:13-82
+69            android:authorities="org.growerp.admin.flutter.image_provider"
+69-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-74
+70            android:exported="false"
+70-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-37
+71            android:grantUriPermissions="true" >
+71-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-47
+72            <meta-data
+72-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-18:75
+73                android:name="android.support.FILE_PROVIDER_PATHS"
+73-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:17:17-67
+74                android:resource="@xml/flutter_image_picker_file_paths" />
+74-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:18:17-72
+75        </provider>
+76        <provider
+76-->[:printing] /home/dell/growerp/packages/admin/build/printing/intermediates/library_manifest/debug/AndroidManifest.xml:8:9-16:20
+77            android:name="net.nfet.flutter.printing.PrintFileProvider"
+77-->[:printing] /home/dell/growerp/packages/admin/build/printing/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-71
+78            android:authorities="org.growerp.admin.flutter.printing"
+78-->[:printing] /home/dell/growerp/packages/admin/build/printing/intermediates/library_manifest/debug/AndroidManifest.xml:10:13-68
+79            android:exported="false"
+79-->[:printing] /home/dell/growerp/packages/admin/build/printing/intermediates/library_manifest/debug/AndroidManifest.xml:11:13-37
+80            android:grantUriPermissions="true" >
+80-->[:printing] /home/dell/growerp/packages/admin/build/printing/intermediates/library_manifest/debug/AndroidManifest.xml:12:13-47
+81            <meta-data
+81-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-18:75
+82                android:name="android.support.FILE_PROVIDER_PATHS"
+82-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:17:17-67
+83                android:resource="@xml/flutter_printing_file_paths" />
+83-->[:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:18:17-72
+84        </provider>
+85
+86        <activity
+86-->[:url_launcher_android] /home/dell/growerp/packages/admin/build/url_launcher_android/intermediates/library_manifest/debug/AndroidManifest.xml:8:9-11:74
+87            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+87-->[:url_launcher_android] /home/dell/growerp/packages/admin/build/url_launcher_android/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-74
+88            android:exported="false"
+88-->[:url_launcher_android] /home/dell/growerp/packages/admin/build/url_launcher_android/intermediates/library_manifest/debug/AndroidManifest.xml:10:13-37
+89            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+89-->[:url_launcher_android] /home/dell/growerp/packages/admin/build/url_launcher_android/intermediates/library_manifest/debug/AndroidManifest.xml:11:13-71
+90    </application>
+91
+92</manifest>
