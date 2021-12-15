@@ -38,7 +38,7 @@ class APIRepository {
     _baseUrl = kReleaseMode
         ? databaseUrl
         : (kIsWeb || Platform.isIOS || Platform.isLinux)
-            ? databaseUrlDebug
+            ? '$databaseUrlDebug/'
             : 'http://10.0.2.2:8080/';
 
     print("Production config url: $databaseUrl");
