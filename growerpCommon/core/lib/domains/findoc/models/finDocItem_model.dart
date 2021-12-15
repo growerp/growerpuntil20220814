@@ -42,10 +42,4 @@ class FinDocItem with _$FinDocItem {
 
   factory FinDocItem.fromJson(Map<String, dynamic> json) =>
       _$FinDocItemFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_FinDocItemToJson(this as _$_FinDocItem);
-
-  FinDocItem fromJson(Map<String, dynamic> json) {
-    return FinDocItem.fromJson(json);
-  }
 }

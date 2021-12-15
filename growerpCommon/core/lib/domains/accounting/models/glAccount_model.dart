@@ -45,10 +45,4 @@ class GlAccount with _$GlAccount {
 
   factory GlAccount.fromJson(Map<String, dynamic> json) =>
       _$GlAccountFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_GlAccountToJson(this as _$_GlAccount);
-
-  GlAccount fromJson(Map<String, dynamic> json) {
-    return GlAccount.fromJson(json);
-  }
 }

@@ -49,11 +49,4 @@ class ChatMessage with _$ChatMessage {
 
   factory ChatMessage.fromJson(Map<String, dynamic> json) =>
       _$ChatMessageFromJson(json);
-
-  Map<String, dynamic> toJson() =>
-      _$$_ChatMessageToJson(this as _$_ChatMessage);
-
-  ChatMessage fromJson(Map<String, dynamic> json) {
-    return ChatMessage.fromJson(json);
-  }
 }

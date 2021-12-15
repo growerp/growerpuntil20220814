@@ -60,12 +60,6 @@ class FinDoc with _$FinDoc {
 
   factory FinDoc.fromJson(Map<String, dynamic> json) => _$FinDocFromJson(json);
 
-  Map<String, dynamic> toJson() => _$$_FinDocToJson(this as _$_FinDoc);
-
-  FinDoc fromJson(Map<String, dynamic> json) {
-    return FinDoc.fromJson(json);
-  }
-
   bool idIsNull() => (invoiceId == null &&
           orderId == null &&
           shipmentId == null &&

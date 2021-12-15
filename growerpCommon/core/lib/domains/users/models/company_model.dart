@@ -52,12 +52,6 @@ class Company with _$Company {
   factory Company.fromJson(Map<String, dynamic> json) =>
       _$CompanyFromJson(json);
 
-  Map<String, dynamic> toJson() => _$$_CompanyToJson(this as _$_Company);
-
-  Company fromJson(Map<String, dynamic> json) {
-    return Company.fromJson(json);
-  }
-
   @override
   String toString() => 'Company name: $name[$partyId] '
       'Curr: ${currency?.currencyId} '

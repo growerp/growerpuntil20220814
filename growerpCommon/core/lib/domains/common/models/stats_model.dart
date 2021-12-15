@@ -53,10 +53,4 @@ class Stats with _$Stats {
   }) = _Stats;
 
   factory Stats.fromJson(Map<String, dynamic> json) => _$StatsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_StatsToJson(this as _$_Stats);
-
-  Stats fromJson(Map<String, dynamic> json) {
-    return Stats.fromJson(json);
-  }
 }

@@ -40,12 +40,6 @@ class Currency with _$Currency {
   }) = _Currency;
   factory Currency.fromJson(Map<String, dynamic> json) =>
       _$CurrencyFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_CurrencyToJson(this as _$_Currency);
-
-  Currency fromJson(Map<String, dynamic> json) {
-    return Currency.fromJson(json);
-  }
 }
 
 List<Currency> currencies = [

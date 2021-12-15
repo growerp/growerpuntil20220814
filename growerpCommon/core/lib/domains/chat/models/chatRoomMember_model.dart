@@ -30,13 +30,6 @@ class ChatRoomMember with _$ChatRoomMember {
   factory ChatRoomMember.fromJson(Map<String, dynamic> json) =>
       _$ChatRoomMemberFromJson(json);
 
-  Map<String, dynamic> toJson() =>
-      _$$_ChatRoomMemberToJson(this as _$_ChatRoomMember);
-
-  ChatRoomMember fromJson(Map<String, dynamic> json) {
-    return ChatRoomMember.fromJson(json);
-  }
-
   String toString() =>
       'ChatRoom Member: ${member?.firstName} ${member?.lastName}';
 }

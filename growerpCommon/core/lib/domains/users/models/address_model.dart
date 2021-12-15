@@ -34,10 +34,4 @@ class Address with _$Address {
 
   factory Address.fromJson(Map<String, dynamic> json) =>
       _$AddressFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_AddressToJson(this as _$_Address);
-
-  Address fromJson(Map<String, dynamic> json) {
-    return Address.fromJson(json);
-  }
 }

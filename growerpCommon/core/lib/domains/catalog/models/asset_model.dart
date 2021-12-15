@@ -50,12 +50,6 @@ class Asset with _$Asset {
   }) = _Asset;
 
   factory Asset.fromJson(Map<String, dynamic> json) => _$AssetFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_AssetToJson(this as _$_Asset);
-
-  Asset fromJson(Map<String, dynamic> json) {
-    return Asset.fromJson(json);
-  }
 }
 
 List<String> assetClassIds = [

@@ -47,12 +47,6 @@ class ChatRoom with _$ChatRoom {
   factory ChatRoom.fromJson(Map<String, dynamic> json) =>
       _$ChatRoomFromJson(json);
 
-  Map<String, dynamic> toJson() => _$$_ChatRoomToJson(this as _$_ChatRoom);
-
-  ChatRoom fromJson(Map<String, dynamic> json) {
-    return ChatRoom.fromJson(json);
-  }
-
   int getMemberIndex(String userId) {
     return members.indexWhere((element) => element.member?.userId == userId);
   }

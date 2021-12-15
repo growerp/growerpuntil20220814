@@ -52,11 +52,4 @@ class Opportunity with _$Opportunity {
 
   factory Opportunity.fromJson(Map<String, dynamic> json) =>
       _$OpportunityFromJson(json);
-
-  Map<String, dynamic> toJson() =>
-      _$$_OpportunityToJson(this as _$_Opportunity);
-
-  Opportunity fromJson(Map<String, dynamic> json) {
-    return Opportunity.fromJson(json);
-  }
 }

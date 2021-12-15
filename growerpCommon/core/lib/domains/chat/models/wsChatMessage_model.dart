@@ -36,11 +36,4 @@ class WsChatMessage with _$WsChatMessage {
 
   factory WsChatMessage.fromJson(Map<String, dynamic> json) =>
       _$WsChatMessageFromJson(json);
-
-  Map<String, dynamic> toJson() =>
-      _$$_WsChatMessageToJson(this as _$_WsChatMessage);
-
-  WsChatMessage fromJson(Map<String, dynamic> json) {
-    return WsChatMessage.fromJson(json);
-  }
 }

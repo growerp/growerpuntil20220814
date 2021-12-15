@@ -44,10 +44,4 @@ class Location with _$Location {
 
   factory Location.fromJson(Map<String, dynamic> json) =>
       _$LocationFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_LocationToJson(this as _$_Location);
-
-  Location fromJson(Map<String, dynamic> json) {
-    return Location.fromJson(json);
-  }
 }

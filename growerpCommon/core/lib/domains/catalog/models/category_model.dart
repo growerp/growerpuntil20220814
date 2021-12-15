@@ -46,10 +46,4 @@ class Category with _$Category {
 
   factory Category.fromJson(Map<String, dynamic> json) =>
       _$CategoryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_CategoryToJson(this as _$_Category);
-
-  Category fromJson(Map<String, dynamic> json) {
-    return Category.fromJson(json);
-  }
 }

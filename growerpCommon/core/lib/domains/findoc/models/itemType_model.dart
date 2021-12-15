@@ -36,10 +36,4 @@ class ItemType with _$ItemType {
 
   factory ItemType.fromJson(Map<String, dynamic> json) =>
       _$ItemTypeFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_ItemTypeToJson(this as _$_ItemType);
-
-  ItemType fromJson(Map<String, dynamic> json) {
-    return ItemType.fromJson(json);
-  }
 }

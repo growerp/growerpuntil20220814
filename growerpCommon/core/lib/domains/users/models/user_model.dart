@@ -56,12 +56,6 @@ class User with _$User {
 
   get username => null;
 
-  Map<String, dynamic> toJson() => _$$_UserToJson(this as _$_User);
-
-  User fromJson(Map<String, dynamic> json) {
-    return User.fromJson(json);
-  }
-
   @override
   String toString() => 'User $firstName $lastName [$partyId] sec: $userGroupId '
       'company: $companyName[$companyPartyId] size: ${image?.length}';

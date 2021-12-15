@@ -37,11 +37,4 @@ class Authenticate with _$Authenticate {
 
   factory Authenticate.fromJson(Map<String, dynamic> json) =>
       _$AuthenticateFromJson(json);
-
-  Map<String, dynamic> toJson() =>
-      _$$_AuthenticateToJson(this as _$_Authenticate);
-
-  Authenticate fromJson(Map<String, dynamic> json) {
-    return Authenticate.fromJson(json);
-  }
 }

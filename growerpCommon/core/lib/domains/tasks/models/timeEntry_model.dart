@@ -43,10 +43,4 @@ class TimeEntry with _$TimeEntry {
 
   factory TimeEntry.fromJson(Map<String, dynamic> json) =>
       _$TimeEntryFromJson(json);
-
-  Map<String, dynamic> toJson() => _$$_TimeEntryToJson(this as _$_TimeEntry);
-
-  TimeEntry fromJson(Map<String, dynamic> json) {
-    return TimeEntry.fromJson(json);
-  }
 }
