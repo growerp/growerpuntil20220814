@@ -14,7 +14,8 @@
 
 import 'package:flutter/material.dart';
 
-/// class to configure tab screens, see example below
+/// menu items at the second level.
+/// at the top for web, at the bottom for mobile
 class TabItem {
   final Icon icon; // bottom of screen tab icon
   final String label; // label of tab top/bottom

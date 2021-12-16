@@ -13,8 +13,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'models.dart';
+import 'package:core/domains/domains.dart';
 
+/// item on the main menu, containing tabitems on a lower level.
 class MenuItem {
   // main menu item shown on the left or in drawer
   final String image; // image when not seleced
@@ -24,8 +25,8 @@ class MenuItem {
   final List<TabItem>? tabItems; // top/bottom tabs
   final Widget? child; // when no tabs this is single page
   final Widget? leadAction; // single actionButton on the left like back button
-  final List readGroups; // user groups who can read
-  final List? writeGroups; // user groups who can add/update/delete
+  final List<String> readGroups; // user groups who can read
+  final List<String>? writeGroups; // user groups who can add/update/delete
   final Widget? floatButtonForm; // for dialogs which use navigator internally
 
   MenuItem({

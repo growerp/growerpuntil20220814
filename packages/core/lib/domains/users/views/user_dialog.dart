@@ -36,19 +36,6 @@ class UserDialog extends StatelessWidget {
   }
 }
 
-class UserForm extends StatelessWidget {
-  final User user;
-  const UserForm({Key? key, required this.user}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<UserBloc>(
-        create: (context) => UserBloc(context.read<Object>(), user.userGroupId!,
-            BlocProvider.of<AuthBloc>(context)),
-        child: UserPage(user));
-  }
-}
-
 class UserPage extends StatefulWidget {
   final User user;
   UserPage(this.user);

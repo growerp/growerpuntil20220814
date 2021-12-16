@@ -1,11 +1,20 @@
-# GrowERP Flutter ERP Admin App for Moqui.org or ofbiz.apache.org (web browser/Android/IOS)
+# GrowERP Flutter ERP Apps for Moqui.org or ofbiz.apache.org(just POC) for web/Android/IOS.
 
 more info at https://www.growerp.org (be patient, also in flutter, needs to load for the first time....)
 
-- also see the introduction below.
+# Repository organization(Only 'master' is valid)
+All apps are stored in a single repository in the packages directory:
+- admin: a ganeral ERP application.
+- Hotel: an ERP vertical for hotels
+- ecommerce: an ecommerce frontend.
+- freelance: An app for freelancers selling products and services.
+- core: cannot be run, it is used by all the apps stored here. 
+- utils: general dart utilities.
+- website: The www.growerp.org website.
 
 # Online versions.
-where you can create your own company, demo data will be provided.
+You can create your own company, demo data will be provided.
+
 ## Web browser version.
 - Admin: https://admin.growerp.org
 - Hotel: https://hotel.growerp.org
@@ -53,14 +62,11 @@ The system configuration file is in /assets/cfg/app_settings.json. Select OFBiz 
 
 For test purposes we can provide access to Moqui or OFBiz systems in the cloud.
 
-This admin branch is using the core package stored in the same repository in the 'packages' branch.
-This package contains all the basic ERP functions, see the [readme](https://github.com/growerp/growerp/blob/packages/core/README.md) file for more info.
-
 Additional ERP systems can be added on request, A REST interface is required.
 The implementation time is 40+ hours.
 
 Functions coming up:
-* Inventory
+* freelance app
 * Project management
 * Knowledge base iniialy containing system help
 

@@ -87,7 +87,8 @@ class FinDocListItem extends StatelessWidget {
                       return BlocProvider.value(
                           value: finDocBloc,
                           child: onlyRental == true
-                              ? ReservationDialog(finDoc: finDoc)
+                              ? ReservationDialog(
+                                  finDoc: finDoc, original: finDoc)
                               : FinDocDialog(finDoc: finDoc));
                     });
               },

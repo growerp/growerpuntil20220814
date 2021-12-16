@@ -29,6 +29,7 @@ dependencies:
   flutter_phoenix: ^1.0.0
   web_socket_channel: ^2.1.0
   shared_preferences: ^2.0.6
+  date_utils: ^0.2.0
 
   #NETWORK
   json_annotation: ^4.4.0

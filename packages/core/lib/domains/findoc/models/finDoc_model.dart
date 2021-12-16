@@ -21,8 +21,8 @@ import 'package:core/domains/domains.dart';
 part 'finDoc_model.freezed.dart';
 part 'finDoc_model.g.dart';
 
-enum FinDocType { order, shipment, invoice, payment, transaction }
-enum FinDocSales { sales, purchase } // true/false
+//enum FinDocType { order, shipment, invoice, payment, transaction }
+//enum FinDocSales { sales, purchase } // true/false
 
 FinDoc finDocFromJson(String str) =>
     FinDoc.fromJson(json.decode(str)["finDoc"]);
