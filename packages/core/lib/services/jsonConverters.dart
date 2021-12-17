@@ -52,12 +52,13 @@ class DateTimeConverter implements JsonConverter<DateTime?, String?> {
   }
 }
 
-class FinDocTypeConverter implements JsonConverter<FinDocType, String?> {
+class FinDocTypeConverter implements JsonConverter<FinDocType?, String?> {
   const FinDocTypeConverter();
 
   @override
-  FinDocType fromJson(String? json) {
-    return FinDocType.tryParse(json ?? '');
+  FinDocType? fromJson(String? json) {
+    if (json == null) return null;
+    return FinDocType.tryParse(json);
   }
 
   @override
