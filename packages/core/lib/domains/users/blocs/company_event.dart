@@ -32,13 +32,6 @@ class CompanySearchOn extends CompanyEvent {}
 
 class CompanySearchOff extends CompanyEvent {}
 
-class CompanyDelete extends CompanyEvent {
-  final Company company;
-  CompanyDelete(this.company);
-  @override
-  String toString() => "Delete Company: $company";
-}
-
 class CompanyUpdate extends CompanyEvent {
   final Company company;
   CompanyUpdate(this.company);

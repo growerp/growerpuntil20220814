@@ -21,6 +21,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 class ChatRoomDialog extends StatelessWidget {
   final FormArguments formArguments;
   const ChatRoomDialog({Key? key, required this.formArguments})
@@ -70,7 +72,7 @@ class _ChatRoomState extends State<ChatRoomPage> {
   @override
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    var repos = context.read<Object>();
+    var repos = context.read<APIRepository>();
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state.status == AuthStatus.authenticated)
         authenticate = state.authenticate!;

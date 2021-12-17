@@ -18,6 +18,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 class UserListForm extends StatelessWidget {
   final Key? key;
   final String userGroupId;
@@ -35,32 +37,32 @@ class UserListForm extends StatelessWidget {
     switch (userGroupId) {
       case 'GROWERP_M_LEAD':
         return BlocProvider<LeadBloc>(
-            create: (context) => UserBloc(context.read<Object>(), userGroupId,
-                BlocProvider.of<AuthBloc>(context))
+            create: (context) => UserBloc(context.read<APIRepository>(),
+                userGroupId, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
       case 'GROWERP_M_CUSTOMER':
         return BlocProvider<CustomerBloc>(
-            create: (context) => UserBloc(context.read<Object>(), userGroupId,
-                BlocProvider.of<AuthBloc>(context))
+            create: (context) => UserBloc(context.read<APIRepository>(),
+                userGroupId, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
       case 'GROWERP_M_SUPPLIER':
         return BlocProvider<SupplierBloc>(
-            create: (context) => UserBloc(context.read<Object>(), userGroupId,
-                BlocProvider.of<AuthBloc>(context))
+            create: (context) => UserBloc(context.read<APIRepository>(),
+                userGroupId, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
       case 'GROWERP_M_EMPLOYEE':
         return BlocProvider<EmployeeBloc>(
-            create: (context) => UserBloc(context.read<Object>(), userGroupId,
-                BlocProvider.of<AuthBloc>(context))
+            create: (context) => UserBloc(context.read<APIRepository>(),
+                userGroupId, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
       case 'GROWERP_M_ADMIN':
         return BlocProvider<AdminBloc>(
-            create: (context) => UserBloc(context.read<Object>(), userGroupId,
-                BlocProvider.of<AuthBloc>(context))
+            create: (context) => UserBloc(context.read<APIRepository>(),
+                userGroupId, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
       default:

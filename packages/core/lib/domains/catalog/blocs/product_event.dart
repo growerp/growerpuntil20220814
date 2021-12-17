@@ -22,12 +22,16 @@ abstract class ProductEvent extends Equatable {
 
 class ProductFetch extends ProductEvent {
   const ProductFetch(
-      {this.companyPartyId = '', this.searchString = '', this.refresh = false});
+      {this.categoryId = '',
+      this.companyPartyId = '',
+      this.searchString = '',
+      this.refresh = false});
   final String companyPartyId;
+  final String categoryId;
   final String searchString;
   final bool refresh;
   @override
-  List<Object> get props => [searchString, refresh];
+  List<Object> get props => [categoryId, companyPartyId, searchString, refresh];
 }
 
 class ProductSearchOn extends ProductEvent {}

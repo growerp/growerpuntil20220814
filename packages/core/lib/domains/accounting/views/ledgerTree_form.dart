@@ -12,57 +12,61 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'package:core/domains/accounting/blocs/glAccount_bloc.dart';
-import 'package:core/domains/accounting/models/glAccount_model.dart';
-import 'package:core/domains/common/functions/helper_functions.dart';
-import 'package:core/domains/common/views/fatalError_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_simple_treeview/flutter_simple_treeview.dart';
 import 'package:intl/intl.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
+import '../../../api_repository.dart';
+import '../../common/functions/helper_functions.dart';
+import '../../domains.dart';
+
 class LedgerTreeForm extends StatelessWidget {
+  const LedgerTreeForm({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) =>
-          GlAccountBloc(context.read<Object>())..add(GlAccountFetch()),
-      child: LedgerTreeListForm(),
+      create: (context) => GlAccountBloc(context.read<APIRepository>())
+        ..add(const GlAccountFetch()),
+      child: const LedgerTreeListForm(),
     );
   }
 }
 
 class LedgerTreeListForm extends StatefulWidget {
+  const LedgerTreeListForm({Key? key}) : super(key: key);
+
   @override
   _LedgerTreeFormState createState() => _LedgerTreeFormState();
 }
 
 class _LedgerTreeFormState extends State<LedgerTreeListForm> {
   TreeController? _controller;
-  Iterable<TreeNode> nodes = [];
+  Iterable<TreeNode> _nodes = [];
 
   @override
   void initState() {
     super.initState();
     _controller = TreeController(allNodesExpanded: false);
-    BlocProvider.of<GlAccountBloc>(context)..add(GlAccountFetch());
+    BlocProvider.of<GlAccountBloc>(context).add(const GlAccountFetch());
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
+    final isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     //convert glAccount list into TreeNodes
     Iterable<TreeNode> convert(List<GlAccount> glAccounts) {
       // convert single leaf/glAccount
       TreeNode getTreeNode(GlAccount glAccount) {
         // recursive function
-        TreeNode result = TreeNode(
+        final result = TreeNode(
           key: ValueKey(glAccount.id),
           content: Row(children: [
             SizedBox(
                 width: (isPhone ? 210 : 400) - (glAccount.l!.toDouble() * 10),
-                child: Text("${glAccount.id} ${glAccount.accountName} ")),
+                child: Text('${glAccount.id} ${glAccount.accountName} ')),
             SizedBox(
                 width: 100,
                 child: Text(
@@ -75,64 +79,66 @@ class _LedgerTreeFormState extends State<LedgerTreeListForm> {
                     NumberFormat.simpleCurrency().format(glAccount.rollUp),
                     textAlign: TextAlign.right))
           ]),
-          children: glAccount.children.map((x) => getTreeNode(x)).toList(),
+          children: glAccount.children.map(getTreeNode).toList(),
         );
         return result;
       }
 
       // main: do the actual conversion
-      List<TreeNode> treeNodes = [];
-      glAccounts.forEach((element) {
+      final treeNodes = <TreeNode>[];
+      for (final element in glAccounts) {
         treeNodes.add(getTreeNode(element));
-      });
-      Iterable<TreeNode> iterable = treeNodes;
+      }
+      final Iterable<TreeNode> iterable = treeNodes;
       return iterable;
     }
 
     return BlocConsumer<GlAccountBloc, GlAccountState>(
         listener: (context, state) {
-      if (state.status == GlAccountStatus.failure)
+      if (state.status == GlAccountStatus.failure) {
         HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+      }
     }, builder: (context, state) {
-      if (state.status == GlAccountStatus.failure)
-        return FatalErrorForm("Could not load Ledger tree!");
-      if (state.status == GlAccountStatus.success)
-        nodes = convert(state.glAccounts);
+      if (state.status == GlAccountStatus.failure) {
+        return const FatalErrorForm('Could not load Ledger tree!');
+      }
+      if (state.status == GlAccountStatus.success) {
+        _nodes = convert(state.glAccounts);
+      }
       return ListView(
         children: <Widget>[
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(mainAxisAlignment: MainAxisAlignment.end, children: [
             ElevatedButton(
-              child: Text("Expand All"),
+              child: const Text('Expand All'),
               onPressed: () => setState(() {
                 _controller!.expandAll();
               }),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             ElevatedButton(
-              child: Text("Collapse All"),
+              child: const Text('Collapse All'),
               onPressed: () => setState(() {
                 _controller!.collapseAll();
               }),
             ),
           ]),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(children: [
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             SizedBox(
                 width: isPhone ? 220 : 410,
-                child: Text("Gl Account ID  GL Account Name")),
-            SizedBox(
-                width: 100, child: Text("Posted", textAlign: TextAlign.right)),
-            SizedBox(
-                width: 100, child: Text("Roll Up", textAlign: TextAlign.right))
+                child: const Text('Gl Account ID  GL Account Name')),
+            const SizedBox(
+                width: 100, child: Text('Posted', textAlign: TextAlign.right)),
+            const SizedBox(
+                width: 100, child: Text('Roll Up', textAlign: TextAlign.right))
           ]),
-          Divider(color: Colors.black),
+          const Divider(color: Colors.black),
           TreeView(
-            treeController: _controller,
-            nodes: nodes as List<TreeNode>,
-            indent: 10,
-          )
+              treeController: _controller,
+              nodes: _nodes as List<TreeNode>,
+              indent: 10)
         ],
       );
     });

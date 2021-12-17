@@ -21,6 +21,8 @@ import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import '../../../api_repository.dart';
+
 part 'asset_event.dart';
 part 'asset_state.dart';
 
@@ -42,8 +44,7 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
     on<AssetDelete>(_onAssetDelete);
   }
 
-  final repos;
-
+  final APIRepository repos;
   Future<void> _onAssetFetch(
     AssetFetch event,
     Emitter<AssetState> emit,

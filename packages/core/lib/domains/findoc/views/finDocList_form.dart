@@ -19,6 +19,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
+import '../../../api_repository.dart';
+
 class FinDocListForm extends StatelessWidget {
   final Key? key;
   final bool sales;
@@ -45,12 +47,12 @@ class FinDocListForm extends StatelessWidget {
       if (sales)
         return BlocProvider<SalesOrderBloc>(
             create: (context) =>
-                FinDocBloc(context.read<Object>(), sales, docType)
+                FinDocBloc(context.read<APIRepository>(), sales, docType)
                   ..add(FinDocFetch()),
             child: finDocList);
       return BlocProvider<PurchaseOrderBloc>(
           create: (BuildContext context) =>
-              FinDocBloc(context.read<Object>(), sales, docType)
+              FinDocBloc(context.read<APIRepository>(), sales, docType)
                 ..add(FinDocFetch()),
           child: finDocList);
     }
@@ -58,12 +60,12 @@ class FinDocListForm extends StatelessWidget {
       if (sales)
         return BlocProvider<SalesInvoiceBloc>(
             create: (context) =>
-                FinDocBloc(context.read<Object>(), sales, docType)
+                FinDocBloc(context.read<APIRepository>(), sales, docType)
                   ..add(FinDocFetch()),
             child: finDocList);
       return BlocProvider<PurchaseInvoiceBloc>(
           create: (BuildContext context) =>
-              FinDocBloc(context.read<Object>(), sales, docType)
+              FinDocBloc(context.read<APIRepository>(), sales, docType)
                 ..add(FinDocFetch()),
           child: finDocList);
     }
@@ -71,12 +73,12 @@ class FinDocListForm extends StatelessWidget {
       if (sales)
         return BlocProvider<SalesPaymentBloc>(
             create: (context) =>
-                FinDocBloc(context.read<Object>(), sales, docType)
+                FinDocBloc(context.read<APIRepository>(), sales, docType)
                   ..add(FinDocFetch()),
             child: finDocList);
       return BlocProvider<PurchasePaymentBloc>(
           create: (BuildContext context) =>
-              FinDocBloc(context.read<Object>(), sales, docType)
+              FinDocBloc(context.read<APIRepository>(), sales, docType)
                 ..add(FinDocFetch()),
           child: finDocList);
     }
@@ -84,18 +86,19 @@ class FinDocListForm extends StatelessWidget {
       if (sales)
         return BlocProvider<OutgoingShipmentBloc>(
             create: (context) =>
-                FinDocBloc(context.read<Object>(), sales, docType)
+                FinDocBloc(context.read<APIRepository>(), sales, docType)
                   ..add(FinDocFetch()),
             child: finDocList);
       return BlocProvider<IncomingShipmentBloc>(
           create: (BuildContext context) =>
-              FinDocBloc(context.read<Object>(), sales, docType)
+              FinDocBloc(context.read<APIRepository>(), sales, docType)
                 ..add(FinDocFetch()),
           child: finDocList);
     }
     return BlocProvider<TransactionBloc>(
-        create: (context) => FinDocBloc(context.read<Object>(), sales, docType)
-          ..add(FinDocFetch()),
+        create: (context) =>
+            FinDocBloc(context.read<APIRepository>(), sales, docType)
+              ..add(FinDocFetch()),
         child: finDocList);
   }
 }

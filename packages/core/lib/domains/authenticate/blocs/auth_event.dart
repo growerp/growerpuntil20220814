@@ -30,7 +30,7 @@ class AuthUpdateUser extends AuthEvent {
 }
 
 class AuthUpdateCompany extends AuthEvent {
-  final Company company;
+  final Company? company;
   AuthUpdateCompany(this.company);
   @override
   String toString() => 'Update Authenticate Company $company';

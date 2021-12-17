@@ -23,6 +23,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:intl/intl.dart';
 
+import '../../../api_repository.dart';
+
 class ReservationDialog extends StatefulWidget {
   /// original order
   final FinDoc? original;
@@ -78,7 +80,7 @@ class _ReservationState extends State<ReservationDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var repos = context.read<Object>();
+    var repos = context.read<APIRepository>();
 
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),

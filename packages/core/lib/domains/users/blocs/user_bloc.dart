@@ -19,6 +19,7 @@ import 'package:core/domains/authenticate/blocs/auth_bloc.dart';
 import 'package:core/services/api_result.dart';
 import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
+import '../../../api_repository.dart';
 import '../models/models.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -51,7 +52,7 @@ class UserBloc extends Bloc<UserEvent, UserState>
     on<UserDelete>(_onUserDelete);
   }
 
-  final repos;
+  final APIRepository repos;
   final String userGroupId;
   final AuthBloc authBloc;
 
@@ -154,7 +155,7 @@ class UserBloc extends Bloc<UserEvent, UserState>
   ) async {
     try {
       List<User> users = List.from(state.users);
-      ApiResult<User> compResult = await repos.deleteUser(event.user);
+      ApiResult<User> compResult = await repos.deleteUser(event.user.partyId!);
       return emit(compResult.when(
           success: (data) {
             int index = users

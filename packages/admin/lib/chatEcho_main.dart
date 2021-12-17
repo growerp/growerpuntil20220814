@@ -1,3 +1,5 @@
+// ignore_for_file: always_put_required_named_parameters_first
+
 /*
  * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
  * Grant of Patent License.
@@ -15,26 +17,27 @@
 // start with: flutter run -t lib/chatEcho_app.dart
 
 import 'dart:async';
+import 'package:core/api_repository.dart';
+import 'package:core/domains/domains.dart';
+import 'package:core/services/chat_server.dart';
+import 'package:core/styles/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:global_configuration/global_configuration.dart';
-import 'generated/l10n.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:core/api_repository.dart';
-import 'package:core/services/chat_server.dart';
-import 'package:core/styles/themes.dart';
+
+import 'generated/l10n.dart';
 import 'router.dart' as router;
-import 'package:core/domains/domains.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await GlobalConfiguration().loadFromAsset("app_settings");
+  await GlobalConfiguration().loadFromAsset('app_settings');
 
-  var dbServer = APIRepository();
-  ChatServer chatServer = ChatServer();
+  final dbServer = APIRepository();
+  final chatServer = ChatServer();
 
   runApp(Phoenix(child: ChatApp(dbServer: dbServer, chatServer: chatServer)));
 }
@@ -43,7 +46,7 @@ class ChatApp extends StatelessWidget {
   const ChatApp({Key? key, required this.dbServer, required this.chatServer})
       : super(key: key);
 
-  final Object dbServer;
+  final APIRepository dbServer;
   final ChatServer chatServer;
 
   @override
@@ -70,19 +73,21 @@ class ChatApp extends StatelessWidget {
             lazy: false,
           ),
         ],
-        child: MyChatApp(),
+        child: const MyChatApp(),
       ),
     );
   }
 }
 
 class MyChatApp extends StatelessWidget {
-  static String title = "GrowERP Chat echo.";
+  const MyChatApp({Key? key}) : super(key: key);
+
+  static String title = 'GrowERP Chat echo.';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
-        localizationsDelegates: [
+        localizationsDelegates: const [
           S.delegate,
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
@@ -92,28 +97,32 @@ class MyChatApp extends StatelessWidget {
         builder: (context, widget) => ResponsiveWrapper.builder(
             BouncingScrollWrapper.builder(context, widget!),
             maxWidth: 2460,
-            minWidth: 450,
             defaultScale: true,
             breakpoints: [
-              ResponsiveBreakpoint.resize(450, name: MOBILE),
-              ResponsiveBreakpoint.autoScale(800, name: TABLET),
-              ResponsiveBreakpoint.resize(1200, name: DESKTOP),
-              ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+              const ResponsiveBreakpoint.resize(450, name: MOBILE),
+              const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+              const ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+              const ResponsiveBreakpoint.autoScale(2460, name: '4K'),
             ],
-            background: Container(color: Color(0xFFF5F5F5))),
+            background: Container(color: const Color(0xFFF5F5F5))),
         theme: Themes.formTheme,
         onGenerateRoute: router.generateRoute,
         home: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {
-            if (state.status == AuthStatus.failure)
-              return FatalErrorForm("Internet or server problem?");
-            if (state.status == AuthStatus.authenticated)
+            if (state.status == AuthStatus.failure) {
+              return const FatalErrorForm('Internet or server problem?');
+            }
+            if (state.status == AuthStatus.authenticated) {
               return HomeForm(
                   message: state.message, menuItems: menuItems, title: title);
-            if (state.status == AuthStatus.unAuthenticated)
+            }
+            if (state.status == AuthStatus.unAuthenticated) {
               return HomeForm(
                   message: state.message, menuItems: menuItems, title: title);
-            if (state.status == AuthStatus.changeIp) return ChangeIpForm();
+            }
+            if (state.status == AuthStatus.changeIp) {
+              return ChangeIpForm();
+            }
             return SplashForm();
           },
         ));
@@ -122,26 +131,28 @@ class MyChatApp extends StatelessWidget {
 
 List<MenuItem> menuItems = [
   MenuItem(
-    image: "assets/images/dashBoardGrey.png",
-    selectedImage: "assets/images/dashBoard.png",
-    title: "Main",
+    image: 'assets/images/dashBoardGrey.png',
+    selectedImage: 'assets/images/dashBoard.png',
+    title: 'Main',
     route: '/',
-    readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
-    writeGroups: ["GROWERP_M_ADMIN", "ADMIN"],
-    child: ChatRooms(),
+    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
+    writeGroups: ['GROWERP_M_ADMIN', 'ADMIN'],
+    child: const ChatRooms(),
   ),
   MenuItem(
-    image: "assets/images/dashBoardGrey.png",
-    selectedImage: "assets/images/dashBoard.png",
-    title: "Main",
+    image: 'assets/images/dashBoardGrey.png',
+    selectedImage: 'assets/images/dashBoard.png',
+    title: 'Main',
     route: '/',
-    readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
-    writeGroups: ["GROWERP_M_ADMIN", "ADMIN"],
-    child: ChatRooms(),
+    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
+    writeGroups: ['GROWERP_M_ADMIN', 'ADMIN'],
+    child: const ChatRooms(),
   ),
 ];
 
 class ChatRooms extends StatefulWidget {
+  const ChatRooms({Key? key}) : super(key: key);
+
   @override
   _ChatRoomsState createState() => _ChatRoomsState();
 }
@@ -155,7 +166,7 @@ class _ChatRoomsState extends State<ChatRooms> {
   int limit = 20;
   late bool search;
   String? searchString;
-  String classificationId = GlobalConfiguration().getValue("classificationId");
+  String classificationId = GlobalConfiguration().getValue('classificationId');
   late String entityName;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -179,11 +190,12 @@ class _ChatRoomsState extends State<ChatRooms> {
             builder: (context, state) {
           if (state.status == ChatRoomStatus.success) {
             chatRooms = state.chatRooms;
-            if (chatRooms.length == 0)
-              return Center(
+            if (chatRooms.isEmpty) {
+              return const Center(
                   heightFactor: 20,
-                  child: Text("waiting for chats to arrive....",
+                  child: Text('waiting for chats to arrive....',
                       key: Key('empty'), textAlign: TextAlign.center));
+            }
             // receive chat message (caused chatroom added on the list)
             _chatMessageBloc = BlocProvider.of<ChatMessageBloc>(context)
               ..add(ChatMessageFetch(
@@ -192,9 +204,8 @@ class _ChatRoomsState extends State<ChatRooms> {
                 builder: (context, state) {
               if (state.status == ChatMessageStatus.success) {
                 messages = state.chatMessages;
-                if (messages.length > 0) {
+                if (messages.isNotEmpty) {
                   // echo message
-                  print("####receive => echo message");
                   _chatMessageBloc.add(ChatMessageSendWs(WsChatMessage(
                       toUserId:
                           chatRooms[0].getToUserId(authenticate.user!.userId!),
@@ -202,14 +213,13 @@ class _ChatRoomsState extends State<ChatRooms> {
                       chatRoomId: chatRooms[0].chatRoomId,
                       content: messages[0].content!)));
                   // remove chat room from list, reset isActive flag
-                  print("#### remove room from list");
-                  int ind =
+                  final ind =
                       chatRooms[0].getMemberIndex(authenticate.user!.userId!);
                   // new member with update
-                  ChatRoomMember newMember = chatRooms[0]
+                  final newMember = chatRooms[0]
                       .members[ind]
                       .copyWith(isActive: false, hasRead: true);
-                  List<ChatRoomMember> newMembers = chatRooms[0].members;
+                  final newMembers = chatRooms[0].members;
                   newMembers[ind] = newMember;
                   // copy members pdate copy
                   _chatRoomBloc.add(
@@ -218,47 +228,15 @@ class _ChatRoomsState extends State<ChatRooms> {
                   );
                 }
               }
-              Timer(Duration(seconds: 1), () => print("== wait a second==="));
-              return Center(child: Text(" processing"));
+              Timer(const Duration(seconds: 1), () {});
+              return const Center(child: Text(' processing'));
             });
-          } else
-            return Center(child: Text(" processing"));
+          } else {
+            return const Center(child: Text(' processing'));
+          }
         });
       }
-      return Container(child: Center(child: Text("Not Authorized!")));
+      return const Center(child: Text('Not Authorized!'));
     });
   }
 }
-/*
-Future<void> main() async {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  setUp(() async {
-    await GlobalConfiguration().loadFromAsset("app_settings");
-    Bloc.observer = SimpleBlocObserver();
-  });
-
-  tearDown(() async => {
-        // not tear down, control C to stop
-        await Future.delayed(Duration(seconds: 1000000))
-      });
-
-  testWidgets("create chat echo for user John doe>>>>>",
-      (WidgetTester tester) async {
-    await tester.pumpWidget(ChatApp(
-        dbServer: MoquiServer(client: Dio()), chatServer: ChatServer()));
-    await tester.pumpAndSettle(Duration(seconds: 10));
-    try {
-      expect(find.byKey(Key('HomeFormUnAuth')), findsOneWidget);
-      await Test.tap(tester, 'loginButton');
-      await tester.pump(Duration(seconds: 1));
-      await Test.enterText(tester, 'username', 'test@example.com');
-      await Test.enterText(tester, 'password', 'qqqqqq9!');
-      await Test.tap(tester, 'login');
-      await tester.pumpAndSettle(Duration(seconds: 5));
-    } catch (_) {
-      print("already logged in, fine!");
-    }
-  });
-}
-*/

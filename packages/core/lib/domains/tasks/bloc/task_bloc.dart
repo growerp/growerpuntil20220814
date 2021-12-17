@@ -21,6 +21,8 @@ import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import '../../../api_repository.dart';
+
 part 'task_event.dart';
 part 'task_state.dart';
 
@@ -43,8 +45,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskTimeEntryDelete>(_onTimeEntryDelete);
   }
 
-  final repos;
-
+  final APIRepository repos;
   Future<void> _onTaskFetch(
     TaskFetch event,
     Emitter<TaskState> emit,

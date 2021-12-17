@@ -22,6 +22,8 @@ import 'package:equatable/equatable.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import '../../../api_repository.dart';
+
 part 'finDoc_event.dart';
 part 'finDoc_state.dart';
 
@@ -61,11 +63,10 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
     on<FinDocSearchOn>(((event, emit) => emit(state.copyWith(search: true))));
     on<FinDocSearchOff>(((event, emit) => emit(state.copyWith(search: false))));
     on<FinDocUpdate>(_onFinDocUpdate);
-    on<FinDocDelete>(_onFinDocDelete);
     on<FinDocShipmentReceive>(_onFinDocShipmentReceive);
   }
 
-  final repos;
+  final APIRepository repos;
   final bool sales;
   final String docType;
 
@@ -180,29 +181,6 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
             failure: (NetworkExceptions error) => state.copyWith(
                 status: FinDocStatus.failure, message: error.toString())));
       }
-    } catch (error) {
-      emit(state.copyWith(
-          status: FinDocStatus.failure, message: error.toString()));
-    }
-  }
-
-  Future<void> _onFinDocDelete(
-    FinDocDelete event,
-    Emitter<FinDocState> emit,
-  ) async {
-    try {
-      List<FinDoc> finDocs = List.from(state.finDocs);
-      ApiResult<FinDoc> compResult = await repos.deleteFinDoc(event.finDoc);
-      return emit(compResult.when(
-          success: (data) {
-            int index =
-                finDocs.indexWhere((element) => element.id == event.finDoc.id);
-            finDocs.removeAt(index);
-            return state.copyWith(
-                status: FinDocStatus.success, finDocs: finDocs);
-          },
-          failure: (NetworkExceptions error) => state.copyWith(
-              status: FinDocStatus.failure, message: error.toString())));
     } catch (error) {
       emit(state.copyWith(
           status: FinDocStatus.failure, message: error.toString()));

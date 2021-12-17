@@ -18,15 +18,15 @@ import 'package:decimal/decimal.dart';
 import 'package:core/domains/domains.dart';
 
 String random = Random.secure().nextInt(1024).toString();
-String seq = "$random";
-String seq1 = "$random-1";
-String seq2 = "$random-2";
-String seq3 = "$random-3";
-String seq4 = "$random-4";
-String seq5 = "$random-5";
-String seq6 = "$random-6";
-String seq7 = "$random-7";
-String seq8 = "$random-8";
+String seq = '$random';
+String seq1 = '$random-1';
+String seq2 = '$random-2';
+String seq3 = '$random-3';
+String seq4 = '$random-4';
+String seq5 = '$random-5';
+String seq6 = '$random-6';
+String seq7 = '$random-7';
+String seq8 = '$random-8';
 
 String loginName = 'admin';
 String password = '!kdQ9QT5sjA4';
@@ -51,7 +51,7 @@ List<User> administrators = [
     lastName: 'login Name',
     groupDescription: 'Admin',
     companyName: companies[0].name,
-    userId: "username$seq",
+    userId: 'username$seq',
     email: 'email$seq@example.org',
     userGroupId: 'GROWERP_M_ADMIN',
   ),
@@ -60,7 +60,7 @@ List<User> administrators = [
     lastName: 'last Name',
     groupDescription: 'Admin',
     companyName: companies[0].name,
-    userId: "username$seq1",
+    userId: 'username$seq1',
     email: 'email$seq1@example.org',
     userGroupId: 'GROWERP_M_ADMIN',
   ),
@@ -69,7 +69,7 @@ List<User> administrators = [
     lastName: 'last Name',
     groupDescription: 'Admin',
     companyName: companies[0].name,
-    userId: "username$seq2",
+    userId: 'username$seq2',
     email: 'email$seq2@example.org',
     userGroupId: 'GROWERP_M_ADMIN',
   ),
@@ -80,7 +80,7 @@ List<User> employees = [
     lastName: 'last Name',
     groupDescription: 'Employee',
     companyName: companies[0].name,
-    userId: "username$seq3",
+    userId: 'username$seq3',
     email: 'email$seq3@example.org',
     userGroupId: 'GROWERP_M_EMPLOYEE',
   ),
@@ -89,7 +89,7 @@ List<User> employees = [
     lastName: 'last Name',
     groupDescription: 'Employee',
     companyName: companies[0].name,
-    userId: "username$seq4",
+    userId: 'username$seq4',
     email: 'email$seq4@example.org',
     userGroupId: 'GROWERP_M_EMPLOYEE',
   )
@@ -101,7 +101,7 @@ List<User> leads = [
     lastName: 'last Name',
     groupDescription: 'Lead',
     companyName: companies[5].name,
-    userId: "username$seq5",
+    userId: 'username$seq5',
     email: 'email$seq5@example.org',
     userGroupId: 'GROWERP_M_LEAD',
   ),
@@ -110,7 +110,7 @@ List<User> leads = [
     lastName: 'last Name',
     groupDescription: 'Lead',
     companyName: companies[6].name,
-    userId: "username$seq6",
+    userId: 'username$seq6',
     email: 'email$seq6@example.org',
     userGroupId: 'GROWERP_M_LEAD',
   )
@@ -122,7 +122,7 @@ List<User> suppliers = [
     lastName: 'last Name',
     groupDescription: 'Supplier',
     companyName: companies[7].name,
-    userId: "username$seq7",
+    userId: 'username$seq7',
     email: 'email$seq7@example.org',
     userGroupId: 'GROWERP_M_SUPPLIER',
   ),
@@ -131,7 +131,7 @@ List<User> suppliers = [
     lastName: 'last Name',
     groupDescription: 'Supplier',
     companyName: companies[8].name,
-    userId: "username$seq8",
+    userId: 'username$seq8',
     email: 'email$seq8@example.org',
     userGroupId: 'GROWERP_M_SUPPLIER',
   )
@@ -168,62 +168,62 @@ List<TimeEntry> timeEntries = [
 
 List<Opportunity> opportunities = [
   Opportunity(
-    opportunityName: "Dummy Opp Name $seq1",
-    description: "Dummmy descr 1",
-    stageId: "Qualification",
-    nextStep: "testing1",
+    opportunityName: 'Dummy Opp Name $seq1',
+    description: 'Dummmy descr 1',
+    stageId: 'Qualification',
+    nextStep: 'testing1',
     employeeUser: administrators[0], // initial logged admin[0]
     leadUser: leads[0],
-    estAmount: Decimal.parse("30000"),
-    estProbability: int.parse("30"),
+    estAmount: Decimal.parse('30000'),
+    estProbability: int.parse('30'),
   ),
   Opportunity(
-    opportunityName: "Dummy Opp Name $seq2",
-    description: "Dummmy descr2",
-    stageId: "Prospecting",
-    nextStep: "testing2",
+    opportunityName: 'Dummy Opp Name $seq2',
+    description: 'Dummmy descr2',
+    stageId: 'Prospecting',
+    nextStep: 'testing2',
     employeeUser: administrators[1],
     leadUser: leads[1],
-    estAmount: Decimal.parse("40000"),
-    estProbability: int.parse("40"),
+    estAmount: Decimal.parse('40000'),
+    estProbability: int.parse('40'),
   )
 ];
 
 List<Category> categories = [
   Category(
-      categoryName: "FirstCategory$seq1",
-      description: "FirstCategory$seq1 description",
-      image: Uint8List.fromList("R0lGODlhAQABAAAAACwAAAAAAQABAAA=".codeUnits)),
+      categoryName: 'FirstCategory$seq1',
+      description: 'FirstCategory$seq1 description',
+      image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
   Category(
-      categoryName: "FirstCategory$seq2",
-      description: "FirstCategory$seq2 description",
-      image: Uint8List.fromList("R0lGODlhAQABAAAAACwAAAAAAQABAAA=".codeUnits)),
+      categoryName: 'FirstCategory$seq2',
+      description: 'FirstCategory$seq2 description',
+      image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
 ];
 
 List<Product> products = [
   Product(
-      productName: "This is the first product $seq1",
-      image: Uint8List.fromList("R0lGODlhAQABAAAAACwAAAAAAQABAAA=".codeUnits),
-      price: Decimal.parse("23.99"),
+      productName: 'This is the first product $seq1',
+      image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
+      price: Decimal.parse('23.99'),
       category: categories[0],
-      description: "This is a dummy description of first product $seq1"),
+      description: 'This is a dummy description of first product $seq1'),
   Product(
-      productName: "This is the second product $seq2",
-      image: Uint8List.fromList("R0lGODlhAQABAAAAACwAAAAAAQABAAA=".codeUnits),
-      price: Decimal.parse("73.99"),
+      productName: 'This is the second product $seq2',
+      image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
+      price: Decimal.parse('73.99'),
       category: categories[1],
-      description: "This is a dummy description of second product $seq1"),
+      description: 'This is a dummy description of second product $seq1'),
 ];
 
 List<ItemType> salesItems = [
-  ItemType(itemTypeId: "slstype1", itemTypeName: "slstype 1 description"),
-  ItemType(itemTypeId: "slstype2", itemTypeName: "slstype 2 description"),
-  ItemType(itemTypeId: "slstype3", itemTypeName: "slstype 3 description")
+  ItemType(itemTypeId: 'slstype1', itemTypeName: 'slstype 1 description'),
+  ItemType(itemTypeId: 'slstype2', itemTypeName: 'slstype 2 description'),
+  ItemType(itemTypeId: 'slstype3', itemTypeName: 'slstype 3 description')
 ];
 List<ItemType> purchaseItems = [
-  ItemType(itemTypeId: "purchtype1", itemTypeName: "purchtype 1 description"),
-  ItemType(itemTypeId: "purchtype2", itemTypeName: "purchtype 2 description"),
-  ItemType(itemTypeId: "purchtype3", itemTypeName: "purchtype 3 description")
+  ItemType(itemTypeId: 'purchtype1', itemTypeName: 'purchtype 1 description'),
+  ItemType(itemTypeId: 'purchtype2', itemTypeName: 'purchtype 2 description'),
+  ItemType(itemTypeId: 'purchtype3', itemTypeName: 'purchtype 3 description')
 ];
 
 final FinDoc finDoc = finDocFromJson('''
@@ -314,8 +314,8 @@ List<FinDoc> purchaseOrders = [
 ];
 
 List<Location> warehouseLocations = [
-  Location(locationName: "For purchase order 0"),
-  Location(locationName: "For purchase order 1"),
-  Location(locationName: "For purchase order 2"),
-  Location(locationName: "For purchase order 3"),
+  Location(locationName: 'For purchase order 0'),
+  Location(locationName: 'For purchase order 1'),
+  Location(locationName: 'For purchase order 2'),
+  Location(locationName: 'For purchase order 3'),
 ];

@@ -98,7 +98,8 @@ class CartBloc extends Bloc<CartEvent, CartState>
     Emitter<CartState> emit,
   ) async {
     try {
-      finDocBloc.add(FinDocDelete(event.finDoc));
+      finDocBloc.add(
+          FinDocUpdate(event.finDoc.copyWith(statusId: 'FinDocCancelled')));
       add(CartClear());
       return emit(
         state.copyWith(

@@ -26,6 +26,8 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:intl/intl.dart';
 
+import '../../../api_repository.dart';
+
 class FinDocDialog extends StatelessWidget {
   final FinDoc finDoc;
   const FinDocDialog({Key? key, required this.finDoc}) : super(key: key);
@@ -82,7 +84,7 @@ class _MyFinDocState extends State<FinDocPage> {
     } else {
       _cartBloc = BlocProvider.of<PurchaseCartBloc>(context) as CartBloc;
     }
-    repos = context.read<Object>();
+    repos = context.read<APIRepository>();
   }
 
   @override

@@ -1,10 +1,10 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-49:12
-INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-49:12
-INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-49:12
-INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-49:12
-MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-49:12
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-40:12
+INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-40:12
+INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-40:12
+INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-40:12
+MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-40:12
 MERGED from [:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-22:12
 MERGED from [:flutter_plugin_android_lifecycle] /home/dell/growerp/packages/admin/build/flutter_plugin_android_lifecycle/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
 MERGED from [:connectivity] /home/dell/growerp/packages/admin/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
@@ -42,18 +42,18 @@ INJECTED from /home/dell/growerp/packages/admin/android/app/src/debug/AndroidMan
 		INJECTED from /home/dell/growerp/packages/admin/android/app/src/debug/AndroidManifest.xml
 	android:versionName
 		INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml
-		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-49:12
+		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-40:12
 		INJECTED from /home/dell/growerp/packages/admin/android/app/src/debug/AndroidManifest.xml
 	android:versionCode
 		INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml
-		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-49:12
+		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:1-40:12
 		INJECTED from /home/dell/growerp/packages/admin/android/app/src/debug/AndroidManifest.xml
 	xmlns:android
 		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:1:11-69
 application
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:8:5-46:19
-MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:8:5-46:19
-MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:8:5-46:19
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:8:5-37:19
+MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:8:5-37:19
+MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:8:5-37:19
 MERGED from [:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-20:19
 MERGED from [:image_picker] /home/dell/growerp/packages/admin/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-20:19
 MERGED from [:printing] /home/dell/growerp/packages/admin/build/printing/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-17:19
@@ -75,7 +75,7 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /home/dell/
 	android:usesCleartextTraffic
 		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:9:9-44
 activity#org.growerp.admin.MainActivity
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:12:9-40:20
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:12:9-31:20
 	android:launchMode
 		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:14:13-43
 	android:hardwareAccelerated
@@ -95,33 +95,33 @@ ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifes
 	android:name
 		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:24:15-70
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:36:13-39:29
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:27:13-30:29
 action#android.intent.action.MAIN
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:37:17-68
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:28:17-68
 	android:name
-		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:37:25-66
+		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:28:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:38:17-76
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:29:17-76
 	android:name
-		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:38:27-74
+		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:29:27-74
 meta-data#flutterEmbedding
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:43:9-45:33
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:34:9-36:33
 	android:value
-		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:45:13-30
+		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:36:13-30
 	android:name
-		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:44:13-44
+		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:35:13-44
 uses-permission#android.permission.INTERNET
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:47:5-67
-MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:47:5-67
-MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:47:5-67
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:38:5-67
+MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:38:5-67
+MERGED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:38:5-67
 	android:name
-		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:47:22-64
+		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:38:22-64
 uses-permission#android.permission.ACCESS_NETWORK_STATE
-ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:48:5-79
+ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:39:5-79
 MERGED from [:connectivity] /home/dell/growerp/packages/admin/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
 MERGED from [:connectivity] /home/dell/growerp/packages/admin/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
 	android:name
-		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:48:22-76
+		ADDED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml:39:22-76
 uses-sdk
 INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/dell/growerp/packages/admin/android/app/src/main/AndroidManifest.xml

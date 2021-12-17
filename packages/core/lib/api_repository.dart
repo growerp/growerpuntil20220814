@@ -119,14 +119,14 @@ class APIRepository {
       {bool mainCompanies = true, // just owner organizations or all?
       int? start,
       int? limit,
-      String? filter}) async {
+      String? searchString}) async {
     try {
       final response = await dioClient
           .get('rest/s1/growerp/100/Companies', null, queryParameters: {
         "mainCompanies": mainCompanies.toString(),
         'start': start,
         'limit': limit,
-        'filter': filter,
+        'filter': searchString,
       });
       return ApiResult.success(data: companiesFromJson(response.toString()));
     } catch (e) {
@@ -260,7 +260,7 @@ class APIRepository {
   }
 
   // for ecommerce
-  Future<ApiResult<User>> registerUser(String user, String ownerPartyId) async {
+  Future<ApiResult<User>> registerUser(User user, String ownerPartyId) async {
     try {
       final response = await dioClient
           .post('rest/s1/growerp/100/RegisterUser', apiKey!, data: {
@@ -308,9 +308,21 @@ class APIRepository {
     }
   }
 
-  Future<ApiResult<Company>> updateCompany(Company company) async {
+  /// not implemented yet
+  Future<ApiResult<Company>> createCompany(Company company) async {
     try {
       final response = await dioClient.post(
+          'rest/s1/growerp/100/Company', apiKey!,
+          data: {'company': company, 'moquiSessionToken': sessionToken});
+      return ApiResult.success(data: companyFromJson(response.toString()));
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Company>> updateCompany(Company company) async {
+    try {
+      final response = await dioClient.patch(
           'rest/s1/growerp/100/Company', apiKey!,
           data: {'company': company, 'moquiSessionToken': sessionToken});
       return ApiResult.success(data: companyFromJson(response.toString()));
@@ -416,15 +428,16 @@ class APIRepository {
       String? filter,
       String? searchString}) async {
     try {
-      final response = await dioClient
-          .get('rest/s1/growerp/100/Categories', apiKey!, queryParameters: {
-        'start': start,
-        'limit': limit,
-        'companyPartyId': companyPartyId,
-        'filter': filter,
-        'search': searchString,
-        'classificationId': classificationId,
-      });
+      final response = await dioClient.get(
+          'rest/s1/growerp/100/Categories', apiKey ?? null,
+          queryParameters: {
+            'start': start,
+            'limit': limit,
+            'companyPartyId': companyPartyId,
+            'filter': filter,
+            'search': searchString,
+            'classificationId': classificationId,
+          });
       return ApiResult.success(data: categoriesFromJson(response.toString()));
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
@@ -540,18 +553,19 @@ class APIRepository {
       String? filter,
       String? searchString}) async {
     try {
-      final response = await dioClient
-          .get('rest/s1/growerp/100/Products', apiKey!, queryParameters: {
-        'companyPartyId': companyPartyId,
-        'categoryId': categoryId,
-        'productId': productId,
-        'productTypeId': productTypeId,
-        'assetClassId': assetClassId,
-        'start': start,
-        'limit': limit,
-        'filter': filter,
-        'search': searchString
-      });
+      final response = await dioClient.get(
+          'rest/s1/growerp/100/Products', apiKey ?? null,
+          queryParameters: {
+            'companyPartyId': companyPartyId,
+            'categoryId': categoryId,
+            'productId': productId,
+            'productTypeId': productTypeId,
+            'assetClassId': assetClassId,
+            'start': start,
+            'limit': limit,
+            'filter': filter,
+            'search': searchString
+          });
       return ApiResult.success(data: productsFromJson(response.toString()));
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
@@ -801,7 +815,7 @@ class APIRepository {
   }
 
   Future<ApiResult<List<ChatMessage>>> getChatMessages(
-      {required String chatRoomId,
+      {String? chatRoomId,
       int? start,
       int? limit,
       String? searchString}) async {

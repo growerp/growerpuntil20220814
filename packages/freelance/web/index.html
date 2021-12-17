@@ -1,0 +1,64 @@
+<!--
+ * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
+ * Grant of Patent License.
+ * 
+ * To the extent possible under law, the author(s) have dedicated all
+ * copyright and related and neighboring rights to this software to the
+ * public domain worldwide. This software is distributed without any
+ * warranty.
+ * 
+ * You should have received a copy of the CC0 Public Domain Dedication
+ * along with this software (see the LICENSE.md file). If not, see
+ * <http://creativecommons.org/publicdomain/zero/1.0/>.
+ */
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="description" content="GrowERP Freelance.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="GrowERP administration.">
+  <link rel="apple-touch-icon" href="icons/Icon-192.png">
+  <link rel="shortcut icon" type="image/png" href="favicon.png"/>
+  <title>GrowERP Admin</title>
+  <link rel="manifest" href="manifest.json">
+  <style type="text/css">
+    #loader {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    #loader h1 {
+      color: black;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 32px;
+      line-height: normal;
+    }
+  </style>
+</head>
+<body>
+  <div id="loader">
+    <h1>
+      Please wait... application is loading
+    </h1>
+  </div>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('flutter_service_worker.js');
+      });
+    }
+  </script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+  <script type="text/javascript">
+      pdfjsLib.GlobalWorkerOptions.workerSrc = "//cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.worker.min.js";
+  </script>
+  <script src="main.dart.js?version=1" type="application/javascript"></script>
+</body>
+</html>

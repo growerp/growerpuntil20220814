@@ -14,6 +14,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../api_repository.dart';
 import '../tasks.dart';
 
 class TaskListForm extends StatelessWidget {
@@ -21,7 +22,7 @@ class TaskListForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-          TaskBloc(context.read<Object>())..add(TaskFetch()),
+          TaskBloc(context.read<APIRepository>())..add(TaskFetch()),
       child: TasksList(),
     );
   }

@@ -20,6 +20,7 @@ import 'package:core/services/api_result.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
+import '../../../api_repository.dart';
 import '../models/models.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -46,7 +47,7 @@ class ChatRoomBloc extends Bloc<ChatRoomEvent, ChatRoomState> {
     on<ChatRoomCreate>(_onChatRoomCreate);
   }
 
-  final repos;
+  final APIRepository repos;
   final ChatServer chatServer;
   final AuthBloc authBloc;
 
@@ -60,7 +61,7 @@ class ChatRoomBloc extends Bloc<ChatRoomEvent, ChatRoomState> {
       // start from record zero for initial and refresh
       if (state.status == ChatRoomStatus.initial || event.refresh) {
         ApiResult<List<ChatRoom>> compResult =
-            await repos.getChatRoom(searchString: event.searchString);
+            await repos.getChatRooms(searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: ChatRoomStatus.success,
@@ -76,7 +77,7 @@ class ChatRoomBloc extends Bloc<ChatRoomEvent, ChatRoomState> {
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
         ApiResult<List<ChatRoom>> compResult =
-            await repos.getChatRoom(searchString: event.searchString);
+            await repos.getChatRooms(searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: ChatRoomStatus.success,
@@ -90,7 +91,7 @@ class ChatRoomBloc extends Bloc<ChatRoomEvent, ChatRoomState> {
       // get next page also for search
 
       ApiResult<List<ChatRoom>> compResult =
-          await repos.getChatRoom(searchString: event.searchString);
+          await repos.getChatRooms(searchString: event.searchString);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: ChatRoomStatus.success,
@@ -187,7 +188,7 @@ class ChatRoomBloc extends Bloc<ChatRoomEvent, ChatRoomState> {
                 result[0].copyWith(members: members), event.fromUserId));
           } else {
             // add new chatroom
-            ApiResult<List<ChatRoom>> roomsResult =
+            ApiResult<ChatRoom> roomsResult =
                 await repos.createChatRoom(event.chatRoom);
             dynamic result = roomsResult.when(
                 success: (data) => data,
@@ -200,7 +201,7 @@ class ChatRoomBloc extends Bloc<ChatRoomEvent, ChatRoomState> {
         }
       } else {
         // new group with name
-        ApiResult<List<ChatRoom>> roomsResult =
+        ApiResult<ChatRoom> roomsResult =
             await repos.createChatRoom(event.chatRoom);
         dynamic response = roomsResult.when(
             success: (data) => data,

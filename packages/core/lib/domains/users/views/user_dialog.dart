@@ -25,6 +25,8 @@ import 'package:core/templates/@templates.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 /// User dialog with a required User class input containing the userGroupId
 class UserDialog extends StatelessWidget {
   final User user;
@@ -119,7 +121,7 @@ class _UserState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
     isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    repos = context.read<Object>();
+    repos = context.read<APIRepository>();
     User? user = widget.user;
     return Dialog(
         key: Key('UserDialog${user.groupDescription}'),

@@ -24,6 +24,8 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 class AssetDialog extends StatefulWidget {
   final Asset asset;
   AssetDialog(this.asset);
@@ -60,7 +62,7 @@ class _AssetState extends State<AssetDialog> {
   @override
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    var repos = context.read<Object>();
+    var repos = context.read<APIRepository>();
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: ScaffoldMessenger(

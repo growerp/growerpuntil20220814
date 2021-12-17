@@ -21,6 +21,8 @@ import 'package:core/services/network_exceptions.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../api_repository.dart';
+
 part 'location_event.dart';
 part 'location_state.dart';
 
@@ -43,8 +45,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     on<LocationDelete>(_onLocationDelete);
   }
 
-  final repos;
-
+  final APIRepository repos;
   Future<void> _onLocationFetch(
     LocationFetch event,
     Emitter<LocationState> emit,

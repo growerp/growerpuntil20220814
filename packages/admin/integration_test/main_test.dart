@@ -1,16 +1,16 @@
 import 'package:core/domains/domains.dart';
+import 'package:core/domains/integration_test.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'startApp.dart';
-import 'package:core/domains/integration_test.dart';
 import 'data.dart';
+import 'startApp.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('''Opportunity test''', (tester) async {
-    bool newRandom = true; // run test with new random number or not
+    const newRandom = true; // run test with new random number or not
     await startApp(tester, newRandom: newRandom);
     if (newRandom == true) {
       await AuthTest.createNewAdminAndCompany(

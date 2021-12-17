@@ -18,6 +18,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:core/services/api_result.dart';
 import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
+import '../../../api_repository.dart';
 import '../models/models.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -40,11 +41,9 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     on<CompanySearchOff>(
         ((event, emit) => emit(state.copyWith(search: false))));
     on<CompanyUpdate>(_onCompanyUpdate);
-    on<CompanyDelete>(_onCompanyDelete);
   }
 
-  final repos;
-
+  final APIRepository repos;
   Future<void> _onCompanyFetch(
     CompanyFetch event,
     Emitter<CompanyState> emit,
@@ -55,7 +54,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       // start from record zero for initial and refresh
       if (state.status == CompanyStatus.initial || event.refresh) {
         ApiResult<List<Company>> compResult =
-            await repos.getCompany(searchString: event.searchString);
+            await repos.getCompanies(searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: CompanyStatus.success,
@@ -71,7 +70,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
         ApiResult<List<Company>> compResult =
-            await repos.getCompany(searchString: event.searchString);
+            await repos.getCompanies(searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: CompanyStatus.success,
@@ -85,7 +84,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       // get next page also for search
 
       ApiResult<List<Company>> compResult =
-          await repos.getCompany(searchString: event.searchString);
+          await repos.getCompanies(searchString: event.searchString);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: CompanyStatus.success,
@@ -132,29 +131,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
             failure: (NetworkExceptions error) => state.copyWith(
                 status: CompanyStatus.failure, message: error.toString())));
       }
-    } catch (error) {
-      emit(state.copyWith(
-          status: CompanyStatus.failure, message: error.toString()));
-    }
-  }
-
-  Future<void> _onCompanyDelete(
-    CompanyDelete event,
-    Emitter<CompanyState> emit,
-  ) async {
-    try {
-      List<Company> companies = List.from(state.companies);
-      ApiResult<Company> compResult = await repos.deleteCompany(event.company);
-      return emit(compResult.when(
-          success: (data) {
-            int index = companies.indexWhere(
-                (element) => element.partyId == event.company.partyId);
-            companies.removeAt(index);
-            return state.copyWith(
-                status: CompanyStatus.success, companies: companies);
-          },
-          failure: (NetworkExceptions error) => state.copyWith(
-              status: CompanyStatus.failure, message: error.toString())));
     } catch (error) {
       emit(state.copyWith(
           status: CompanyStatus.failure, message: error.toString()));

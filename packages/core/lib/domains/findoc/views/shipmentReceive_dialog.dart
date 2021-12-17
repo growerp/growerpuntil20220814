@@ -22,6 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
+import '../../../api_repository.dart';
+
 class ShipmentReceiveDialog extends StatefulWidget {
   final FinDoc finDoc;
   ShipmentReceiveDialog(this.finDoc);
@@ -45,7 +47,7 @@ class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
   @override
   void initState() {
     super.initState();
-    repos = context.read<Object>();
+    repos = context.read<APIRepository>();
     finDoc.items.forEach((_) {
       _locationSearchBoxControllers.add(TextEditingController());
       _newLocationControllers.add(TextEditingController());

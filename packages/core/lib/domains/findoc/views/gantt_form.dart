@@ -19,6 +19,8 @@ import 'package:intl/intl.dart';
 import 'package:core/extensions.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 const DAY = 1, WEEK = 2, MONTH = 3; // columnPeriod values
 
 late int chartInDays;
@@ -32,11 +34,12 @@ class GanttForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
       BlocProvider<FinDocBloc>(
-          create: (context) => FinDocBloc(context.read<Object>(), true, 'order')
-            ..add(FinDocFetch())),
+          create: (context) =>
+              FinDocBloc(context.read<APIRepository>(), true, 'order')
+                ..add(FinDocFetch())),
       BlocProvider<AssetBloc>(
           create: (context) =>
-              AssetBloc(context.read<Object>())..add(AssetFetch()))
+              AssetBloc(context.read<APIRepository>())..add(AssetFetch()))
     ], child: GanttPage());
   }
 }

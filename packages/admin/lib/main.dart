@@ -11,6 +11,7 @@
  * along with this software (see the LICENSE.md file). If not, see
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+ 
 import 'package:core/api_repository.dart';
 import 'package:core/services/chat_server.dart';
 import 'menuItem_data.dart';
@@ -31,25 +32,25 @@ import 'package:core/domains/domains.dart';
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await GlobalConfiguration().loadFromAsset("app_settings");
+  await GlobalConfiguration().loadFromAsset('app_settings');
 
   // can change backend url by pressing long the title on the home screen.
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String ip = prefs.getString("ip") ?? '';
-  String chat = prefs.getString("chat") ?? '';
-  String singleCompany = prefs.getString("companyPartyId") ?? '';
+  String ip = prefs.getString('ip') ?? '';
+  String chat = prefs.getString('chat') ?? '';
+  String singleCompany = prefs.getString('companyPartyId') ?? '';
   if (ip.isNotEmpty) {
     late http.Response response;
     try {
       response = await http.get(Uri.parse('${ip}rest/s1/growerp/Ping'));
       if (response.statusCode == 200) {
-        GlobalConfiguration().updateValue("databaseUrl", ip);
-        GlobalConfiguration().updateValue("chatUrl", chat);
-        GlobalConfiguration().updateValue("singleCompany", singleCompany);
-        print("=== New ip: $ip , chat: $chat company: $singleCompany Updated!");
+        GlobalConfiguration().updateValue('databaseUrl', ip);
+        GlobalConfiguration().updateValue('chatUrl', chat);
+        GlobalConfiguration().updateValue('singleCompany', singleCompany);
+        print('=== New ip: $ip , chat: $chat company: $singleCompany Updated!');
       }
     } catch (error) {
-      print("===$ip does not respond...not updating databaseUrl: $error");
+      print('===$ip does not respond...not updating databaseUrl: $error');
     }
   }
 
@@ -64,7 +65,7 @@ class TopApp extends StatelessWidget {
   const TopApp({Key? key, required this.dbServer, required this.chatServer})
       : super(key: key);
 
-  final Object dbServer;
+  final APIRepository dbServer;
   final ChatServer chatServer;
 
   @override
@@ -95,13 +96,13 @@ class TopApp extends StatelessWidget {
 }
 
 class MyApp extends StatelessWidget {
-  static String title = "GrowERP administrator.";
+  static String title = 'GrowERP administrator.';
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         // close keyboard
         onTap: () {
-          FocusScopeNode currentFocus = FocusScope.of(context);
+          final currentFocus = FocusScope.of(context);
 
           if (!currentFocus.hasPrimaryFocus) {
             currentFocus.unfocus();
@@ -109,7 +110,7 @@ class MyApp extends StatelessWidget {
         },
         child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            localizationsDelegates: [
+            localizationsDelegates: const [
               S.delegate,
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
@@ -119,31 +120,33 @@ class MyApp extends StatelessWidget {
             builder: (context, widget) => ResponsiveWrapper.builder(
                 BouncingScrollWrapper.builder(context, widget!),
                 maxWidth: 2460,
-                minWidth: 450,
                 defaultScale: true,
                 breakpoints: [
-                  ResponsiveBreakpoint.resize(450, name: MOBILE),
-                  ResponsiveBreakpoint.autoScale(800, name: TABLET),
-                  ResponsiveBreakpoint.resize(1200, name: DESKTOP),
-                  ResponsiveBreakpoint.autoScale(2460, name: "4K"),
+                  const ResponsiveBreakpoint.resize(450, name: MOBILE),
+                  const ResponsiveBreakpoint.autoScale(800, name: TABLET),
+                  const ResponsiveBreakpoint.resize(1200, name: DESKTOP),
+                  const ResponsiveBreakpoint.autoScale(2460, name: '4K'),
                 ],
-                background: Container(color: Color(0xFFF5F5F5))),
+                background: Container(color: const Color(0xFFF5F5F5))),
             theme: Themes.formTheme,
             onGenerateRoute: router.generateRoute,
             home: BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
-                if (state.status == AuthStatus.failure)
-                  return FatalErrorForm("server connection problem");
-                if (state.status == AuthStatus.authenticated)
+                if (state.status == AuthStatus.failure) {
+                  return const FatalErrorForm('server connection problem');
+                }
+                if (state.status == AuthStatus.authenticated) {
                   return HomeForm(
                       message: state.message,
                       menuItems: menuItems,
                       title: title);
-                if (state.status == AuthStatus.unAuthenticated)
+                }
+                if (state.status == AuthStatus.unAuthenticated) {
                   return HomeForm(
                       message: state.message,
                       menuItems: menuItems,
                       title: title);
+                }
                 if (state.status == AuthStatus.changeIp) return ChangeIpForm();
                 return SplashForm();
               },

@@ -13,6 +13,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../api_repository.dart';
 import '../../domains.dart';
 
 class CategoryListForm extends StatelessWidget {
@@ -20,7 +21,7 @@ class CategoryListForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-          CategoryBloc(context.read<Object>())..add(CategoryFetch()),
+          CategoryBloc(context.read<APIRepository>())..add(CategoryFetch()),
       child: CategoryList(),
     );
   }

@@ -18,6 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 class AddressDialog extends StatefulWidget {
   final Address? address;
   final Key? key;
@@ -57,7 +59,7 @@ class _AddressState extends State<AddressDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var repos = context.read<Object>();
+    var repos = context.read<APIRepository>();
 
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),

@@ -15,12 +15,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 class LocationListForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-          LocationBloc(context.read<Object>())..add(LocationFetch()),
+          LocationBloc(context.read<APIRepository>())..add(LocationFetch()),
       child: LocationList(),
     );
   }

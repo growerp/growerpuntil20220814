@@ -29,6 +29,8 @@ import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 import 'package:core/templates/@templates.dart';
 
+import '../../../api_repository.dart';
+
 class ProductDialog extends StatefulWidget {
   final Product product;
   const ProductDialog(this.product);
@@ -103,7 +105,7 @@ class _ProductState extends State<ProductDialog> {
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     if (classificationId == 'AppHotel') _selectedTypeId = 'Rental';
-    var repos = context.read<Object>();
+    var repos = context.read<APIRepository>();
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: GestureDetector(

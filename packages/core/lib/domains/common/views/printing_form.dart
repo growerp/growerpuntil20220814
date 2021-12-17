@@ -17,6 +17,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:printing/printing.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 class PrintingForm extends StatelessWidget {
   final FormArguments formArguments;
   const PrintingForm({Key? key, required this.formArguments}) : super(key: key);
@@ -35,9 +37,9 @@ class PrintingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     late Authenticate authenticate;
 
-    var repos = context.read<Object>();
     return BlocProvider<FinDocBloc>(
-        create: (context) => FinDocBloc(repos, finDocIn.sales, finDocIn.docType)
+        create: (context) => FinDocBloc(
+            context.read<APIRepository>(), finDocIn.sales, finDocIn.docType)
           ..add(
               FinDocFetch(finDocId: finDocIn.id()!, docType: finDocIn.docType)),
         child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {

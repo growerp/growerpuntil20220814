@@ -21,6 +21,8 @@ import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import '../../../api_repository.dart';
+
 part 'product_event.dart';
 part 'product_state.dart';
 
@@ -43,7 +45,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     on<ProductDelete>(_onProductDelete);
   }
 
-  final repos;
+  final APIRepository repos;
 
   Future<void> _onProductFetch(
     ProductFetch event,

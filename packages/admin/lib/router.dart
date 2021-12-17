@@ -15,13 +15,16 @@
 import 'package:core/coreRouter.dart';
 import 'package:core/domains/domains.dart';
 import 'package:core/templates/@templates.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'menuItem_data.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
-  print(">>>NavigateTo { ${settings.name} " +
-      "with: ${settings.arguments.toString()} }");
+  if (kDebugMode) {
+    print('>>>NavigateTo { ${settings.name} '
+        'with: ${settings.arguments.toString()} }');
+  }
   switch (settings.name) {
     case '/':
       return MaterialPageRoute(

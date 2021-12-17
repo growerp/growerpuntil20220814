@@ -48,11 +48,6 @@ class FinDocUpdate extends FinDocEvent {
   List<Object> get props => [finDoc];
 }
 
-class FinDocDelete extends FinDocEvent {
-  const FinDocDelete(this.finDoc);
-  final FinDoc finDoc;
-}
-
 class FinDocShipmentReceive extends FinDocEvent {
   const FinDocShipmentReceive(this.finDoc);
   final FinDoc finDoc;

@@ -16,6 +16,8 @@ import 'package:core/domains/domains.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../api_repository.dart';
+
 class UserForm extends StatelessWidget {
   final User user;
   const UserForm({Key? key, required this.user}) : super(key: key);
@@ -23,8 +25,8 @@ class UserForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserBloc>(
-        create: (context) => UserBloc(context.read<Object>(), user.userGroupId!,
-            BlocProvider.of<AuthBloc>(context)),
+        create: (context) => UserBloc(context.read<APIRepository>(),
+            user.userGroupId!, BlocProvider.of<AuthBloc>(context)),
         child: UserPage(user));
   }
 }

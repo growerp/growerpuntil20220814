@@ -14,6 +14,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../api_repository.dart';
 import '../../domains.dart';
 
 class OpportunityListForm extends StatelessWidget {
@@ -21,7 +22,8 @@ class OpportunityListForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-          OpportunityBloc(context.read<Object>())..add(OpportunityFetch()),
+          OpportunityBloc(context.read<APIRepository>())
+            ..add(OpportunityFetch()),
       child: OpportunityList(),
     );
   }

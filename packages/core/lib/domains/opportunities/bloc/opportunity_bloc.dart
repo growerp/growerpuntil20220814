@@ -21,6 +21,8 @@ import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import '../../../api_repository.dart';
+
 part 'opportunity_event.dart';
 part 'opportunity_state.dart';
 
@@ -44,8 +46,7 @@ class OpportunityBloc extends Bloc<OpportunityEvent, OpportunityState> {
     on<OpportunityDelete>(_onOpportunityDelete);
   }
 
-  final repos;
-
+  final APIRepository repos;
   Future<void> _onOpportunityFetch(
     OpportunityFetch event,
     Emitter<OpportunityState> emit,

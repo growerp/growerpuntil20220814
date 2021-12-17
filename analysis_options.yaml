@@ -1,4 +1,4 @@
-# include: all_lint_rules.yaml
+#include: all_lint_rules.yaml
 analyzer:
   exclude:
     - "lib/*.g.dart"

@@ -21,6 +21,8 @@ import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import '../../../api_repository.dart';
+
 part 'category_event.dart';
 part 'category_state.dart';
 
@@ -43,8 +45,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     on<CategoryDelete>(_onCategoryDelete);
   }
 
-  final repos;
-
+  final APIRepository repos;
   Future<void> _onCategoryFetch(
     CategoryFetch event,
     Emitter<CategoryState> emit,
@@ -54,8 +55,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     try {
       // start from record zero for initial and refresh
       if (state.status == CategoryStatus.initial || event.refresh) {
-        ApiResult<List<Category>> compResult =
-            await repos.getCategory(searchString: event.searchString);
+        ApiResult<List<Category>> compResult = await repos.getCategory(
+            companyPartyId: event.companyPartyId,
+            searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: CategoryStatus.success,
@@ -70,8 +72,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       if (event.searchString.isNotEmpty && state.searchString.isEmpty ||
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
-        ApiResult<List<Category>> compResult =
-            await repos.getCategory(searchString: event.searchString);
+        ApiResult<List<Category>> compResult = await repos.getCategory(
+            companyPartyId: event.companyPartyId,
+            searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: CategoryStatus.success,
@@ -84,8 +87,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       }
       // get next page also for search
 
-      ApiResult<List<Category>> compResult =
-          await repos.getCategory(searchString: event.searchString);
+      ApiResult<List<Category>> compResult = await repos.getCategory(
+          companyPartyId: event.companyPartyId,
+          searchString: event.searchString);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: CategoryStatus.success,

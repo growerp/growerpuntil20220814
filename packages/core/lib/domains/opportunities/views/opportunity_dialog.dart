@@ -23,6 +23,8 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../../api_repository.dart';
+
 class OpportunityDialog extends StatefulWidget {
   final Opportunity opportunity;
   const OpportunityDialog(this.opportunity);
@@ -54,7 +56,7 @@ class _OpportunityState extends State<OpportunityDialog> {
   @override
   void initState() {
     super.initState();
-    repos = context.read<Object>();
+    repos = context.read<APIRepository>();
     _opportunityBloc = BlocProvider.of<OpportunityBloc>(context);
     _nameController.text = opportunity.opportunityName ?? '';
     _descriptionController.text = opportunity.description ?? '';

@@ -21,11 +21,15 @@ abstract class CategoryEvent extends Equatable {
 }
 
 class CategoryFetch extends CategoryEvent {
-  const CategoryFetch({this.searchString = '', this.refresh = false});
+  const CategoryFetch(
+      {this.companyPartyId = '', this.searchString = '', this.refresh = false});
+
+  /// companyPartyId required for ecommerce
+  final String companyPartyId;
   final String searchString;
   final bool refresh;
   @override
-  List<Object> get props => [searchString, refresh];
+  List<Object> get props => [companyPartyId, searchString, refresh];
 }
 
 class CategorySearchOn extends CategoryEvent {}

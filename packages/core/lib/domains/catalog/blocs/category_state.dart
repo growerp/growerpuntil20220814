@@ -20,6 +20,7 @@ class CategoryState extends Equatable {
   const CategoryState({
     this.status = CategoryStatus.initial,
     this.categories = const <Category>[],
+    this.companyPartyId = '',
     this.message,
     this.hasReachedMax = false,
     this.searchString = '',
@@ -29,6 +30,7 @@ class CategoryState extends Equatable {
   final CategoryStatus status;
   final String? message;
   final List<Category> categories;
+  final String? companyPartyId;
   final bool hasReachedMax;
   final String searchString;
   final bool search;
@@ -37,6 +39,7 @@ class CategoryState extends Equatable {
     CategoryStatus? status,
     String? message,
     List<Category>? categories,
+    String? companyPartyId,
     bool error = false,
     bool? hasReachedMax,
     String? searchString,
@@ -45,6 +48,7 @@ class CategoryState extends Equatable {
     return CategoryState(
       status: status ?? this.status,
       categories: categories ?? this.categories,
+      companyPartyId: companyPartyId ?? this.companyPartyId,
       message: message ?? this.message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
@@ -53,7 +57,8 @@ class CategoryState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [categories, hasReachedMax, search];
+  List<Object?> get props =>
+      [status, categories, companyPartyId, hasReachedMax, search];
 
   @override
   String toString() => '$status { #categories: ${categories.length}, '

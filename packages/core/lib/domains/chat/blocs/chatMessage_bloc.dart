@@ -20,6 +20,7 @@ import 'package:core/services/api_result.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
+import '../../../api_repository.dart';
 import '../models/models.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -47,7 +48,7 @@ class ChatMessageBloc extends Bloc<ChatMessageEvent, ChatMessageState> {
     on<ChatMessageSendWs>(_onChatMessageSendWs);
   }
 
-  final repos;
+  final APIRepository repos;
   final ChatServer chatServer;
   final AuthBloc authBloc;
 
@@ -61,7 +62,7 @@ class ChatMessageBloc extends Bloc<ChatMessageEvent, ChatMessageState> {
       // start from record zero for initial and refresh
       if (state.status == ChatMessageStatus.initial || event.refresh) {
         ApiResult<List<ChatMessage>> compResult =
-            await repos.getChatMessage(searchString: event.searchString);
+            await repos.getChatMessages(searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: ChatMessageStatus.success,
@@ -77,7 +78,7 @@ class ChatMessageBloc extends Bloc<ChatMessageEvent, ChatMessageState> {
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
         ApiResult<List<ChatMessage>> compResult =
-            await repos.getChatMessage(searchString: event.searchString);
+            await repos.getChatMessages(searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: ChatMessageStatus.success,
@@ -91,7 +92,7 @@ class ChatMessageBloc extends Bloc<ChatMessageEvent, ChatMessageState> {
       // get next page also for search
 
       ApiResult<List<ChatMessage>> compResult =
-          await repos.getChatMessage(searchString: event.searchString);
+          await repos.getChatMessages(searchString: event.searchString);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: ChatMessageStatus.success,

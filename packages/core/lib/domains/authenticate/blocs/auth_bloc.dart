@@ -13,8 +13,10 @@
  */
 
 import 'dart:async';
+import 'package:core/api_repository.dart';
 import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/services/api_result.dart';
+import 'package:core/services/chat_server.dart';
 import 'package:core/services/network_exceptions.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -41,8 +43,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthChangePassword>(_onAuthChangePassword);
   }
 
-  final dynamic repos;
-  final dynamic chat;
+  final APIRepository repos;
+  final ChatServer chat;
 
   Future<void> _onAuthLoad(
     AuthLoad event,
@@ -67,7 +69,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         localAuthenticate.company?.partyId != null) {
       // check if company still valid
       ApiResult<bool> checkResult =
-          await repos.checkCompany(localAuthenticate.company?.partyId);
+          await repos.checkCompany(localAuthenticate.company!.partyId!);
       bool ok = (checkResult.when(
           success: (bool data) => data, failure: (_) => false));
       if (!ok)
@@ -76,7 +78,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             authenticate: Authenticate(company: defaultCompany)));
       // test apiKey and get Authenticate
       repos.setApiKey(
-          localAuthenticate.apiKey, localAuthenticate.moquiSessionToken);
+          localAuthenticate.apiKey!, localAuthenticate.moquiSessionToken!);
       ApiResult<Authenticate> authResult = await repos.getAuthenticate();
       emit(authResult.when(
           success: (Authenticate data) => state.copyWith(
@@ -86,8 +88,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               authenticate: Authenticate(company: localAuthenticate.company))));
       if (state.status == AuthStatus.authenticated) {
         await PersistFunctions.persistAuthenticate(state.authenticate!);
-        repos.setApiKey(
-            state.authenticate?.apiKey, state.authenticate?.moquiSessionToken);
+        repos.setApiKey(state.authenticate!.apiKey!,
+            state.authenticate!.moquiSessionToken!);
       }
     } else {
       await PersistFunctions.persistAuthenticate(
@@ -102,7 +104,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthUpdateCompany event,
     Emitter<AuthState> emit,
   ) async {
-    if (event.company.partyId == state.authenticate?.company!.partyId) {
+    if (event.company?.partyId == state.authenticate?.company?.partyId) {
       emit(state.copyWith(
           status: AuthStatus.authenticated,
           authenticate: state.authenticate!.copyWith(company: event.company)));
@@ -126,11 +128,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(state.copyWith(status: AuthStatus.loading));
     ApiResult<Authenticate> apiResult = await repos.register(
-        companyName: event.user.companyName,
+        companyName: event.user.companyName!,
         currencyId: event.currencyId,
-        firstName: event.user.firstName,
-        lastName: event.user.lastName,
-        email: event.user.email,
+        firstName: event.user.firstName!,
+        lastName: event.user.lastName!,
+        email: event.user.email!,
         demoData: event.demoData);
     emit(apiResult.when(
         success: (Authenticate data) {
@@ -154,7 +156,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     ApiResult<User> apiResult = await repos.registerUser(
         event.user.copyWith(userGroupId: 'GROWERP_M_CUSTOMER'),
-        state.authenticate!.company!.partyId);
+        state.authenticate!.company!.partyId!);
     emit(apiResult.when(
         success: (User data) {
           emit(state.copyWith(status: AuthStatus.registered));
@@ -167,7 +169,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         failure: (NetworkExceptions error) => state.copyWith(
             status: AuthStatus.failure, message: error.toString())));
     if (state.status == AuthStatus.registered)
-      await repos.persistAuthenticate(state.authenticate);
+      await PersistFunctions.persistAuthenticate(state.authenticate!);
   }
 
   Future<void> _onAuthLoggedOut(
@@ -206,9 +208,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             message: "failed logging in: ${error.toString()}")));
 
     if (state.status == AuthStatus.authenticated) {
+      repos.setApiKey(
+          state.authenticate!.apiKey!, state.authenticate!.moquiSessionToken!);
       PersistFunctions.persistAuthenticate(state.authenticate!);
       chat.connect(
-          state.authenticate!.apiKey, state.authenticate!.user!.userId);
+          state.authenticate!.apiKey!, state.authenticate!.user!.userId!);
       print("chat server connected");
     }
   }

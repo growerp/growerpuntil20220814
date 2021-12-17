@@ -1,0 +1,39 @@
+Integration tests using  flutter driver.
+========================================
+
+Before running this test, remove all data from the backend system:
+terminal:   ./gradlew cleandb
+            java -jar moqui.war load types=seed,seed-initial,install
+            java -jar moqui.war
+
+flutter driver On mobile. (can make screenshots)
+-------------------------
+start your mobile emulator:
+list: flutter emulators
+launch: flutter emulators --launch >>name<<
+
+to start test: flutter drive \
+    --driver=test_driver/menu_test.dart \
+    --target=test_driver/target.dart
+
+
+flutter driver on chrome:  (can make screenshots)
+-------------------------
+download chromedriver and install in path: https://flutter.dev/docs/cookbook/testing/integration/introduction#6b-web
+
+start in a terminal:
+./chromedriver --port=4444
+
+another terminal : (only works on release mode)
+    flutter drive \
+    --driver=test_driver/menu_test.dart \
+    --target=test_driver/target.dart \
+    --browser-name=chrome \
+    --no-headless --release
+
+
+To make screenshots see: android/fastlane/README or ios/fastlane/README
+-----------------------------------------------------------------------
+
+
+

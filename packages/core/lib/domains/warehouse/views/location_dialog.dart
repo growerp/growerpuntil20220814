@@ -18,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
+import '../../../api_repository.dart';
 
 class LocationDialog extends StatefulWidget {
   final Location location;
@@ -43,7 +44,7 @@ class _LocationState extends State<LocationDialog> {
   @override
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    var repos = context.read<Object>();
+    var repos = context.read<APIRepository>();
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: ScaffoldMessenger(
