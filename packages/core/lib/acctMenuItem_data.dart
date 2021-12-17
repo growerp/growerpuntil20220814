@@ -41,13 +41,17 @@ List<MenuItem> acctMenuItems = [
       tabItems: [
         TabItem(
           form: FinDocListForm(
-              key: Key("SalesInvoice"), sales: true, docType: 'invoice'),
+              key: Key("SalesInvoice"),
+              sales: true,
+              docType: FinDocType.Invoice),
           label: "Sales invoices",
           icon: Icon(Icons.home),
         ),
         TabItem(
           form: FinDocListForm(
-              key: Key("SalesPayment"), sales: true, docType: 'payment'),
+              key: Key("SalesPayment"),
+              sales: true,
+              docType: FinDocType.Payment),
           label: "Sales payments(Receipts)",
           icon: Icon(Icons.home),
         ),
@@ -67,13 +71,17 @@ List<MenuItem> acctMenuItems = [
       tabItems: [
         TabItem(
           form: FinDocListForm(
-              key: Key("PurchaseInvoice"), sales: false, docType: 'invoice'),
+              key: Key("PurchaseInvoice"),
+              sales: false,
+              docType: FinDocType.Invoice),
           label: "Purchase invoices",
           icon: Icon(Icons.home),
         ),
         TabItem(
           form: FinDocListForm(
-              key: Key("PurchasePayment"), sales: false, docType: 'payment'),
+              key: Key("PurchasePayment"),
+              sales: false,
+              docType: FinDocType.Payment),
           label: "Purchase payments",
           icon: Icon(Icons.home),
         ),
@@ -98,7 +106,9 @@ List<MenuItem> acctMenuItems = [
         ),
         TabItem(
           form: FinDocListForm(
-              key: Key("Transaction"), sales: true, docType: 'transaction'),
+              key: Key("Transaction"),
+              sales: true,
+              docType: FinDocType.Transaction),
           label: "Transactions",
           icon: Icon(Icons.home),
         ),

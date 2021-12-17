@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'package:core/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import '../findoc.dart';
@@ -26,7 +25,7 @@ class FinDocListHeader extends StatelessWidget {
     required this.finDocBloc,
   }) : super(key: key);
   final bool sales;
-  final String docType;
+  final FinDocType docType;
   final bool isPhone;
   final FinDocBloc finDocBloc;
 
@@ -59,7 +58,7 @@ class FinDocListHeader extends StatelessWidget {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                           ),
-                          hintText: docType == 'shipment'
+                          hintText: docType == FinDocType.Shipment
                               ? 'enter order or shipment ID'
                               : 'search with ID'),
                       onChanged: ((value) {
@@ -76,12 +75,12 @@ class FinDocListHeader extends StatelessWidget {
                         })
                   ])
                 : Row(children: <Widget>[
-                    SizedBox(width: 80, child: Text(docType.capitalize())),
+                    SizedBox(width: 80, child: Text(docType.toString())),
                     SizedBox(width: 10),
                     Expanded(
                         child: Text((sales ? "Customer" : "Supplier") +
                             ' name & Company')),
-                    if (!isPhone && docType != 'payment')
+                    if (!isPhone && docType != FinDocType.Payment)
                       SizedBox(
                           width: 80,
                           child: Text("#items", textAlign: TextAlign.left)),

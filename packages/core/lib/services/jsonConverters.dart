@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:core/domains/domains.dart';
 import 'package:decimal/decimal.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -46,6 +47,21 @@ class DateTimeConverter implements JsonConverter<DateTime?, String?> {
 
   @override
   String? toJson(DateTime? object) {
+    if (object == null) return null;
+    return object.toString();
+  }
+}
+
+class FinDocTypeConverter implements JsonConverter<FinDocType, String?> {
+  const FinDocTypeConverter();
+
+  @override
+  FinDocType fromJson(String? json) {
+    return FinDocType.tryParse(json ?? '');
+  }
+
+  @override
+  String? toJson(FinDocType? object) {
     if (object == null) return null;
     return object.toString();
   }

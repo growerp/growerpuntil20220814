@@ -42,7 +42,7 @@ class CartBloc extends Bloc<CartEvent, CartState>
   }
 
   final bool sales;
-  final String docType;
+  final FinDocType docType;
   final FinDocBloc finDocBloc;
   late FinDoc finDoc;
 
@@ -55,7 +55,7 @@ class CartBloc extends Bloc<CartEvent, CartState>
         finDoc = event.finDoc;
         if (event.finDoc.idIsNull()) {
           FinDoc? result =
-              await getCart(event.finDoc.sales, event.finDoc.docType);
+              await getCart(event.finDoc.sales, event.finDoc.docType!);
           if (result != null) finDoc = result;
         }
         emit(
@@ -218,7 +218,7 @@ class CartBloc extends Bloc<CartEvent, CartState>
     await prefs.remove("${finDoc.sales.toString}${finDoc.docType}");
   }
 
-  Future<FinDoc?> getCart(bool sales, String docType) async {
+  Future<FinDoc?> getCart(bool sales, FinDocType docType) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? cartContent = prefs.getString("${sales.toString}$docType");
     if (cartContent != null) return finDocFromJson(cartContent.toString());

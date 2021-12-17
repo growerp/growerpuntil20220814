@@ -34,17 +34,17 @@ class FinDocDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (finDoc.docType == 'order') {
+    if (finDoc.docType == FinDocType.Order) {
       FinDocBloc finDocBloc = BlocProvider.of<FinDocBloc>(context);
       if (finDoc.sales)
         return BlocProvider<SalesCartBloc>(
             create: (context) => CartBloc(
-                docType: finDoc.docType, sales: true, finDocBloc: finDocBloc)
+                docType: finDoc.docType!, sales: true, finDocBloc: finDocBloc)
               ..add(CartFetch(finDoc)),
             child: FinDocPage(finDoc));
       return BlocProvider<PurchaseCartBloc>(
           create: (context) => CartBloc(
-              docType: finDoc.docType, sales: false, finDocBloc: finDocBloc)
+              docType: finDoc.docType!, sales: false, finDocBloc: finDocBloc)
             ..add(CartFetch(finDoc)),
           child: FinDocPage(finDoc));
     }
@@ -144,7 +144,7 @@ class _MyFinDocState extends State<FinDocPage> {
     };
 
     print("FinDocDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
-        "${finDoc.docType.capitalize()}");
+        "${finDoc.docType.toString()}");
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: ScaffoldMessenger(
@@ -156,7 +156,7 @@ class _MyFinDocState extends State<FinDocPage> {
                     child: Dialog(
                         key: Key(
                             "FinDocDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
-                            "${finDoc.docType.capitalize()}"),
+                            "${finDoc.docType.toString()}"),
                         insetPadding: EdgeInsets.all(10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),

@@ -39,9 +39,9 @@ class PrintingPage extends StatelessWidget {
 
     return BlocProvider<FinDocBloc>(
         create: (context) => FinDocBloc(
-            context.read<APIRepository>(), finDocIn.sales, finDocIn.docType)
-          ..add(
-              FinDocFetch(finDocId: finDocIn.id()!, docType: finDocIn.docType)),
+            context.read<APIRepository>(), finDocIn.sales, finDocIn.docType!)
+          ..add(FinDocFetch(
+              finDocId: finDocIn.id()!, docType: finDocIn.docType!)),
         child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
           if (state.status == AuthStatus.authenticated)
             authenticate = state.authenticate!;

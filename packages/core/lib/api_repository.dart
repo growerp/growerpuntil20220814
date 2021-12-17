@@ -375,7 +375,7 @@ class APIRepository {
       int? limit,
       bool? open,
       bool? sales,
-      String? docType,
+      FinDocType? docType,
       DateTime? startDate,
       String? finDocId,
       String? searchString,

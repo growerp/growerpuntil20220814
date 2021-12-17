@@ -23,14 +23,14 @@ abstract class FinDocEvent extends Equatable {
 class FinDocFetch extends FinDocEvent {
   const FinDocFetch(
       {this.finDocId = '',
-      this.docType = '',
+      this.docType = FinDocType.Unknown,
       this.customerCompanyPartyId = '',
       this.searchString = '',
       this.refresh = false});
   final String searchString;
   final bool refresh;
   final String finDocId;
-  final String docType; // to get a single document id, docType
+  final FinDocType docType; // to get a single document id, docType
   final String customerCompanyPartyId;
   @override
   List<Object> get props =>

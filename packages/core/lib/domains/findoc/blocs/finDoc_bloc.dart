@@ -68,7 +68,7 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
 
   final APIRepository repos;
   final bool sales;
-  final String docType;
+  final FinDocType docType;
 
   String classificationId = GlobalConfiguration().get("classificationId");
 
@@ -153,23 +153,23 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
             success: (data) {
               late int index;
               switch (docType) {
-                case 'order':
+                case FinDocType.Order:
                   index = finDocs.indexWhere(
                       (element) => element.orderId == event.finDoc.orderId);
                   break;
-                case 'payment':
+                case FinDocType.Payment:
                   index = finDocs.indexWhere(
                       (element) => element.paymentId == event.finDoc.paymentId);
                   break;
-                case 'invoice':
+                case FinDocType.Invoice:
                   index = finDocs.indexWhere(
                       (element) => element.invoiceId == event.finDoc.invoiceId);
                   break;
-                case 'shipment':
+                case FinDocType.Shipment:
                   index = finDocs.indexWhere((element) =>
                       element.shipmentId == event.finDoc.shipmentId);
                   break;
-                case 'transaction':
+                case FinDocType.Transaction:
                   index = finDocs.indexWhere((element) =>
                       element.transactionId == event.finDoc.transactionId);
                   break;

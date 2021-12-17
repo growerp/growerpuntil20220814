@@ -33,7 +33,7 @@ class FinDocListItem extends StatelessWidget {
   final FinDoc finDoc;
   final int index;
   final bool sales;
-  final String docType;
+  final FinDocType docType;
   final bool isPhone;
   final bool onlyRental;
   final FinDocBloc finDocBloc;
@@ -74,7 +74,7 @@ class FinDocListItem extends StatelessWidget {
                   statusId: nextFinDocStatus[finDoc.statusId!])));
             }),
         Visibility(
-            visible: finDoc.docType == 'order',
+            visible: finDoc.docType == FinDocType.Order,
             child: IconButton(
               icon: Icon(Icons.edit),
               key: Key('edit$index'),
@@ -116,7 +116,7 @@ class FinDocListItem extends StatelessWidget {
                         "${finDoc.otherUser!.lastName ?? ''}\n"
                         "${finDoc.otherUser!.companyName ?? ''}",
                         key: Key("otherUser$index"))),
-                if (!isPhone && docType != 'payment')
+                if (!isPhone && docType != FinDocType.Payment)
                   SizedBox(width: 80, child: Text("${finDoc.items.length}")),
               ],
             ),
@@ -152,7 +152,7 @@ class FinDocListItem extends StatelessWidget {
             children: items(finDoc, index),
             trailing: Container(
                 width: isPhone ? 100 : 195,
-                child: docType == 'shipment'
+                child: docType == FinDocType.Shipment
                     ? (sales
                         ? IconButton(
                             key: Key('nextStatus$index'),
@@ -197,33 +197,34 @@ class FinDocListItem extends StatelessWidget {
   }
 
   List<Widget> items(FinDoc findoc, int index) {
-    return List.from(finDoc.items.map((e) =>
-        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-          SizedBox(width: 50),
-          Expanded(
-              child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.green,
-                    maxRadius: 10,
-                    child: Text("${e.itemSeqId.toString()}"),
-                  ),
-                  title: Text(
-                      finDoc.docType == 'order' || finDoc.docType == 'invoice'
-                          ? "ProductId: ${e.productId} "
-                                  "Description: ${e.description} "
-                                  "Quantity: ${e.quantity.toString()} "
-                                  "Price: ${e.price.toString()} "
-                                  "SubTotal: ${(e.quantity! * e.price!).toString()}" +
-                              (e.rentalFromDate == null
-                                  ? ''
-                                  : " Rental: ${e.rentalFromDate.toString().substring(0, 10)} "
-                                      "${e.rentalThruDate.toString().substring(0, 10)}")
-                          : finDoc.docType == 'transaction'
+    return List.from(finDoc.items.map(
+        (e) => Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              SizedBox(width: 50),
+              Expanded(
+                  child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.green,
+                        maxRadius: 10,
+                        child: Text("${e.itemSeqId.toString()}"),
+                      ),
+                      title: Text(
+                          finDoc.docType == FinDocType.Order ||
+                                  finDoc.docType == FinDocType.Invoice
                               ? "ProductId: ${e.productId} "
-                                  "Description: ${e.description} "
-                              : "ProductId: ${e.productId} " // shipment
-                                  "Quantity: ${e.quantity.toString()} ",
-                      key: Key('itemLine$index'))))
-        ])));
+                                      "Description: ${e.description} "
+                                      "Quantity: ${e.quantity.toString()} "
+                                      "Price: ${e.price.toString()} "
+                                      "SubTotal: ${(e.quantity! * e.price!).toString()}" +
+                                  (e.rentalFromDate == null
+                                      ? ''
+                                      : " Rental: ${e.rentalFromDate.toString().substring(0, 10)} "
+                                          "${e.rentalThruDate.toString().substring(0, 10)}")
+                              : finDoc.docType == FinDocType.Transaction
+                                  ? "ProductId: ${e.productId} "
+                                      "Description: ${e.description} "
+                                  : "ProductId: ${e.productId} " // shipment
+                                      "Quantity: ${e.quantity.toString()} ",
+                          key: Key('itemLine$index'))))
+            ])));
   }
 }

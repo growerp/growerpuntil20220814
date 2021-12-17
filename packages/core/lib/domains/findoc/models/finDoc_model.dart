@@ -40,7 +40,9 @@ String finDocsToJson(List<FinDoc> data) =>
 class FinDoc with _$FinDoc {
   FinDoc._();
   factory FinDoc({
-    @Default('') String docType, // invoice, payment etc
+    @Default(FinDocType.Unknown)
+    @FinDocTypeConverter()
+        FinDocType docType, // invoice, payment etc
     @Default(true) bool sales,
     String? orderId,
     String? shipmentId,
@@ -72,19 +74,19 @@ class FinDoc with _$FinDoc {
 
   String? id() => idIsNull()
       ? 'New'
-      : docType == 'order'
+      : docType == FinDocType.Order
           ? orderId
-          : docType == 'shipment'
+          : docType == FinDocType.Shipment
               ? shipmentId
-              : docType == 'payment'
+              : docType == FinDocType.Payment
                   ? paymentId
-                  : docType == 'invoice'
+                  : docType == FinDocType.Invoice
                       ? invoiceId
-                      : docType == 'transaction'
+                      : docType == FinDocType.Transaction
                           ? transactionId
                           : null;
 
-  List<String?> otherIds() => docType == 'order'
+  List<String?> otherIds() => docType == FinDocType.Order
       ? ['shipment', shipmentId, 'invoice', invoiceId, 'payment', paymentId]
       : [];
 

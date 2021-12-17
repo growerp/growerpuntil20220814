@@ -30,8 +30,9 @@ class FinDocType {
   static const FinDocType Payment = FinDocType._('payment');
   static const FinDocType Shipment = FinDocType._('shipment');
   static const FinDocType Transaction = FinDocType._('transaction');
+  static const FinDocType Unknown = FinDocType._('??');
 
-  static FinDocType? tryParse(String val) {
+  static FinDocType tryParse(String val) {
     switch (val.toLowerCase()) {
       case 'order':
         return Order;
@@ -43,6 +44,8 @@ class FinDocType {
         return Shipment;
       case 'transaction':
         return Transaction;
+      default:
+        return Unknown;
     }
   }
 }

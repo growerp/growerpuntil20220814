@@ -13,7 +13,6 @@
  */
 
 import 'package:collection/src/iterable_extensions.dart';
-import 'package:core/extensions.dart';
 import 'package:core/services/api_result.dart';
 import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:core/domains/domains.dart';
@@ -71,7 +70,7 @@ class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
                     child: Dialog(
                         key: Key(
                             "ShipmentReceiveDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
-                            "${finDoc.docType.capitalize()}"),
+                            "${finDoc.docType.toString()}"),
                         insetPadding: EdgeInsets.all(20),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),

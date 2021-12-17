@@ -100,7 +100,7 @@ String password = '!kdQ9QT5sjA4';
 List<FinDoc> purchaseOrders = [
   FinDoc(
       sales: false,
-      docType: 'order',
+      docType: FinDocType.Order,
       description: 'The first order',
       otherUser: User(companyName: 'achilles'),
       items: [
@@ -111,7 +111,7 @@ List<FinDoc> purchaseOrders = [
       ]),
   FinDoc(
       sales: false,
-      docType: 'order',
+      docType: FinDocType.Order,
       description: 'The second order',
       otherUser: User(companyName: 'ips corp'),
       items: [
@@ -122,7 +122,7 @@ List<FinDoc> purchaseOrders = [
       ]),
   FinDoc(
       sales: false,
-      docType: 'order',
+      docType: FinDocType.Order,
       description: 'The third order',
       otherUser: User(companyName: 'core & main'),
       items: [
@@ -133,7 +133,7 @@ List<FinDoc> purchaseOrders = [
       ]),
   FinDoc(
       sales: false,
-      docType: 'order',
+      docType: FinDocType.Order,
       description: 'The fourth order',
       otherUser: User(companyName: 'MELCO LININGS'),
       items: [
