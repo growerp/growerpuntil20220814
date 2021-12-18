@@ -31,7 +31,7 @@ class TaskListItem extends StatelessWidget {
         child: ListTile(
             leading: CircleAvatar(
                 backgroundColor: Colors.green,
-                child: Text("${task.taskName![0]}")),
+                child: Text(task.taskName != null ? task.taskName![0] : '')),
             title: Row(
               children: <Widget>[
                 Expanded(

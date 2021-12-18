@@ -17,12 +17,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:core/domains/domains.dart';
 
+import '../menuItem_data.dart';
+
 class FreelanceDbForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state is AuthAuthenticated) {
-        Authenticate authenticate = state.authenticate;
+      if (state.status == AuthStatus.authenticated) {
+        Authenticate authenticate = state.authenticate!;
         return DashBoardForm(dashboardItems: [
           makeDashboardItem(
             'dbCompany',
@@ -67,11 +69,11 @@ class FreelanceDbForm extends StatelessWidget {
             context,
             menuItems[6],
             "Sales open invoices: \n"
-                "${authenticate.company!.currencyId} "
+                "${authenticate.company!.currency!.currencyId} "
                 "${authenticate.stats!.salesInvoicesNotPaidAmount ?? '0.00'} "
                 "(${authenticate.stats!.salesInvoicesNotPaidCount})",
             "Purchase unpaid invoices: \n"
-                "${authenticate.company!.currencyId} "
+                "${authenticate.company!.currency!.currencyId} "
                 "${authenticate.stats!.purchInvoicesNotPaidAmount ?? '0.00'} "
                 "(${authenticate.stats!.purchInvoicesNotPaidCount})",
             "",

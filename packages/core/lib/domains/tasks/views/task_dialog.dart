@@ -42,7 +42,7 @@ class _TaskState extends State<TaskDialog> {
   void initState() {
     super.initState();
     _status = task.status!;
-    _nameController.text = task.taskName!;
+    _nameController.text = task.taskName ?? '';
     _taskBloc = BlocProvider.of<TaskBloc>(context);
   }
 

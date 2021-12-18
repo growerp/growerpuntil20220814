@@ -13,9 +13,9 @@
  */
 
 import 'package:core/coreRouter.dart';
+import 'package:core/domains/domains.dart';
 import 'package:core/templates/@templates.dart';
 import 'package:flutter/material.dart';
-import 'package:core/forms/@forms.dart';
 import 'package:core/domains/common/common.dart';
 
 import 'menuItem_data.dart';
@@ -50,7 +50,7 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/finDoc':
       return MaterialPageRoute(
           builder: (context) =>
-              FinDocDialog(formArguments: settings.arguments as FormArguments));
+              FinDocDialog(finDoc: settings.arguments as FinDoc));
     case '/crm':
       return MaterialPageRoute(
           builder: (context) =>
