@@ -17,7 +17,7 @@ import 'package:core/domains/domains.dart';
 
 Widget? myDrawer(BuildContext context, Authenticate authenticate, bool isPhone,
     List<MenuItem>? menu) {
-  String? groupId = authenticate.user?.userGroupId;
+  UserGroup? groupId = authenticate.user?.userGroup;
   List options = [];
   menu?.forEach((option) => {
         if (option.readGroups.contains(groupId))

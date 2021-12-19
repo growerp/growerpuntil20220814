@@ -239,7 +239,7 @@ class APIRepository {
   Future<ApiResult<List<User>>> getUser(
       {int? start,
       int? limit,
-      List<String>? userGroupIds,
+      List<UserGroup>? userGroups,
       String? userPartyId,
       String? filter,
       String? searchString}) async {
@@ -247,7 +247,8 @@ class APIRepository {
       final response = await dioClient
           .get('rest/s1/growerp/100/User', apiKey!, queryParameters: {
         'userPartyId': userPartyId,
-        'userGroupIds': userGroupIds,
+        'userGroupIds':
+            userGroups != null ? UserGroup.getIdList(userGroups) : null,
         'filter': filter,
         'start': start,
         'limit': limit,

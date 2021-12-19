@@ -14,8 +14,8 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:core/domains/domains.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'address_model.dart';
 import 'package:core/services/jsonConverters.dart';
 
 part 'user_model.freezed.dart';
@@ -39,13 +39,20 @@ class User with _$User {
     String? userId, // allocated by system cannot be changed.
     String? firstName,
     String? lastName,
-    bool? loginDisabled, // login account is required if disabled just dummy
+
+    /// login account is required if disabled just dummy
+    bool? loginDisabled,
     String? loginName,
-    String? email, // company email address of this person
-    String? groupDescription, // admin, employee, customer, supplier etc...
-    String? userGroupId,
+
+    /// company email address of this person
+    String? email,
+
+    /// admin, employee, customer, supplier etc...
+    @JsonKey(name: "userGroupId") @UserGroupConverter() UserGroup? userGroup,
     String? language,
-    String? externalId, // when customer register they give their telno
+
+    /// when customer register they give their telno
+    String? externalId,
     @Uint8ListConverter() Uint8List? image,
     String? companyPartyId, // allocated by system cannot be changed.
     String? companyName,
@@ -57,6 +64,6 @@ class User with _$User {
   get username => null;
 
   @override
-  String toString() => 'User $firstName $lastName [$partyId] sec: $userGroupId '
+  String toString() => 'User $firstName $lastName [$partyId] sec: $userGroup '
       'company: $companyName[$companyPartyId] size: ${image?.length}';
 }

@@ -135,8 +135,8 @@ List<MenuItem> menuItems = [
     selectedImage: 'assets/images/dashBoard.png',
     title: 'Main',
     route: '/',
-    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
-    writeGroups: ['GROWERP_M_ADMIN', 'ADMIN'],
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
+    writeGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
     child: const ChatRooms(),
   ),
   MenuItem(
@@ -144,8 +144,8 @@ List<MenuItem> menuItems = [
     selectedImage: 'assets/images/dashBoard.png',
     title: 'Main',
     route: '/',
-    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
-    writeGroups: ['GROWERP_M_ADMIN', 'ADMIN'],
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
+    writeGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
     child: const ChatRooms(),
   ),
 ];

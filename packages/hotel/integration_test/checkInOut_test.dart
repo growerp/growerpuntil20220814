@@ -12,11 +12,8 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'package:hotel/main.dart';
 import 'package:dio/dio.dart';
 import 'package:core/integration_test/test_functions.dart';
-import 'package:backend/moqui.dart';
-import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -38,7 +35,6 @@ void main() {
 
   setUp(() async {
     await GlobalConfiguration().loadFromAsset("app_settings");
-    Bloc.observer = SimpleBlocObserver();
   });
 
   group('Check in/out Hotel tests>>>>>', () {

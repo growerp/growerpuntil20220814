@@ -155,7 +155,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     ApiResult<User> apiResult = await repos.registerUser(
-        event.user.copyWith(userGroupId: 'GROWERP_M_CUSTOMER'),
+        event.user.copyWith(userGroup: UserGroup.Customer),
         state.authenticate!.company!.partyId!);
     emit(apiResult.when(
         success: (User data) {

@@ -19,7 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class UserListItem extends StatelessWidget {
   final User user;
   final int index;
-  final String userGroupId;
+  final UserGroup userGroup;
   final UserBloc userBloc;
   final bool isDeskTop;
 
@@ -27,7 +27,7 @@ class UserListItem extends StatelessWidget {
     Key? key,
     required this.user,
     required this.index,
-    required this.userGroupId,
+    required this.userGroup,
     required this.userBloc,
     required this.isDeskTop,
   }) : super(key: key);
@@ -73,16 +73,16 @@ class UserListItem extends StatelessWidget {
                     key: Key('language$index'),
                   )),
                 if (isDeskTop &&
-                    userGroupId != "GROWERP_M_EMPLOYEE" &&
-                    userGroupId != "GROWERP_M_ADMIN")
+                    userGroup != UserGroup.Employee &&
+                    userGroup != UserGroup.Admin)
                   Expanded(
                     child: Text("${user.companyName}",
                         key: Key('companyName$index'),
                         textAlign: TextAlign.center),
                   ),
                 if (!isDeskTop &&
-                    userGroupId != "GROWERP_M_EMPLOYEE" &&
-                    userGroupId != "GROWERP_M_ADMIN")
+                    userGroup != UserGroup.Employee &&
+                    userGroup != UserGroup.Admin)
                   Expanded(
                       child: Text("${user.companyName}",
                           key: Key('companyName$index'),

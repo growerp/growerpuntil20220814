@@ -27,7 +27,7 @@ import 'package:core/domains/domains.dart';
 
 import '../../../api_repository.dart';
 
-/// User dialog with a required User class input containing the userGroupId
+/// User dialog with a required User class input containing the userGroup
 class UserDialog extends StatelessWidget {
   final User user;
   const UserDialog({Key? key, required this.user}) : super(key: key);
@@ -80,11 +80,10 @@ class _UserState extends State<UserPage> {
       _selectedCompany = Company(
           partyId: widget.user.companyPartyId, name: widget.user.companyName);
     }
-    _selectedUserGroup =
-        userGroups.firstWhere((a) => a.userGroupId == widget.user.userGroupId);
-    localUserGroups = userGroups
-        .where((a) => a.companyEmployee == _selectedUserGroup.companyEmployee)
-        .toList();
+    _selectedUserGroup = widget.user.userGroup ?? UserGroup.Undefined;
+    ;
+    localUserGroups = UserGroup.companyUserGroupList();
+
     updatedUser = widget.user.copyWith();
   }
 
@@ -124,7 +123,7 @@ class _UserState extends State<UserPage> {
     repos = context.read<APIRepository>();
     User? user = widget.user;
     return Dialog(
-        key: Key('UserDialog${user.groupDescription}'),
+        key: Key('UserDialog${user.userGroup.toString()}'),
         insetPadding: EdgeInsets.all(10),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
@@ -147,8 +146,8 @@ class _UserState extends State<UserPage> {
               }, child:
                   BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
                 authenticate = state.authenticate!;
-                if (widget.user.userGroupId == "GROWERP_M_ADMIN" ||
-                    widget.user.userGroupId == "GROWERP_M_EMPLOYEE")
+                if (widget.user.userGroup == UserGroup.Admin ||
+                    widget.user.userGroup == UserGroup.Employee)
                   _selectedCompany = authenticate.company;
                 return ScaffoldMessenger(
                     key: scaffoldMessengerKey,
@@ -223,14 +222,14 @@ class _UserState extends State<UserPage> {
             child: Column(children: <Widget>[
               Center(
                   child: Text(
-                      'User ${widget.user.groupDescription} #${updatedUser.partyId ?? " New"}',
+                      'User ${widget.user.userGroup.toString()} #${updatedUser.partyId ?? " New"}',
                       style: TextStyle(
                           fontSize: isPhone ? 10 : 20,
                           color: Colors.black,
                           fontWeight: FontWeight.bold))),
               Visibility(
-                  visible: updatedUser.userGroupId == 'GROWERP_M_ADMIN' ||
-                      updatedUser.userGroupId == 'GROWERP_M_EMPLOYEE',
+                  visible: updatedUser.userGroup == UserGroup.Admin ||
+                      updatedUser.userGroup == UserGroup.Employee,
                   child: Center(child: Text(companyName!))),
               SizedBox(height: 30),
               CircleAvatar(
@@ -271,7 +270,7 @@ class _UserState extends State<UserPage> {
                 decoration: InputDecoration(labelText: 'User Login Name '),
                 controller: _nameController,
                 validator: (value) {
-                  if (widget.user.userGroupId == "GROWERP_M_ADMIN" &&
+                  if (widget.user.userGroup == UserGroup.Admin &&
                       value!.isEmpty)
                     return 'An administrator needs a username!';
                   return null;
@@ -296,7 +295,7 @@ class _UserState extends State<UserPage> {
               Visibility(
                   // use only tomodify by admin user
                   visible: updatedUser.partyId != null &&
-                      currentUser!.userGroupId == 'GROWERP_M_ADMIN',
+                      currentUser!.userGroup == UserGroup.Admin,
                   child: DropdownButtonFormField<UserGroup>(
                     decoration: InputDecoration(labelText: 'User Group'),
                     key: Key('userGroup'),
@@ -306,7 +305,7 @@ class _UserState extends State<UserPage> {
                         value == null ? 'field required' : null,
                     items: localUserGroups.map((item) {
                       return DropdownMenuItem<UserGroup>(
-                          child: Text(item.description), value: item);
+                          child: Text(item.toString()), value: item);
                     }).toList(),
                     onChanged: (UserGroup? newValue) {
                       setState(() {
@@ -317,8 +316,8 @@ class _UserState extends State<UserPage> {
                   )),
               SizedBox(height: 10),
               Visibility(
-                  visible: updatedUser.userGroupId != 'GROWERP_M_ADMIN' &&
-                      updatedUser.userGroupId != 'GROWERP_M_EMPLOYEE',
+                  visible: updatedUser.userGroup != UserGroup.Admin &&
+                      updatedUser.userGroup != UserGroup.Employee,
                   child: Column(children: [
                     TextFormField(
                       key: Key('newCompanyName'),
@@ -367,8 +366,8 @@ class _UserState extends State<UserPage> {
                   ])),
               SizedBox(height: 10),
               Visibility(
-                  visible: updatedUser.userGroupId != 'GROWERP_M_ADMIN' &&
-                      updatedUser.userGroupId != 'GROWERP_M_EMPLOYEE',
+                  visible: updatedUser.userGroup != UserGroup.Admin &&
+                      updatedUser.userGroup != UserGroup.Employee,
                   child: Row(children: [
                     Expanded(
                         child: Text(updatedUser.companyAddress != null
@@ -410,7 +409,7 @@ class _UserState extends State<UserPage> {
                                 lastName: _lastNameController.text,
                                 email: _emailController.text,
                                 loginName: _nameController.text,
-                                userGroupId: _selectedUserGroup.userGroupId,
+                                userGroup: _selectedUserGroup,
                                 language: Localizations.localeOf(context)
                                     .languageCode
                                     .toString(),

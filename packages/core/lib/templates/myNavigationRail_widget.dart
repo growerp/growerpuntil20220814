@@ -20,7 +20,7 @@ Widget myNavigationRail(BuildContext context, Authenticate authenticate,
     Widget widget, int? menuIndex, List<MenuItem>? menu) {
   List<NavigationRailDestination> items = [];
   menu?.forEach((option) => {
-        if (option.readGroups.contains(authenticate.user?.userGroupId))
+        if (option.readGroups.contains(authenticate.user?.userGroup))
           items.add(NavigationRailDestination(
             icon: Image.asset(option.image,
                 height: 40, key: Key('tap${option.route}')),
@@ -31,7 +31,7 @@ Widget myNavigationRail(BuildContext context, Authenticate authenticate,
 
   if (items.isEmpty)
     return FatalErrorForm("No access to any option here, "
-        "have: ${authenticate.user?.userGroupId} should have: ${menu![0].readGroups}");
+        "have: ${authenticate.user?.userGroup} should have: ${menu![0].readGroups}");
 
   return Row(children: <Widget>[
     LayoutBuilder(

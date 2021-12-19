@@ -22,8 +22,8 @@ class UserTest {
   static Future<void> createUsers(WidgetTester tester, List<User> users,
       String menu, String subMenu) async {
     await CommonTest.tapByKey(tester, menu, seconds: 5);
-    String tap = "tapUsersForm${users[0].groupDescription}";
-    String formName = "UsersForm${users[0].groupDescription}";
+    String tap = "tapUsersForm${users[0].userGroup}";
+    String formName = "UsersForm${users[0].userGroup}";
     if (CommonTest.isPhone()) {
       await tester.tap(find.byTooltip(subMenu));
       await tester.pumpAndSettle(Duration(seconds: 2));
@@ -38,7 +38,7 @@ class UserTest {
       await CommonTest.enterText(tester, 'username', e.userId!);
       await CommonTest.drag(tester);
       await CommonTest.enterText(tester, 'email', e.email!);
-      if (e.groupDescription != 'Employee' && e.groupDescription != 'Admin')
+      if (e.userGroup != UserGroup.Employee && e.userGroup != UserGroup.Admin)
         await CommonTest.enterText(tester, 'newCompanyName', e.companyName!);
       await CommonTest.tapByKey(tester, 'updateUser', seconds: 5);
     }

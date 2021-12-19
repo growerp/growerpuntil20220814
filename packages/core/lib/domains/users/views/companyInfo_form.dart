@@ -74,7 +74,7 @@ class _CompanyState extends State<CompanyPage> {
     company = authenticate.company!;
     user = authenticate.user!;
     companyAddress = authenticate.company!.address;
-    isAdmin = authenticate.user!.userGroupId == 'GROWERP_M_ADMIN';
+    isAdmin = authenticate.user!.userGroup == UserGroup.Admin;
     _selectedCurrency = currencies.firstWhere((element) =>
         element.currencyId == authenticate.company?.currency?.currencyId);
     _nameController..text = company.name!;

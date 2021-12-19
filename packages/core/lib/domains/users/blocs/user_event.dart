@@ -21,15 +21,14 @@ abstract class UserEvent extends Equatable {
 }
 
 class UserFetch extends UserEvent {
-  final String userGroupId;
+  final UserGroup? userGroup;
   final String searchString;
   final bool refresh;
 
-  UserFetch(
-      {this.userGroupId = '', this.searchString = '', this.refresh = false});
+  UserFetch({this.userGroup, this.searchString = '', this.refresh = false});
 
   @override
-  List<Object> get props => [userGroupId, searchString, refresh];
+  List<Object> get props => [searchString, refresh];
 }
 
 class UserSearchOn extends UserEvent {}

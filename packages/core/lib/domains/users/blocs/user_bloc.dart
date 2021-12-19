@@ -42,7 +42,7 @@ EventTransformer<E> userDroppable<E>(Duration duration) {
 
 class UserBloc extends Bloc<UserEvent, UserState>
     with LeadBloc, CustomerBloc, EmployeeBloc, AdminBloc, SupplierBloc {
-  UserBloc(this.repos, this.userGroupId, this.authBloc)
+  UserBloc(this.repos, this.userGroup, this.authBloc)
       : super(const UserState()) {
     on<UserFetch>(_onUserFetch,
         transformer: userDroppable(Duration(milliseconds: 100)));
@@ -53,7 +53,7 @@ class UserBloc extends Bloc<UserEvent, UserState>
   }
 
   final APIRepository repos;
-  final String userGroupId;
+  final UserGroup userGroup;
   final AuthBloc authBloc;
 
   Future<void> _onUserFetch(
@@ -65,8 +65,8 @@ class UserBloc extends Bloc<UserEvent, UserState>
     try {
       // start from record zero for initial and refresh
       if (state.status == UserStatus.initial || event.refresh) {
-        ApiResult<List<User>> compResult =
-            await repos.getUser(searchString: event.searchString);
+        ApiResult<List<User>> compResult = await repos
+            .getUser(userGroups: [userGroup], searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: UserStatus.success,
@@ -81,8 +81,8 @@ class UserBloc extends Bloc<UserEvent, UserState>
       if (event.searchString.isNotEmpty && state.searchString.isEmpty ||
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
-        ApiResult<List<User>> compResult =
-            await repos.getUser(searchString: event.searchString);
+        ApiResult<List<User>> compResult = await repos
+            .getUser(userGroups: [userGroup], searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: UserStatus.success,
@@ -95,8 +95,8 @@ class UserBloc extends Bloc<UserEvent, UserState>
       }
       // get next page also for search
 
-      ApiResult<List<User>> compResult =
-          await repos.getUser(searchString: event.searchString);
+      ApiResult<List<User>> compResult = await repos
+          .getUser(userGroups: [userGroup], searchString: event.searchString);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: UserStatus.success,

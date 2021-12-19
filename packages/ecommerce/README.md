@@ -1,6 +1,6 @@
 # GrowERP Ecommerce app
 
-An Ecommerce application, a companion for the 'admin' application present in the master branch of this repository.
+An Ecommerce application, a companion for the UserGroup.SuperAdmin application present in the master branch of this repository.
 
 It has the standard functions of Ecommerce:
 

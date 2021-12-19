@@ -25,8 +25,8 @@ class MenuItem {
   final List<TabItem>? tabItems; // top/bottom tabs
   final Widget? child; // when no tabs this is single page
   final Widget? leadAction; // single actionButton on the left like back button
-  final List<String> readGroups; // user groups who can read
-  final List<String>? writeGroups; // user groups who can add/update/delete
+  final List<UserGroup> readGroups; // user groups who can read
+  final List<UserGroup>? writeGroups; // user groups who can add/update/delete
   final Widget? floatButtonForm; // for dialogs which use navigator internally
 
   MenuItem({

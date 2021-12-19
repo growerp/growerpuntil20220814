@@ -21,8 +21,8 @@ List<MenuItem> menuItems = [
     selectedImage: "assets/images/dashBoard.png",
     title: "Main",
     route: '/',
-    readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE"],
-    writeGroups: ["GROWERP_M_ADMIN"],
+    readGroups: [UserGroup.Admin, UserGroup.Employee],
+    writeGroups: [UserGroup.Admin],
     child: GanttForm(),
     floatButtonForm: ReservationDialog(finDoc: FinDoc(items: [])),
   ),
@@ -31,8 +31,8 @@ List<MenuItem> menuItems = [
     selectedImage: "assets/images/company.png",
     title: "Hotel",
     route: '/company',
-    readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE"],
-    writeGroups: ["GROWERP_M_ADMIN"],
+    readGroups: [UserGroup.Admin, UserGroup.Employee],
+    writeGroups: [UserGroup.Admin],
     tabItems: [
       TabItem(
         form: CompanyInfoForm(FormArguments()),
@@ -42,7 +42,7 @@ List<MenuItem> menuItems = [
       TabItem(
         form: UserListForm(
           key: Key("Admin"),
-          userGroupId: "GROWERP_M_ADMIN",
+          userGroup: UserGroup.Admin,
         ),
         label: "Admins",
         icon: Icon(Icons.business),
@@ -50,7 +50,7 @@ List<MenuItem> menuItems = [
       TabItem(
         form: UserListForm(
           key: Key("Employee"),
-          userGroupId: "GROWERP_M_EMPLOYEE",
+          userGroup: UserGroup.Employee,
         ),
         label: "Employees",
         icon: Icon(Icons.school),
@@ -62,7 +62,7 @@ List<MenuItem> menuItems = [
     selectedImage: "assets/images/single-bed.png",
     title: "Rooms",
     route: '/catalog',
-    readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE"],
+    readGroups: [UserGroup.Admin, UserGroup.Employee],
     tabItems: [
       TabItem(
         form: AssetListForm(),
@@ -83,29 +83,29 @@ List<MenuItem> menuItems = [
       title: "Reservations",
       route: '/sales',
       readGroups: [
-        "GROWERP_M_ADMIN",
-        "GROWERP_M_EMPLOYEE"
+        UserGroup.Admin,
+        UserGroup.Employee
       ],
       writeGroups: [
-        "GROWERP_M_ADMIN"
+        UserGroup.Admin
       ],
       tabItems: [
         TabItem(
           form: FinDocListForm(
               key: Key("SalesOrder"),
               sales: true,
-              docType: 'order',
+              docType: FinDocType.Order,
               onlyRental: true),
           label: "Reservations",
           icon: Icon(Icons.home),
           floatButtonForm: ReservationDialog(
-            finDoc: FinDoc(sales: true, docType: 'order', items: []),
+            finDoc: FinDoc(sales: true, docType: FinDocType.Order, items: []),
           ),
         ),
         TabItem(
           form: UserListForm(
             key: Key("Customer"),
-            userGroupId: "GROWERP_M_CUSTOMER",
+            userGroup: UserGroup.Customer,
           ),
           label: "Customers",
           icon: Icon(Icons.business),
@@ -117,18 +117,18 @@ List<MenuItem> menuItems = [
       title: "check-In-Out",
       route: '/checkInOut',
       readGroups: [
-        "GROWERP_M_ADMIN",
-        "GROWERP_M_EMPLOYEE"
+        UserGroup.Admin,
+        UserGroup.Employee
       ],
       writeGroups: [
-        "GROWERP_M_ADMIN"
+        UserGroup.Admin
       ],
       tabItems: [
         TabItem(
           form: FinDocListForm(
               key: Key("Check-In"),
               sales: true,
-              docType: 'order',
+              docType: FinDocType.Order,
               onlyRental: true,
               statusId: 'FinDocCreated'),
           label: "CheckIn",
@@ -138,7 +138,7 @@ List<MenuItem> menuItems = [
           form: FinDocListForm(
               key: Key("Check-Out"),
               sales: true,
-              docType: 'order',
+              docType: FinDocType.Order,
               onlyRental: true,
               statusId: 'FinDocApproved'),
           label: "CheckOut",
@@ -150,5 +150,5 @@ List<MenuItem> menuItems = [
       selectedImage: "assets/images/accounting.png",
       title: "Accounting",
       route: '/accounting',
-      readGroups: ["GROWERP_M_ADMIN"]),
+      readGroups: [UserGroup.Admin]),
 ];

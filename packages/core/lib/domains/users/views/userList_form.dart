@@ -22,61 +22,60 @@ import '../../../api_repository.dart';
 
 class UserListForm extends StatelessWidget {
   final Key? key;
-  final String userGroupId;
+  final UserGroup userGroup;
   const UserListForm({
     this.key,
-    required this.userGroupId,
+    required this.userGroup,
   });
 
   @override
   Widget build(BuildContext context) {
     Widget userList = UsersList(
       key: key,
-      userGroupId: userGroupId,
+      userGroup: userGroup,
     );
-    switch (userGroupId) {
-      case 'GROWERP_M_LEAD':
+    switch (userGroup) {
+      case UserGroup.Lead:
         return BlocProvider<LeadBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroupId, BlocProvider.of<AuthBloc>(context))
+                userGroup, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
-      case 'GROWERP_M_CUSTOMER':
+      case UserGroup.Customer:
         return BlocProvider<CustomerBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroupId, BlocProvider.of<AuthBloc>(context))
+                userGroup, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
-      case 'GROWERP_M_SUPPLIER':
+      case UserGroup.Supplier:
         return BlocProvider<SupplierBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroupId, BlocProvider.of<AuthBloc>(context))
+                userGroup, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
-      case 'GROWERP_M_EMPLOYEE':
+      case UserGroup.Employee:
         return BlocProvider<EmployeeBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroupId, BlocProvider.of<AuthBloc>(context))
+                userGroup, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
-      case 'GROWERP_M_ADMIN':
+      case UserGroup.Admin:
         return BlocProvider<AdminBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroupId, BlocProvider.of<AuthBloc>(context))
+                userGroup, BlocProvider.of<AuthBloc>(context))
               ..add(UserFetch()),
             child: userList);
       default:
-        return Center(
-            child: Text("user usergroup: '$userGroupId' not allowed"));
+        return Center(child: Text("user usergroup: '$userGroup' not allowed"));
     }
   }
 }
 
 class UsersList extends StatefulWidget {
-  final String userGroupId;
+  final UserGroup userGroup;
   final Key? key;
 
-  const UsersList({this.key, required this.userGroupId});
+  const UsersList({this.key, required this.userGroup});
 
   @override
   _UsersState createState() => _UsersState();
@@ -98,20 +97,20 @@ class _UsersState extends State<UsersList> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    switch (widget.userGroupId) {
-      case "GROWERP_M_ADMIN":
+    switch (widget.userGroup) {
+      case UserGroup.Admin:
         _userBloc = BlocProvider.of<AdminBloc>(context) as UserBloc;
         break;
-      case "GROWERP_M_EMPLOYEE":
+      case UserGroup.Employee:
         _userBloc = BlocProvider.of<EmployeeBloc>(context) as UserBloc;
         break;
-      case "GROWERP_M_SUPPLIER":
+      case UserGroup.Supplier:
         _userBloc = BlocProvider.of<SupplierBloc>(context) as UserBloc;
         break;
-      case "GROWERP_M_CUSTOMER":
+      case UserGroup.Customer:
         _userBloc = BlocProvider.of<CustomerBloc>(context) as UserBloc;
         break;
-      case "GROWERP_M_LEAD":
+      case UserGroup.Lead:
         _userBloc = BlocProvider.of<LeadBloc>(context) as UserBloc;
         break;
     }
@@ -140,7 +139,7 @@ class _UsersState extends State<UsersList> {
                   return Column(children: [
                     UserListHeader(
                         isPhone: isPhone,
-                        userGroupId: widget.userGroupId,
+                        userGroup: widget.userGroup,
                         userBloc: _userBloc),
                     Divider(color: Colors.black),
                   ]);
@@ -158,7 +157,7 @@ class _UsersState extends State<UsersList> {
                         child: UserListItem(
                             user: users[index],
                             index: index,
-                            userGroupId: widget.userGroupId,
+                            userGroup: widget.userGroup,
                             userBloc: _userBloc,
                             isDeskTop: !isPhone));
               },
@@ -193,7 +192,7 @@ class _UsersState extends State<UsersList> {
                               value: _userBloc,
                               child: UserDialog(
                                   user: User(
-                                userGroupId: widget.userGroupId,
+                                userGroup: widget.userGroup,
                               )));
                         });
                   },
@@ -205,26 +204,26 @@ class _UsersState extends State<UsersList> {
         return LoadingIndicator();
       };
 
-      switch (widget.userGroupId) {
-        case "GROWERP_M_LEAD":
+      switch (widget.userGroup) {
+        case UserGroup.Lead:
           return BlocConsumer<LeadBloc, UserState>(
               listener: blocListener, builder: blocBuilder);
-        case "GROWERP_M_CUSTOMER":
+        case UserGroup.Customer:
           return BlocConsumer<CustomerBloc, UserState>(
               listener: blocListener, builder: blocBuilder);
-        case "GROWERP_M_ADMIN":
+        case UserGroup.Admin:
           return BlocConsumer<AdminBloc, UserState>(
               listener: blocListener, builder: blocBuilder);
-        case "GROWERP_M_EMPLOYEE":
+        case UserGroup.Employee:
           return BlocConsumer<EmployeeBloc, UserState>(
               listener: blocListener, builder: blocBuilder);
-        case "GROWERP_M_SUPPLIER":
+        case UserGroup.Supplier:
           return BlocConsumer<SupplierBloc, UserState>(
               listener: blocListener, builder: blocBuilder);
         default:
           return Center(
               child: Text(
-                  "should NOT show this for userGroup: ${widget.userGroupId}"));
+                  "should NOT show this for userGroup: ${widget.userGroup}"));
       }
     });
   }

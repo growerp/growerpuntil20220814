@@ -53,18 +53,19 @@ class TopApp extends StatelessWidget {
               create: (context) =>
                   AuthBloc(dbServer, chatServer)..add(AuthLoad())),
           BlocProvider<SalesOrderBloc>(
-              create: (context) => FinDocBloc(dbServer, true, 'order')),
+              create: (context) =>
+                  FinDocBloc(dbServer, true, FinDocType.Order)),
           BlocProvider<CustomerBloc>(
-              create: (context) => UserBloc(dbServer, "GROWERP_M_CUSTOMER",
+              create: (context) => UserBloc(dbServer, UserGroup.Customer,
                   BlocProvider.of<AuthBloc>(context))),
           BlocProvider<SalesCartBloc>(
               create: (context) => CartBloc(
                   sales: true,
-                  docType: 'order',
+                  docType: FinDocType.Order,
                   finDocBloc:
                       BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc)
-                ..add(CartFetch(
-                    FinDoc(sales: true, docType: 'order', items: [])))),
+                ..add(CartFetch(FinDoc(
+                    sales: true, docType: FinDocType.Order, items: [])))),
         ],
         child: MyApp(),
       ),

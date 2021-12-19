@@ -23,8 +23,8 @@ List<MenuItem> menuItems = [
     selectedImage: 'assets/images/dashBoard.png',
     title: 'Main',
     route: '/',
-    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
-    writeGroups: ['GROWERP_M_ADMIN', 'ADMIN'],
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
+    writeGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
     child: local.AdminDbForm(),
   ),
   MenuItem(
@@ -32,8 +32,8 @@ List<MenuItem> menuItems = [
     selectedImage: 'assets/images/company.png',
     title: 'Company',
     route: '/company',
-    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
-    writeGroups: ['GROWERP_M_ADMIN', 'ADMIN'],
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
+    writeGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
     tabItems: [
       TabItem(
         form: CompanyInfoForm(FormArguments()),
@@ -43,7 +43,7 @@ List<MenuItem> menuItems = [
       TabItem(
         form: const UserListForm(
           key: Key('Admin'),
-          userGroupId: 'GROWERP_M_ADMIN',
+          userGroup: UserGroup.Admin,
         ),
         label: 'Admins',
         icon: const Icon(Icons.business),
@@ -51,7 +51,7 @@ List<MenuItem> menuItems = [
       TabItem(
         form: const UserListForm(
           key: Key('Employee'),
-          userGroupId: 'GROWERP_M_EMPLOYEE',
+          userGroup: UserGroup.Employee,
         ),
         label: 'Employees',
         icon: const Icon(Icons.school),
@@ -63,7 +63,7 @@ List<MenuItem> menuItems = [
     selectedImage: 'assets/images/crm.png',
     title: 'CRM',
     route: '/crm',
-    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
     tabItems: [
       TabItem(
         form: OpportunityListForm(),
@@ -73,7 +73,7 @@ List<MenuItem> menuItems = [
       TabItem(
         form: const UserListForm(
           key: Key('Lead'),
-          userGroupId: 'GROWERP_M_LEAD',
+          userGroup: UserGroup.Lead,
         ),
         label: 'Leads',
         icon: const Icon(Icons.business),
@@ -81,7 +81,7 @@ List<MenuItem> menuItems = [
       TabItem(
         form: const UserListForm(
           key: Key('Customer'),
-          userGroupId: 'GROWERP_M_CUSTOMER',
+          userGroup: UserGroup.Customer,
         ),
         label: 'Customers',
         icon: const Icon(Icons.school),
@@ -94,12 +94,12 @@ List<MenuItem> menuItems = [
       title: 'Catalog',
       route: '/catalog',
       readGroups: [
-        'GROWERP_M_ADMIN',
-        'ADMIN',
-        'GROWERP_M_EMPLOYEE'
+        UserGroup.Admin,
+        UserGroup.SuperAdmin,
+        UserGroup.Employee
       ],
       writeGroups: [
-        'GROWERP_M_ADMIN'
+        UserGroup.Admin
       ],
       tabItems: [
         TabItem(
@@ -123,8 +123,8 @@ List<MenuItem> menuItems = [
     selectedImage: 'assets/images/order.png',
     title: 'Orders',
     route: '/orders',
-    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
-    writeGroups: ['GROWERP_M_ADMIN'],
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
+    writeGroups: [UserGroup.Admin],
     tabItems: [
       TabItem(
         form: const FinDocListForm(
@@ -135,7 +135,7 @@ List<MenuItem> menuItems = [
       TabItem(
         form: const UserListForm(
           key: Key('Customer'),
-          userGroupId: 'GROWERP_M_CUSTOMER',
+          userGroup: UserGroup.Customer,
         ),
         label: 'Customers',
         icon: const Icon(Icons.business),
@@ -149,7 +149,7 @@ List<MenuItem> menuItems = [
       TabItem(
         form: const UserListForm(
           key: Key('Supplier'),
-          userGroupId: 'GROWERP_M_SUPPLIER',
+          userGroup: UserGroup.Supplier,
         ),
         label: 'Suppliers',
         icon: const Icon(Icons.business),
@@ -161,7 +161,7 @@ List<MenuItem> menuItems = [
     selectedImage: 'assets/images/supplier.png',
     title: 'Warehouse',
     route: '/warehouse',
-    readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN'],
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
     tabItems: [
       TabItem(
         form: LocationListForm(),
@@ -191,13 +191,13 @@ List<MenuItem> menuItems = [
       selectedImage: 'assets/images/accounting.png',
       title: 'Accounting',
       route: '/accounting',
-      readGroups: ['GROWERP_M_ADMIN', 'ADMIN']),
+      readGroups: [UserGroup.Admin, UserGroup.SuperAdmin]),
   MenuItem(
       image: 'packages/core/images/infoGrey.png',
       selectedImage: 'packages/core/images/info.png',
       title: 'About',
       route: '/about',
-      readGroups: ['GROWERP_M_ADMIN', 'ADMIN']),
+      readGroups: [UserGroup.Admin, UserGroup.SuperAdmin]),
 ];
 List<MenuItem> acctMenuItems = [
   MenuItem(
@@ -205,31 +205,31 @@ List<MenuItem> acctMenuItems = [
       selectedImage: 'assets/images/accounting.png',
       title: '     Acct\nDashBoard',
       route: '/accounting',
-      readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN']),
+      readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin]),
   MenuItem(
       image: 'assets/images/orderGrey.png',
       selectedImage: 'assets/images/order.png',
       title: ' Acct\nSales',
       route: '/acctSales',
-      readGroups: ['GROWERP_M_ADMIN', 'ADMIN']),
+      readGroups: [UserGroup.Admin, UserGroup.SuperAdmin]),
   MenuItem(
       image: 'assets/images/supplierGrey.png',
       selectedImage: 'assets/images/supplier.png',
       title: '    Acct\nPurchase',
       route: '/acctPurchase',
-      readGroups: ['GROWERP_M_ADMIN', 'ADMIN'],
-      writeGroups: ['GROWERP_M_ADMIN']),
+      readGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
+      writeGroups: [UserGroup.Admin]),
   MenuItem(
       image: 'assets/images/accountingGrey.png',
       selectedImage: 'assets/images/accounting.png',
       title: 'Ledger',
       route: '/ledger',
-      readGroups: ['GROWERP_M_ADMIN', 'ADMIN'],
-      writeGroups: ['GROWERP_M_ADMIN']),
+      readGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
+      writeGroups: [UserGroup.Admin]),
   MenuItem(
       image: 'assets/images/dashBoardGrey.png',
       selectedImage: 'assets/images/dashBoard.png',
       title: 'Main',
       route: '/',
-      readGroups: ['GROWERP_M_ADMIN', 'GROWERP_M_EMPLOYEE', 'ADMIN']),
+      readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin]),
 ];

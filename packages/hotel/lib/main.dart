@@ -64,7 +64,7 @@ class TopApp extends StatelessWidget {
   const TopApp({Key? key, required this.dbServer, required this.chatServer})
       : super(key: key);
 
-  final Object dbServer;
+  final APIRepository dbServer;
   final ChatServer chatServer;
 
   @override

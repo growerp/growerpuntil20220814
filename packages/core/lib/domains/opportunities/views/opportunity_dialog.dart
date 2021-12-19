@@ -126,9 +126,9 @@ class _OpportunityState extends State<OpportunityDialog> {
   }
 
   Widget _opportunityForm() {
-    Future<List<User>> getData(List<String> userGroupIds, String filter) async {
+    Future<List<User>> getData(List<String> userGroups, String filter) async {
       ApiResult<List<User>> result = await repos.getUser(
-          userGroupIds: userGroupIds, filter: _leadSearchBoxController.text);
+          userGroups: userGroups, filter: _leadSearchBoxController.text);
       return result.when(
           success: (data) => data,
           failure: (_) => [User(lastName: 'get data error!')]);
@@ -215,7 +215,7 @@ class _OpportunityState extends State<OpportunityDialog> {
         itemAsString: (User? u) => "${u?.firstName}, ${u?.lastName} "
             "${u?.companyName}",
         onFind: (String filter) =>
-            getData(["GROWERP_M_LEAD"], _leadSearchBoxController.text),
+            getData([UserGroup.Lead.toString()], _leadSearchBoxController.text),
         onChanged: (User? newValue) {
           _selectedLead = newValue;
         },
@@ -243,7 +243,7 @@ class _OpportunityState extends State<OpportunityDialog> {
               itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
                   "${u?.companyName}",
               onFind: (String filter) => getData(
-                  ["GROWERP_M_EMPLOYEE", "GROWERP_M_ADMIN"],
+                  [UserGroup.Employee.toString(), UserGroup.Admin.toString()],
                   _accountSearchBoxController.text),
               onChanged: (User? newValue) {
                 _selectedAccount = newValue;

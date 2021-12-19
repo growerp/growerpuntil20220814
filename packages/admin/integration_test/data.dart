@@ -49,49 +49,44 @@ List<User> administrators = [
   User(
     firstName: 'administrator$seq',
     lastName: 'login Name',
-    groupDescription: 'Admin',
+    userGroup: UserGroup.SuperAdmin,
     companyName: companies[0].name,
     userId: 'username$seq',
     email: 'email$seq@example.org',
-    userGroupId: 'GROWERP_M_ADMIN',
   ),
   User(
     firstName: 'administrator$seq1',
     lastName: 'last Name',
-    groupDescription: 'Admin',
+    userGroup: UserGroup.SuperAdmin,
     companyName: companies[0].name,
     userId: 'username$seq1',
     email: 'email$seq1@example.org',
-    userGroupId: 'GROWERP_M_ADMIN',
   ),
   User(
     firstName: 'administrator$seq2',
     lastName: 'last Name',
-    groupDescription: 'Admin',
+    userGroup: UserGroup.SuperAdmin,
     companyName: companies[0].name,
     userId: 'username$seq2',
     email: 'email$seq2@example.org',
-    userGroupId: 'GROWERP_M_ADMIN',
   ),
 ];
 List<User> employees = [
   User(
     firstName: 'employee$seq3',
     lastName: 'last Name',
-    groupDescription: 'Employee',
+    userGroup: UserGroup.Employee,
     companyName: companies[0].name,
     userId: 'username$seq3',
     email: 'email$seq3@example.org',
-    userGroupId: 'GROWERP_M_EMPLOYEE',
   ),
   User(
     firstName: 'employee$seq4',
     lastName: 'last Name',
-    groupDescription: 'Employee',
+    userGroup: UserGroup.Employee,
     companyName: companies[0].name,
     userId: 'username$seq4',
     email: 'email$seq4@example.org',
-    userGroupId: 'GROWERP_M_EMPLOYEE',
   )
 ];
 
@@ -99,20 +94,18 @@ List<User> leads = [
   User(
     firstName: 'lead$seq5',
     lastName: 'last Name',
-    groupDescription: 'Lead',
+    userGroup: UserGroup.Lead,
     companyName: companies[5].name,
     userId: 'username$seq5',
     email: 'email$seq5@example.org',
-    userGroupId: 'GROWERP_M_LEAD',
   ),
   User(
     firstName: 'lead$seq6',
     lastName: 'last Name',
-    groupDescription: 'Lead',
+    userGroup: UserGroup.Lead,
     companyName: companies[6].name,
     userId: 'username$seq6',
     email: 'email$seq6@example.org',
-    userGroupId: 'GROWERP_M_LEAD',
   )
 ];
 
@@ -120,20 +113,18 @@ List<User> suppliers = [
   User(
     firstName: 'supplier$seq7',
     lastName: 'last Name',
-    groupDescription: 'Supplier',
+    userGroup: UserGroup.SuperAdmin,
     companyName: companies[7].name,
     userId: 'username$seq7',
     email: 'email$seq7@example.org',
-    userGroupId: 'GROWERP_M_SUPPLIER',
   ),
   User(
     firstName: 'supplier$seq8',
     lastName: 'last Name',
-    groupDescription: 'Supplier',
+    userGroup: UserGroup.SuperAdmin,
     companyName: companies[8].name,
     userId: 'username$seq8',
     email: 'email$seq8@example.org',
-    userGroupId: 'GROWERP_M_SUPPLIER',
   )
 ];
 

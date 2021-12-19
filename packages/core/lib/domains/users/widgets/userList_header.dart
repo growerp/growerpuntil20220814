@@ -18,11 +18,11 @@ import 'package:flutter/material.dart';
 class UserListHeader extends StatelessWidget {
   const UserListHeader({
     Key? key,
-    required this.userGroupId,
+    required this.userGroup,
     required this.isPhone,
     required this.userBloc,
   }) : super(key: key);
-  final String userGroupId;
+  final UserGroup userGroup;
   final bool isPhone;
   final UserBloc userBloc;
 
@@ -74,14 +74,14 @@ class UserListHeader extends StatelessWidget {
                       if (!isPhone) Expanded(child: Text("Email")),
                       if (!isPhone) Expanded(child: Text("Language")),
                       if (!isPhone &&
-                          userGroupId != "GROWERP_M_EMPLOYEE" &&
-                          userGroupId != "GROWERP_M_ADMIN")
+                          userGroup != UserGroup.Employee &&
+                          userGroup != UserGroup.Admin)
                         Expanded(
                             child:
                                 Text("Company", textAlign: TextAlign.center)),
                       if (isPhone &&
-                          userGroupId != "GROWERP_M_EMPLOYEE" &&
-                          userGroupId != "GROWERP_M_ADMIN")
+                          userGroup != UserGroup.Employee &&
+                          userGroup != UserGroup.Admin)
                         Expanded(child: Text("Company"))
                     ],
                   ),

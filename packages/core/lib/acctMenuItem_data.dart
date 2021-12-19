@@ -26,7 +26,7 @@ List<MenuItem> acctMenuItems = [
     selectedImage: "assets/images/accounting.png",
     title: "     Acct\nDashBoard",
     route: '/accounting',
-    readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"],
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
     child: AcctDashBoard(),
   ),
   MenuItem(
@@ -35,8 +35,8 @@ List<MenuItem> acctMenuItems = [
       title: " Acct\nSales",
       route: '/acctSales',
       readGroups: [
-        "GROWERP_M_ADMIN",
-        "ADMIN"
+        UserGroup.Admin,
+        UserGroup.SuperAdmin
       ],
       tabItems: [
         TabItem(
@@ -62,11 +62,11 @@ List<MenuItem> acctMenuItems = [
       title: "    Acct\nPurchase",
       route: '/acctPurchase',
       readGroups: [
-        "GROWERP_M_ADMIN",
-        "ADMIN"
+        UserGroup.Admin,
+        UserGroup.SuperAdmin
       ],
       writeGroups: [
-        "GROWERP_M_ADMIN"
+        UserGroup.Admin
       ],
       tabItems: [
         TabItem(
@@ -92,11 +92,11 @@ List<MenuItem> acctMenuItems = [
       title: "Ledger",
       route: '/ledger',
       readGroups: [
-        "GROWERP_M_ADMIN",
-        "ADMIN"
+        UserGroup.Admin,
+        UserGroup.SuperAdmin
       ],
       writeGroups: [
-        "GROWERP_M_ADMIN"
+        UserGroup.Admin
       ],
       tabItems: [
         TabItem(
@@ -118,13 +118,13 @@ List<MenuItem> acctMenuItems = [
       selectedImage: "assets/images/accounting.png",
       title: "Reports",
       route: '/reports',
-      readGroups: ["GROWERP_M_ADMIN", "ADMIN"],
-      writeGroups: ["GROWERP_M_ADMIN"]),
+      readGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
+      writeGroups: [UserGroup.Admin]),
 */
   MenuItem(
       image: "assets/images/dashBoardGrey.png",
       selectedImage: "assets/images/dashBoard.png",
       title: "Main",
       route: '/',
-      readGroups: ["GROWERP_M_ADMIN", "GROWERP_M_EMPLOYEE", "ADMIN"]),
+      readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin]),
 ];

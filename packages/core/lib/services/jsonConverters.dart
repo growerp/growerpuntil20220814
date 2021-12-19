@@ -67,3 +67,19 @@ class FinDocTypeConverter implements JsonConverter<FinDocType?, String?> {
     return object.toString();
   }
 }
+
+class UserGroupConverter implements JsonConverter<UserGroup?, String?> {
+  const UserGroupConverter();
+
+  @override
+  UserGroup? fromJson(String? json) {
+    if (json == null) return null;
+    return UserGroup.tryParse(json);
+  }
+
+  @override
+  String? toJson(UserGroup? object) {
+    if (object == null) return null;
+    return object.toString();
+  }
+}

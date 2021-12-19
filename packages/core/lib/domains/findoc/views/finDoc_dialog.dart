@@ -217,10 +217,7 @@ class _MyFinDocState extends State<FinDocPage> {
                     "${u!.companyName},\n${u.firstName} ${u.lastName}",
                 onFind: (String filter) async {
                   ApiResult<List<User>> result = await repos.getUser(
-                      userGroupIds: [
-                        "GROWERP_M_CUSTOMER",
-                        "GROWERP_M_SUPPLIER"
-                      ],
+                      userGroups: [UserGroup.Customer, UserGroup.Supplier],
                       filter: _userSearchBoxController.text);
                   return result.when(
                       success: (data) => data,

@@ -193,7 +193,7 @@ class _ReservationState extends State<ReservationDialog> {
                               "${u!.firstName} ${u.lastName}, ${u.companyName}",
                           onFind: (String filter) async {
                             ApiResult<List<User>> result = await repos.getUser(
-                                userGroupIds: ["GROWERP_M_CUSTOMER"],
+                                userGroups: [UserGroup.Customer],
                                 filter: _userSearchBoxController.text);
                             return result.when(
                                 success: (data) => data,
@@ -224,8 +224,8 @@ class _ReservationState extends State<ReservationDialog> {
                                               context) as UserBloc,
                                           child: UserDialog(
                                               user: User(
-                                                  userGroupId:
-                                                      "GROWERP_M_CUSTOMER")));
+                                                  userGroup:
+                                                      UserGroup.Customer)));
                                     });
                                 setState(() {
                                   if (result is User) _selectedUser = result;
