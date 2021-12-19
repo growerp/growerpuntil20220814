@@ -11,9 +11,9 @@ import 'domains/domains.dart';
 import 'package:core/domains/catalog/models/category_model.dart' as cat;
 
 class APIRepository {
-  String classificationId = GlobalConfiguration().get("classificationId");
-  String databaseUrl = GlobalConfiguration().get("databaseUrl");
-  String databaseUrlDebug = GlobalConfiguration().get("databaseUrlDebug");
+  String classificationId = GlobalConfiguration().get('classificationId');
+  String databaseUrl = GlobalConfiguration().get('databaseUrl');
+  String databaseUrlDebug = GlobalConfiguration().get('databaseUrlDebug');
   String? sessionToken;
   String? apiKey;
 
@@ -21,17 +21,17 @@ class APIRepository {
   late String _baseUrl;
 
   bool restRequestLogs =
-      GlobalConfiguration().getValue<bool>("restRequestLogs");
+      GlobalConfiguration().getValue<bool>('restRequestLogs');
   bool restResponseLogs =
-      GlobalConfiguration().getValue<bool>("restResponseLogs");
+      GlobalConfiguration().getValue<bool>('restResponseLogs');
   int connectTimeoutProd =
-      GlobalConfiguration().getValue<int>("connectTimeoutProd") * 1000;
+      GlobalConfiguration().getValue<int>('connectTimeoutProd') * 1000;
   int receiveTimeoutProd =
-      GlobalConfiguration().getValue<int>("receiveTimeoutProd") * 1000;
+      GlobalConfiguration().getValue<int>('receiveTimeoutProd') * 1000;
   int connectTimeoutTest =
-      GlobalConfiguration().getValue<int>("connectTimeoutTest") * 1000;
+      GlobalConfiguration().getValue<int>('connectTimeoutTest') * 1000;
   int receiveTimeoutTest =
-      GlobalConfiguration().getValue<int>("receiveTimeoutTest") * 1000;
+      GlobalConfiguration().getValue<int>('receiveTimeoutTest') * 1000;
 
   APIRepository() {
     var dio = Dio();
@@ -41,8 +41,8 @@ class APIRepository {
             ? '$databaseUrlDebug/'
             : 'http://10.0.2.2:8080/';
 
-    print("Production config url: $databaseUrl");
-    print("Using base backend url: $_baseUrl");
+    print('Production config url: $databaseUrl');
+    print('Using base backend url: $_baseUrl');
 
     List<Interceptor> interceptors = [];
     interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
@@ -56,19 +56,19 @@ class APIRepository {
       return handler.next(options); //continue
     }, onResponse: (response, handler) async {
       if (restResponseLogs) {
-        print("===incoming response: $response");
+        print('===incoming response: $response');
       }
       return handler.next(response); // continue
     }, onError: (DioError e, handler) async {
       // Do something with response error
       if (e.response != null) {
-        print("=== e.response.data: ${e.response!.data}");
-        print("=== e.response.headers: ${e.response!.headers}");
-        print("=== e.response.request: ${e.response!.requestOptions}");
+        print('=== e.response.data: ${e.response!.data}');
+        print('=== e.response.headers: ${e.response!.headers}');
+        print('=== e.response.request: ${e.response!.requestOptions}');
       } else {
         // Something happened in setting up or sending the request that triggered an Error
-        print("=== e.request: ${e.requestOptions}");
-        print("=== e.message: ${e.message}");
+        print('=== e.request: ${e.requestOptions}');
+        print('=== e.message: ${e.message}');
       }
       return handler.next(e); //continue
     }));
@@ -109,7 +109,7 @@ class APIRepository {
           'rest/s1/growerp/100/CheckCompany', null,
           queryParameters: {'partyId': partyId});
       return ApiResult.success(
-          data: jsonDecode(response.toString())["ok"] == "ok");
+          data: jsonDecode(response.toString())['ok'] == 'ok');
     } catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -123,7 +123,7 @@ class APIRepository {
     try {
       final response = await dioClient
           .get('rest/s1/growerp/100/Companies', null, queryParameters: {
-        "mainCompanies": mainCompanies.toString(),
+        'mainCompanies': mainCompanies.toString(),
         'start': start,
         'limit': limit,
         'filter': searchString,
@@ -138,7 +138,7 @@ class APIRepository {
     try {
       final response = await dioClient
           .get('rest/s1/growerp/100/ItemTypes', apiKey!, queryParameters: {
-        "sales": sales,
+        'sales': sales,
       });
       return ApiResult.success(data: itemTypesFromJson(response.toString()));
     } catch (e) {
@@ -244,18 +244,23 @@ class APIRepository {
       String? filter,
       String? searchString}) async {
     try {
-      final response = await dioClient
-          .get('rest/s1/growerp/100/User', apiKey!, queryParameters: {
-        'userPartyId': userPartyId,
-        'userGroupIds':
-            userGroups != null ? UserGroup.getIdList(userGroups) : null,
-        'filter': filter,
-        'start': start,
-        'limit': limit,
-        'search': searchString
-      });
-      return ApiResult.success(data: usersFromJson(response.toString()));
-    } catch (e) {
+      final response = await dioClient.get('rest/s1/growerp/100/User', apiKey!,
+          queryParameters: <String, dynamic>{
+            'userPartyId': userPartyId,
+            'userGroupIds':
+                userGroups != null ? UserGroup.getIdList(userGroups) : null,
+            'filter': filter,
+            'start': start,
+            'limit': limit,
+            'search': searchString
+          });
+      //   return ApiResult.success(data: User.fromJson(jsonDecode(response)));
+      // ignore: avoid_as
+      final l = json.decode(response) as Iterable;
+      return ApiResult.success(data: List<User>.from(l.map<User>(
+          // ignore: avoid_as, avoid_annotating_with_dynamic
+          (dynamic i) => User.fromJson(i as Map<String, dynamic>))));
+    } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
@@ -263,16 +268,19 @@ class APIRepository {
   // for ecommerce
   Future<ApiResult<User>> registerUser(User user, String ownerPartyId) async {
     try {
-      final response = await dioClient
-          .post('rest/s1/growerp/100/RegisterUser', apiKey!, data: {
-        'user': user,
-        'moquiSessionToken': sessionToken,
-        'classificationId': classificationId,
-        'ownerPartyId': ownerPartyId,
-        'password': kReleaseMode ? null : 'qqqqqq9!',
-      });
-      return ApiResult.success(data: userFromJson(response.toString()));
-    } catch (e) {
+      final response = await dioClient.post(
+          'rest/s1/growerp/100/RegisterUser', apiKey!,
+          data: <String, dynamic>{
+            'user': user,
+            'moquiSessionToken': sessionToken,
+            'classificationId': classificationId,
+            'ownerPartyId': ownerPartyId,
+            'password': kReleaseMode ? null : 'qqqqqq9!',
+          });
+      return ApiResult.success(
+          data: User.fromJson(
+              json.decode(response)['user'] as Map<String, dynamic>));
+    } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
@@ -280,10 +288,14 @@ class APIRepository {
   Future<ApiResult<User>> updateUser(User user) async {
     try {
       final response = await dioClient.patch(
-          'rest/s1/growerp/100/User', apiKey!,
-          data: {'user': userToJson(user), 'moquiSessionToken': sessionToken});
-      return ApiResult.success(data: userFromJson(response.toString()));
-    } catch (e) {
+          'rest/s1/growerp/100/User', apiKey!, data: <String, dynamic>{
+        'user': jsonEncode(user.toJson()),
+        'moquiSessionToken': sessionToken
+      });
+      return ApiResult.success(
+          data: User.fromJson(
+              json.decode(response)['user'] as Map<String, dynamic>));
+    } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
@@ -291,9 +303,14 @@ class APIRepository {
   Future<ApiResult<User>> createUser(User user) async {
     try {
       final response = await dioClient.post('rest/s1/growerp/100/User', apiKey!,
-          data: {'user': userToJson(user), 'moquiSessionToken': sessionToken});
-      return ApiResult.success(data: userFromJson(response.toString()));
-    } catch (e) {
+          data: <String, dynamic>{
+            'user': jsonEncode(user.toJson()),
+            'moquiSessionToken': sessionToken
+          });
+      return ApiResult.success(
+          data: User.fromJson(
+              json.decode(response)['user'] as Map<String, dynamic>));
+    } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
@@ -302,9 +319,11 @@ class APIRepository {
     try {
       final response = await dioClient.delete(
           'rest/s1/growerp/100/User', apiKey!,
-          queryParameters: {'partyId': partyId});
-      return ApiResult.success(data: userFromJson(response.toString()));
-    } catch (e) {
+          queryParameters: <String, dynamic>{'partyId': partyId});
+      return ApiResult.success(
+          data: User.fromJson(
+              json.decode(response)['user'] as Map<String, dynamic>));
+    } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }

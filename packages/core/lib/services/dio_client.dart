@@ -39,7 +39,7 @@ class DioClient {
     }
   }
 
-  Future<dynamic> get(
+  Future<String> get(
     String uri,
     String? apiKey, {
     Map<String, dynamic>? queryParameters,
@@ -69,7 +69,7 @@ class DioClient {
     }
   }
 
-  Future<dynamic> post(
+  Future<String> post(
     String uri,
     String? apiKey, {
     data,
@@ -101,7 +101,7 @@ class DioClient {
     }
   }
 
-  Future<dynamic> patch(
+  Future<String> patch(
     String uri,
     String? apiKey, {
     data,
@@ -133,7 +133,7 @@ class DioClient {
     }
   }
 
-  Future<dynamic> delete(
+  Future<String> delete(
     String uri,
     String? apiKey, {
     data,

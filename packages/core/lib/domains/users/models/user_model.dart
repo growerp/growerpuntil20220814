@@ -12,28 +12,17 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'dart:typed_data';
-import 'package:core/domains/domains.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:core/services/jsonConverters.dart';
+
+import '../../../services/jsonConverters.dart';
+import '../../domains.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
-List<User> usersFromJson(String str) =>
-    List<User>.from(json.decode(str)["users"].map((x) => User.fromJson(x)));
-String usersToJson(List<User> data) =>
-    '{"users":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
-
-User userFromJson(String str) => User.fromJson(json.decode(str)["user"]);
-String userToJson(User data) => '{"user":' + json.encode(data.toJson()) + "}";
-
 @freezed
 class User with _$User {
-  User._();
   factory User({
     String? partyId, // allocated by system cannot be changed.
     String? userId, // allocated by system cannot be changed.
@@ -48,7 +37,7 @@ class User with _$User {
     String? email,
 
     /// admin, employee, customer, supplier etc...
-    @JsonKey(name: "userGroupId") @UserGroupConverter() UserGroup? userGroup,
+    @JsonKey(name: 'userGroupId') @UserGroupConverter() UserGroup? userGroup,
     String? language,
 
     /// when customer register they give their telno
@@ -58,10 +47,9 @@ class User with _$User {
     String? companyName,
     Address? companyAddress,
   }) = _User;
+  User._();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-
-  get username => null;
 
   @override
   String toString() => 'User $firstName $lastName [$partyId] sec: $userGroup '
