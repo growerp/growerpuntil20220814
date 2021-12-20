@@ -254,7 +254,6 @@ class APIRepository {
             'limit': limit,
             'search': searchString
           });
-      //   return ApiResult.success(data: User.fromJson(jsonDecode(response)));
       // ignore: avoid_as
       final l = json.decode(response)["users"] as Iterable;
       return ApiResult.success(data: List<User>.from(l.map<User>(

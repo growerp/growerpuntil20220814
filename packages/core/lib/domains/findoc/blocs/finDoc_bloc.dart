@@ -153,23 +153,23 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
             success: (data) {
               late int index;
               switch (docType) {
-                case FinDocType.Order:
+                case FinDocType.order:
                   index = finDocs.indexWhere(
                       (element) => element.orderId == event.finDoc.orderId);
                   break;
-                case FinDocType.Payment:
+                case FinDocType.payment:
                   index = finDocs.indexWhere(
                       (element) => element.paymentId == event.finDoc.paymentId);
                   break;
-                case FinDocType.Invoice:
+                case FinDocType.invoice:
                   index = finDocs.indexWhere(
                       (element) => element.invoiceId == event.finDoc.invoiceId);
                   break;
-                case FinDocType.Shipment:
+                case FinDocType.shipment:
                   index = finDocs.indexWhere((element) =>
                       element.shipmentId == event.finDoc.shipmentId);
                   break;
-                case FinDocType.Transaction:
+                case FinDocType.transaction:
                   index = finDocs.indexWhere((element) =>
                       element.transactionId == event.finDoc.transactionId);
                   break;

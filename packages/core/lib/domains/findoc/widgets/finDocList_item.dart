@@ -74,7 +74,7 @@ class FinDocListItem extends StatelessWidget {
                   statusId: nextFinDocStatus[finDoc.statusId!])));
             }),
         Visibility(
-            visible: finDoc.docType == FinDocType.Order,
+            visible: finDoc.docType == FinDocType.order,
             child: IconButton(
               icon: Icon(Icons.edit),
               key: Key('edit$index'),
@@ -116,7 +116,7 @@ class FinDocListItem extends StatelessWidget {
                         "${finDoc.otherUser!.lastName ?? ''}\n"
                         "${finDoc.otherUser!.companyName ?? ''}",
                         key: Key("otherUser$index"))),
-                if (!isPhone && docType != FinDocType.Payment)
+                if (!isPhone && docType != FinDocType.payment)
                   SizedBox(width: 80, child: Text("${finDoc.items.length}")),
               ],
             ),
@@ -152,7 +152,7 @@ class FinDocListItem extends StatelessWidget {
             children: items(finDoc, index),
             trailing: Container(
                 width: isPhone ? 100 : 195,
-                child: docType == FinDocType.Shipment
+                child: docType == FinDocType.shipment
                     ? (sales
                         ? IconButton(
                             key: Key('nextStatus$index'),
@@ -208,8 +208,8 @@ class FinDocListItem extends StatelessWidget {
                         child: Text("${e.itemSeqId.toString()}"),
                       ),
                       title: Text(
-                          finDoc.docType == FinDocType.Order ||
-                                  finDoc.docType == FinDocType.Invoice
+                          finDoc.docType == FinDocType.order ||
+                                  finDoc.docType == FinDocType.invoice
                               ? "ProductId: ${e.productId} "
                                       "Description: ${e.description} "
                                       "Quantity: ${e.quantity.toString()} "
@@ -219,7 +219,7 @@ class FinDocListItem extends StatelessWidget {
                                       ? ''
                                       : " Rental: ${e.rentalFromDate.toString().substring(0, 10)} "
                                           "${e.rentalThruDate.toString().substring(0, 10)}")
-                              : finDoc.docType == FinDocType.Transaction
+                              : finDoc.docType == FinDocType.transaction
                                   ? "ProductId: ${e.productId} "
                                       "Description: ${e.description} "
                                   : "ProductId: ${e.productId} " // shipment

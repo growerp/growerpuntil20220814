@@ -23,7 +23,7 @@ abstract class FinDocEvent extends Equatable {
 class FinDocFetch extends FinDocEvent {
   const FinDocFetch(
       {this.finDocId = '',
-      this.docType = FinDocType.Unknown,
+      this.docType = FinDocType.unknown,
       this.customerCompanyPartyId = '',
       this.searchString = '',
       this.refresh = false});

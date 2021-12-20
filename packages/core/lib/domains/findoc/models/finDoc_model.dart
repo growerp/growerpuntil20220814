@@ -72,19 +72,19 @@ class FinDoc with _$FinDoc {
 
   String? id() => idIsNull()
       ? 'New'
-      : docType == FinDocType.Order
+      : docType == FinDocType.order
           ? orderId
-          : docType == FinDocType.Shipment
+          : docType == FinDocType.shipment
               ? shipmentId
-              : docType == FinDocType.Payment
+              : docType == FinDocType.payment
                   ? paymentId
-                  : docType == FinDocType.Invoice
+                  : docType == FinDocType.invoice
                       ? invoiceId
-                      : docType == FinDocType.Transaction
+                      : docType == FinDocType.transaction
                           ? transactionId
                           : null;
 
-  List<String?> otherIds() => docType == FinDocType.Order
+  List<String?> otherIds() => docType == FinDocType.order
       ? ['shipment', shipmentId, 'invoice', invoiceId, 'payment', paymentId]
       : [];
 

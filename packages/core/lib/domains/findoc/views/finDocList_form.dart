@@ -43,7 +43,7 @@ class FinDocListForm extends StatelessWidget {
       onlyRental: onlyRental,
       statusId: statusId,
     );
-    if (docType == FinDocType.Order) {
+    if (docType == FinDocType.order) {
       if (sales)
         return BlocProvider<SalesOrderBloc>(
             create: (context) =>
@@ -56,7 +56,7 @@ class FinDocListForm extends StatelessWidget {
                 ..add(FinDocFetch()),
           child: finDocList);
     }
-    if (docType == FinDocType.Invoice) {
+    if (docType == FinDocType.invoice) {
       if (sales)
         return BlocProvider<SalesInvoiceBloc>(
             create: (context) =>
@@ -69,7 +69,7 @@ class FinDocListForm extends StatelessWidget {
                 ..add(FinDocFetch()),
           child: finDocList);
     }
-    if (docType == FinDocType.Payment) {
+    if (docType == FinDocType.payment) {
       if (sales)
         return BlocProvider<SalesPaymentBloc>(
             create: (context) =>
@@ -82,7 +82,7 @@ class FinDocListForm extends StatelessWidget {
                 ..add(FinDocFetch()),
           child: finDocList);
     }
-    if (docType == FinDocType.Shipment) {
+    if (docType == FinDocType.shipment) {
       if (sales)
         return BlocProvider<OutgoingShipmentBloc>(
             create: (context) =>
@@ -112,7 +112,7 @@ class FinDocList extends StatefulWidget {
   const FinDocList({
     this.key,
     this.sales = true,
-    this.docType = FinDocType.Unknown,
+    this.docType = FinDocType.unknown,
     this.onlyRental = false,
     this.statusId,
   });
@@ -144,40 +144,40 @@ class FinDocListState extends State<FinDocList> {
     super.initState();
     search = false;
     entityName =
-        classificationId == 'AppHotel' && widget.docType == FinDocType.Order
+        classificationId == 'AppHotel' && widget.docType == FinDocType.order
             ? 'Reservation'
             : widget.docType.toString();
     _scrollController.addListener(_onScroll);
     switch (widget.docType) {
-      case FinDocType.Order:
+      case FinDocType.order:
         widget.sales
             ? _finDocBloc =
                 BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc
             : _finDocBloc =
                 BlocProvider.of<PurchaseOrderBloc>(context) as FinDocBloc;
         break;
-      case FinDocType.Invoice:
+      case FinDocType.invoice:
         widget.sales
             ? _finDocBloc =
                 BlocProvider.of<SalesInvoiceBloc>(context) as FinDocBloc
             : _finDocBloc =
                 BlocProvider.of<PurchaseInvoiceBloc>(context) as FinDocBloc;
         break;
-      case FinDocType.Payment:
+      case FinDocType.payment:
         widget.sales
             ? _finDocBloc =
                 BlocProvider.of<SalesPaymentBloc>(context) as FinDocBloc
             : _finDocBloc =
                 BlocProvider.of<PurchasePaymentBloc>(context) as FinDocBloc;
         break;
-      case FinDocType.Shipment:
+      case FinDocType.shipment:
         widget.sales
             ? _finDocBloc =
                 BlocProvider.of<OutgoingShipmentBloc>(context) as FinDocBloc
             : _finDocBloc =
                 BlocProvider.of<IncomingShipmentBloc>(context) as FinDocBloc;
         break;
-      case FinDocType.Transaction:
+      case FinDocType.transaction:
         _finDocBloc = BlocProvider.of<TransactionBloc>(context) as FinDocBloc;
     }
   }
@@ -212,7 +212,7 @@ class FinDocListState extends State<FinDocList> {
                         child: Center(
                             heightFactor: 20,
                             child: Text(
-                                (widget.docType == FinDocType.Shipment
+                                (widget.docType == FinDocType.shipment
                                         ? "no open ${widget.sales ? 'outgoing' : 'incoming'} "
                                         : "no ${widget.sales ? 'sales' : 'purchase'} ") +
                                     "${entityName}s found!",
@@ -272,7 +272,7 @@ class FinDocListState extends State<FinDocList> {
             hasReachedMax = state.hasReachedMax;
 
             return Scaffold(
-                floatingActionButton: widget.docType == FinDocType.Order
+                floatingActionButton: widget.docType == FinDocType.order
                     ? FloatingActionButton(
                         key: Key("addNew"),
                         onPressed: () async {
@@ -298,22 +298,22 @@ class FinDocListState extends State<FinDocList> {
       };
 
       // finally create the Blocbuilder
-      if (widget.docType == FinDocType.Order) {
+      if (widget.docType == FinDocType.order) {
         if (widget.sales)
           return BlocBuilder<SalesOrderBloc, FinDocState>(builder: builder);
         return BlocBuilder<PurchaseOrderBloc, FinDocState>(builder: builder);
       }
-      if (widget.docType == FinDocType.Invoice) {
+      if (widget.docType == FinDocType.invoice) {
         if (widget.sales)
           return BlocBuilder<SalesInvoiceBloc, FinDocState>(builder: builder);
         return BlocBuilder<PurchaseInvoiceBloc, FinDocState>(builder: builder);
       }
-      if (widget.docType == FinDocType.Payment) {
+      if (widget.docType == FinDocType.payment) {
         if (widget.sales)
           return BlocBuilder<SalesPaymentBloc, FinDocState>(builder: builder);
         return BlocBuilder<PurchasePaymentBloc, FinDocState>(builder: builder);
       }
-      if (widget.docType == FinDocType.Shipment) {
+      if (widget.docType == FinDocType.shipment) {
         if (widget.sales)
           return BlocBuilder<OutgoingShipmentBloc, FinDocState>(
               builder: builder);

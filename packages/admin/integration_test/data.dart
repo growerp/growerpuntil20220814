@@ -260,7 +260,7 @@ final List<FinDoc> finDocs = finDocsFromJson('''
 List<FinDoc> purchaseOrders = [
   FinDoc(
       sales: false,
-      docType: FinDocType.Order,
+      docType: FinDocType.order,
       description: 'The first order',
       otherUser: User(companyName: 'achilles'),
       items: [
@@ -271,7 +271,7 @@ List<FinDoc> purchaseOrders = [
       ]),
   FinDoc(
       sales: false,
-      docType: FinDocType.Order,
+      docType: FinDocType.order,
       description: 'The second order',
       otherUser: User(companyName: 'ips corp'),
       items: [
@@ -282,7 +282,7 @@ List<FinDoc> purchaseOrders = [
       ]),
   FinDoc(
       sales: false,
-      docType: FinDocType.Order,
+      docType: FinDocType.order,
       description: 'The third order',
       otherUser: User(companyName: 'core & main'),
       items: [
@@ -293,7 +293,7 @@ List<FinDoc> purchaseOrders = [
       ]),
   FinDoc(
       sales: false,
-      docType: FinDocType.Order,
+      docType: FinDocType.order,
       description: 'The fourth order',
       otherUser: User(companyName: 'MELCO LININGS'),
       items: [

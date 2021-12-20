@@ -58,7 +58,7 @@ class FinDocListHeader extends StatelessWidget {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                           ),
-                          hintText: docType == FinDocType.Shipment
+                          hintText: docType == FinDocType.shipment
                               ? 'enter order or shipment ID'
                               : 'search with ID'),
                       onChanged: ((value) {
@@ -80,7 +80,7 @@ class FinDocListHeader extends StatelessWidget {
                     Expanded(
                         child: Text((sales ? "Customer" : "Supplier") +
                             ' name & Company')),
-                    if (!isPhone && docType != FinDocType.Payment)
+                    if (!isPhone && docType != FinDocType.payment)
                       SizedBox(
                           width: 80,
                           child: Text("#items", textAlign: TextAlign.left)),

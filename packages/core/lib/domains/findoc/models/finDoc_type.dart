@@ -25,27 +25,27 @@ class FinDocType {
     return _name;
   }
 
-  static const FinDocType Order = FinDocType._('order');
-  static const FinDocType Invoice = FinDocType._('invoice');
-  static const FinDocType Payment = FinDocType._('payment');
-  static const FinDocType Shipment = FinDocType._('shipment');
-  static const FinDocType Transaction = FinDocType._('transaction');
-  static const FinDocType Unknown = FinDocType._('??');
+  static const FinDocType order = FinDocType._('Order');
+  static const FinDocType invoice = FinDocType._('Invoice');
+  static const FinDocType payment = FinDocType._('Payment');
+  static const FinDocType shipment = FinDocType._('Shipment');
+  static const FinDocType transaction = FinDocType._('Transaction');
+  static const FinDocType unknown = FinDocType._('??');
 
   static FinDocType tryParse(String val) {
     switch (val.toLowerCase()) {
       case 'order':
-        return Order;
+        return order;
       case 'invoice':
-        return Invoice;
+        return invoice;
       case 'payment':
-        return Payment;
+        return payment;
       case 'shipment':
-        return Shipment;
+        return shipment;
       case 'transaction':
-        return Transaction;
+        return transaction;
       default:
-        return Unknown;
+        return unknown;
     }
   }
 }

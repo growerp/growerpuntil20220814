@@ -35,7 +35,7 @@ class GanttForm extends StatelessWidget {
     return MultiBlocProvider(providers: [
       BlocProvider<FinDocBloc>(
           create: (context) =>
-              FinDocBloc(context.read<APIRepository>(), true, FinDocType.Order)
+              FinDocBloc(context.read<APIRepository>(), true, FinDocType.order)
                 ..add(FinDocFetch())),
       BlocProvider<AssetBloc>(
           create: (context) =>

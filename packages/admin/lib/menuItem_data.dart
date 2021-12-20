@@ -128,7 +128,7 @@ List<MenuItem> menuItems = [
     tabItems: [
       TabItem(
         form: const FinDocListForm(
-            key: Key('SalesOrder'), sales: true, docType: FinDocType.Order),
+            key: Key('SalesOrder'), sales: true, docType: FinDocType.order),
         label: 'Sales orders',
         icon: const Icon(Icons.home),
       ),
@@ -142,7 +142,7 @@ List<MenuItem> menuItems = [
       ),
       TabItem(
         form: const FinDocListForm(
-            key: Key('PurchaseOrder'), sales: false, docType: FinDocType.Order),
+            key: Key('PurchaseOrder'), sales: false, docType: FinDocType.order),
         label: 'Purchase orders',
         icon: const Icon(Icons.home),
       ),
@@ -172,7 +172,7 @@ List<MenuItem> menuItems = [
         form: const FinDocListForm(
             key: Key('ShipmentsOut'),
             sales: true,
-            docType: FinDocType.Shipment),
+            docType: FinDocType.shipment),
         label: 'Outgoing shipments',
         icon: const Icon(Icons.send),
       ),
@@ -180,7 +180,7 @@ List<MenuItem> menuItems = [
         form: const FinDocListForm(
             key: Key('ShipmentsIn'),
             sales: false,
-            docType: FinDocType.Shipment),
+            docType: FinDocType.shipment),
         label: 'Incoming shipments',
         icon: const Icon(Icons.call_received),
       ),

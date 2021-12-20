@@ -34,7 +34,7 @@ class FinDocDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (finDoc.docType == FinDocType.Order) {
+    if (finDoc.docType == FinDocType.order) {
       FinDocBloc finDocBloc = BlocProvider.of<FinDocBloc>(context);
       if (finDoc.sales)
         return BlocProvider<SalesCartBloc>(
@@ -145,6 +145,8 @@ class _MyFinDocState extends State<FinDocPage> {
 
     print("FinDocDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
         "${finDoc.docType.toString()}");
+    String test = "FinDocDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
+        "${finDoc.docType}";
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: ScaffoldMessenger(
@@ -156,7 +158,7 @@ class _MyFinDocState extends State<FinDocPage> {
                     child: Dialog(
                         key: Key(
                             "FinDocDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
-                            "${finDoc.docType.toString()}"),
+                            "${finDoc.docType}"),
                         insetPadding: EdgeInsets.all(10),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
