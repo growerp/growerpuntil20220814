@@ -119,14 +119,14 @@ class APIRepository {
       {bool mainCompanies = true, // just owner organizations or all?
       int? start,
       int? limit,
-      String? searchString}) async {
+      String? filter}) async {
     try {
       final response = await dioClient
           .get('rest/s1/growerp/100/Companies', null, queryParameters: {
         'mainCompanies': mainCompanies.toString(),
         'start': start,
         'limit': limit,
-        'filter': searchString,
+        'filter': filter,
       });
       return ApiResult.success(data: companiesFromJson(response.toString()));
     } catch (e) {

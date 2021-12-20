@@ -46,7 +46,7 @@ class _OpportunityState extends State<OpportunityDialog> {
   String? _selectedStageId;
   User? _selectedAccount;
   User? _selectedLead;
-  late var repos;
+  late APIRepository repos;
   late OpportunityBloc _opportunityBloc;
 
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -126,7 +126,8 @@ class _OpportunityState extends State<OpportunityDialog> {
   }
 
   Widget _opportunityForm() {
-    Future<List<User>> getData(List<String> userGroups, String filter) async {
+    Future<List<User>> getData(
+        List<UserGroup> userGroups, String filter) async {
       ApiResult<List<User>> result = await repos.getUser(
           userGroups: userGroups, filter: _leadSearchBoxController.text);
       return result.when(
@@ -215,7 +216,7 @@ class _OpportunityState extends State<OpportunityDialog> {
         itemAsString: (User? u) => "${u?.firstName}, ${u?.lastName} "
             "${u?.companyName}",
         onFind: (String filter) =>
-            getData([UserGroup.Lead.toString()], _leadSearchBoxController.text),
+            getData([UserGroup.Lead], _leadSearchBoxController.text),
         onChanged: (User? newValue) {
           _selectedLead = newValue;
         },
@@ -243,7 +244,7 @@ class _OpportunityState extends State<OpportunityDialog> {
               itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
                   "${u?.companyName}",
               onFind: (String filter) => getData(
-                  [UserGroup.Employee.toString(), UserGroup.Admin.toString()],
+                  [UserGroup.Employee, UserGroup.Admin],
                   _accountSearchBoxController.text),
               onChanged: (User? newValue) {
                 _selectedAccount = newValue;

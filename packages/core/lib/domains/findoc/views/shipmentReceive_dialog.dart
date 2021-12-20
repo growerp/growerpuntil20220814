@@ -32,7 +32,7 @@ class ShipmentReceiveDialog extends StatefulWidget {
 
 class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
   final FinDoc finDoc; // incoming finDoc
-  late var repos;
+  late APIRepository repos;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   late bool isPhone;

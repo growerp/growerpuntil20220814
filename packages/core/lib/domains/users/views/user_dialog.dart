@@ -24,8 +24,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:core/templates/@templates.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
-
-import '../../../api_repository.dart';
+import 'package:core/api_repository.dart';
 
 /// User dialog with a required User class input containing the userGroup
 class UserDialog extends StatelessWidget {
@@ -63,7 +62,7 @@ class _UserState extends State<UserPage> {
   String? _retrieveDataError;
   late User updatedUser;
   late Authenticate authenticate;
-  late var repos;
+  late APIRepository repos;
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();

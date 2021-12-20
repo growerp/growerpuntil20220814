@@ -65,7 +65,7 @@ class _MyFinDocState extends State<FinDocPage> {
   final _descriptionController = TextEditingController();
   final _userSearchBoxController = TextEditingController();
   late CartBloc _cartBloc;
-  late var repos;
+  late APIRepository repos;
   late FinDoc finDocUpdated;
   User? _selectedUser;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =

@@ -54,7 +54,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       // start from record zero for initial and refresh
       if (state.status == CompanyStatus.initial || event.refresh) {
         ApiResult<List<Company>> compResult =
-            await repos.getCompanies(searchString: event.searchString);
+            await repos.getCompanies(filter: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: CompanyStatus.success,
@@ -70,7 +70,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
         ApiResult<List<Company>> compResult =
-            await repos.getCompanies(searchString: event.searchString);
+            await repos.getCompanies(filter: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: CompanyStatus.success,
@@ -84,7 +84,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       // get next page also for search
 
       ApiResult<List<Company>> compResult =
-          await repos.getCompanies(searchString: event.searchString);
+          await repos.getCompanies(filter: event.searchString);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: CompanyStatus.success,
