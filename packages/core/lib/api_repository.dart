@@ -256,7 +256,7 @@ class APIRepository {
           });
       //   return ApiResult.success(data: User.fromJson(jsonDecode(response)));
       // ignore: avoid_as
-      final l = json.decode(response) as Iterable;
+      final l = json.decode(response)["users"] as Iterable;
       return ApiResult.success(data: List<User>.from(l.map<User>(
           // ignore: avoid_as, avoid_annotating_with_dynamic
           (dynamic i) => User.fromJson(i as Map<String, dynamic>))));
