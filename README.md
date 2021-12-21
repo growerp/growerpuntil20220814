@@ -4,7 +4,7 @@ more info at https://www.growerp.org (be patient, also in flutter, needs to load
 
 # Repository organization(Only 'master' is valid)
 All apps are stored in a single repository in the packages directory:
-- admin: a ganeral ERP application.
+- admin: a general ERP application.
 - Hotel: an ERP vertical for hotels
 - ecommerce: an ecommerce frontend.
 - freelance: An app for freelancers selling products and services.
