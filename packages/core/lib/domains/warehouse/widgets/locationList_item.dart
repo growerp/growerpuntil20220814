@@ -12,23 +12,35 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../warehouse.dart';
+import '../../domains.dart';
 
 class LocationListItem extends StatelessWidget {
   const LocationListItem(
-      {Key? key, required this.location, required this.index})
+      {Key? key,
+      required this.location,
+      required this.index,
+      required this.isPhone})
       : super(key: key);
 
   final Location location;
   final int index;
+  final bool isPhone;
 
   @override
   Widget build(BuildContext context) {
     final _locationBloc = BlocProvider.of<LocationBloc>(context);
+    final d = (String s) => Decimal.parse(s);
+    Decimal qohTotal = d('0');
+    Decimal promiseTotal = d('0');
+    for (Asset asset in location.assets!) {
+      qohTotal += asset.quantityOnHand ?? d('0');
+      promiseTotal += asset.availableToPromise ?? d('0');
+    }
     return Material(
-        child: ListTile(
+        child: ExpansionTile(
             leading: CircleAvatar(
               backgroundColor: Colors.green,
               child: Text(location.locationName != null
@@ -39,34 +51,58 @@ class LocationListItem extends StatelessWidget {
               Expanded(
                   child: Text("${location.locationName}",
                       key: Key('locName$index'))),
-              Expanded(
-                  child: Visibility(
-                      visible: location.assets![0].assetId.isNotEmpty,
-                      child: Row(children: [
-                        Expanded(
-                            child: Text("${location.assets![0].assetName}",
-                                key: Key('statusId$index'))),
-                        Expanded(
-                            child: Text(
-                                "${location.assets![0].product?.productName}",
-                                key: Key('productName$index'))),
-                      ])))
+              SizedBox(
+                  width: 70,
+                  child: Text(
+                    "${qohTotal.toString()}",
+                    textAlign: TextAlign.center,
+                  )),
             ]),
-            onTap: () async {
-              await showDialog(
-                  barrierDismissible: true,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return BlocProvider.value(
-                        value: _locationBloc, child: LocationDialog(location));
-                  });
-            },
-            trailing: IconButton(
-              key: Key('delete$index'),
-              icon: Icon(Icons.delete_forever),
-              onPressed: () {
-                _locationBloc.add(LocationDelete(location));
-              },
-            )));
+            children: items(location, index),
+            trailing: Container(
+                width: isPhone ? 100 : 195,
+                child: Row(children: [
+                  IconButton(
+                      key: Key('delete$index'),
+                      icon: Icon(Icons.delete_forever),
+                      onPressed: () {
+                        _locationBloc.add(LocationDelete(location));
+                      }),
+                  IconButton(
+                      key: Key('edit$index'),
+                      icon: Icon(Icons.edit),
+                      onPressed: () async {
+                        await showDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return BlocProvider.value(
+                                  value: _locationBloc,
+                                  child: LocationDialog(location));
+                            });
+                      }),
+                ]))));
+  }
+
+  List<Widget> items(Location location, int index) {
+    int assetCount = 1;
+    return List.from(location.assets!.map(
+        (e) => Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+              SizedBox(width: 50),
+              Expanded(
+                child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Colors.green,
+                      maxRadius: 10,
+                      child: Text("${(assetCount++).toString()}"),
+                    ),
+                    title: Row(children: [
+                      Expanded(child: Text("${e.assetName}")),
+                      Text("${e.statusId}")
+                    ]),
+                    subtitle: Text("QOH: ${e.quantityOnHand?.toString()} "
+                        "ATP: ${e.availableToPromise?.toString()}")),
+              )
+            ])));
   }
 }

@@ -241,7 +241,7 @@ class FinDocListState extends State<FinDocList> {
       dynamic builder = (context, state) {
         switch (state.status) {
           case FinDocStatus.failure:
-            return Center(child: Text('failed to fetch documents'));
+            return Center(child: Text('error: ${state.message}'));
           case FinDocStatus.success:
             search = state.search;
             finDocsAll = state.finDocs;

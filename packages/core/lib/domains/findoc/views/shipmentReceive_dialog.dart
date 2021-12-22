@@ -69,8 +69,7 @@ class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
                     onTap: () {},
                     child: Dialog(
                         key: Key(
-                            "ShipmentReceiveDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
-                            "${finDoc.docType.toString()}"),
+                            "ShipmentReceiveDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
                         insetPadding: EdgeInsets.all(20),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),

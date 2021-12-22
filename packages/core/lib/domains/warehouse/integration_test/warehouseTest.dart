@@ -55,7 +55,8 @@ class WarehouseTest {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       await CommonTest.tapByKey(tester, 'nextStatus0', seconds: 5);
       await CommonTest.checkWidgetKey(tester, 'ShipmentReceiveDialogPurchase');
-      await CommonTest.checkWidgetKey(tester, 'id0', 0);
+      await CommonTest.tapByKey(tester, 'update');
+      await CommonTest.tapByKey(tester, 'update', seconds: 5);
     }
   }
 

@@ -51,7 +51,7 @@ class AdminDbForm extends StatelessWidget {
             menuItems[3],
             "Categories: ${authenticate.stats?.categories}",
             "Products: ${authenticate.stats?.products}",
-            "Assets: ${authenticate.stats?.products}",
+            "Assets: ${authenticate.stats?.assets}",
             "",
           ),
           makeDashboardItem(

@@ -13,9 +13,9 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:core/domains/domains.dart';
-
+import 'package:responsive_framework/responsive_framework.dart';
 import '../../../api_repository.dart';
+import '../../domains.dart';
 
 class LocationListForm extends StatelessWidget {
   @override
@@ -50,6 +50,7 @@ class _LocationsState extends State<LocationList> {
 
   @override
   Widget build(BuildContext context) {
+    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return BlocBuilder<LocationBloc, LocationState>(
       builder: (context, state) {
         switch (state.status) {
@@ -100,7 +101,8 @@ class _LocationsState extends State<LocationList> {
                                 direction: DismissDirection.startToEnd,
                                 child: LocationListItem(
                                     location: state.locations[index],
-                                    index: index));
+                                    index: index,
+                                    isPhone: isPhone));
                       },
                     )));
           default:

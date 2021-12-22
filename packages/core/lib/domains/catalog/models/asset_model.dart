@@ -34,7 +34,6 @@ String assetsToJson(List<Asset> data) =>
 
 @freezed
 class Asset with _$Asset {
-  Asset._();
   factory Asset({
     @Default("") String assetId,
     String? assetClassId, // room, table etc
@@ -44,10 +43,11 @@ class Asset with _$Asset {
     @DecimalConverter() Decimal? availableToPromise,
     String? parentAssetId,
     @DateTimeConverter() DateTime? receivedDate,
-    @DateTimeConverter() DateTime? expectedEndOfLife,
+    @DateTimeConverter() DateTime? expectedEndOfLifeDate,
     Product? product,
     Location? location,
   }) = _Asset;
+  Asset._();
 
   factory Asset.fromJson(Map<String, dynamic> json) => _$AssetFromJson(json);
 }

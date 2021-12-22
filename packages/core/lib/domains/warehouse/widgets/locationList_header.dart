@@ -25,58 +25,53 @@ class LocationListHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final _locationBloc = BlocProvider.of<LocationBloc>(context);
     String searchString = '';
-//    final textTheme = Theme.of(context).textTheme;
     return Material(
-        child: ListTile(
-            onTap: (() {
-              _locationBloc
-                  .add(search ? LocationSearchOff() : LocationSearchOn());
-            }),
-            leading: Image.asset('assets/images/search.png', height: 30),
-            title: search
-                ? Row(children: <Widget>[
-                    SizedBox(
-                        width:
-                            ResponsiveWrapper.of(context).isSmallerThan(TABLET)
-                                ? MediaQuery.of(context).size.width - 250
-                                : MediaQuery.of(context).size.width - 350,
-                        child: TextField(
-                          textInputAction: TextInputAction.go,
-                          autofocus: true,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                            ),
-                            hintText: "search in ID, name and description...",
+        child: Column(children: [
+      ListTile(
+          onTap: (() {
+            _locationBloc
+                .add(search ? LocationSearchOff() : LocationSearchOn());
+          }),
+          leading: Image.asset('assets/images/search.png', height: 30),
+          title: search
+              ? Row(children: <Widget>[
+                  SizedBox(
+                      width: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                          ? MediaQuery.of(context).size.width - 250
+                          : MediaQuery.of(context).size.width - 350,
+                      child: TextField(
+                        textInputAction: TextInputAction.go,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.transparent),
                           ),
-                          onChanged: ((value) {
-                            searchString = value;
-                          }),
-                          onSubmitted: ((value) {
-                            _locationBloc
-                                .add(LocationFetch(searchString: value));
-                            _locationBloc.add(search
-                                ? LocationSearchOff()
-                                : LocationSearchOn());
-                          }),
-                        )),
-                    ElevatedButton(
-                        child: Text('Search'),
-                        onPressed: () {
-                          _locationBloc
-                              .add(LocationFetch(searchString: searchString));
-                        })
-                  ])
-                : Column(children: [
-                    Row(children: <Widget>[
-                      Expanded(child: Text("Loc.Name")),
-                      Expanded(child: Text("Asset Name")),
-                      if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
-                        Expanded(child: Text("Status")),
-                      Expanded(child: Text("Product name")),
-                    ]),
-                    Divider(color: Colors.black),
-                  ]),
-            trailing: Text(' ')));
+                          hintText: "search in ID, name and description...",
+                        ),
+                        onChanged: ((value) {
+                          searchString = value;
+                        }),
+                        onSubmitted: ((value) {
+                          _locationBloc.add(LocationFetch(searchString: value));
+                          _locationBloc.add(search
+                              ? LocationSearchOff()
+                              : LocationSearchOn());
+                        }),
+                      )),
+                  ElevatedButton(
+                      child: Text('Search'),
+                      onPressed: () {
+                        _locationBloc
+                            .add(LocationFetch(searchString: searchString));
+                      })
+                ])
+              : Row(children: <Widget>[
+                  Expanded(child: Text("Loc.Name")),
+                  SizedBox(width: 80, child: Text("Quantity\nOn Hand")),
+                ]),
+          subtitle: Text('Product Name'),
+          trailing: SizedBox(width: 50)),
+      Divider(color: Colors.black),
+    ]));
   }
 }
