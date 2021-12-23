@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:decimal/decimal.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:core/services/jsonConverters.dart';
@@ -21,18 +20,6 @@ import 'package:core/domains/domains.dart';
 
 part 'opportunity_model.freezed.dart';
 part 'opportunity_model.g.dart';
-
-Opportunity opportunityFromJson(String str) =>
-    Opportunity.fromJson(json.decode(str)["opportunity"]);
-String opportunityToJson(Opportunity data) =>
-    '{"opportunity":' + json.encode(data.toJson()) + "}";
-
-List<Opportunity> opportunitiesFromJson(String str) => List<Opportunity>.from(
-    json.decode(str)["opportunities"].map((x) => Opportunity.fromJson(x)));
-String opportunitiesToJson(List<Opportunity> data) =>
-    '{"opportunities":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 @freezed
 class Opportunity with _$Opportunity {

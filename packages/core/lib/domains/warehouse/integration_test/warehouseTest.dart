@@ -12,10 +12,10 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/domains/domains.dart';
 import 'package:flutter_test/flutter_test.dart';
 import '../../common/integration_test/commonTest.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class WarehouseTest {
   static Future<void> selectIncomingShipments(WidgetTester tester) async {
@@ -24,11 +24,9 @@ class WarehouseTest {
   }
 
   static Future<void> checkIncomingShipments(WidgetTester tester) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    expect(str != null, true,
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
-    List<FinDoc> orders = finDocsFromJson(str!);
     List<FinDoc> finDocs = [];
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
@@ -42,15 +40,13 @@ class WarehouseTest {
           true);
       await CommonTest.tapByKey(tester, 'id0'); // close items
     }
-    await prefs.setString('PurchaseOrders', finDocsToJson(finDocs));
+    await PersistFunctions.persistFinDocList(finDocs);
   }
 
   static Future<void> acceptInWarehouse(WidgetTester tester) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    expect(str != null, true,
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
-    List<FinDoc> orders = finDocsFromJson(str!);
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       await CommonTest.tapByKey(tester, 'nextStatus0', seconds: 5);

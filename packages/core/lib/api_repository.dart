@@ -76,6 +76,22 @@ class APIRepository {
     dioClient = DioClient(_baseUrl, dio, interceptors: interceptors);
   }
 
+  /// Json model List decoding
+  ApiResult<List<T>> getResponseList<T>(String name, String result,
+      T Function(Map<String, dynamic> json) fromJson) {
+    final l = json.decode(result)[name] as Iterable;
+    return ApiResult.success(data: List<T>.from(l.map<T>(
+        // ignore: avoid_as, avoid_annotating_with_dynamic
+        (dynamic i) => fromJson(i as Map<String, dynamic>))));
+  }
+
+  /// Json model decoding
+  ApiResult<T> getResponse<T>(String name, String result,
+      T Function(Map<String, dynamic> json) fromJson) {
+    return ApiResult.success(
+        data: fromJson(json.decode(result)[name] as Map<String, dynamic>));
+  }
+
   Future<ApiResult<bool>> getConnected() async {
     try {
       final response = await dioClient.get('growerp/moquiSessionToken', null);
@@ -96,7 +112,8 @@ class APIRepository {
     try {
       final response =
           await dioClient.get('rest/s1/growerp/100/Authenticate', apiKey!);
-      return ApiResult.success(data: authenticateFromJson(response.toString()));
+      return getResponse<Authenticate>(
+          "authenticate", response, (json) => Authenticate.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -129,7 +146,8 @@ class APIRepository {
             'limit': limit,
             'filter': filter,
           });
-      return ApiResult.success(data: companiesFromJson(response.toString()));
+      return getResponseList<Company>(
+          "companies", response, (json) => Company.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -142,7 +160,8 @@ class APIRepository {
           queryParameters: <String, dynamic>{
             'sales': sales,
           });
-      return ApiResult.success(data: itemTypesFromJson(response.toString()));
+      return getResponseList<ItemType>(
+          "itemTypes", response, (json) => ItemType.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -180,7 +199,8 @@ class APIRepository {
           'demoData': demoData.toString()
         },
       );
-      return ApiResult.success(data: authenticateFromJson(response.toString()));
+      return getResponse<Authenticate>(
+          "authenticate", response, (json) => Authenticate.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -196,7 +216,8 @@ class APIRepository {
         'classificationId': classificationId,
         'moquiSessionToken': this.sessionToken
       });
-      return ApiResult.success(data: authenticateFromJson(response.toString()));
+      return getResponse<Authenticate>(
+          "authenticate", response, (json) => Authenticate.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -260,11 +281,8 @@ class APIRepository {
             'limit': limit,
             'search': searchString
           });
-      // ignore: avoid_as
-      final l = json.decode(response)["users"] as Iterable;
-      return ApiResult.success(data: List<User>.from(l.map<User>(
-          // ignore: avoid_as, avoid_annotating_with_dynamic
-          (dynamic i) => User.fromJson(i as Map<String, dynamic>))));
+      return getResponseList<User>(
+          "users", response, (json) => User.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -282,9 +300,7 @@ class APIRepository {
             'ownerPartyId': ownerPartyId,
             'password': kReleaseMode ? null : 'qqqqqq9!',
           });
-      return ApiResult.success(
-          data: User.fromJson(
-              json.decode(response)['user'] as Map<String, dynamic>));
+      return getResponse<User>("user", response, (json) => User.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -297,9 +313,7 @@ class APIRepository {
         'user': jsonEncode(user.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(
-          data: User.fromJson(
-              json.decode(response)['user'] as Map<String, dynamic>));
+      return getResponse<User>("user", response, (json) => User.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -312,9 +326,7 @@ class APIRepository {
             'user': jsonEncode(user.toJson()),
             'moquiSessionToken': sessionToken
           });
-      return ApiResult.success(
-          data: User.fromJson(
-              json.decode(response)['user'] as Map<String, dynamic>));
+      return getResponse<User>("user", response, (json) => User.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -325,9 +337,7 @@ class APIRepository {
       final response = await dioClient.delete(
           'rest/s1/growerp/100/User', apiKey!,
           queryParameters: <String, dynamic>{'partyId': partyId});
-      return ApiResult.success(
-          data: User.fromJson(
-              json.decode(response)['user'] as Map<String, dynamic>));
+      return getResponse<User>("user", response, (json) => User.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -341,7 +351,8 @@ class APIRepository {
         'company': company,
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: companyFromJson(response.toString()));
+      return getResponse<Company>(
+          "company", response, (json) => Company.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -354,7 +365,8 @@ class APIRepository {
         'company': company,
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: companyFromJson(response.toString()));
+      return getResponse<Company>(
+          "company", response, (json) => Company.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -364,10 +376,11 @@ class APIRepository {
     try {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/FinDoc', apiKey!, data: <String, dynamic>{
-        'finDoc': finDocToJson(finDoc),
+        'finDoc': jsonEncode(finDoc.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: finDocFromJson(response.toString()));
+      return getResponse<FinDoc>(
+          "finDoc", response, (json) => FinDoc.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -377,10 +390,11 @@ class APIRepository {
     try {
       final response = await dioClient.post(
           'rest/s1/growerp/100/FinDoc', apiKey!, data: <String, dynamic>{
-        'finDoc': finDocToJson(finDoc),
+        'finDoc': jsonEncode(finDoc.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: finDocFromJson(response.toString()));
+      return getResponse<FinDoc>(
+          "finDoc", response, (json) => FinDoc.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -391,10 +405,11 @@ class APIRepository {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/FinDocShipment', apiKey!,
           data: <String, dynamic>{
-            'finDoc': finDocToJson(finDoc),
+            'finDoc': jsonEncode(finDoc.toJson()),
             'moquiSessionToken': sessionToken
           });
-      return ApiResult.success(data: finDocFromJson(response.toString()));
+      return getResponse<FinDoc>(
+          "finDoc", response, (json) => FinDoc.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -427,7 +442,8 @@ class APIRepository {
             'classificationId': classificationId,
             'customerCompanyPartyId': customerCompanyPartyId,
           });
-      return ApiResult.success(data: finDocsFromJson(response.toString()));
+      return getResponseList<FinDoc>(
+          "finDocs", response, (json) => FinDoc.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -469,7 +485,8 @@ class APIRepository {
             'search': searchString,
             'classificationId': classificationId,
           });
-      return ApiResult.success(data: categoriesFromJson(response.toString()));
+      return getResponseList<cat.Category>(
+          "categories", response, (json) => cat.Category.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -481,11 +498,12 @@ class APIRepository {
       final response = await dioClient.post(
           'rest/s1/growerp/100/Category', apiKey!,
           data: <String, dynamic>{
-            'category': categoryToJson(category),
+            'category': jsonEncode(category.toJson()),
             'classificationId': classificationId,
             'moquiSessionToken': sessionToken
           });
-      return ApiResult.success(data: categoryFromJson(response.toString()));
+      return getResponse<cat.Category>(
+          "category", response, (json) => cat.Category.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -496,11 +514,12 @@ class APIRepository {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/Category', apiKey!,
           data: <String, dynamic>{
-            'category': categoryToJson(category),
+            'category': jsonEncode(category.toJson()),
             'classificationId': classificationId,
             'moquiSessionToken': sessionToken
           });
-      return ApiResult.success(data: categoryFromJson(response.toString()));
+      return getResponse<cat.Category>(
+          "category", response, (json) => cat.Category.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -511,9 +530,10 @@ class APIRepository {
       final response = await dioClient.delete(
           'rest/s1/growerp/100/Category', apiKey!,
           queryParameters: <String, dynamic>{
-            'category': categoryToJson(category)
+            'category': jsonEncode(category.toJson()),
           });
-      return ApiResult.success(data: categoryFromJson(response.toString()));
+      return getResponse<cat.Category>(
+          "category", response, (json) => cat.Category.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -534,22 +554,8 @@ class APIRepository {
             'filter': filter,
             'search': searchString,
           });
-/*
-      ApiResult<List<T>> getResult<T>(String name, String result, fj) {
-        final l = json.decode(result)[name] as Iterable;
-        return ApiResult.success(data: List<T>.from(l.map<T>(
-            // ignore: avoid_as, avoid_annotating_with_dynamic
-            (dynamic i) => fj.fromJson(i as Map<String, dynamic>))));
-      }
-
-      return getResult<Location>("locations", response, Location);
-*/
-
-      // ignore: avoid_as
-      final l = json.decode(response)["locations"] as Iterable;
-      return ApiResult.success(data: List<Location>.from(l.map<Location>(
-          // ignore: avoid_as, avoid_annotating_with_dynamic
-          (dynamic i) => Location.fromJson(i as Map<String, dynamic>))));
+      return getResponseList<Location>(
+          "locations", response, (json) => Location.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -562,9 +568,8 @@ class APIRepository {
         'location': jsonEncode(location.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(
-          data: Location.fromJson(
-              json.decode(response)['user'] as Map<String, dynamic>));
+      return getResponse<Location>(
+          "location", response, (json) => Location.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -578,9 +583,8 @@ class APIRepository {
         'location': jsonEncode(location.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(
-          data: Location.fromJson(
-              json.decode(response)['location'] as Map<String, dynamic>));
+      return getResponse<Location>(
+          "location", response, (json) => Location.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -593,9 +597,8 @@ class APIRepository {
           queryParameters: <String, dynamic>{
             'location': jsonEncode(location.toJson()),
           });
-      return ApiResult.success(
-          data: Location.fromJson(
-              json.decode(response)['user'] as Map<String, dynamic>));
+      return getResponse<Location>(
+          "location", response, (json) => Location.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -625,7 +628,8 @@ class APIRepository {
             'filter': filter,
             'search': searchString
           });
-      return ApiResult.success(data: productsFromJson(response.toString()));
+      return getResponseList<Product>(
+          "products", response, (json) => Product.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -636,10 +640,11 @@ class APIRepository {
     try {
       final response = await dioClient.post(
           'rest/s1/growerp/100/Product', apiKey!, data: <String, dynamic>{
-        'product': productToJson(product),
+        'product': jsonEncode(product.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: productFromJson(response.toString()));
+      return getResponse<Product>(
+          "product", response, (json) => Product.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -650,10 +655,11 @@ class APIRepository {
     try {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/Product', apiKey!, data: <String, dynamic>{
-        'product': productToJson(product),
+        'product': jsonEncode(product.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: productFromJson(response.toString()));
+      return getResponse<Product>(
+          "product", response, (json) => Product.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -664,9 +670,10 @@ class APIRepository {
       final response = await dioClient.delete(
           'rest/s1/growerp/100/Product', apiKey!,
           queryParameters: <String, dynamic>{
-            'product': productToJson(product)
+            'product': jsonEncode(product.toJson()),
           });
-      return ApiResult.success(data: productFromJson(response.toString()));
+      return getResponse<Product>(
+          "product", response, (json) => Product.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -693,7 +700,8 @@ class APIRepository {
             'filter': filter,
             'search': searchString
           });
-      return ApiResult.success(data: assetsFromJson(response.toString()));
+      return getResponseList<Asset>(
+          "assets", response, (json) => Asset.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -703,10 +711,11 @@ class APIRepository {
     try {
       final response = await dioClient.post(
           'rest/s1/growerp/100/Asset', apiKey!, data: <String, dynamic>{
-        'asset': assetToJson(asset),
+        'asset': jsonEncode(asset.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: assetFromJson(response.toString()));
+      return getResponse<Asset>(
+          "asset", response, (json) => Asset.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -716,10 +725,11 @@ class APIRepository {
     try {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/Asset', apiKey!, data: <String, dynamic>{
-        'asset': assetToJson(asset),
+        'asset': jsonEncode(asset.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: assetFromJson(response.toString()));
+      return getResponse<Asset>(
+          "asset", response, (json) => Asset.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -729,8 +739,11 @@ class APIRepository {
     try {
       final response = await dioClient.delete(
           'rest/s1/growerp/100/Asset', apiKey!,
-          queryParameters: <String, dynamic>{'asset': assetToJson(asset)});
-      return ApiResult.success(data: assetFromJson(response.toString()));
+          queryParameters: <String, dynamic>{
+            'asset': jsonEncode(asset.toJson()),
+          });
+      return getResponse<Asset>(
+          "asset", response, (json) => Asset.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -753,8 +766,8 @@ class APIRepository {
             'my': my.toString(),
             'search': searchString
           });
-      return ApiResult.success(
-          data: opportunitiesFromJson(response.toString()));
+      return getResponseList<Opportunity>(
+          "opportunities", response, (json) => Opportunity.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -764,11 +777,13 @@ class APIRepository {
       Opportunity opportunity) async {
     try {
       final response = await dioClient.post(
-          'rest/s1/growerp/100/Opportunity', apiKey!, data: <String, dynamic>{
-        'opportunity': opportunityToJson(opportunity),
-        'moquiSessionToken': sessionToken
-      });
-      return ApiResult.success(data: opportunityFromJson(response.toString()));
+          'rest/s1/growerp/100/Opportunity', apiKey!,
+          data: <String, dynamic>{
+            'opportunity': jsonEncode(opportunity.toJson()),
+            'moquiSessionToken': sessionToken
+          });
+      return getResponse<Opportunity>(
+          "opportunity", response, (json) => Opportunity.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -778,11 +793,13 @@ class APIRepository {
       Opportunity opportunity) async {
     try {
       final response = await dioClient.patch(
-          'rest/s1/growerp/100/Opportunity', apiKey!, data: <String, dynamic>{
-        'opportunity': opportunityToJson(opportunity),
-        'moquiSessionToken': sessionToken
-      });
-      return ApiResult.success(data: opportunityFromJson(response.toString()));
+          'rest/s1/growerp/100/Opportunity', apiKey!,
+          data: <String, dynamic>{
+            'opportunity': jsonEncode(opportunity.toJson()),
+            'moquiSessionToken': sessionToken
+          });
+      return getResponse<Opportunity>(
+          "opportunity", response, (json) => Opportunity.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -794,9 +811,10 @@ class APIRepository {
       final response = await dioClient.delete(
           'rest/s1/growerp/100/Opportunity', apiKey!,
           queryParameters: <String, dynamic>{
-            'opportunity': opportunityToJson(opportunity)
+            'opportunity': jsonEncode(opportunity.toJson()),
           });
-      return ApiResult.success(data: opportunityFromJson(response.toString()));
+      return getResponse<Opportunity>(
+          "opportunity", response, (json) => Opportunity.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -806,8 +824,8 @@ class APIRepository {
     try {
       final response =
           await dioClient.get('rest/s1/growerp/100/Ledger', apiKey!);
-      return ApiResult.success(
-          data: glAccountListFromJson(response.toString()));
+      return getResponseList<GlAccount>(
+          "glAccountList", response, (json) => GlAccount.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -835,7 +853,8 @@ class APIRepository {
             'search': searchString,
             'filter': filter,
           });
-      return ApiResult.success(data: chatRoomsFromJson(response.toString()));
+      return getResponseList<ChatRoom>(
+          "chatRooms", response, (json) => ChatRoom.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -845,10 +864,11 @@ class APIRepository {
     try {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/ChatRoom', apiKey!, data: <String, dynamic>{
-        'chatRoom': chatRoomToJson(chatRoom),
+        'chatRoom': jsonEncode(chatRoom.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: chatRoomFromJson(response.toString()));
+      return getResponse<ChatRoom>(
+          "chatRoom", response, (json) => ChatRoom.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -858,10 +878,11 @@ class APIRepository {
     try {
       final response = await dioClient.post(
           'rest/s1/growerp/100/ChatRoom', apiKey!, data: <String, dynamic>{
-        'chatRoom': chatRoomToJson(chatRoom),
+        'chatRoom': jsonEncode(chatRoom.toJson()),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: chatRoomFromJson(response.toString()));
+      return getResponse<ChatRoom>(
+          "chatRoom", response, (json) => ChatRoom.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -873,7 +894,8 @@ class APIRepository {
           'rest/s1/growerp/100/ChatRoom', apiKey!,
           queryParameters: <String, dynamic>{'chatRoomId': chatRoomId});
       //    return response.data["chatRoomId"];
-      return ApiResult.success(data: chatRoomFromJson(response.toString()));
+      return getResponse<ChatRoom>(
+          "chatRoom", response, (json) => ChatRoom.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -893,7 +915,8 @@ class APIRepository {
             'limit': limit,
             'search': searchString,
           });
-      return ApiResult.success(data: chatMessagesFromJson(response.toString()));
+      return getResponseList<ChatMessage>(
+          "chatMessages", response, (json) => ChatMessage.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -915,7 +938,8 @@ class APIRepository {
             'open': open.toString(),
             'search': searchString
           });
-      return ApiResult.success(data: tasksFromJson(response.toString()));
+      return getResponseList<Task>(
+          "tasks", response, (json) => Task.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -928,7 +952,7 @@ class APIRepository {
             'task': taskToJson(task),
             'moquiSessionToken': sessionToken
           });
-      return ApiResult.success(data: taskFromJson(response.toString()));
+      return getResponse<Task>("task", response, (json) => Task.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -941,7 +965,7 @@ class APIRepository {
         'task': taskToJson(task),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: taskFromJson(response.toString()));
+      return getResponse<Task>("task", response, (json) => Task.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -954,7 +978,8 @@ class APIRepository {
         'timeEntry': timeEntryToJson(timeEntry),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: timeEntryFromJson(response.toString()));
+      return getResponse<TimeEntry>(
+          "timeEntry", response, (json) => TimeEntry.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -967,7 +992,8 @@ class APIRepository {
         'timeEntry': timeEntryToJson(timeEntry),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: timeEntryFromJson(response.toString()));
+      return getResponse<TimeEntry>(
+          "timeEntry", response, (json) => TimeEntry.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
@@ -980,7 +1006,8 @@ class APIRepository {
         'timeEntry': timeEntryToJson(timeEntry),
         'moquiSessionToken': sessionToken
       });
-      return ApiResult.success(data: timeEntryFromJson(response.toString()));
+      return getResponse<TimeEntry>(
+          "timeEntry", response, (json) => TimeEntry.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

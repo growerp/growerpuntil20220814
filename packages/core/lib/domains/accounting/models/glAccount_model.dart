@@ -12,22 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
 part 'glAccount_model.freezed.dart';
 part 'glAccount_model.g.dart';
-
-GlAccount glAccountFromJson(String str) => GlAccount.fromJson(json.decode(str));
-String glAccountToJson(GlAccount data) => json.encode(data.toJson());
-
-List<GlAccount> glAccountListFromJson(String str) => List<GlAccount>.from(
-    json.decode(str)["glAccountList"].map((x) => GlAccount.fromJson(x)));
-String glAccountListToJson(List<GlAccount> data) =>
-    '{"glAccountList":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 @freezed
 class GlAccount with _$GlAccount {

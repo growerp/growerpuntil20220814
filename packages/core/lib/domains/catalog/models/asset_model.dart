@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:core/domains/domains.dart';
 import 'package:decimal/decimal.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -20,17 +19,6 @@ import 'package:core/services/jsonConverters.dart';
 
 part 'asset_model.freezed.dart';
 part 'asset_model.g.dart';
-
-Asset assetFromJson(String str) => Asset.fromJson(json.decode(str)["asset"]);
-String assetToJson(Asset data) =>
-    '{"asset":' + json.encode(data.toJson()) + "}";
-
-List<Asset> assetsFromJson(String str) =>
-    List<Asset>.from(json.decode(str)["assets"].map((x) => Asset.fromJson(x)));
-String assetsToJson(List<Asset> data) =>
-    '{"assets":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 @freezed
 class Asset with _$Asset {

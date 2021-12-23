@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -20,18 +19,6 @@ import 'package:core/services/jsonConverters.dart';
 
 part 'category_model.freezed.dart';
 part 'category_model.g.dart';
-
-Category categoryFromJson(String str) =>
-    Category.fromJson(json.decode(str)["category"]);
-String categoryToJson(Category data) =>
-    '{"category":' + json.encode(data.toJson()) + "}";
-
-List<Category> categoriesFromJson(String str) => List<Category>.from(
-    json.decode(str)["categories"].map((x) => Category.fromJson(x)));
-String categoriesToJson(List<Category> data) =>
-    '{"categories":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 @freezed
 class Category with _$Category {

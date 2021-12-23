@@ -66,7 +66,7 @@ class LocationListHeader extends StatelessWidget {
                       })
                 ])
               : Row(children: <Widget>[
-                  Expanded(child: Text("Loc.Name")),
+                  Expanded(child: Text("Loc.Name[ID]")),
                   SizedBox(width: 80, child: Text("Quantity\nOn Hand")),
                 ]),
           subtitle: Text('Product Name'),

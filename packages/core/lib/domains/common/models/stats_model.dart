@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:decimal/decimal.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:core/services/jsonConverters.dart';
@@ -20,10 +19,6 @@ import 'package:flutter/foundation.dart';
 
 part 'stats_model.freezed.dart';
 part 'stats_model.g.dart';
-
-Stats statsFromJson(String str) => Stats.fromJson(json.decode(str)["stats"]);
-String statsToJson(Stats data) =>
-    '{"stats":' + json.encode(data.toJson()) + "}";
 
 @freezed
 class Stats with _$Stats {

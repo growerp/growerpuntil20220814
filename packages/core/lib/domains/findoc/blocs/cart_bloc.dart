@@ -13,6 +13,8 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
+import 'package:core/domains/common/functions/persist_functions.dart';
 import 'package:decimal/decimal.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,8 +56,9 @@ class CartBloc extends Bloc<CartEvent, CartState>
       if (state.status == CartStatus.initial) {
         finDoc = event.finDoc;
         if (event.finDoc.idIsNull()) {
-          FinDoc? result =
-              await getCart(event.finDoc.sales, event.finDoc.docType!);
+          // get saved cart
+          FinDoc? result = await PersistFunctions.getFinDoc(
+              event.finDoc.sales, event.finDoc.docType!);
           if (result != null) finDoc = result;
         }
         emit(
@@ -118,7 +121,8 @@ class CartBloc extends Bloc<CartEvent, CartState>
     Emitter<CartState> emit,
   ) async {
     try {
-      await saveCart(event.finDoc);
+      // save cart
+      await PersistFunctions.persistFinDoc(event.finDoc);
       return emit(
         state.copyWith(
           status: CartStatus.inProcess,
@@ -148,7 +152,8 @@ class CartBloc extends Bloc<CartEvent, CartState>
           description: event.finDoc.description,
           items: items,
           grandTotal: grandTotal);
-      await saveCart(finDoc);
+      // save cart
+      await PersistFunctions.persistFinDoc(finDoc);
       emit(
         state.copyWith(
           status: CartStatus.inProcess,
@@ -175,7 +180,8 @@ class CartBloc extends Bloc<CartEvent, CartState>
         grandTotal += x.quantity! * x.price!;
       });
       finDoc = finDoc.copyWith(grandTotal: grandTotal);
-      await saveCart(finDoc);
+      // save cart
+      await PersistFunctions.persistFinDoc(finDoc);
       emit(
         state.copyWith(
           status: CartStatus.inProcess,
@@ -194,7 +200,8 @@ class CartBloc extends Bloc<CartEvent, CartState>
   ) async {
     try {
       finDoc = FinDoc(sales: sales, docType: docType, items: []);
-      await clearSavedCart(finDoc);
+      // clear cart
+      await PersistFunctions.removeFinDoc(finDoc);
       return emit(
         state.copyWith(
           status: CartStatus.inProcess,
@@ -205,23 +212,5 @@ class CartBloc extends Bloc<CartEvent, CartState>
       emit(state.copyWith(
           status: CartStatus.failure, message: error.toString()));
     }
-  }
-
-  Future<void> saveCart(FinDoc finDoc) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-        "${finDoc.sales.toString}${finDoc.docType}", finDocToJson(finDoc));
-  }
-
-  Future<void> clearSavedCart(FinDoc finDoc) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove("${finDoc.sales.toString}${finDoc.docType}");
-  }
-
-  Future<FinDoc?> getCart(bool sales, FinDocType docType) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? cartContent = prefs.getString("${sales.toString}$docType");
-    if (cartContent != null) return finDocFromJson(cartContent.toString());
-    return null;
   }
 }

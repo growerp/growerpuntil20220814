@@ -12,24 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:core/domains/domains.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'chatRoom_model.freezed.dart';
 part 'chatRoom_model.g.dart';
-
-ChatRoom chatRoomFromJson(String str) =>
-    ChatRoom.fromJson(json.decode(str)["chatRoom"]);
-String chatRoomToJson(ChatRoom data) =>
-    '{"chatRoom":' + json.encode(data.toJson()) + "}";
-
-List<ChatRoom> chatRoomsFromJson(String str) => List<ChatRoom>.from(
-    json.decode(str)["chatRooms"].map((x) => ChatRoom.fromJson(x)));
-String chatRoomsToJson(List<ChatRoom> data) =>
-    '{"chatRooms":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 // backend relation: product -> chatRoom -> chatRoomReservation -> orderItem
 

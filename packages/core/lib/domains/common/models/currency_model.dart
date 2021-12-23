@@ -12,24 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
 part 'currency_model.freezed.dart';
 part 'currency_model.g.dart';
-
-Currency currencyFromJson(String str) =>
-    Currency.fromJson(json.decode(str)["currency"]);
-String currencyToJson(Currency data) =>
-    '{"currency":' + json.encode(data.toJson()) + "}";
-
-List<Currency> currenciesFromJson(String str) => List<Currency>.from(
-    json.decode(str)["currencies"].map((x) => Currency.fromJson(x)));
-String currenciesToJson(List<Currency> data) =>
-    '{"currencies":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 @freezed
 class Currency with _$Currency {

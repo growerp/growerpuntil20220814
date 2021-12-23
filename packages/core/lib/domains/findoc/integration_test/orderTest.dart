@@ -12,9 +12,9 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/domains/common/functions/persist_functions.dart';
 import 'package:core/domains/domains.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/integration_test/commonTest.dart';
 import '../models/models.dart';
 
@@ -26,51 +26,44 @@ class OrderTest {
 
   static Future<void> createPurchaseOrder(
       WidgetTester tester, List<FinDoc> finDocs) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    if (str == null) {
-      List<FinDoc> orders = [];
-      for (FinDoc order in finDocs) {
-        // enter purchase order dialog
-        await CommonTest.tapByKey(tester, 'addNew');
-        await CommonTest.checkWidgetKey(tester, 'FinDocDialogPurchaseOrder');
-        await CommonTest.tapByKey(tester, 'clear', seconds: 2);
-        await CommonTest.enterText(tester, 'description', order.description!);
-        // enter supplier
-        await CommonTest.enterDropDownSearch(
-            tester, 'supplier', order.otherUser!.companyName!);
-        // add product data
-        await CommonTest.tapByKey(tester, 'addProduct', seconds: 1);
-        await CommonTest.checkWidgetKey(tester, 'addProductItemDialog');
-        await CommonTest.enterDropDownSearch(
-            tester, 'product', order.items[0].description!);
-        await CommonTest.drag(tester, listViewName: 'listView3');
-        await CommonTest.enterText(
-            tester, 'price', order.items[0].price.toString());
-        await CommonTest.enterText(
-            tester, 'quantity', order.items[0].quantity.toString());
-        await CommonTest.tapByKey(tester, 'ok');
-        // create order
-        await CommonTest.tapByKey(tester, 'update', seconds: 5);
-        // get productId
-        await CommonTest.tapByKey(tester, 'id0');
-        FinDocItem newItem = order.items[0].copyWith(
-            productId: CommonTest.getTextField('itemLine0').split(' ')[1]);
-        await CommonTest.tapByKey(tester, 'id0');
-        // save order with orderId and productId
-        orders.add(order.copyWith(
-            orderId: CommonTest.getTextField('id0'), items: [newItem]));
-      }
-      // save when successfull
-      await prefs.setString('PurchaseOrders', finDocsToJson(orders));
+    List<FinDoc> orders = [];
+    for (FinDoc order in finDocs) {
+      // enter purchase order dialog
+      await CommonTest.tapByKey(tester, 'addNew');
+      await CommonTest.checkWidgetKey(tester, 'FinDocDialogPurchaseOrder');
+      await CommonTest.tapByKey(tester, 'clear', seconds: 2);
+      await CommonTest.enterText(tester, 'description', order.description!);
+      // enter supplier
+      await CommonTest.enterDropDownSearch(
+          tester, 'supplier', order.otherUser!.companyName!);
+      // add product data
+      await CommonTest.tapByKey(tester, 'addProduct', seconds: 1);
+      await CommonTest.checkWidgetKey(tester, 'addProductItemDialog');
+      await CommonTest.enterDropDownSearch(
+          tester, 'product', order.items[0].description!);
+      await CommonTest.drag(tester, listViewName: 'listView3');
+      await CommonTest.enterText(
+          tester, 'price', order.items[0].price.toString());
+      await CommonTest.enterText(
+          tester, 'quantity', order.items[0].quantity.toString());
+      await CommonTest.tapByKey(tester, 'ok');
+      // create order
+      await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      // get productId
+      await CommonTest.tapByKey(tester, 'id0');
+      FinDocItem newItem = order.items[0].copyWith(
+          productId: CommonTest.getTextField('itemLine0').split(' ')[1]);
+      await CommonTest.tapByKey(tester, 'id0');
+      // save order with orderId and productId
+      orders.add(order
+          .copyWith(orderId: CommonTest.getTextField('id0'), items: [newItem]));
     }
+    // save when successfull
+    await PersistFunctions.persistFinDocList(orders);
   }
 
   static Future<void> checkPurchaseOrder(WidgetTester tester) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    expect(str != null, true);
-    List<FinDoc> orders = finDocsFromJson(str!);
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       // check list
@@ -91,10 +84,7 @@ class OrderTest {
 
   static Future<void> sendPurchaseOrder(
       WidgetTester tester, List<FinDoc> orders) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    expect(str != null, true);
-    List<FinDoc> orders = finDocsFromJson(str!);
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       await CommonTest.tapByKey(tester, 'nextStatus0',

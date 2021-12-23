@@ -12,19 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
 part 'itemType_model.freezed.dart';
 part 'itemType_model.g.dart';
-
-List<ItemType> itemTypesFromJson(String str) => List<ItemType>.from(
-    json.decode(str)["itemTypes"].map((x) => ItemType.fromJson(x)));
-String itemTypesToJson(List<ItemType> data) =>
-    '{"itemTypes":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 @freezed
 class ItemType with _$ItemType {

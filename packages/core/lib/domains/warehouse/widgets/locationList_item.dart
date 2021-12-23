@@ -34,10 +34,8 @@ class LocationListItem extends StatelessWidget {
     final _locationBloc = BlocProvider.of<LocationBloc>(context);
     final d = (String s) => Decimal.parse(s);
     Decimal qohTotal = d('0');
-    Decimal promiseTotal = d('0');
     for (Asset asset in location.assets!) {
       qohTotal += asset.quantityOnHand ?? d('0');
-      promiseTotal += asset.availableToPromise ?? d('0');
     }
     return Material(
         child: ExpansionTile(
@@ -49,7 +47,8 @@ class LocationListItem extends StatelessWidget {
             ),
             title: Row(children: <Widget>[
               Expanded(
-                  child: Text("${location.locationName}",
+                  child: Text(
+                      "${location.locationName}[${location.locationId}]",
                       key: Key('locName$index'))),
               SizedBox(
                   width: 70,
@@ -101,7 +100,8 @@ class LocationListItem extends StatelessWidget {
                       Text("${e.statusId}")
                     ]),
                     subtitle: Text("QOH: ${e.quantityOnHand?.toString()} "
-                        "ATP: ${e.availableToPromise?.toString()}")),
+                        "ATP: ${e.availableToPromise?.toString()} "
+                        "Received:${e.receivedDate}")),
               )
             ])));
   }

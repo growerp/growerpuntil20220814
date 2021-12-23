@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:decimal/decimal.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:core/services/jsonConverters.dart';
@@ -20,21 +19,6 @@ import 'package:core/domains/domains.dart';
 
 part 'finDoc_model.freezed.dart';
 part 'finDoc_model.g.dart';
-
-//enum FinDocType { order, shipment, invoice, payment, transaction }
-//enum FinDocSales { sales, purchase } // true/false
-
-FinDoc finDocFromJson(String str) =>
-    FinDoc.fromJson(json.decode(str)["finDoc"]);
-String finDocToJson(FinDoc data) =>
-    '{"finDoc":' + json.encode(data.toJson()) + "}";
-
-List<FinDoc> finDocsFromJson(String str) => List<FinDoc>.from(
-    json.decode(str)["finDocs"].map((x) => FinDoc.fromJson(x)));
-String finDocsToJson(List<FinDoc> data) =>
-    '{"finDocs":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 @freezed
 class FinDoc with _$FinDoc {

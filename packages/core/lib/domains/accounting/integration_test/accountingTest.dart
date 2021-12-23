@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/domains/domains.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,11 +26,9 @@ class AccountingTest {
   }
 
   static Future<void> checkPurchaseInvoices(WidgetTester tester) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    expect(str != null, true,
-        reason: "need purchase orders from previous tests");
-    List<FinDoc> orders = finDocsFromJson(str!);
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
     List<FinDoc> finDocs = [];
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
@@ -48,15 +47,13 @@ class AccountingTest {
           CommonTest.getTextField('itemLine$seq').split(' ')[1]);
       await CommonTest.tapByKey(tester, 'id$seq'); // close items
     }
-    await prefs.setString('PurchaseOrders', finDocsToJson(finDocs));
+    await PersistFunctions.persistFinDocList(finDocs);
   }
 
   static Future<void> approvePurchaseInvoices(WidgetTester tester) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    expect(str != null, true,
-        reason: "need purchase orders from previous tests");
-    List<FinDoc> orders = finDocsFromJson(str!);
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       String seq = '0';
@@ -76,11 +73,9 @@ class AccountingTest {
   }
 
   static Future<void> checkPurchasePayments(WidgetTester tester) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    expect(str != null, true,
-        reason: "need purchase orders from previous tests");
-    List<FinDoc> orders = finDocsFromJson(str!);
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
     List<FinDoc> finDocs = [];
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
@@ -93,7 +88,7 @@ class AccountingTest {
       finDocs.add(order.copyWith(paymentId: paymentId));
       // check list
     }
-    await prefs.setString('PurchaseOrders', finDocsToJson(finDocs));
+    await PersistFunctions.persistFinDocList(finDocs);
   }
 
   static Future<void> selectTransactions(WidgetTester tester) async {
@@ -103,11 +98,9 @@ class AccountingTest {
   }
 
   static Future<void> checkTransactions(WidgetTester tester) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var str = prefs.getString('PurchaseOrders');
-    expect(str != null, true,
-        reason: "need purchase orders from previous tests");
-    List<FinDoc> orders = finDocsFromJson(str!);
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.invoiceId!);
       await CommonTest.doSearch(tester, searchString: order.paymentId!);

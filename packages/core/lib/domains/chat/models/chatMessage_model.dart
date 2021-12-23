@@ -12,28 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-// To parse this JSON data, do
-//
-//      chatMessage = chatMessageFromJson(jsonString);
-
-import 'dart:convert';
 import 'package:core/services/jsonConverters.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'chatMessage_model.freezed.dart';
 part 'chatMessage_model.g.dart';
-
-ChatMessage chatMessageFromJson(String str) =>
-    ChatMessage.fromJson(json.decode(str)["chatMessage"]);
-String chatMessageToJson(ChatMessage data) =>
-    '{"chatMessage":' + json.encode(data.toJson()) + "}";
-
-List<ChatMessage> chatMessagesFromJson(String str) => List<ChatMessage>.from(
-    json.decode(str)["chatMessages"].map((x) => ChatMessage.fromJson(x)));
-String chatMessagesToJson(List<ChatMessage> data) =>
-    '{"chatMessages":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
 
 // backend relation: product -> chatMessage -> chatMessageReservation -> orderItem
 

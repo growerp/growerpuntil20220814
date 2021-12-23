@@ -12,17 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
 part 'wsChatMessage_model.freezed.dart';
 part 'wsChatMessage_model.g.dart';
-
-WsChatMessage wsChatMessageFromJson(String str) =>
-    WsChatMessage.fromJson(json.decode(str));
-String wsChatMessageToJson(WsChatMessage data) =>
-    '{"wsChatMessage":' + json.encode(data.toJson()) + "}";
 
 @freezed
 class WsChatMessage with _$WsChatMessage {

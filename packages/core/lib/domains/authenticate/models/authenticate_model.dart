@@ -12,17 +12,11 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:core/domains/domains.dart';
 
 part 'authenticate_model.freezed.dart';
 part 'authenticate_model.g.dart';
-
-Authenticate authenticateFromJson(String str) =>
-    Authenticate.fromJson(json.decode(str));
-
-String authenticateToJson(Authenticate data) => json.encode(data.toJson());
 
 @freezed
 class Authenticate with _$Authenticate {
