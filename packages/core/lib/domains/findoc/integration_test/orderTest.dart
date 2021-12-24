@@ -95,6 +95,11 @@ class OrderTest {
     await CommonTest.gotoMainMenu(tester);
   }
 
-  static Future<void> checkOrderCompleted(
-      WidgetTester tester, List<FinDoc> orders) async {}
+  static Future<void> checkOrderCompleted(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.orderId!);
+      expect(CommonTest.getTextField('status0'), equals('Completed'));
+    }
+  }
 }

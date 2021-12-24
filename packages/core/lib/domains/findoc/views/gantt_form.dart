@@ -173,8 +173,8 @@ class GanttChart extends StatelessWidget {
         reservations = [];
         assets.forEach((asset) {
           finDocs.forEach((finDoc) {
-            if (finDoc.statusId != 'FinDocCreated' ||
-                finDoc.statusId != 'FinDocApproved') {
+            if (finDoc.status != FinDocStatusVal.Created ||
+                finDoc.status != FinDocStatusVal.Approved) {
               // create a findoc for every item
               finDoc.items.forEach((item) {
                 if (item.assetId == asset.assetId &&
@@ -392,9 +392,9 @@ class GanttChart extends StatelessWidget {
               child: Container(
                 // bar on screen
                 decoration: BoxDecoration(
-                    color: reservations[index].statusId == 'FinDocCreated'
+                    color: reservations[index].status == FinDocStatusVal.Created
                         ? Colors.yellow
-                        : reservations[index].statusId == 'FinDocApproved'
+                        : reservations[index].status == FinDocStatusVal.Approved
                             ? Colors.green
                             : Colors.brown.shade200,
                     borderRadius: borderRadius),

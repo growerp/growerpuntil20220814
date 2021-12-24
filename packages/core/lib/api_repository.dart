@@ -415,6 +415,20 @@ class APIRepository {
     }
   }
 
+  Future<ApiResult<FinDoc>> confirmPurchasePayment(String paymentId) async {
+    try {
+      final response = await dioClient.patch(
+          'rest/s1/growerp/100/Payment', apiKey!, data: <String, dynamic>{
+        'paymentId': paymentId,
+        'moquiSessionToken': sessionToken
+      });
+      return getResponse<FinDoc>(
+          "finDoc", response, (json) => FinDoc.fromJson(json));
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
   Future<ApiResult<List<FinDoc>>> getFinDoc(
       {int? start,
       int? limit,

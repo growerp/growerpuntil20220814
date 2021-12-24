@@ -13,6 +13,7 @@
  */
 
 import 'package:core/domains/domains.dart';
+import 'package:core/domains/findoc/findoc.dart';
 import 'package:core/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,13 +27,13 @@ class FinDocListForm extends StatelessWidget {
   final bool sales;
   final FinDocType docType;
   final bool onlyRental;
-  final String? statusId;
+  final String? status;
   const FinDocListForm(
       {this.key,
       required this.sales,
       required this.docType,
       this.onlyRental = false,
-      this.statusId});
+      this.status});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,7 @@ class FinDocListForm extends StatelessWidget {
       sales: sales,
       docType: docType,
       onlyRental: onlyRental,
-      statusId: statusId,
+      status: status,
     );
     if (docType == FinDocType.order) {
       if (sales)
@@ -108,13 +109,13 @@ class FinDocList extends StatefulWidget {
   final bool sales;
   final FinDocType docType;
   final bool onlyRental;
-  final String? statusId;
+  final String? status;
   const FinDocList({
     this.key,
     this.sales = true,
     this.docType = FinDocType.unknown,
     this.onlyRental = false,
-    this.statusId,
+    this.status,
   });
   @override
   FinDocListState createState() => FinDocListState();
@@ -246,20 +247,20 @@ class FinDocListState extends State<FinDocList> {
             search = state.search;
             finDocsAll = state.finDocs;
             // if rental (hotelroom) need to show checkin/out orders
-            if (widget.onlyRental && widget.statusId != null) {
-              if (widget.statusId == 'FinDocCreated') // = checkin
+            if (widget.onlyRental && widget.status != null) {
+              if (widget.status == FinDocStatusVal.Created) // = checkin
                 finDocs = finDocsAll
                     .where((el) =>
                         el.items[0].rentalFromDate != null &&
-                        el.statusId == widget.statusId &&
+                        el.status == widget.status &&
                         el.items[0].rentalFromDate!
                             .isSameDate(CustomizableDateTime.current))
                     .toList();
-              if (widget.statusId == 'FinDocApproved') // = checkout
+              if (widget.status == FinDocStatusVal.Approved) // = checkout
                 finDocs = finDocsAll
                     .where((el) =>
                         el.items[0].rentalThruDate != null &&
-                        el.statusId == widget.statusId &&
+                        el.status == widget.status &&
                         el.items[0].rentalThruDate!
                             .isSameDate(CustomizableDateTime.current))
                     .toList();

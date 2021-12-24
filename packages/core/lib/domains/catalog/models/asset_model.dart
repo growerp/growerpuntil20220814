@@ -34,6 +34,7 @@ class Asset with _$Asset {
     @DateTimeConverter() DateTime? expectedEndOfLifeDate,
     Product? product,
     Location? location,
+    String? acquireShipmentId,
   }) = _Asset;
   Asset._();
 

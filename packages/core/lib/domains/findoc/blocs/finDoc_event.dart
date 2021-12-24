@@ -52,3 +52,8 @@ class FinDocShipmentReceive extends FinDocEvent {
   const FinDocShipmentReceive(this.finDoc);
   final FinDoc finDoc;
 }
+
+class FinDocConfirmPayment extends FinDocEvent {
+  const FinDocConfirmPayment(this.payment);
+  final FinDoc payment;
+}

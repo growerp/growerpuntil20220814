@@ -15,7 +15,6 @@
 import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/domains/domains.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/integration_test/commonTest.dart';
 
 class AccountingTest {
@@ -109,6 +108,6 @@ class AccountingTest {
     }
   }
 
-  static Future<void> checkAccountingComplete(
-      WidgetTester tester, List<FinDoc> orders) async {}
+  static Future<void> confirmPurchasePayment(WidgetTester tester) async {}
+  static Future<void> checkPurchaseComplete(WidgetTester tester) async {}
 }

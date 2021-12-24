@@ -18,8 +18,11 @@ import 'package:responsive_framework/responsive_wrapper.dart';
 import '../warehouse.dart';
 
 class LocationListHeader extends StatelessWidget {
-  const LocationListHeader({Key? key, required this.search}) : super(key: key);
+  const LocationListHeader(
+      {Key? key, required this.search, required this.locationBloc})
+      : super(key: key);
   final bool search;
+  final LocationBloc locationBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -28,25 +31,33 @@ class LocationListHeader extends StatelessWidget {
     return Material(
         child: Column(children: [
       ListTile(
-          onTap: (() {
-            _locationBloc
-                .add(search ? LocationSearchOff() : LocationSearchOn());
-          }),
-          leading: Image.asset('assets/images/search.png', height: 30),
-          title: search
+          leading: GestureDetector(
+              key: Key('search'),
+              onTap: (() {
+                if (locationBloc.state.search) {
+                  locationBloc.add(LocationSearchOff());
+                  locationBloc.add(LocationFetch(refresh: true));
+                } else
+                  locationBloc.add(LocationSearchOn());
+              }),
+              child: Image.asset(
+                'assets/images/search.png',
+                height: 30,
+              )),
+          title: locationBloc.state.search
               ? Row(children: <Widget>[
                   SizedBox(
                       width: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
                           ? MediaQuery.of(context).size.width - 250
                           : MediaQuery.of(context).size.width - 350,
+                      key: Key('searchField'),
                       child: TextField(
-                        textInputAction: TextInputAction.go,
                         autofocus: true,
                         decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                           ),
-                          hintText: "search in ID, name and description...",
+                          hintText: "search in name loc/asset/product Id",
                         ),
                         onChanged: ((value) {
                           searchString = value;
@@ -59,6 +70,7 @@ class LocationListHeader extends StatelessWidget {
                         }),
                       )),
                   ElevatedButton(
+                      key: Key('searchButton'),
                       child: Text('Search'),
                       onPressed: () {
                         _locationBloc
@@ -71,7 +83,6 @@ class LocationListHeader extends StatelessWidget {
                 ]),
           subtitle: Text('Product Name'),
           trailing: SizedBox(width: 50)),
-      Divider(color: Colors.black),
     ]));
   }
 }

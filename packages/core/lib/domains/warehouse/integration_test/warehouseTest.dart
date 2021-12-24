@@ -23,6 +23,10 @@ class WarehouseTest {
         tester, 'dbWarehouse', 'FinDocListFormShipmentsIn', '3');
   }
 
+  static Future<void> selectWareHouseLocations(WidgetTester tester) async {
+    await CommonTest.selectOption(tester, 'dbWarehouse', 'LocationListForm');
+  }
+
   static Future<void> checkIncomingShipments(WidgetTester tester) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     expect(orders.isNotEmpty, true,
@@ -43,7 +47,7 @@ class WarehouseTest {
     await PersistFunctions.persistFinDocList(finDocs);
   }
 
-  static Future<void> acceptInWarehouse(WidgetTester tester) async {
+  static Future<void> acceptShipmentInWarehouse(WidgetTester tester) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
@@ -56,6 +60,14 @@ class WarehouseTest {
     }
   }
 
-  static Future<void> checkWarehouseQOH(
-      WidgetTester tester, List<FinDoc> orders) async {}
+  static Future<void> checkWarehouseQOH(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.shipmentId!);
+      expect(
+          order.items[0].quantity.toString(), CommonTest.getTextField('qoh0'));
+    }
+  }
 }

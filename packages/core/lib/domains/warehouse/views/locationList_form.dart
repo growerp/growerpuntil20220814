@@ -79,20 +79,25 @@ class _LocationsState extends State<LocationList> {
                       _locationBloc.add(LocationFetch(refresh: true));
                     }),
                     child: ListView.builder(
+                      key: Key('listView'),
                       physics: AlwaysScrollableScrollPhysics(),
                       itemCount: state.hasReachedMax
                           ? state.locations.length + 1
                           : state.locations.length + 2,
                       controller: _scrollController,
                       itemBuilder: (BuildContext context, int index) {
-                        if (state.locations.isEmpty)
-                          return Center(
-                              heightFactor: 20,
-                              child: Text("no locations found!",
-                                  key: Key('empty'),
-                                  textAlign: TextAlign.center));
                         if (index == 0)
-                          return LocationListHeader(search: search);
+                          return Column(children: [
+                            LocationListHeader(
+                                search: search, locationBloc: _locationBloc),
+                            Divider(color: Colors.black),
+                            Visibility(
+                                visible: state.locations.isEmpty,
+                                child: Center(
+                                    heightFactor: 20,
+                                    child: Text("No locations found",
+                                        textAlign: TextAlign.center)))
+                          ]);
                         index--;
                         return index >= state.locations.length
                             ? BottomLoader()

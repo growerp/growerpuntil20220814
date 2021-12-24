@@ -14,7 +14,6 @@
 
 // a replacement for enum:
 // https://medium.com/@ra9r/overcoming-the-limitations-of-dart-enum-8866df8a1c47
-
 /// acting role within the system.
 class FinDocStatusVal {
   final String _name;
@@ -32,16 +31,16 @@ class FinDocStatusVal {
   static const FinDocStatusVal Cancelled = FinDocStatusVal._('FinDocCancelled');
 
   static FinDocStatusVal? tryParse(String val) {
-    switch (val.toLowerCase()) {
-      case 'inpreparation':
+    switch (val) {
+      case 'FinDocPrep':
         return InPreparation;
-      case 'created':
+      case 'FinDocCreated':
         return Created;
-      case 'approved':
+      case 'FinDocApproved':
         return Approved;
-      case 'completed':
+      case 'FinDocCompleted':
         return Completed;
-      case 'cancelled':
+      case 'FinDocCancelled':
         return Cancelled;
     }
   }

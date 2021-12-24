@@ -52,7 +52,7 @@ class FinDocListItem extends StatelessWidget {
                 tooltip: 'Cancel ${finDoc.docType}',
                 onPressed: () {
                   finDocBloc.add(FinDocUpdate(
-                      finDoc.copyWith(statusId: 'FinDocCancelled')));
+                      finDoc.copyWith(status: FinDocStatusVal.Cancelled)));
                 },
               ),
               IconButton(
@@ -68,10 +68,12 @@ class FinDocListItem extends StatelessWidget {
         IconButton(
             key: Key('nextStatus$index'),
             icon: Icon(Icons.arrow_upward),
-            tooltip: nextFinDocStatus[finDocStatusValues[finDoc.statusId!]!],
+            tooltip: finDoc.status != null
+                ? FinDocStatusVal.nextStatus(finDoc.status!).toString()
+                : '',
             onPressed: () {
               finDocBloc.add(FinDocUpdate(finDoc.copyWith(
-                  statusId: nextFinDocStatus[finDoc.statusId!])));
+                  status: FinDocStatusVal.nextStatus(finDoc.status!))));
             }),
         Visibility(
             visible: finDoc.docType == FinDocType.order,
@@ -135,7 +137,7 @@ class FinDocListItem extends StatelessWidget {
               SizedBox(
                   width: 90,
                   child: Text("${finDoc.statusName(classificationId)}",
-                      key: Key("statusId$index"))),
+                      key: Key("status$index"))),
               if (!isPhone)
                 Expanded(
                     child: Text(
@@ -152,48 +154,67 @@ class FinDocListItem extends StatelessWidget {
             children: items(finDoc, index),
             trailing: Container(
                 width: isPhone ? 100 : 195,
-                child: docType == FinDocType.shipment
-                    ? (sales
-                        ? IconButton(
-                            key: Key('nextStatus$index'),
-                            icon: Icon(Icons.send),
-                            tooltip: nextFinDocStatus[
-                                finDocStatusValues[finDoc.statusId!]!],
-                            onPressed: () {
-                              finDocBloc.add(FinDocUpdate(finDoc.copyWith(
-                                  statusId:
-                                      nextFinDocStatus[finDoc.statusId!])));
-                            })
-                        : IconButton(
-                            key: Key('nextStatus$index'),
-                            icon: Icon(Icons.call_received),
-                            onPressed: () async {
-                              await showDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return BlocProvider.value(
-                                        value: finDocBloc,
-                                        child: ShipmentReceiveDialog(finDoc));
-                                  });
-                            }))
-                    : classificationId == 'AppHotel' &&
-                            finDoc.statusId == 'FinDocApproved'
-                        ? IconButton(
-                            key: Key('nextStatus$index'),
-                            icon: Icon(Icons.check_box_sharp),
-                            tooltip: nextFinDocStatus[
-                                finDocStatusValues[finDoc.statusId!]!],
-                            onPressed: () {
-                              finDocBloc.add(FinDocUpdate(finDoc.copyWith(
-                                  statusId:
-                                      nextFinDocStatus[finDoc.statusId!])));
-                            })
-                        : Visibility(
-                            visible:
-                                finDocStatusFixed[finDoc.statusId!] ?? true,
-                            child: buttons(),
-                          ))));
+                child: docType == FinDocType.payment &&
+                        sales == false &&
+                        finDoc.status == FinDocStatusVal.Approved
+                    ? GestureDetector(
+                        key: Key('nextStatus$index'),
+                        onTap: () {
+                          finDocBloc.add(FinDocConfirmPayment(finDoc));
+                        },
+                        child: Text(
+                          "Set to 'Paid'",
+                          textAlign: TextAlign.right,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      )
+                    : docType == FinDocType.shipment
+                        ? (sales
+                            ? IconButton(
+                                key: Key('nextStatus$index'),
+                                icon: Icon(Icons.send),
+                                tooltip:
+                                    FinDocStatusVal.nextStatus(finDoc.status!)
+                                        .toString(),
+                                onPressed: () {
+                                  finDocBloc.add(FinDocUpdate(finDoc.copyWith(
+                                      status: FinDocStatusVal.nextStatus(
+                                          finDoc.status!))));
+                                })
+                            : IconButton(
+                                key: Key('nextStatus$index'),
+                                icon: Icon(Icons.call_received),
+                                onPressed: () async {
+                                  await showDialog(
+                                      barrierDismissible: true,
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return BlocProvider.value(
+                                            value: finDocBloc,
+                                            child:
+                                                ShipmentReceiveDialog(finDoc));
+                                      });
+                                }))
+                        : classificationId == 'AppHotel' &&
+                                finDoc.status == FinDocStatusVal.Approved
+                            ? IconButton(
+                                key: Key('nextStatus$index'),
+                                icon: Icon(Icons.check_box_sharp),
+                                tooltip:
+                                    FinDocStatusVal.nextStatus(finDoc.status!)
+                                        .toString(),
+                                onPressed: () {
+                                  finDocBloc.add(FinDocUpdate(finDoc.copyWith(
+                                      status: FinDocStatusVal.nextStatus(
+                                          finDoc.status!))));
+                                })
+                            : Visibility(
+                                visible: finDoc.status != null &&
+                                    FinDocStatusVal.statusFixed(
+                                            finDoc.status!) ==
+                                        false,
+                                child: buttons(),
+                              ))));
   }
 
   List<Widget> items(FinDoc findoc, int index) {

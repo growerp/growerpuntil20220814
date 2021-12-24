@@ -54,6 +54,7 @@ class LocationListItem extends StatelessWidget {
                   width: 70,
                   child: Text(
                     "${qohTotal.toString()}",
+                    key: Key('qoh$index'),
                     textAlign: TextAlign.center,
                   )),
             ]),

@@ -13,14 +13,13 @@
  */
 
 import 'dart:async';
-import 'dart:convert';
 import 'package:core/domains/common/functions/persist_functions.dart';
+import 'package:core/domains/findoc/findoc.dart';
 import 'package:decimal/decimal.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import '../../domains.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'cart_event.dart';
 part 'cart_state.dart';
@@ -101,8 +100,8 @@ class CartBloc extends Bloc<CartEvent, CartState>
     Emitter<CartState> emit,
   ) async {
     try {
-      finDocBloc.add(
-          FinDocUpdate(event.finDoc.copyWith(statusId: 'FinDocCancelled')));
+      finDocBloc.add(FinDocUpdate(
+          event.finDoc.copyWith(status: FinDocStatusVal.Cancelled)));
       add(CartClear());
       return emit(
         state.copyWith(

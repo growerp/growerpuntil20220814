@@ -31,7 +31,9 @@ class FinDoc with _$FinDoc {
     String? invoiceId,
     String? paymentId,
     String? transactionId,
-    String? statusId,
+    @JsonKey(name: 'statusId')
+    @FinDocStatusValConverter()
+        FinDocStatusVal? status,
     @DateTimeConverter() DateTime? creationDate,
     @DateTimeConverter() DateTime? placedDate,
     String? description,
@@ -80,9 +82,9 @@ class FinDoc with _$FinDoc {
   String? statusName(String classificationId) {
     switch (classificationId) {
       case 'AppHotel':
-        return finDocStatusValuesHotel[statusId];
+        return finDocStatusValuesHotel[status.toString()];
       default:
-        return finDocStatusValues[statusId];
+        return finDocStatusValues[status.toString()];
     }
   }
 }
@@ -102,21 +104,4 @@ Map<String, String> finDocStatusValuesHotel = {
   'FinDocApproved': 'Checked In',
   'FinDocCompleted': 'Checked Out',
   'FinDocCancelled': 'Cancelled'
-};
-
-Map<String, String> nextFinDocStatus = {
-  // sequence of status values
-  'FinDocPrep': 'FinDocCreated',
-  'FinDocCreated': 'FinDocApproved',
-  'FinDocApproved': 'FinDocCompleted',
-};
-
-Map<String, bool> finDocStatusFixed = {
-  // if document can be updated
-  'FinDocPrep': true,
-  'FinDocCreated': true,
-  'FinDocApproved': false,
-  'FinDocCompleted': false,
-  'FinDocCancelled': false,
-  '': true,
 };

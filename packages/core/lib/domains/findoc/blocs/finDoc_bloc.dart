@@ -64,6 +64,7 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
     on<FinDocSearchOff>(((event, emit) => emit(state.copyWith(search: false))));
     on<FinDocUpdate>(_onFinDocUpdate);
     on<FinDocShipmentReceive>(_onFinDocShipmentReceive);
+    on<FinDocConfirmPayment>(_onFinDocConfirmPayment);
   }
 
   final APIRepository repos;
@@ -198,11 +199,35 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
             List<FinDoc> finDocs = List.from(state.finDocs);
             int index = finDocs
                 .indexWhere((element) => element.id() == event.finDoc.id());
-            finDocs.removeAt(index);
+            finDocs[index] = data;
             return state.copyWith(
                 status: FinDocStatus.success, finDocs: finDocs);
           },
           failure: (NetworkExceptions error) => state.copyWith(
+              status: FinDocStatus.failure, message: error.toString())));
+    } catch (error) {
+      emit(state.copyWith(
+          status: FinDocStatus.failure, message: error.toString()));
+    }
+  }
+
+  Future<void> _onFinDocConfirmPayment(
+    FinDocConfirmPayment event,
+    Emitter<FinDocState> emit,
+  ) async {
+    try {
+      ApiResult<FinDoc> compResult =
+          await repos.confirmPurchasePayment(event.payment.paymentId!);
+      return emit(compResult.when(
+          success: (data) {
+            List<FinDoc> finDocs = List.from(state.finDocs);
+            int index = finDocs.indexWhere(
+                (element) => element.id() == event.payment.paymentId);
+            finDocs[index] = data;
+            return state.copyWith(
+                status: FinDocStatus.success, finDocs: finDocs);
+          },
+          failure: (error) => state.copyWith(
               status: FinDocStatus.failure, message: error.toString())));
     } catch (error) {
       emit(state.copyWith(
