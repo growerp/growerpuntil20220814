@@ -241,8 +241,9 @@ class FinDocListItem extends StatelessWidget {
                                       : " Rental: ${e.rentalFromDate.toString().substring(0, 10)} "
                                           "${e.rentalThruDate.toString().substring(0, 10)}")
                               : finDoc.docType == FinDocType.transaction
-                                  ? "ProductId: ${e.productId} "
-                                      "Description: ${e.description} "
+                                  ? "Type: ${e.itemTypeId?.substring(3)}\n"
+                                      "GlAccount: ${e.glAccountId} "
+                                      "Amount: ${e.price} "
                                   : "ProductId: ${e.productId} " // shipment
                                       "Quantity: ${e.quantity.toString()} ",
                           key: Key('itemLine$index'))))

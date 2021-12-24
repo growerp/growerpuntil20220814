@@ -108,6 +108,27 @@ class AccountingTest {
     }
   }
 
-  static Future<void> confirmPurchasePayment(WidgetTester tester) async {}
-  static Future<void> checkPurchaseComplete(WidgetTester tester) async {}
+  /// assume we are in the purchase payment list
+  /// conform that a payment has been send
+  static Future<void> confirmPurchasePayment(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    List<FinDoc> finDocs = [];
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.paymentId!);
+      await CommonTest.tapByKey(tester, 'nextStatus0'); // open items
+    }
+  }
+
+  /// check if the purchase process has been completed successfuly
+  static Future<void> checkPurchaseComplete(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    List<FinDoc> finDocs = [];
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.paymentId!);
+    }
+  }
 }

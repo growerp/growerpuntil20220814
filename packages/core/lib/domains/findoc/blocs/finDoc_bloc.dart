@@ -215,6 +215,7 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
     FinDocConfirmPayment event,
     Emitter<FinDocState> emit,
   ) async {
+    emit(state.copyWith(status: FinDocStatus.loading));
     try {
       ApiResult<FinDoc> compResult =
           await repos.confirmPurchasePayment(event.payment.paymentId!);
@@ -225,12 +226,14 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
                 (element) => element.id() == event.payment.paymentId);
             finDocs[index] = data;
             return state.copyWith(
-                status: FinDocStatus.success, finDocs: finDocs);
+                status: FinDocStatus.success,
+                finDocs: finDocs,
+                message: 'Payment processed successfully');
           },
           failure: (error) => state.copyWith(
               status: FinDocStatus.failure, message: error.toString())));
     } catch (error) {
-      emit(state.copyWith(
+      return emit(state.copyWith(
           status: FinDocStatus.failure, message: error.toString()));
     }
   }

@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/domains/domains.dart';
 import 'package:core/domains/findoc/findoc.dart';
 import 'package:core/extensions.dart';
@@ -186,7 +187,6 @@ class FinDocListState extends State<FinDocList> {
   @override
   Widget build(BuildContext context) {
     limit = (MediaQuery.of(context).size.height / 60).round();
-    // used as a child if the blocBuilder
     Widget finDocsPage() {
       bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
       return RefreshIndicator(
@@ -239,10 +239,20 @@ class FinDocListState extends State<FinDocList> {
 
     return Builder(builder: (BuildContext context) {
       // used in the blocbuilder below
+
+      dynamic listener = (context, state) {
+        if (state.status == FinDocStatus.failure)
+          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+        if (state.status == FinDocStatus.success) {
+          HelperFunctions.showMessage(
+              context, '${state.message}', Colors.green);
+        }
+      };
+
       dynamic builder = (context, state) {
         switch (state.status) {
-          case FinDocStatus.failure:
-            return Center(child: Text('error: ${state.message}'));
+          case FinDocStatus.loading:
+            return CircularProgressIndicator();
           case FinDocStatus.success:
             search = state.search;
             finDocsAll = state.finDocs;
@@ -301,26 +311,34 @@ class FinDocListState extends State<FinDocList> {
       // finally create the Blocbuilder
       if (widget.docType == FinDocType.order) {
         if (widget.sales)
-          return BlocBuilder<SalesOrderBloc, FinDocState>(builder: builder);
-        return BlocBuilder<PurchaseOrderBloc, FinDocState>(builder: builder);
+          return BlocConsumer<SalesOrderBloc, FinDocState>(
+              listener: listener, builder: builder);
+        return BlocConsumer<PurchaseOrderBloc, FinDocState>(
+            listener: listener, builder: builder);
       }
       if (widget.docType == FinDocType.invoice) {
         if (widget.sales)
-          return BlocBuilder<SalesInvoiceBloc, FinDocState>(builder: builder);
-        return BlocBuilder<PurchaseInvoiceBloc, FinDocState>(builder: builder);
+          return BlocConsumer<SalesInvoiceBloc, FinDocState>(
+              listener: listener, builder: builder);
+        return BlocConsumer<PurchaseInvoiceBloc, FinDocState>(
+            listener: listener, builder: builder);
       }
       if (widget.docType == FinDocType.payment) {
         if (widget.sales)
-          return BlocBuilder<SalesPaymentBloc, FinDocState>(builder: builder);
-        return BlocBuilder<PurchasePaymentBloc, FinDocState>(builder: builder);
+          return BlocConsumer<SalesPaymentBloc, FinDocState>(
+              listener: listener, builder: builder);
+        return BlocConsumer<PurchasePaymentBloc, FinDocState>(
+            listener: listener, builder: builder);
       }
       if (widget.docType == FinDocType.shipment) {
         if (widget.sales)
-          return BlocBuilder<OutgoingShipmentBloc, FinDocState>(
-              builder: builder);
-        return BlocBuilder<IncomingShipmentBloc, FinDocState>(builder: builder);
+          return BlocConsumer<OutgoingShipmentBloc, FinDocState>(
+              listener: listener, builder: builder);
+        return BlocConsumer<IncomingShipmentBloc, FinDocState>(
+            listener: listener, builder: builder);
       }
-      return BlocBuilder<TransactionBloc, FinDocState>(builder: builder);
+      return BlocConsumer<TransactionBloc, FinDocState>(
+          listener: listener, builder: builder);
     });
   }
 

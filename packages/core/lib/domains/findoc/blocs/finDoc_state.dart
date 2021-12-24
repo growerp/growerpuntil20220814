@@ -14,7 +14,7 @@
 
 part of 'finDoc_bloc.dart';
 
-enum FinDocStatus { initial, success, failure }
+enum FinDocStatus { initial, loading, success, failure }
 
 class FinDocState extends Equatable {
   const FinDocState({
