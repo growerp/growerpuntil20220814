@@ -114,7 +114,6 @@ class AccountingTest {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
-    List<FinDoc> finDocs = [];
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.paymentId!);
       await CommonTest.tapByKey(tester, 'nextStatus0'); // open items
@@ -122,13 +121,24 @@ class AccountingTest {
   }
 
   /// check if the purchase process has been completed successfuly
-  static Future<void> checkPurchaseComplete(WidgetTester tester) async {
+  static Future<void> checkPurchasePaymentsComplete(WidgetTester tester) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
-    List<FinDoc> finDocs = [];
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.paymentId!);
+      expect(CommonTest.getTextField('status0'), 'Completed');
+    }
+  }
+
+  /// check if the purchase process has been completed successfuly
+  static Future<void> checkPurchaseInvoicesComplete(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.invoiceId!);
+      expect(CommonTest.getTextField('status0'), 'Completed');
     }
   }
 }

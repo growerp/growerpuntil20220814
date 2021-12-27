@@ -19,7 +19,7 @@ import '../../common/integration_test/commonTest.dart';
 import '../models/models.dart';
 
 class OrderTest {
-  static Future<void> selectPurchaseOrder(WidgetTester tester) async {
+  static Future<void> selectPurchaseOrders(WidgetTester tester) async {
     await CommonTest.selectOption(
         tester, 'dbOrders', 'FinDocListFormPurchaseOrder', '3');
   }
@@ -100,6 +100,17 @@ class OrderTest {
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       expect(CommonTest.getTextField('status0'), equals('Completed'));
+    }
+  }
+
+  /// check if the purchase order has been completed successfuly
+  static Future<void> checkPurchaseOrdersComplete(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.orderId!);
+      expect(CommonTest.getTextField('status0'), 'Completed');
     }
   }
 }

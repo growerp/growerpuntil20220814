@@ -14,7 +14,6 @@
 
 import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/domains/domains.dart';
-import 'package:core/domains/findoc/findoc.dart';
 import 'package:core/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
