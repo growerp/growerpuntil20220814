@@ -42,8 +42,8 @@ You can create your own company, demo data will be provided.
 
 ### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
 ```
-git clone https://github.com/growerp/growerp admin
-cd admin
+git clone https://github.com/growerp/growerp
+cd growerp/packages/admin
 flutter run
 ```
 create your first company!
