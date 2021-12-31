@@ -21,7 +21,6 @@ import '../findoc.dart';
 class FinDocListItem extends StatelessWidget {
   const FinDocListItem({
     Key? key,
-    required this.onSelected,
     required this.finDoc,
     required this.index,
     required this.sales,
@@ -31,7 +30,6 @@ class FinDocListItem extends StatelessWidget {
     required this.finDocBloc,
   }) : super(key: key);
 
-  final Function(FinDoc)? onSelected;
   final FinDoc finDoc;
   final int index;
   final bool sales;
@@ -93,7 +91,7 @@ class FinDocListItem extends StatelessWidget {
                           child: onlyRental == true
                               ? ReservationDialog(
                                   finDoc: finDoc, original: finDoc)
-                              : onSelected!(finDoc));
+                              : FinDocDialog(finDoc: finDoc));
                     });
               },
             )),

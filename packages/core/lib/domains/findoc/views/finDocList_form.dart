@@ -24,14 +24,12 @@ import '../../../api_repository.dart';
 
 class FinDocListForm extends StatelessWidget {
   final Key? key;
-  final Function(FinDoc)? onSelected;
   final bool sales;
   final FinDocType docType;
   final bool onlyRental;
   final String? status;
   const FinDocListForm(
       {this.key,
-      this.onSelected,
       required this.sales,
       required this.docType,
       this.onlyRental = false,
@@ -39,9 +37,8 @@ class FinDocListForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget finDocList = _FinDocList(
+    Widget finDocList = FinDocList(
       key: key,
-      onSelected: onSelected,
       sales: sales,
       docType: docType,
       onlyRental: onlyRental,
@@ -107,16 +104,14 @@ class FinDocListForm extends StatelessWidget {
   }
 }
 
-class _FinDocList extends StatefulWidget {
+class FinDocList extends StatefulWidget {
   final Key? key;
-  final Function(FinDoc)? onSelected;
   final bool sales;
   final FinDocType docType;
   final bool onlyRental;
   final String? status;
-  const _FinDocList({
+  const FinDocList({
     this.key,
-    this.onSelected,
     this.sales = true,
     this.docType = FinDocType.unknown,
     this.onlyRental = false,
@@ -132,7 +127,7 @@ extension DateOnlyCompare on DateTime {
   }
 }
 
-class FinDocListState extends State<_FinDocList> {
+class FinDocListState extends State<FinDocList> {
   final _scrollController = ScrollController();
   List<FinDoc> finDocsAll = <FinDoc>[];
   List<FinDoc> finDocs = <FinDoc>[];
@@ -144,7 +139,6 @@ class FinDocListState extends State<_FinDocList> {
   bool isLoading = true;
   bool hasReachedMax = false;
   late FinDocBloc _finDocBloc;
-  late Function _onSelected;
 
   @override
   void initState() {
@@ -187,10 +181,6 @@ class FinDocListState extends State<_FinDocList> {
       case FinDocType.transaction:
         _finDocBloc = BlocProvider.of<TransactionBloc>(context) as FinDocBloc;
     }
-    if (widget.onSelected == null)
-      _onSelected = (finDoc) => FinDocDialog(finDoc: finDoc);
-    else
-      _onSelected = widget.onSelected!;
   }
 
   @override
@@ -236,7 +226,6 @@ class FinDocListState extends State<_FinDocList> {
                         direction: DismissDirection.startToEnd,
                         child: FinDocListItem(
                           finDoc: finDocs[index],
-                          onSelected: widget.onSelected,
                           docType: widget.docType,
                           index: index,
                           isPhone: isPhone,
@@ -303,9 +292,10 @@ class FinDocListState extends State<_FinDocList> {
                               builder: (BuildContext context) {
                                 return BlocProvider.value(
                                     value: _finDocBloc,
-                                    child: _onSelected(FinDoc(
-                                        sales: widget.sales,
-                                        docType: widget.docType)));
+                                    child: FinDocDialog(
+                                        finDoc: FinDoc(
+                                            sales: widget.sales,
+                                            docType: widget.docType)));
                               });
                         },
                         tooltip: 'Add New',
