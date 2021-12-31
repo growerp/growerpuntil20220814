@@ -2,7 +2,7 @@
 
 more info at https://www.growerp.org (be patient, also in flutter, needs to load for the first time....)
 
-# Repository organization(Only 'master' is valid)
+# Repository organization
 All apps are stored in a single repository in the packages directory:
 - admin: a general ERP application.
 - Hotel: an ERP vertical for hotels
@@ -43,8 +43,10 @@ You can create your own company, demo data will be provided.
 ### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
 ```
 git clone https://github.com/growerp/growerp
-cd growerp/packages/admin
-flutter run
+$ cd growerp/packages/core
+$ flutter pub run build_runner build
+$ ../admin
+$ flutter run
 ```
 create your first company!
 
