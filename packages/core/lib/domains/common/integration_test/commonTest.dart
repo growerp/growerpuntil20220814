@@ -38,6 +38,7 @@ class CommonTest {
 
   static Future<void> login(
       WidgetTester tester, String loginName, String password) async {
+    await tester.pumpAndSettle(Duration(seconds: 5));
     if (find
         .byKey(Key('HomeFormAuth'))
         .toString()

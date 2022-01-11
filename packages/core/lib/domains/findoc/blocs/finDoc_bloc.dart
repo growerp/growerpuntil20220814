@@ -217,8 +217,8 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
   ) async {
     emit(state.copyWith(status: FinDocStatus.loading));
     try {
-      ApiResult<FinDoc> compResult =
-          await repos.confirmPurchasePayment(event.payment.paymentId!);
+      ApiResult<FinDoc> compResult = await repos.updateFinDoc(
+          event.payment.copyWith(status: FinDocStatusVal.Completed));
       return emit(compResult.when(
           success: (data) {
             List<FinDoc> finDocs = List.from(state.finDocs);

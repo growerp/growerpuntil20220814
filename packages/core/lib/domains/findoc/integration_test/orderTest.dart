@@ -24,6 +24,11 @@ class OrderTest {
         tester, 'dbOrders', 'FinDocListFormPurchaseOrder', '3');
   }
 
+  static Future<void> selectSalesOrders(WidgetTester tester) async {
+    await CommonTest.selectOption(
+        tester, 'dbOrders', 'FinDocListFormSalesOrder', '1');
+  }
+
   static Future<void> createPurchaseOrder(
       WidgetTester tester, List<FinDoc> finDocs) async {
     List<FinDoc> orders = [];
@@ -62,6 +67,49 @@ class OrderTest {
     await PersistFunctions.persistFinDocList(orders);
   }
 
+  static Future<void> createSalesOrder(
+      WidgetTester tester, List<FinDoc> finDocs) async {
+    List<FinDoc> orders = [];
+    for (FinDoc order in finDocs) {
+      // enter purchase order dialog
+      await CommonTest.tapByKey(tester, 'addNew');
+      await CommonTest.checkWidgetKey(tester, 'FinDocDialogSalesOrder');
+      await CommonTest.tapByKey(tester, 'clear', seconds: 2);
+      await CommonTest.enterText(tester, 'description', order.description!);
+      // enter supplier
+      await CommonTest.enterDropDownSearch(
+          tester, 'customer', order.otherUser!.companyName!);
+      // add product data
+      for (FinDocItem item in order.items) {
+        await CommonTest.tapByKey(tester, 'addProduct', seconds: 1);
+        await CommonTest.checkWidgetKey(tester, 'addProductItemDialog');
+        await CommonTest.enterDropDownSearch(
+            tester, 'product', item.description!);
+        await CommonTest.drag(tester, listViewName: 'listView3');
+        await CommonTest.enterText(tester, 'price', item.price.toString());
+        await CommonTest.enterText(
+            tester, 'quantity', item.quantity.toString());
+        await CommonTest.tapByKey(tester, 'ok');
+      }
+      // create order
+      await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      // get productId
+      await CommonTest.tapByKey(tester, 'id0');
+      List<FinDocItem> newItems = List.of(order.items);
+      for (int index = 0; index < order.items.length; index++) {
+        var productId = CommonTest.getTextField('itemLine$index').split(' ')[1];
+        FinDocItem newItem = order.items[index].copyWith(productId: productId);
+        newItems[index] = newItem;
+      }
+      await CommonTest.tapByKey(tester, 'id0');
+      // save order with orderId and productId
+      orders.add(order.copyWith(
+          orderId: CommonTest.getTextField('id0'), items: newItems));
+    }
+    // save when successfull
+    await PersistFunctions.persistFinDocList(orders);
+  }
+
   static Future<void> checkPurchaseOrder(WidgetTester tester) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     for (FinDoc order in orders) {
@@ -82,7 +130,42 @@ class OrderTest {
     }
   }
 
+  static Future<void> checkSalesOrder(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.orderId!);
+      // check list
+      expect(CommonTest.getTextField('id0'), equals(order.orderId!));
+      await CommonTest.tapByKey(tester, 'id0'); // open detail
+      for (int index = 0; index < order.items.length; index++) {
+        expect(order.items[index].productId,
+            CommonTest.getTextField('itemLine$index').split(' ')[1]);
+        await CommonTest.checkText(tester, order.items[index].description!);
+      }
+      await CommonTest.tapByKey(tester, 'id0'); // close detail
+      // check detail
+      await CommonTest.tapByKey(tester, 'edit0');
+      await CommonTest.checkText(tester, order.orderId!);
+      await CommonTest.checkText(tester, order.items[0].description!);
+      await CommonTest.tapByKey(tester, 'cancel'); // cancel dialog
+      await CommonTest.closeSearch(tester);
+    }
+  }
+
   static Future<void> sendPurchaseOrder(
+      WidgetTester tester, List<FinDoc> orders) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.orderId!);
+      await CommonTest.tapByKey(tester, 'nextStatus0',
+          seconds: 5); // to created
+      await CommonTest.tapByKey(tester, 'nextStatus0',
+          seconds: 5); // to approved
+    }
+    await CommonTest.gotoMainMenu(tester);
+  }
+
+  static Future<void> approveSalesOrder(
       WidgetTester tester, List<FinDoc> orders) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     for (FinDoc order in orders) {

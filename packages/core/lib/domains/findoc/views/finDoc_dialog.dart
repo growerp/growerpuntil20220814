@@ -142,9 +142,6 @@ class _MyFinDocState extends State<FinDocPage> {
           return LoadingIndicator();
       }
     };
-
-    print("FinDocDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
-        "${finDoc.docType.toString()}");
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
         child: ScaffoldMessenger(

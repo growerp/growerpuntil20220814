@@ -24,7 +24,38 @@ class AccountingTest {
         tester, 'accntPurchase', 'FinDocListFormPurchaseInvoice');
   }
 
+  static Future<void> selectSalesInvoices(WidgetTester tester) async {
+    await CommonTest.selectOption(tester, 'dbAccounting', 'AcctDashBoard');
+    await CommonTest.selectOption(
+        tester, 'accntSales', 'FinDocListFormSalesInvoice');
+  }
+
   static Future<void> checkPurchaseInvoices(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    List<FinDoc> finDocs = [];
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.orderId!);
+      // save invoice Id with order
+      String invoiceId = CommonTest.getTextField('id0');
+      String seq = '0';
+      // if same as order number , wrong record, get next one
+      if (CommonTest.getTextField('id0') == order.orderId) {
+        invoiceId = CommonTest.getTextField('id1');
+        seq = '1';
+      }
+      finDocs.add(order.copyWith(invoiceId: invoiceId));
+      // check list
+      await CommonTest.tapByKey(tester, 'id$seq'); // open items
+      expect(order.items[0].productId,
+          CommonTest.getTextField('itemLine0').split(' ')[1]);
+      await CommonTest.tapByKey(tester, 'id$seq'); // close items
+    }
+    await PersistFunctions.persistFinDocList(finDocs);
+  }
+
+  static Future<void> checkSalesInvoices(WidgetTester tester) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
@@ -65,13 +96,54 @@ class AccountingTest {
     }
   }
 
+  static Future<void> sendSalesInvoices(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.orderId!);
+      String seq = '0';
+      // if same as order number , wrong record, get next one
+      if (CommonTest.getTextField('id0') == order.orderId) {
+        seq = '1';
+      }
+      await CommonTest.tapByKey(tester, 'nextStatus$seq', seconds: 5);
+      await CommonTest.checkText(tester, 'Approved');
+    }
+  }
+
   static Future<void> selectPurchasePayments(WidgetTester tester) async {
     await CommonTest.selectOption(tester, 'dbAccounting', 'AcctDashBoard');
     await CommonTest.selectOption(
         tester, 'accntPurchase', 'FinDocListFormPurchasePayment', '2');
   }
 
+  static Future<void> selectSalesPayments(WidgetTester tester) async {
+    await CommonTest.selectOption(tester, 'dbAccounting', 'AcctDashBoard');
+    await CommonTest.selectOption(
+        tester, 'accntSales', 'FinDocListFormSalesPayment', '2');
+  }
+
   static Future<void> checkPurchasePayments(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    List<FinDoc> finDocs = [];
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.orderId!);
+      // save invoice Id with order
+      String paymentId = CommonTest.getTextField('id0');
+      // if same as order number , wrong record, get next one
+      if (CommonTest.getTextField('id0') == order.orderId) {
+        paymentId = CommonTest.getTextField('id1');
+      }
+      finDocs.add(order.copyWith(paymentId: paymentId));
+      // check list
+    }
+    await PersistFunctions.persistFinDocList(finDocs);
+  }
+
+  static Future<void> checkSalesPayments(WidgetTester tester) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
@@ -110,7 +182,17 @@ class AccountingTest {
 
   /// assume we are in the purchase payment list
   /// conform that a payment has been send
-  static Future<void> confirmPurchasePayment(WidgetTester tester) async {
+  static Future<void> payPurchasePayment(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.paymentId!);
+      await CommonTest.tapByKey(tester, 'nextStatus0'); // open items
+    }
+  }
+
+  static Future<void> receiveCustomerPayment(WidgetTester tester) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
@@ -131,8 +213,28 @@ class AccountingTest {
     }
   }
 
+  static Future<void> checkSalesPaymentsComplete(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.paymentId!);
+      expect(CommonTest.getTextField('status0'), 'Completed');
+    }
+  }
+
   /// check if the purchase process has been completed successfuly
   static Future<void> checkPurchaseInvoicesComplete(WidgetTester tester) async {
+    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    expect(orders.isNotEmpty, true,
+        reason: 'This test needs orders created in previous steps');
+    for (FinDoc order in orders) {
+      await CommonTest.doSearch(tester, searchString: order.invoiceId!);
+      expect(CommonTest.getTextField('status0'), 'Completed');
+    }
+  }
+
+  static Future<void> checkSalesInvoicesComplete(WidgetTester tester) async {
     List<FinDoc> orders = await PersistFunctions.getFinDocList();
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');

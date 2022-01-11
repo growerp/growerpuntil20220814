@@ -79,7 +79,7 @@ class FinDoc with _$FinDoc {
       "Date: $creationDate! $description! ";
 //      "status: $statusId! otherUser: $otherUser! Items: ${items!.length}";
 
-  String? statusName(String classificationId) {
+  String? displayName(String classificationId) {
     switch (classificationId) {
       case 'AppHotel':
         return finDocStatusValuesHotel[status.toString()];

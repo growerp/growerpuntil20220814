@@ -348,7 +348,7 @@ class APIRepository {
     try {
       final response = await dioClient.post(
           'rest/s1/growerp/100/Company', apiKey!, data: <String, dynamic>{
-        'company': company,
+        'company': jsonEncode(company.toJson()),
         'moquiSessionToken': sessionToken
       });
       return getResponse<Company>(
@@ -362,7 +362,7 @@ class APIRepository {
     try {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/Company', apiKey!, data: <String, dynamic>{
-        'company': company,
+        'company': jsonEncode(company.toJson()),
         'moquiSessionToken': sessionToken
       });
       return getResponse<Company>(
@@ -415,7 +415,7 @@ class APIRepository {
     }
   }
 
-  Future<ApiResult<FinDoc>> confirmPurchasePayment(String paymentId) async {
+  /*Future<ApiResult<FinDoc>> confirmPurchasePayment(String paymentId) async {
     try {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/Payment', apiKey!, data: <String, dynamic>{
@@ -428,7 +428,7 @@ class APIRepository {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
-
+*/
   Future<ApiResult<List<FinDoc>>> getFinDoc(
       {int? start,
       int? limit,
@@ -963,7 +963,7 @@ class APIRepository {
     try {
       final response = await dioClient.post('rest/s1/growerp/100/Task', apiKey!,
           data: <String, dynamic>{
-            'task': taskToJson(task),
+            'task': jsonEncode(taskToJson(task)),
             'moquiSessionToken': sessionToken
           });
       return getResponse<Task>("task", response, (json) => Task.fromJson(json));
@@ -976,7 +976,7 @@ class APIRepository {
     try {
       final response = await dioClient.patch(
           'rest/s1/growerp/100/Task', apiKey!, data: <String, dynamic>{
-        'task': taskToJson(task),
+        'task': jsonEncode(taskToJson(task)),
         'moquiSessionToken': sessionToken
       });
       return getResponse<Task>("task", response, (json) => Task.fromJson(json));
@@ -988,10 +988,11 @@ class APIRepository {
   Future<ApiResult<TimeEntry>> deleteTimeEntry(TimeEntry timeEntry) async {
     try {
       final response = await dioClient.delete(
-          'rest/s1/growerp/100/TimeEntry', apiKey!, data: <String, dynamic>{
-        'timeEntry': timeEntryToJson(timeEntry),
-        'moquiSessionToken': sessionToken
-      });
+          'rest/s1/growerp/100/TimeEntry', apiKey!,
+          data: <String, dynamic>{
+            'timeEntry': jsonEncode(timeEntryToJson(timeEntry)),
+            'moquiSessionToken': sessionToken
+          });
       return getResponse<TimeEntry>(
           "timeEntry", response, (json) => TimeEntry.fromJson(json));
     } on Exception catch (e) {
@@ -1002,10 +1003,11 @@ class APIRepository {
   Future<ApiResult<TimeEntry>> createTimeEntry(TimeEntry timeEntry) async {
     try {
       final response = await dioClient.post(
-          'rest/s1/growerp/100/TimeEntry', apiKey!, data: <String, dynamic>{
-        'timeEntry': timeEntryToJson(timeEntry),
-        'moquiSessionToken': sessionToken
-      });
+          'rest/s1/growerp/100/TimeEntry', apiKey!,
+          data: <String, dynamic>{
+            'timeEntry': jsonEncode(timeEntryToJson(timeEntry)),
+            'moquiSessionToken': sessionToken
+          });
       return getResponse<TimeEntry>(
           "timeEntry", response, (json) => TimeEntry.fromJson(json));
     } on Exception catch (e) {
@@ -1016,10 +1018,11 @@ class APIRepository {
   Future<ApiResult<TimeEntry>> updateTimeEntry(TimeEntry timeEntry) async {
     try {
       final response = await dioClient.patch(
-          'rest/s1/growerp/100/TimeEntry', apiKey!, data: <String, dynamic>{
-        'timeEntry': timeEntryToJson(timeEntry),
-        'moquiSessionToken': sessionToken
-      });
+          'rest/s1/growerp/100/TimeEntry', apiKey!,
+          data: <String, dynamic>{
+            'timeEntry': jsonEncode(timeEntryToJson(timeEntry)),
+            'moquiSessionToken': sessionToken
+          });
       return getResponse<TimeEntry>(
           "timeEntry", response, (json) => TimeEntry.fromJson(json));
     } on Exception catch (e) {

@@ -23,17 +23,23 @@ import 'package:responsive_framework/responsive_wrapper.dart';
 import '../../../api_repository.dart';
 
 class FinDocListForm extends StatelessWidget {
+  const FinDocListForm({
+    this.key,
+    required this.sales,
+    required this.docType,
+    this.onlyRental = false,
+    this.status,
+    this.additionalItemButtonName,
+    this.additionalItemButtonRoute,
+  });
+
   final Key? key;
   final bool sales;
   final FinDocType docType;
   final bool onlyRental;
   final String? status;
-  const FinDocListForm(
-      {this.key,
-      required this.sales,
-      required this.docType,
-      this.onlyRental = false,
-      this.status});
+  final String? additionalItemButtonName;
+  final String? additionalItemButtonRoute;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +49,8 @@ class FinDocListForm extends StatelessWidget {
       docType: docType,
       onlyRental: onlyRental,
       status: status,
+      additionalItemButtonName: additionalItemButtonName,
+      additionalItemButtonRoute: additionalItemButtonRoute,
     );
     if (docType == FinDocType.order) {
       if (sales)
@@ -105,18 +113,24 @@ class FinDocListForm extends StatelessWidget {
 }
 
 class FinDocList extends StatefulWidget {
-  final Key? key;
-  final bool sales;
-  final FinDocType docType;
-  final bool onlyRental;
-  final String? status;
   const FinDocList({
     this.key,
     this.sales = true,
     this.docType = FinDocType.unknown,
     this.onlyRental = false,
     this.status,
+    this.additionalItemButtonName,
+    this.additionalItemButtonRoute,
   });
+
+  final Key? key;
+  final bool sales;
+  final FinDocType docType;
+  final bool onlyRental;
+  final String? status;
+  final String? additionalItemButtonName;
+  final String? additionalItemButtonRoute;
+
   @override
   FinDocListState createState() => FinDocListState();
 }
@@ -232,6 +246,20 @@ class FinDocListState extends State<FinDocList> {
                           sales: widget.sales,
                           onlyRental: widget.onlyRental,
                           finDocBloc: _finDocBloc,
+                          additionalItemButton: widget
+                                          .additionalItemButtonName !=
+                                      null &&
+                                  widget.additionalItemButtonRoute != null
+                              ? TextButton(
+                                  key: Key('addButton$index'),
+                                  child: Text(widget.additionalItemButtonName!),
+                                  onPressed: () async {
+                                    await Navigator.pushNamed(context,
+                                        widget.additionalItemButtonRoute!,
+                                        arguments: finDocs[index]);
+                                  },
+                                )
+                              : null,
                         ));
               }));
     }
