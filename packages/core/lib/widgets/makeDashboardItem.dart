@@ -35,7 +35,7 @@ Card makeDashboardItem(String key, BuildContext context, MenuItem menuItem,
             mainAxisSize: MainAxisSize.min,
             verticalDirection: VerticalDirection.down,
             children: <Widget>[
-              SizedBox(height: 5.0),
+              SizedBox(height: 2.0),
               Center(child: Image.asset(menuItem.selectedImage, height: 80.0)),
               Center(
                 child: Text("${menuItem.title}",
@@ -44,13 +44,13 @@ Card makeDashboardItem(String key, BuildContext context, MenuItem menuItem,
                         color: Colors.black,
                         fontWeight: FontWeight.bold)),
               ),
-              SizedBox(height: 5.0),
+              SizedBox(height: 2.0),
               Center(
                 child: Text(subTitle,
                     style: TextStyle(
                         fontSize: phone ? 12 : 20, color: Colors.black)),
               ),
-              SizedBox(height: 5.0),
+              SizedBox(height: 2.0),
               Center(
                 child: Text(subTitle1,
                     style: TextStyle(
@@ -59,7 +59,7 @@ Card makeDashboardItem(String key, BuildContext context, MenuItem menuItem,
               Visibility(
                   visible: subTitle2.isNotEmpty,
                   child: Column(children: [
-                    SizedBox(height: 5.0),
+                    SizedBox(height: 2.0),
                     Center(
                       child: Text(subTitle2,
                           style: TextStyle(
@@ -69,7 +69,7 @@ Card makeDashboardItem(String key, BuildContext context, MenuItem menuItem,
               Visibility(
                   visible: subTitle3.isNotEmpty,
                   child: Column(children: [
-                    SizedBox(height: 5.0),
+                    SizedBox(height: 2.0),
                     Center(
                       child: Text(subTitle3,
                           style: TextStyle(
