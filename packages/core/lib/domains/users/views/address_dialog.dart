@@ -121,7 +121,7 @@ class _AddressState extends State<AddressDialog> {
                         ),
                         SizedBox(height: 20),
                         TextFormField(
-                          key: Key('postal'),
+                          key: Key('postalCode'),
                           decoration: InputDecoration(labelText: 'PostalCode'),
                           controller: _postalCodeController,
                           validator: (value) {

@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:core/domains/common/functions/functions.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,16 +37,16 @@ class CommonTest {
     await checkWidgetKey(tester, formName);
   }
 
-  static Future<void> login(
-      WidgetTester tester, String loginName, String password) async {
+  static Future<void> login(WidgetTester tester) async {
     await tester.pumpAndSettle(Duration(seconds: 5));
     if (find
         .byKey(Key('HomeFormAuth'))
         .toString()
         .startsWith('zero widgets with key')) {
+      SaveTest test = await PersistFunctions.getTest();
       await pressLoginWithExistingId(tester);
-      await enterText(tester, 'username', loginName);
-      await enterText(tester, 'password', password);
+      await enterText(tester, 'username', test.admin!.email!);
+      await enterText(tester, 'password', 'qqqqqq9!');
       await pressLogin(tester);
       await checkText(tester, 'Main'); // dashboard
     }
@@ -86,6 +87,7 @@ class CommonTest {
   }
 
   static Future<void> logout(WidgetTester tester) async {
+    if (hasKey('HomeFormUnAuth')) return; // already logged out
     await gotoMainMenu(tester);
     if (hasKey('HomeFormAuth')) {
       print("Dashboard logged in , needs to logout");

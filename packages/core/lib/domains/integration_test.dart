@@ -7,3 +7,6 @@ export 'opportunities/integration_test/opportunity_test.dart';
 export 'tasks/integration_test/taskTest.dart';
 export 'users/integration_test/userTest.dart';
 export 'warehouse/integration_test/warehouseTest.dart';
+export 'users/integration_test/companyTest.dart';
+export 'users/integration_test/userTest.dart';
+export 'common/integration_test/data.dart';

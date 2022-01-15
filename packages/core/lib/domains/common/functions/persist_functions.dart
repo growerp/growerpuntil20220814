@@ -113,4 +113,29 @@ class PersistFunctions {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('finDocList');
   }
+
+  static const String _testName = "savetest";
+  static Future<void> persistTest(SaveTest test) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_testName, jsonEncode(test.toJson()));
+  }
+
+  static Future<SaveTest> getTest() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    // ignore informaton with a bad format
+    try {
+      String? result = prefs.getString(_testName);
+      if (result != null)
+        return getJsonObject<SaveTest>(
+            result, (json) => SaveTest.fromJson(json));
+      return SaveTest();
+    } catch (_) {
+      return SaveTest();
+    }
+  }
+
+  static Future<void> removeTest() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_testName);
+  }
 }

@@ -12,132 +12,140 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:decimal/decimal.dart';
 import 'package:core/domains/domains.dart';
 
-String random = Random.secure().nextInt(1024).toString();
-String seq = '$random';
-String seq1 = '$random-1';
-String seq2 = '$random-2';
-String seq3 = '$random-3';
-String seq4 = '$random-4';
-String seq5 = '$random-5';
-String seq6 = '$random-6';
-String seq7 = '$random-7';
-String seq8 = '$random-8';
+int seq = 11;
 
-String loginName = 'admin';
-String password = '!kdQ9QT5sjA4';
+enum TestStatus { createCompany, testCompany, success, failure }
+
+Company company = Company(
+  name: "MainCompany",
+  currency: currencies[0],
+  salesPerc: Decimal.parse("5"),
+  vatPerc: Decimal.parse("20"),
+  address: Address(
+      address1: 'mountain Ally 223',
+      address2: 'suite 23',
+      postalCode: '90210',
+      city: 'Los Angeles',
+      province: 'California',
+      country: countries[0].name),
+);
+
+User admin = User(
+  firstName: "John",
+  lastName: "Doe",
+  email: "test${seq++}@example.com",
+);
 
 List<Company> companies = [
   Company(
-      name: 'companyName$seq',
-      currency: Currency(description: 'Baht')), // owner
-  Company(name: 'companyName$seq1', currency: Currency(description: 'Euro')),
-  Company(name: 'companyName$seq2', currency: Currency(description: 'Dollar')),
-  Company(name: 'companyName$seq3', currency: Currency(description: 'Euro')),
-  Company(name: 'companyName$seq4', currency: Currency(description: 'USD')),
-  Company(name: 'companyName$seq5', currency: Currency(description: 'Euro')),
-  Company(name: 'companyName$seq6', currency: Currency(description: 'USD')),
-  Company(name: 'companyName$seq7', currency: Currency(description: 'Euro')),
-  Company(name: 'companyName$seq8', currency: Currency(description: 'USD')),
+      name: 'companyName', currency: Currency(description: 'Baht')), // owner
+  Company(name: 'companyName1', currency: Currency(description: 'Euro')),
+  Company(name: 'companyName2', currency: Currency(description: 'Dollar')),
+  Company(name: 'companyName3', currency: Currency(description: 'Euro')),
+  Company(name: 'companyName4', currency: Currency(description: 'USD')),
+  Company(name: 'companyName5', currency: Currency(description: 'Euro')),
+  Company(name: 'companyName6', currency: Currency(description: 'USD')),
+  Company(name: 'companyName7', currency: Currency(description: 'Euro')),
+  Company(name: 'companyName8', currency: Currency(description: 'USD')),
 ];
 
 List<User> administrators = [
   User(
-    firstName: 'administrator$seq',
+    firstName: 'administrator',
     lastName: 'login Name',
     userGroup: UserGroup.SuperAdmin,
     companyName: companies[0].name,
-    userId: 'username$seq',
-    email: 'email$seq@example.org',
+    userId: 'username',
+    email: 'email@example.org',
   ),
   User(
-    firstName: 'administrator$seq1',
+    firstName: 'administrator1',
     lastName: 'last Name',
     userGroup: UserGroup.SuperAdmin,
     companyName: companies[0].name,
-    userId: 'username$seq1',
-    email: 'email$seq1@example.org',
+    userId: 'username1',
+    email: 'email1@example.org',
   ),
   User(
-    firstName: 'administrator$seq2',
+    firstName: 'administrator2',
     lastName: 'last Name',
     userGroup: UserGroup.SuperAdmin,
     companyName: companies[0].name,
-    userId: 'username$seq2',
-    email: 'email$seq2@example.org',
+    userId: 'username2',
+    email: 'email2@example.org',
   ),
 ];
 List<User> employees = [
   User(
-    firstName: 'employee$seq3',
+    firstName: 'employee3',
     lastName: 'last Name',
     userGroup: UserGroup.Employee,
     companyName: companies[0].name,
-    userId: 'username$seq3',
-    email: 'email$seq3@example.org',
+    userId: 'username3',
+    email: 'email3@example.org',
   ),
   User(
-    firstName: 'employee$seq4',
+    firstName: 'employee4',
     lastName: 'last Name',
     userGroup: UserGroup.Employee,
     companyName: companies[0].name,
-    userId: 'username$seq4',
-    email: 'email$seq4@example.org',
+    userId: 'username4',
+    email: 'email4@example.org',
   )
 ];
 
 List<User> leads = [
   User(
-    firstName: 'lead$seq5',
+    firstName: 'lead5',
     lastName: 'last Name',
     userGroup: UserGroup.Lead,
     companyName: companies[5].name,
-    userId: 'username$seq5',
-    email: 'email$seq5@example.org',
+    userId: 'username5',
+    email: 'email5@example.org',
   ),
   User(
-    firstName: 'lead$seq6',
+    firstName: 'lead6',
     lastName: 'last Name',
     userGroup: UserGroup.Lead,
     companyName: companies[6].name,
-    userId: 'username$seq6',
-    email: 'email$seq6@example.org',
+    userId: 'username6',
+    email: 'email6@example.org',
   )
 ];
 
 List<User> suppliers = [
   User(
-    firstName: 'supplier$seq7',
+    firstName: 'supplier7',
     lastName: 'last Name',
     userGroup: UserGroup.SuperAdmin,
     companyName: companies[7].name,
-    userId: 'username$seq7',
-    email: 'email$seq7@example.org',
+    userId: 'username7',
+    email: 'email7@example.org',
   ),
   User(
-    firstName: 'supplier$seq8',
+    firstName: 'supplier8',
     lastName: 'last Name',
     userGroup: UserGroup.SuperAdmin,
     companyName: companies[8].name,
-    userId: 'username$seq8',
-    email: 'email$seq8@example.org',
+    userId: 'username8',
+    email: 'email8@example.org',
   )
 ];
 
 List<Task> tasks = [
   Task(
-    taskName: 'task$seq1',
+    taskName: 'task1',
     status: 'In Progress',
     description: 'This is the description of the task1',
     rate: Decimal.parse('22'),
     timeEntries: [],
   ),
   Task(
-    taskName: 'task$seq2',
+    taskName: 'task2',
     status: 'In Progress',
     description: 'This is the description of the task2',
     rate: Decimal.parse('23'),
@@ -159,7 +167,7 @@ List<TimeEntry> timeEntries = [
 
 List<Opportunity> opportunities = [
   Opportunity(
-    opportunityName: 'Dummy Opp Name $seq1',
+    opportunityName: 'Dummy Opp Name 1',
     description: 'Dummmy descr 1',
     stageId: 'Qualification',
     nextStep: 'testing1',
@@ -169,7 +177,7 @@ List<Opportunity> opportunities = [
     estProbability: int.parse('30'),
   ),
   Opportunity(
-    opportunityName: 'Dummy Opp Name $seq2',
+    opportunityName: 'Dummy Opp Name 2',
     description: 'Dummmy descr2',
     stageId: 'Prospecting',
     nextStep: 'testing2',
@@ -182,28 +190,28 @@ List<Opportunity> opportunities = [
 
 List<Category> categories = [
   Category(
-      categoryName: 'FirstCategory$seq1',
-      description: 'FirstCategory$seq1 description',
+      categoryName: 'FirstCategory1',
+      description: 'FirstCategory1 description',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
   Category(
-      categoryName: 'FirstCategory$seq2',
-      description: 'FirstCategory$seq2 description',
+      categoryName: 'FirstCategory2',
+      description: 'FirstCategory2 description',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
 ];
 
 List<Product> products = [
   Product(
-      productName: 'This is the first product $seq1',
+      productName: 'This is the first product 1',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('23.99'),
       category: categories[0],
-      description: 'This is a dummy description of first product $seq1'),
+      description: 'This is a dummy description of first product 1'),
   Product(
-      productName: 'This is the second product $seq2',
+      productName: 'This is the second product 2',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('73.99'),
       category: categories[1],
-      description: 'This is a dummy description of second product $seq1'),
+      description: 'This is a dummy description of second product 1'),
 ];
 
 List<ItemType> salesItems = [
@@ -216,46 +224,6 @@ List<ItemType> purchaseItems = [
   ItemType(itemTypeId: 'purchtype2', itemTypeName: 'purchtype 2 description'),
   ItemType(itemTypeId: 'purchtype3', itemTypeName: 'purchtype 3 description')
 ];
-
-final FinDoc finDoc = finDocFromJson('''
-  { "finDoc":
-    { "orderId": null, "sales": "true", "docType": "invoice", 
-      "statusId": "FinDocCompleted", 
-      "placedDate": "2012-02-27 13:27:00.123456z",
-      "otherUser": { "partyId": "dummy"},
-      "grandTotal": "44.53",
-      "items": [
-        { "itemSeqId": "01", "productId": null, "description": "Cola",
-          "quantity": "5", "price": "1.5" , "deliveryDate": "2012-02-27 13:27:00.123456z"},
-        { "itemSeqId": "02", "productId": null, "description": "Macaroni",
-          "quantity": "3", "price": "4.5", "deliveryDate": null} 
-   ]}}
-''');
-
-final List<FinDoc> finDocs = finDocsFromJson('''
-  { "finDocs": [
-    { "invoiceId": "00002", "statusId": "OrderOpen", "sales": "true",
-      "placedDate": "2012-02-27 13:27:00.123456z",
-      "otherUser": { "partyId": "dummy"},
-      "grandTotal": "44.53",
-      "items": [
-        { "itemSeqId": "01", "productId": null, "description": "Cola",
-          "quantity": "5", "price": "1.5", "deliveryDate": null},
-        { "itemSeqId": "02", "productId": null, "description": "Macaroni",
-          "quantity": "3", "price": "4.5", "deliveryDate": null}
-      ]},
-    { "paymentId": "00003", "statusId": "OrderOpen", "sales": "false",
-      "placedDate": "2012-02-27 13:27:00.123456z",
-      "otherUser": { "partyId": "dummy"},
-      "grandTotal": "44.53", 
-      "items": [
-        { "itemSeqId": "01", "productId": null, "description": "Cola",
-          "quantity": "5", "price": "1.5", "deliveryDate": null},
-        { "itemSeqId": "02", "productId": null, "description": "Macaroni",
-          "quantity": "3", "price": "4.5", "deliveryDate": null}
-      ]}
-   ]}
-''');
 
 List<FinDoc> purchaseOrders = [
   FinDoc(
@@ -301,6 +269,36 @@ List<FinDoc> purchaseOrders = [
             description: '6" 90 deg. PVC',
             quantity: Decimal.parse('40'),
             price: Decimal.parse('10'))
+      ]),
+];
+
+List<FinDoc> salesOrders = [
+  FinDoc(
+      sales: false,
+      docType: FinDocType.order,
+      description: 'The first order',
+      otherUser: User(companyName: 'Thompson Construction'),
+      items: [
+        FinDocItem(
+          description: products[0].productName,
+          price: products[0].price,
+          quantity: Decimal.parse('27069'),
+        ),
+        FinDocItem(
+          description: products[1].productName,
+          price: products[1].price,
+          quantity: Decimal.parse('4'),
+        ),
+        FinDocItem(
+          description: products[2].productName,
+          price: products[2].price,
+          quantity: Decimal.parse('8'),
+        ),
+        FinDocItem(
+          description: products[3].productName,
+          price: products[3].price,
+          quantity: Decimal.parse('9'),
+        )
       ]),
 ];
 

@@ -1,6 +1,17 @@
 Integration tests using integration test package.(WidgetTest)
 =============================================================
 
+currently under development......
+
+All tests can be run from the admin package with the command:
+flutter run integration/name_test.dart
+
+When you want to run in the browser run ./chromedriver in a seperate window.
+(see below)
+
+
+
+
 Automated run:
 in the admin directory, Moqui in:  growerpMoqui
 flutter pub run utils:runIntegration.dart
