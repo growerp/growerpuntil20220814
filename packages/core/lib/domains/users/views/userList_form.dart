@@ -129,6 +129,7 @@ class _UsersState extends State<UsersList> {
               _userBloc.add(UserFetch(refresh: true));
             }),
             child: ListView.builder(
+              key: Key('listView'),
               physics: AlwaysScrollableScrollPhysics(),
               itemCount: hasReachedMax && users.isNotEmpty
                   ? users.length + 1
@@ -175,7 +176,8 @@ class _UsersState extends State<UsersList> {
 
       dynamic blocBuilder = (context, state) {
         if (state.status == UserStatus.failure)
-          return FatalErrorForm("Could not load leads!");
+          return FatalErrorForm(
+              "Could not load ${widget.userGroup.toString()}s!");
         if (state.status == UserStatus.success) {
           isLoading = false;
           users = state.users;

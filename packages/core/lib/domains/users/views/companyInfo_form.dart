@@ -22,6 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:core/domains/domains.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class CompanyInfoForm extends StatelessWidget {
   final FormArguments formArguments;
@@ -173,6 +174,7 @@ class _CompanyState extends State<CompanyPage> {
   }
 
   Widget _showForm(Authenticate authenticate, bool isAdmin, Company company) {
+    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
@@ -193,6 +195,16 @@ class _CompanyState extends State<CompanyPage> {
                     child: Padding(
                         padding: EdgeInsets.all(15),
                         child: Column(children: [
+                          Center(
+                              child: Text(
+                            'id:#${authenticate.company!.partyId}',
+                            style: TextStyle(
+                                fontSize: isPhone ? 10 : 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                            key: Key('header'),
+                          )),
+                          SizedBox(height: 10),
                           CircleAvatar(
                               backgroundColor: Colors.green,
                               radius: 80,

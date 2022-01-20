@@ -104,7 +104,7 @@ List<Location> warehouseLocations = [
 Future<void> startApp(WidgetTester tester,
     {bool newRandom = true, bool clear = true}) async {
   if (clear) {
-    PersistFunctions.removeFindocList();
+    await PersistFunctions.removeFindocList();
   }
   await GlobalConfiguration().loadFromAsset("app_settings");
 

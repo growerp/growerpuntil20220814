@@ -45,7 +45,7 @@ class UserState extends Equatable {
     return UserState(
       status: status ?? this.status,
       users: users ?? this.users,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

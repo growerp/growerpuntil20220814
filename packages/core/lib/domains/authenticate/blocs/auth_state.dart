@@ -43,7 +43,7 @@ class AuthState extends Equatable {
     return AuthState(
       status: status ?? this.status,
       authenticate: authenticate ?? this.authenticate,
-      message: message ?? this.message,
+      message: message, // message not kept over state changes
     );
   }
 

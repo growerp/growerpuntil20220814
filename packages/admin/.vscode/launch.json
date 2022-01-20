@@ -5,6 +5,12 @@
             "type": "dart",
             "request": "launch",
             "program": "lib/main.dart"
+        },
+        {
+            "name": "Flutter (lib/user_test.dart)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/user_test.dart"
         }
     ]
 }

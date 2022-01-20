@@ -73,8 +73,9 @@ class CompanyTest {
     await CommonTest.tapByKey(tester, 'updateCompany', seconds: 5);
     // and check them
     checkCompanyFields(newCompany);
-    await PersistFunctions.persistTest(
-        test.copyWith(sequence: seq, company: newCompany));
+    var id = CommonTest.getTextField('header').split('#')[1];
+    await PersistFunctions.persistTest(test.copyWith(
+        sequence: seq, company: newCompany.copyWith(partyId: id)));
   }
 
   static void checkCompanyFields(Company company,
@@ -94,18 +95,19 @@ class CompanyTest {
     SaveTest test = await PersistFunctions.getTest();
     if (test.company!.address != null) return;
     await updateAndCheckAddress(tester, company.address!);
-    company = company.copyWith(
+    Company newCompany = company.copyWith(
         address: Address(
-            address1: company.address!.address1! + '1',
-            address2: company.address!.address1! + '1',
-            postalCode: company.address!.postalCode! + '1',
-            city: company.address!.city! + '1',
-            province: company.address!.province! + '1',
+            address1: company.address!.address1! + 'u',
+            address2: company.address!.address2! + 'u',
+            postalCode: company.address!.postalCode! + 'u',
+            city: company.address!.city! + 'u',
+            province: company.address!.province! + 'u',
             country: countries[1].name));
-    await updateAndCheckAddress(tester, company.address!);
+    await updateAndCheckAddress(tester, newCompany.address!);
     await CommonTest.tapByKey(tester, 'cancel');
     await PersistFunctions.persistTest(
-        test.copyWith(sequence: seq, company: company));
+        test.copyWith(sequence: seq, company: newCompany),
+        backup: true); // last test for company ready for user test
   }
 
   static Future<void> updateAndCheckAddress(tester, Address address) async {

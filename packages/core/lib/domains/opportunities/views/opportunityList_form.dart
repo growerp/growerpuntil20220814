@@ -77,6 +77,7 @@ class _OpportunitiesState extends State<OpportunityList> {
                       _opportunityBloc.add(OpportunityFetch(refresh: true));
                     }),
                     child: ListView.builder(
+                        key: Key('listView'),
                         physics: AlwaysScrollableScrollPhysics(),
                         itemCount: state.hasReachedMax
                             ? state.opportunities.length + 1

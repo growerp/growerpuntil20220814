@@ -13,14 +13,34 @@
  */
 
 import 'package:core/domains/common/functions/functions.dart';
+import 'package:core/widgets/observer.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:core/domains/domains.dart';
 
+import '../../integration_test.dart';
+
 class CommonTest {
   String classificationId = GlobalConfiguration().get("classificationId");
+
+  static Future<void> startApp(WidgetTester tester, Widget TopApp,
+      {bool clear = false}) async {
+    SaveTest test = await PersistFunctions.getTest();
+    seq = test.sequence == null ? 0 : test.sequence! + 10;
+    if (clear) {
+      await PersistFunctions.persistTest(SaveTest(sequence: seq));
+    } else {
+      await PersistFunctions.persistTest(test.copyWith(sequence: seq));
+    }
+    await BlocOverrides.runZoned(
+        () async => await tester.pumpWidget(Phoenix(child: TopApp)),
+        blocObserver: AppBlocObserver());
+    await tester.pumpAndSettle(Duration(seconds: 10));
+  }
 
   static Future<void> selectOption(
       WidgetTester tester, String option, String formName,
@@ -38,12 +58,16 @@ class CommonTest {
   }
 
   static Future<void> login(WidgetTester tester) async {
+    SaveTest test = await PersistFunctions.getTest();
+    if (test.company == null || test.admin == null) {
+      print("Need company test to be run first");
+      return;
+    }
     await tester.pumpAndSettle(Duration(seconds: 5));
     if (find
         .byKey(Key('HomeFormAuth'))
         .toString()
         .startsWith('zero widgets with key')) {
-      SaveTest test = await PersistFunctions.getTest();
       await pressLoginWithExistingId(tester);
       await enterText(tester, 'username', test.admin!.email!);
       await enterText(tester, 'password', 'qqqqqq9!');
@@ -56,13 +80,17 @@ class CommonTest {
     await selectMainMenu(tester, "tap/");
   }
 
+  static Future<void> refresh(WidgetTester tester) async {
+    await drag(tester, downPage: false);
+  }
+
   static Future<void> doSearch(WidgetTester tester,
       {required String searchString}) async {
     if (find
         .byKey(Key('searchButton'))
         .toString()
         .startsWith('zero widgets with key')) {
-      await drag(tester, downPage: false); // reorder list
+      await refresh(tester);
       await tapByKey(tester, 'search');
     }
     await enterText(tester, 'searchField', searchString);
@@ -124,6 +152,7 @@ class CommonTest {
     await tester.tap(find.byKey(Key(key)));
     await tester.pump(Duration(seconds: 1));
     await tester.enterText(find.byKey(Key(key)), value);
+    await tester.pump();
   }
 
   static Future<void> pump(WidgetTester tester, [int times = 3]) async {
@@ -155,6 +184,7 @@ class CommonTest {
     DropdownButtonFormField tff = find.byKey(Key(key)).evaluate().single.widget
         as DropdownButtonFormField;
     if (tff.initialValue is Currency) return tff.initialValue.description;
+    if (tff.initialValue is UserGroup) return tff.initialValue.toString();
     return tff.initialValue;
   }
 

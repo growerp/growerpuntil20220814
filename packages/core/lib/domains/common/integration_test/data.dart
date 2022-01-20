@@ -16,9 +16,7 @@ import 'dart:typed_data';
 import 'package:decimal/decimal.dart';
 import 'package:core/domains/domains.dart';
 
-int seq = 11;
-
-enum TestStatus { createCompany, testCompany, success, failure }
+int seq = 0;
 
 Company company = Company(
   name: "MainCompany",
@@ -38,6 +36,7 @@ User admin = User(
   firstName: "John",
   lastName: "Doe",
   email: "test${seq++}@example.com",
+  userGroup: UserGroup.Admin,
 );
 
 List<Company> companies = [
@@ -55,84 +54,92 @@ List<Company> companies = [
 
 List<User> administrators = [
   User(
-    firstName: 'administrator',
-    lastName: 'login Name',
-    userGroup: UserGroup.SuperAdmin,
-    companyName: companies[0].name,
-    userId: 'username',
-    email: 'email@example.org',
-  ),
-  User(
     firstName: 'administrator1',
     lastName: 'last Name',
-    userGroup: UserGroup.SuperAdmin,
+    userGroup: UserGroup.Admin,
     companyName: companies[0].name,
-    userId: 'username1',
-    email: 'email1@example.org',
+    email: 'email${seq++}@example.org',
   ),
   User(
     firstName: 'administrator2',
     lastName: 'last Name',
-    userGroup: UserGroup.SuperAdmin,
+    userGroup: UserGroup.Admin,
     companyName: companies[0].name,
-    userId: 'username2',
-    email: 'email2@example.org',
+    email: 'email${seq++}@example.org',
+  ),
+  User(
+    firstName: 'administrator3',
+    lastName: 'last Name',
+    userGroup: UserGroup.Admin,
+    companyName: companies[0].name,
+    email: 'email${seq++}@example.org',
   ),
 ];
 List<User> employees = [
   User(
-    firstName: 'employee3',
+    firstName: 'employee1',
     lastName: 'last Name',
     userGroup: UserGroup.Employee,
     companyName: companies[0].name,
-    userId: 'username3',
-    email: 'email3@example.org',
+    userId: 'username${seq++}',
+    email: 'email${seq++}@example.org',
   ),
   User(
-    firstName: 'employee4',
+    firstName: 'employee2',
     lastName: 'last Name',
     userGroup: UserGroup.Employee,
     companyName: companies[0].name,
-    userId: 'username4',
-    email: 'email4@example.org',
+    email: 'email${seq++}@example.org',
   )
 ];
 
 List<User> leads = [
   User(
-    firstName: 'lead5',
+    firstName: 'lead1',
     lastName: 'last Name',
     userGroup: UserGroup.Lead,
     companyName: companies[5].name,
-    userId: 'username5',
-    email: 'email5@example.org',
+    email: 'email${seq++}@example.org',
   ),
   User(
-    firstName: 'lead6',
+    firstName: 'lead2',
     lastName: 'last Name',
     userGroup: UserGroup.Lead,
     companyName: companies[6].name,
-    userId: 'username6',
-    email: 'email6@example.org',
+    email: 'email${seq++}@example.org',
   )
 ];
 
 List<User> suppliers = [
   User(
-    firstName: 'supplier7',
+    firstName: 'supplier1',
     lastName: 'last Name',
-    userGroup: UserGroup.SuperAdmin,
+    userGroup: UserGroup.Supplier,
     companyName: companies[7].name,
-    userId: 'username7',
-    email: 'email7@example.org',
+    email: 'email${seq++}@example.org',
   ),
   User(
-    firstName: 'supplier8',
+    firstName: 'supplier2',
     lastName: 'last Name',
-    userGroup: UserGroup.SuperAdmin,
+    userGroup: UserGroup.Supplier,
     companyName: companies[8].name,
-    userId: 'username8',
-    email: 'email8@example.org',
+    email: 'email${seq++}@example.org',
+  )
+];
+List<User> customers = [
+  User(
+    firstName: 'customer1',
+    lastName: 'last Name',
+    userGroup: UserGroup.Customer,
+    companyName: companies[7].name,
+    email: 'email${seq++}@example.org',
+  ),
+  User(
+    firstName: 'customer2',
+    lastName: 'last Name',
+    userGroup: UserGroup.Customer,
+    companyName: companies[8].name,
+    email: 'email${seq++}@example.org',
   )
 ];
 

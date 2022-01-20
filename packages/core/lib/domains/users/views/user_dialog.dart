@@ -122,16 +122,17 @@ class _UserState extends State<UserPage> {
     repos = context.read<APIRepository>();
     User? user = widget.user;
     return Dialog(
-        key: Key('UserDialog${user.userGroup.toString()}'),
-        insetPadding: EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Stack(clipBehavior: Clip.none, children: [
+      key: Key('UserDialog${user.userGroup.toString()}'),
+      insetPadding: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Stack(clipBehavior: Clip.none, children: [
+        ListView(key: Key('listView1'), children: [
           Container(
               padding: EdgeInsets.all(20),
               width: 400,
-              height: 750,
+              height: 850,
               child: BlocListener<UserBloc, UserState>(listener:
                   (context, state) {
                 if (state.status == UserStatus.failure) {
@@ -155,28 +156,28 @@ class _UserState extends State<UserPage> {
                             imageButtons(context, _onImageButtonPressed),
                         body: listChild()));
               }))),
-          Positioned(top: -10, right: -10, child: DialogCloseButton())
-        ]));
+        ]),
+        Positioned(top: -10, right: -10, child: DialogCloseButton())
+      ]),
+    );
   }
 
   Widget listChild() {
-    return Center(child: Builder(builder: (BuildContext context) {
-      return Center(
-        child: !kIsWeb && defaultTargetPlatform == TargetPlatform.android
-            ? FutureBuilder<void>(
-                future: retrieveLostData(),
-                builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
-                  if (snapshot.hasError) {
-                    return Text(
-                      'Pick image error: ${snapshot.error}}',
-                      textAlign: TextAlign.center,
-                    );
-                  }
-                  return _showForm();
-                })
-            : _showForm(),
-      );
-    }));
+    return Builder(builder: (BuildContext context) {
+      return !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+          ? FutureBuilder<void>(
+              future: retrieveLostData(),
+              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                if (snapshot.hasError) {
+                  return Text(
+                    'Pick image error: ${snapshot.error}}',
+                    textAlign: TextAlign.center,
+                  );
+                }
+                return _showForm();
+              })
+          : _showForm();
+    });
   }
 
   Text? _getRetrieveErrorWidget() {
@@ -217,20 +218,28 @@ class _UserState extends State<UserPage> {
     return Form(
         key: _formKey,
         child: SingleChildScrollView(
+            // was added for integrtion tests
+            // because the screen is too long, need to make two column
             key: Key('listView'),
+            keyboardDismissBehavior: widget.user.userGroup == UserGroup.Admin ||
+                    widget.user.userGroup == UserGroup.Employee
+                ? ScrollViewKeyboardDismissBehavior.manual
+                : ScrollViewKeyboardDismissBehavior.onDrag,
             child: Column(children: <Widget>[
               Center(
                   child: Text(
-                      'User ${widget.user.userGroup.toString()} #${updatedUser.partyId ?? " New"}',
-                      style: TextStyle(
-                          fontSize: isPhone ? 10 : 20,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold))),
+                'User ${widget.user.userGroup.toString()} #${updatedUser.partyId ?? " New"}',
+                style: TextStyle(
+                    fontSize: isPhone ? 10 : 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+                key: Key('header'),
+              )),
               Visibility(
                   visible: updatedUser.userGroup == UserGroup.Admin ||
                       updatedUser.userGroup == UserGroup.Employee,
                   child: Center(child: Text(companyName!))),
-              SizedBox(height: 30),
+              SizedBox(height: 10),
               CircleAvatar(
                   backgroundColor: Colors.green,
                   radius: 80,
@@ -265,7 +274,7 @@ class _UserState extends State<UserPage> {
               ),
               SizedBox(height: 10),
               TextFormField(
-                key: Key('username'),
+                key: Key('loginName'),
                 decoration: InputDecoration(labelText: 'User Login Name '),
                 controller: _nameController,
                 validator: (value) {
@@ -290,29 +299,6 @@ class _UserState extends State<UserPage> {
                   return null;
                 },
               ),
-              SizedBox(height: 10),
-              Visibility(
-                  // use only tomodify by admin user
-                  visible: updatedUser.partyId != null &&
-                      currentUser!.userGroup == UserGroup.Admin,
-                  child: DropdownButtonFormField<UserGroup>(
-                    decoration: InputDecoration(labelText: 'User Group'),
-                    key: Key('userGroup'),
-                    hint: Text('User Group'),
-                    value: _selectedUserGroup,
-                    validator: (value) =>
-                        value == null ? 'field required' : null,
-                    items: localUserGroups.map((item) {
-                      return DropdownMenuItem<UserGroup>(
-                          child: Text(item.toString()), value: item);
-                    }).toList(),
-                    onChanged: (UserGroup? newValue) {
-                      setState(() {
-                        _selectedUserGroup = newValue!;
-                      });
-                    },
-                    isExpanded: true,
-                  )),
               SizedBox(height: 10),
               Visibility(
                   visible: updatedUser.userGroup != UserGroup.Admin &&
@@ -365,6 +351,29 @@ class _UserState extends State<UserPage> {
                   ])),
               SizedBox(height: 10),
               Visibility(
+                  // use only tomodify by admin user
+                  visible: updatedUser.partyId != null &&
+                      currentUser!.userGroup == UserGroup.Admin,
+                  child: DropdownButtonFormField<UserGroup>(
+                    decoration: InputDecoration(labelText: 'User Group'),
+                    key: Key('userGroup'),
+                    hint: Text('User Group'),
+                    value: _selectedUserGroup,
+                    validator: (value) =>
+                        value == null ? 'field required' : null,
+                    items: localUserGroups.map((item) {
+                      return DropdownMenuItem<UserGroup>(
+                          child: Text(item.toString()), value: item);
+                    }).toList(),
+                    onChanged: (UserGroup? newValue) {
+                      setState(() {
+                        _selectedUserGroup = newValue!;
+                      });
+                    },
+                    isExpanded: true,
+                  )),
+              SizedBox(height: 10),
+              Visibility(
                   visible: updatedUser.userGroup != UserGroup.Admin &&
                       updatedUser.userGroup != UserGroup.Employee,
                   child: Row(children: [
@@ -402,7 +411,7 @@ class _UserState extends State<UserPage> {
                         child: Text(
                             updatedUser.partyId == null ? 'Create' : 'Update'),
                         onPressed: () async {
-                          if (_formKey.currentState!.validate() && !loading) {
+                          if (_formKey.currentState!.validate()) {
                             updatedUser = updatedUser.copyWith(
                                 firstName: _firstNameController.text,
                                 lastName: _lastNameController.text,

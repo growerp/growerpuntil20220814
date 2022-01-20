@@ -128,7 +128,10 @@ class UserBloc extends Bloc<UserEvent, UserState>
                     (element) => element.partyId == event.user.partyId);
                 users[index] = data;
               }
-              return state.copyWith(status: UserStatus.success, users: users);
+              return state.copyWith(
+                  status: UserStatus.success,
+                  users: users,
+                  message: 'user ${data.firstName} updated...');
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: UserStatus.failure, message: error.toString())));
@@ -138,7 +141,10 @@ class UserBloc extends Bloc<UserEvent, UserState>
         return emit(compResult.when(
             success: (data) {
               users.insert(0, data);
-              return state.copyWith(status: UserStatus.success, users: users);
+              return state.copyWith(
+                  status: UserStatus.success,
+                  users: users,
+                  message: 'user ${data.firstName} added...');
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: UserStatus.failure, message: error.toString())));
@@ -161,7 +167,10 @@ class UserBloc extends Bloc<UserEvent, UserState>
             int index = users
                 .indexWhere((element) => element.partyId == event.user.partyId);
             users.removeAt(index);
-            return state.copyWith(status: UserStatus.success, users: users);
+            return state.copyWith(
+                status: UserStatus.success,
+                users: users,
+                message: 'User ${event.user.firstName} is deleted now..');
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: UserStatus.failure, message: error.toString())));

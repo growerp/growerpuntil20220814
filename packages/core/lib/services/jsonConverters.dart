@@ -80,7 +80,7 @@ class UserGroupConverter implements JsonConverter<UserGroup?, String?> {
   @override
   String? toJson(UserGroup? object) {
     if (object == null) return null;
-    return object.toString();
+    return object.id();
   }
 }
 

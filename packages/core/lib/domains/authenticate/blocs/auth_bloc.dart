@@ -185,7 +185,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         failure: (NetworkExceptions error) => state.copyWith(
             status: AuthStatus.failure, message: error.toString())));
     if (state.status == AuthStatus.unAuthenticated)
-      PersistFunctions.persistAuthenticate(
+      await PersistFunctions.persistAuthenticate(
           state.authenticate!.copyWith(apiKey: null));
   }
 
@@ -202,7 +202,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         success: (auth) => state.copyWith(
             status: AuthStatus.authenticated,
             authenticate: auth,
-            message: "you are logged in now"),
+            message: 'You are logged in now...'),
         failure: (error) => state.copyWith(
             status: AuthStatus.failure,
             message: "failed logging in: ${error.toString()}")));
