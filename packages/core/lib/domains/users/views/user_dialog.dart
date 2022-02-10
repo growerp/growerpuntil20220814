@@ -57,7 +57,7 @@ class _UserState extends State<UserPage> {
   late List<UserGroup> localUserGroups;
   late UserGroup _selectedUserGroup;
   Company? _selectedCompany;
-  PickedFile? _imageFile;
+  XFile? _imageFile;
   dynamic _pickImageError;
   String? _retrieveDataError;
   late User updatedUser;
@@ -89,7 +89,7 @@ class _UserState extends State<UserPage> {
   void _onImageButtonPressed(ImageSource source,
       {BuildContext? context}) async {
     try {
-      final pickedFile = await _picker.getImage(
+      final pickedFile = await _picker.pickImage(
         source: source,
       );
       setState(() {
@@ -103,7 +103,7 @@ class _UserState extends State<UserPage> {
   }
 
   Future<void> retrieveLostData() async {
-    final LostData response = await _picker.getLostData();
+    final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
       return;
     }
@@ -122,44 +122,44 @@ class _UserState extends State<UserPage> {
     repos = context.read<APIRepository>();
     User? user = widget.user;
     return Dialog(
-      key: Key('UserDialog${user.userGroup.toString()}'),
-      insetPadding: EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Stack(clipBehavior: Clip.none, children: [
-        ListView(key: Key('listView1'), children: [
-          Container(
-              padding: EdgeInsets.all(20),
-              width: 400,
-              height: 850,
-              child: BlocListener<UserBloc, UserState>(listener:
-                  (context, state) {
-                if (state.status == UserStatus.failure) {
-                  loading = false;
-                  HelperFunctions.showMessage(
-                      context, '${state.message}', Colors.red);
-                }
-                if (state.status == UserStatus.success) {
-                  Navigator.of(context).pop(updatedUser);
-                }
-              }, child:
-                  BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-                authenticate = state.authenticate!;
-                if (widget.user.userGroup == UserGroup.Admin ||
-                    widget.user.userGroup == UserGroup.Employee)
-                  _selectedCompany = authenticate.company;
-                return ScaffoldMessenger(
-                    key: scaffoldMessengerKey,
-                    child: Scaffold(
-                        floatingActionButton:
-                            imageButtons(context, _onImageButtonPressed),
-                        body: listChild()));
-              }))),
-        ]),
-        Positioned(top: -10, right: -10, child: DialogCloseButton())
-      ]),
-    );
+        key: Key('UserDialog${user.userGroup.toString()}'),
+        insetPadding: EdgeInsets.all(10),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Stack(clipBehavior: Clip.none, children: [
+          ListView(key: Key('listView1'), children: [
+            Container(
+                padding: EdgeInsets.all(20),
+                width: 400,
+                height: 850,
+                child: BlocListener<UserBloc, UserState>(listener:
+                    (context, state) {
+                  if (state.status == UserStatus.failure) {
+                    loading = false;
+                    HelperFunctions.showMessage(
+                        context, '${state.message}', Colors.red);
+                  }
+                  if (state.status == UserStatus.success) {
+                    Navigator.of(context).pop(updatedUser);
+                  }
+                }, child:
+                    BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
+                  authenticate = state.authenticate!;
+                  if (widget.user.userGroup == UserGroup.Admin ||
+                      widget.user.userGroup == UserGroup.Employee)
+                    _selectedCompany = authenticate.company;
+                  return ScaffoldMessenger(
+                      key: scaffoldMessengerKey,
+                      child: Scaffold(
+                          backgroundColor: Colors.transparent,
+                          floatingActionButton:
+                              imageButtons(context, _onImageButtonPressed),
+                          body: listChild()));
+                }))),
+          ]),
+          Positioned(top: -10, right: -10, child: DialogCloseButton())
+        ]));
   }
 
   Widget listChild() {

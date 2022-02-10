@@ -546,6 +546,8 @@ class APIRepository {
           'rest/s1/growerp/100/Category', apiKey!,
           queryParameters: <String, dynamic>{
             'category': jsonEncode(category.toJson()),
+            'classificationId': classificationId,
+            'moquiSessionToken': sessionToken
           });
       return getResponse<cat.Category>(
           "category", response, (json) => cat.Category.fromJson(json));
@@ -990,7 +992,7 @@ class APIRepository {
     try {
       final response = await dioClient.delete(
           'rest/s1/growerp/100/TimeEntry', apiKey!,
-          data: <String, dynamic>{
+          queryParameters: <String, dynamic>{
             'timeEntry': jsonEncode(timeEntryToJson(timeEntry)),
             'moquiSessionToken': sessionToken
           });

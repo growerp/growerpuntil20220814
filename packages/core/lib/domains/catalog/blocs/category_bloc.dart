@@ -119,7 +119,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
                   (element) => element.categoryId == event.category.categoryId);
               categories[index] = data;
               return state.copyWith(
-                  status: CategoryStatus.success, categories: categories);
+                  status: CategoryStatus.success,
+                  categories: categories,
+                  message: 'Category ${event.category.categoryName} updated!');
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: CategoryStatus.failure, message: error.toString())));
@@ -131,7 +133,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             success: (data) {
               categories.insert(0, data);
               return state.copyWith(
-                  status: CategoryStatus.success, categories: categories);
+                  status: CategoryStatus.success,
+                  categories: categories,
+                  message: 'Category ${event.category.categoryName} added!');
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: CategoryStatus.failure, message: error.toString())));
@@ -156,7 +160,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
                 (element) => element.categoryId == event.category.categoryId);
             categories.removeAt(index);
             return state.copyWith(
-                status: CategoryStatus.success, categories: categories);
+                status: CategoryStatus.success,
+                categories: categories,
+                message: 'Category ${event.category.categoryName} deleted!');
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: CategoryStatus.failure, message: error.toString())));

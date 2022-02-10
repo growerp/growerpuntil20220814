@@ -36,6 +36,7 @@ class CommonTest {
     } else {
       await PersistFunctions.persistTest(test.copyWith(sequence: seq));
     }
+    test = await PersistFunctions.getTest();
     await BlocOverrides.runZoned(
         () async => await tester.pumpWidget(Phoenix(child: TopApp)),
         blocObserver: AppBlocObserver());
@@ -78,10 +79,6 @@ class CommonTest {
 
   static Future<void> gotoMainMenu(WidgetTester tester) async {
     await selectMainMenu(tester, "tap/");
-  }
-
-  static Future<void> refresh(WidgetTester tester) async {
-    await drag(tester, downPage: false);
   }
 
   static Future<void> doSearch(WidgetTester tester,
@@ -138,13 +135,15 @@ class CommonTest {
   }
 
   static Future<void> drag(WidgetTester tester,
-      {bool downPage = true,
-      int seconds = 2,
-      String listViewName = 'listView'}) async {
+      {int seconds = 1, String listViewName = 'listView'}) async {
     double offSet = -200.0;
-    if (downPage == false) offSet = 200.0;
     await tester.drag(find.byKey(Key(listViewName)).last, Offset(0.0, offSet));
     await tester.pumpAndSettle(Duration(seconds: seconds));
+  }
+
+  static Future<void> refresh(WidgetTester tester) async {
+    await tester.drag(find.byKey(Key('listView')).last, Offset(0, 200));
+    await tester.pumpAndSettle();
   }
 
   static Future<void> enterText(

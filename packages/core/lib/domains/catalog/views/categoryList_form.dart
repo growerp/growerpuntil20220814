@@ -14,6 +14,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../api_repository.dart';
+import '../../common/functions/helper_functions.dart';
 import '../../domains.dart';
 
 class CategoryListForm extends StatelessWidget {
@@ -48,7 +49,15 @@ class _CategoriesState extends State<CategoryList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryBloc, CategoryState>(
+    return BlocConsumer<CategoryBloc, CategoryState>(
+      listener: (context, state) {
+        if (state.status == CategoryStatus.failure)
+          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+        if (state.status == CategoryStatus.success) {
+          HelperFunctions.showMessage(
+              context, '${state.message}', Colors.green);
+        }
+      },
       builder: (context, state) {
         switch (state.status) {
           case CategoryStatus.failure:

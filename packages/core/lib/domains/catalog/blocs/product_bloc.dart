@@ -117,7 +117,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
                   (element) => element.productId == event.product.productId);
               products[index] = data;
               return state.copyWith(
-                  status: ProductStatus.success, products: products);
+                  status: ProductStatus.success,
+                  products: products,
+                  message: 'product ${event.product.productName} updated');
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: ProductStatus.failure, message: error.toString())));
@@ -129,7 +131,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
             success: (data) {
               products.insert(0, data);
               return state.copyWith(
-                  status: ProductStatus.success, products: products);
+                  status: ProductStatus.success,
+                  products: products,
+                  message: 'product ${event.product.productName} added');
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: ProductStatus.failure, message: error.toString())));
@@ -153,7 +157,9 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
                 (element) => element.productId == event.product.productId);
             products.removeAt(index);
             return state.copyWith(
-                status: ProductStatus.success, products: products);
+                status: ProductStatus.success,
+                products: products,
+                message: 'product ${event.product.productName} deleted');
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: ProductStatus.failure, message: error.toString())));

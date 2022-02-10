@@ -93,7 +93,7 @@ class OpportunityTest {
   }
 
   static Future<void> closeDetail(WidgetTester tester) async {
-    await CommonTest.drag(tester, downPage: false);
+    await CommonTest.refresh(tester);
     await CommonTest.tapByKey(tester, 'cancel');
   }
 

@@ -129,7 +129,8 @@ class _AssetState extends State<AssetDialog> {
                           style: TextStyle(
                               fontSize: isPhone ? 10 : 20,
                               color: Colors.black,
-                              fontWeight: FontWeight.bold))),
+                              fontWeight: FontWeight.bold),
+                          key: Key('header'))),
                   SizedBox(height: 30),
                   TextFormField(
                     key: Key('name'),

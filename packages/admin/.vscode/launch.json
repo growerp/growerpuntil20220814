@@ -7,10 +7,16 @@
             "program": "lib/main.dart"
         },
         {
-            "name": "Flutter (lib/user_test.dart)",
+            "name": "Flutter (integration_test/main_test.dart)",
             "type": "dart",
             "request": "launch",
-            "program": "lib/user_test.dart"
-        }
+            "program": "integration_test/main_test.dart"
+        },
+        {
+            "name": "Flutter (lib/category_test.dart)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/category_test.dart"
+        },
     ]
 }

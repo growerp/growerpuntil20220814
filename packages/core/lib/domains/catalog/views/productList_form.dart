@@ -18,6 +18,7 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:core/domains/domains.dart';
 
 import '../../../api_repository.dart';
+import '../../common/functions/helper_functions.dart';
 
 class ProductListForm extends StatelessWidget {
   @override
@@ -57,7 +58,15 @@ class _ProductsState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProductBloc, ProductState>(
+    return BlocConsumer<ProductBloc, ProductState>(
+      listener: (context, state) {
+        if (state.status == ProductStatus.failure)
+          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+        if (state.status == ProductStatus.success) {
+          HelperFunctions.showMessage(
+              context, '${state.message}', Colors.green);
+        }
+      },
       builder: (context, state) {
         switch (state.status) {
           case ProductStatus.failure:

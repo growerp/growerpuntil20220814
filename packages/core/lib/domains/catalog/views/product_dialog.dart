@@ -49,7 +49,7 @@ class _ProductState extends State<ProductDialog> {
   late bool useWarehouse;
   Category? _selectedCategory;
   String? _selectedTypeId;
-  PickedFile? _imageFile;
+  XFile? _imageFile;
   dynamic _pickImageError;
   String? _retrieveDataError;
   late String classificationId;
@@ -74,7 +74,7 @@ class _ProductState extends State<ProductDialog> {
   void _onImageButtonPressed(ImageSource source,
       {BuildContext? context}) async {
     try {
-      final pickedFile = await _picker.getImage(
+      final pickedFile = await _picker.pickImage(
         source: source,
       );
       setState(() {
@@ -88,7 +88,7 @@ class _ProductState extends State<ProductDialog> {
   }
 
   Future<void> retrieveLostData() async {
-    final LostData response = await _picker.getLostData();
+    final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
       return;
     }
@@ -106,68 +106,56 @@ class _ProductState extends State<ProductDialog> {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     if (classificationId == 'AppHotel') _selectedTypeId = 'Rental';
     var repos = context.read<APIRepository>();
-    return GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: GestureDetector(
-            onTap: () {},
-            child: Dialog(
-                key: Key('ProductDialog'),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: BlocListener<ProductBloc, ProductState>(
-                    listener: (context, state) async {
-                      switch (state.status) {
-                        case ProductStatus.success:
-                          HelperFunctions.showMessage(
-                              context,
-                              '${product.productId.isEmpty ? "Add" : "Update"} successfull',
-                              Colors.green);
-                          await Future.delayed(Duration(milliseconds: 500));
-                          Navigator.of(context).pop();
-                          break;
-                        case ProductStatus.failure:
-                          HelperFunctions.showMessage(
-                              context, 'Error: ${state.message}', Colors.red);
-                          break;
-                        default:
-                          Text("????");
-                      }
-                    },
-                    child: Stack(clipBehavior: Clip.none, children: [
-                      Container(
-                          padding: EdgeInsets.all(20),
-                          width: 400,
-                          height: 750,
-                          child: ScaffoldMessenger(
-                              key: scaffoldMessengerKey,
-                              child: Scaffold(
-                                  backgroundColor: Colors.transparent,
-                                  floatingActionButton: imageButtons(
-                                      context, _onImageButtonPressed),
-                                  body: Builder(
-                                    builder: (context) => !foundation.kIsWeb &&
-                                            foundation.defaultTargetPlatform ==
-                                                TargetPlatform.android
-                                        ? FutureBuilder<void>(
-                                            future: retrieveLostData(),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<void> snapshot) {
-                                              if (snapshot.hasError) {
-                                                return Text(
-                                                  'Pick image error: ${snapshot.error}}',
-                                                  textAlign: TextAlign.center,
-                                                );
-                                              }
-                                              return _showForm(repos,
-                                                  classificationId, isPhone);
-                                            })
-                                        : _showForm(
-                                            repos, classificationId, isPhone),
-                                  )))),
+    return BlocListener<ProductBloc, ProductState>(
+        listener: (context, state) async {
+          switch (state.status) {
+            case ProductStatus.success:
+              Navigator.of(context).pop();
+              break;
+            case ProductStatus.failure:
+              HelperFunctions.showMessage(
+                  context, 'Error: ${state.message}', Colors.red);
+              break;
+            default:
+              Text("????");
+          }
+        },
+        child: Dialog(
+            key: Key('ProductDialog'),
+            insetPadding: EdgeInsets.all(20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: ScaffoldMessenger(
+                key: scaffoldMessengerKey,
+                child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    floatingActionButton:
+                        imageButtons(context, _onImageButtonPressed),
+                    body: Stack(clipBehavior: Clip.none, children: [
+                      listChild(repos, classificationId, isPhone),
                       Positioned(
-                          top: -10, right: -10, child: DialogCloseButton())
+                          top: -10, right: -10, child: DialogCloseButton()),
                     ])))));
+  }
+
+  Widget listChild(repos, String classificationId, bool isPhone) {
+    return Builder(builder: (BuildContext context) {
+      return !foundation.kIsWeb &&
+              foundation.defaultTargetPlatform == TargetPlatform.android
+          ? FutureBuilder<void>(
+              future: retrieveLostData(),
+              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                if (snapshot.hasError) {
+                  return Text(
+                    'Pick image error: ${snapshot.error}}',
+                    textAlign: TextAlign.center,
+                  );
+                }
+                return _showForm(repos, classificationId, isPhone);
+              })
+          : _showForm(repos, classificationId, isPhone);
+    });
   }
 
   Text? _getRetrieveErrorWidget() {
@@ -192,6 +180,7 @@ class _ProductState extends State<ProductDialog> {
     }
     return Center(
         child: Container(
+            padding: EdgeInsets.all(20),
             child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
@@ -199,11 +188,13 @@ class _ProductState extends State<ProductDialog> {
                     child: Column(children: <Widget>[
                       Center(
                           child: Text(
-                              'Product #${product.productId.isEmpty ? " New" : product.productId}',
-                              style: TextStyle(
-                                  fontSize: isPhone ? 10 : 20,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold))),
+                        'Product #${product.productId.isEmpty ? " New" : product.productId}',
+                        style: TextStyle(
+                            fontSize: isPhone ? 10 : 20,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                        key: Key('header'),
+                      )),
                       SizedBox(height: 20),
                       CircleAvatar(
                           backgroundColor: Colors.green,

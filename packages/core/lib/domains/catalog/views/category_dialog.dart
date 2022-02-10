@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:core/domains/domains.dart';
+import 'package:responsive_framework/responsive_framework.dart';
 
 class CategoryDialog extends StatefulWidget {
   final Category category;
@@ -37,7 +38,7 @@ class _CategoryState extends State<CategoryDialog> {
 
   bool loading = false;
   late Category updatedCategory;
-  PickedFile? _imageFile;
+  XFile? _imageFile;
   dynamic _pickImageError;
   String? _retrieveDataError;
 
@@ -49,7 +50,7 @@ class _CategoryState extends State<CategoryDialog> {
   void _onImageButtonPressed(ImageSource source,
       {BuildContext? context}) async {
     try {
-      final pickedFile = await _picker.getImage(
+      final pickedFile = await _picker.pickImage(
         source: source,
       );
       setState(() {
@@ -63,7 +64,7 @@ class _CategoryState extends State<CategoryDialog> {
   }
 
   Future<void> retrieveLostData() async {
-    final LostData response = await _picker.getLostData();
+    final response = await _picker.retrieveLostData();
     if (response.isEmpty) {
       return;
     }
@@ -78,66 +79,56 @@ class _CategoryState extends State<CategoryDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: GestureDetector(
-                onTap: () {},
-                child: Dialog(
-                    key: Key('CategoryDialog'),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: BlocListener<CategoryBloc, CategoryState>(
-                        listener: (context, state) async {
-                          switch (state.status) {
-                            case CategoryStatus.success:
-                              HelperFunctions.showMessage(
-                                  context,
-                                  '${category.categoryId.isEmpty ? "Add" : "Update"} successfull',
-                                  Colors.green);
-                              await Future.delayed(Duration(milliseconds: 500));
-                              Navigator.of(context).pop();
-                              break;
-                            case CategoryStatus.failure:
-                              HelperFunctions.showMessage(context,
-                                  'Error: ${state.message}', Colors.red);
-                              break;
-                            default:
-                              Text("????");
-                          }
-                        },
-                        child: Stack(clipBehavior: Clip.none, children: [
-                          Container(
-                              padding: EdgeInsets.all(20),
-                              width: 400,
-                              height: 600,
-                              child: Scaffold(
-                                  backgroundColor: Colors.transparent,
-                                  floatingActionButton: imageButtons(
-                                      context, _onImageButtonPressed),
-                                  body: Builder(
-                                    builder: (context) => !foundation.kIsWeb &&
-                                            foundation.defaultTargetPlatform ==
-                                                TargetPlatform.android
-                                        ? FutureBuilder<void>(
-                                            future: retrieveLostData(),
-                                            builder: (BuildContext context,
-                                                AsyncSnapshot<void> snapshot) {
-                                              if (snapshot.hasError) {
-                                                return Text(
-                                                  'Pick image error: ${snapshot.error}}',
-                                                  textAlign: TextAlign.center,
-                                                );
-                                              }
-                                              return _showForm();
-                                            })
-                                        : _showForm(),
-                                  ))),
-                          Positioned(
-                              top: -10, right: -10, child: DialogCloseButton())
-                        ]))))));
+    return BlocListener<CategoryBloc, CategoryState>(
+        listener: (context, state) async {
+          switch (state.status) {
+            case CategoryStatus.success:
+              Navigator.of(context).pop();
+              break;
+            case CategoryStatus.failure:
+              HelperFunctions.showMessage(
+                  context, 'Error: ${state.message}', Colors.red);
+              break;
+            default:
+              Text("????");
+          }
+        },
+        child: Dialog(
+            key: Key('CategoryDialog'),
+            insetPadding: EdgeInsets.all(20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: ScaffoldMessenger(
+                key: scaffoldMessengerKey,
+                child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    floatingActionButton:
+                        imageButtons(context, _onImageButtonPressed),
+                    body: Stack(clipBehavior: Clip.none, children: [
+                      listChild(),
+                      Positioned(
+                          top: -10, right: -10, child: DialogCloseButton()),
+                    ])))));
+  }
+
+  Widget listChild() {
+    return Builder(builder: (BuildContext context) {
+      return !foundation.kIsWeb &&
+              foundation.defaultTargetPlatform == TargetPlatform.android
+          ? FutureBuilder<void>(
+              future: retrieveLostData(),
+              builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+                if (snapshot.hasError) {
+                  return Text(
+                    'Pick image error: ${snapshot.error}}',
+                    textAlign: TextAlign.center,
+                  );
+                }
+                return _showForm();
+              })
+          : _showForm();
+    });
   }
 
   Text? _getRetrieveErrorWidget() {
@@ -150,6 +141,20 @@ class _CategoryState extends State<CategoryDialog> {
   }
 
   Widget _showForm() {
+    final Text? retrieveError = _getRetrieveErrorWidget();
+    if (retrieveError != null) {
+      return retrieveError;
+    }
+    if (_pickImageError != null) {
+      return Text(
+        'Pick image error: $_pickImageError',
+        textAlign: TextAlign.center,
+      );
+    }
+    return _categoryDialog();
+  }
+
+  Widget _categoryDialog() {
     _nameController..text = category.categoryName ?? '';
     _descrController..text = category.description ?? '';
     final Text? retrieveError = _getRetrieveErrorWidget();
@@ -162,11 +167,22 @@ class _CategoryState extends State<CategoryDialog> {
         textAlign: TextAlign.center,
       );
     }
+    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return Center(
         child: Container(
+            padding: EdgeInsets.all(20),
             child: Form(
                 key: _formKey,
                 child: ListView(key: Key('listView'), children: <Widget>[
+                  Center(
+                      child: Text(
+                    'Category #${category.categoryId.isEmpty ? " New" : category.categoryId}',
+                    style: TextStyle(
+                        fontSize: isPhone ? 10 : 20,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                    key: Key('header'),
+                  )),
                   SizedBox(height: 30),
                   CircleAvatar(
                       backgroundColor: Colors.green,

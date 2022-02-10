@@ -19,92 +19,133 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:core/domains/domains.dart';
 import 'package:collection/collection.dart';
 
-// this test is started by the top app after 'startApp'
-
 class UserTest {
   static Future<void> selectAdministrators(WidgetTester tester) async {
-    await CommonTest.selectOption(
-        tester, 'dbCompany', 'UserListFormAdmin', '2');
+    await selectUsers(tester, 'dbCompany', 'UserListFormAdmin', '2');
   }
 
   static Future<void> selectEmployees(WidgetTester tester) async {
-    await CommonTest.selectOption(
-        tester, 'dbCompany', 'UserListFormEmployee', '3');
+    await selectUsers(tester, 'dbCompany', 'UserListFormEmployee', '3');
   }
 
   static Future<void> selectLeads(WidgetTester tester) async {
-    await CommonTest.selectOption(tester, 'dbCrm', 'UserListFormLead', '2');
+    await selectUsers(tester, 'dbCrm', 'UserListFormLead', '2');
   }
 
   static Future<void> selectCustomers(WidgetTester tester) async {
-    await CommonTest.selectOption(tester, 'dbCrm', 'UserListFormCustomer', '3');
+    await selectUsers(tester, 'dbCrm', 'UserListFormCustomer', '3');
   }
 
   static Future<void> selectSuppliers(WidgetTester tester) async {
-    await CommonTest.selectOption(
-        tester, 'dbOrders', 'UserListFormSupplier', '4');
+    await selectUsers(tester, 'dbOrders', 'UserListFormSupplier', '4');
   }
 
-  static Future<void> addAdministrators(WidgetTester tester) async {
+  static Future<void> selectUsers(WidgetTester tester, String option,
+      String formName, String tabNumber) async {
+    if (find
+        .byKey(Key('HomeFormAuth'))
+        .toString()
+        .startsWith('zero widgets with key')) {
+      await CommonTest.gotoMainMenu(tester);
+    }
+    await CommonTest.selectOption(tester, option, formName, tabNumber);
+  }
+
+  static Future<void> addAdministrators(
+      WidgetTester tester, List<User> administrators,
+      {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    if (test.administrators.isNotEmpty) return; // already created
-    test = test.copyWith(administrators: administrators);
-    expect(find.byKey(Key('userItem')), findsNWidgets(1)); // initial admin
-    await PersistFunctions.persistTest(test.copyWith(
-      administrators: await addUsers(tester, test.administrators),
-      sequence: seq,
-    ));
+    if (test.administrators.isEmpty) {
+      // not yet created
+      test = test.copyWith(administrators: administrators);
+      expect(find.byKey(Key('userItem')), findsNWidgets(1)); // initial admin
+      await enterUserData(tester, administrators);
+      await PersistFunctions.persistTest(
+          test.copyWith(administrators: administrators));
+    }
+    if (check) {
+      await checkUserList(tester, administrators);
+      await PersistFunctions.persistTest(test.copyWith(
+        administrators: await checkUserDetail(tester, test.administrators),
+        sequence: seq,
+      ));
+    }
   }
 
-  static Future<void> addEmployees(WidgetTester tester) async {
+  static Future<void> addEmployees(WidgetTester tester, List<User> employees,
+      {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    if (test.employees.isNotEmpty) return; // already created
-    test = test.copyWith(employees: employees);
-    expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-    await PersistFunctions.persistTest(test.copyWith(
-      employees: await addUsers(tester, test.employees),
-      sequence: seq,
-    ));
+    if (test.employees.isEmpty) {
+      // not yet created
+      test = test.copyWith(employees: employees);
+      expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
+      await enterUserData(tester, employees);
+      await PersistFunctions.persistTest(test.copyWith(employees: employees));
+    }
+    if (check) {
+      await checkUserList(tester, employees);
+      await PersistFunctions.persistTest(test.copyWith(
+        employees: await checkUserDetail(tester, test.employees),
+        sequence: seq,
+      ));
+    }
   }
 
-  static Future<void> addLeads(WidgetTester tester) async {
+  static Future<void> addLeads(WidgetTester tester, List<User> leads,
+      {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    if (test.leads.isNotEmpty) return; // already created
-    test = test.copyWith(leads: leads);
-    expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-    await PersistFunctions.persistTest(test.copyWith(
-      leads: await addUsers(tester, test.leads),
-      sequence: seq,
-    ));
+    if (test.leads.isEmpty) {
+      // not yet created
+      test = test.copyWith(leads: leads);
+      expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
+      await enterUserData(tester, leads);
+      await PersistFunctions.persistTest(test.copyWith(leads: leads));
+    }
+    if (check) {
+      await checkUserList(tester, leads);
+      await PersistFunctions.persistTest(test.copyWith(
+        leads: await checkUserDetail(tester, test.leads),
+        sequence: seq,
+      ));
+    }
   }
 
-  static Future<void> addCustomers(WidgetTester tester) async {
+  static Future<void> addCustomers(WidgetTester tester, List<User> customers,
+      {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    if (test.customers.isNotEmpty) return; // already created
-    test = test.copyWith(customers: customers);
-    expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-    await PersistFunctions.persistTest(test.copyWith(
-      customers: await addUsers(tester, test.customers),
-      sequence: seq,
-    ));
+    if (test.customers.isEmpty) {
+      // not yet created
+      test = test.copyWith(customers: customers);
+      expect(find.byKey(Key('userItem')), findsNWidgets(0));
+      await enterUserData(tester, customers);
+      await PersistFunctions.persistTest(test.copyWith(customers: customers));
+    }
+    if (check) {
+      await checkUserList(tester, customers);
+      await PersistFunctions.persistTest(test.copyWith(
+        customers: await checkUserDetail(tester, test.customers),
+        sequence: seq,
+      ));
+    }
   }
 
-  static Future<void> addSuppliers(WidgetTester tester) async {
+  static Future<void> addSuppliers(WidgetTester tester, List<User> suppliers,
+      {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    if (test.suppliers.isNotEmpty) return; // already created
-    test = test.copyWith(suppliers: suppliers);
-    expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-    await PersistFunctions.persistTest(test.copyWith(
-      suppliers: await addUsers(tester, test.suppliers),
-      sequence: seq,
-    ));
-  }
-
-  static Future<List<User>> addUsers(
-      WidgetTester tester, List<User> users) async {
-    await enterUserData(tester, users);
-    await checkUserList(tester, users);
-    return await checkUserDetail(tester, users);
+    if (test.suppliers.isEmpty) {
+      // not yet created
+      test = test.copyWith(suppliers: suppliers);
+      expect(find.byKey(Key('userItem')), findsNWidgets(0));
+      await enterUserData(tester, suppliers);
+      await PersistFunctions.persistTest(test.copyWith(suppliers: suppliers));
+    }
+    if (check) {
+      await checkUserList(tester, suppliers);
+      await PersistFunctions.persistTest(test.copyWith(
+        suppliers: await checkUserDetail(tester, test.suppliers),
+        sequence: seq,
+      ));
+    }
   }
 
   static Future<void> enterUserData(
@@ -178,6 +219,7 @@ class UserTest {
 
   static Future<void> deleteAdministrators(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
+    await CommonTest.refresh(tester);
     int count = test.administrators.length;
     if (count != administrators.length) return;
     await deleteUser(tester, count + 1);
@@ -187,6 +229,7 @@ class UserTest {
 
   static Future<void> deleteEmployees(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
+    await CommonTest.refresh(tester);
     int count = test.employees.length;
     if (count != employees.length) return;
     await deleteUser(tester, count);
@@ -196,6 +239,7 @@ class UserTest {
 
   static Future<void> deleteLeads(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
+    await CommonTest.refresh(tester);
     int count = test.leads.length;
     if (count != leads.length) return;
     await deleteUser(tester, count);
@@ -205,6 +249,7 @@ class UserTest {
 
   static Future<void> deleteCustomers(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
+    await CommonTest.refresh(tester);
     int count = test.customers.length;
     if (count != customers.length) return;
     await deleteUser(tester, count);
@@ -223,7 +268,7 @@ class UserTest {
 
   static Future<void> deleteUser(WidgetTester tester, int count) async {
     expect(find.byKey(Key('userItem')), findsNWidgets(count)); // initial admin
-    await CommonTest.tapByKey(tester, 'delete${count - 1}');
+    await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
     expect(find.byKey(Key('userItem')), findsNWidgets(count - 1));
   }
 

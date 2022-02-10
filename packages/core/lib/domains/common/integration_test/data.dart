@@ -19,7 +19,7 @@ import 'package:core/domains/domains.dart';
 int seq = 0;
 
 Company company = Company(
-  name: "MainCompany",
+  name: "Main Company",
   currency: currencies[0],
   salesPerc: Decimal.parse("5"),
   vatPerc: Decimal.parse("20"),
@@ -40,16 +40,13 @@ User admin = User(
 );
 
 List<Company> companies = [
-  Company(
-      name: 'companyName', currency: Currency(description: 'Baht')), // owner
+  Company(name: 'companyName0', currency: Currency(description: 'Baht')),
   Company(name: 'companyName1', currency: Currency(description: 'Euro')),
   Company(name: 'companyName2', currency: Currency(description: 'Dollar')),
   Company(name: 'companyName3', currency: Currency(description: 'Euro')),
   Company(name: 'companyName4', currency: Currency(description: 'USD')),
   Company(name: 'companyName5', currency: Currency(description: 'Euro')),
   Company(name: 'companyName6', currency: Currency(description: 'USD')),
-  Company(name: 'companyName7', currency: Currency(description: 'Euro')),
-  Company(name: 'companyName8', currency: Currency(description: 'USD')),
 ];
 
 List<User> administrators = [
@@ -57,21 +54,21 @@ List<User> administrators = [
     firstName: 'administrator1',
     lastName: 'last Name',
     userGroup: UserGroup.Admin,
-    companyName: companies[0].name,
+    companyName: company.name,
     email: 'email${seq++}@example.org',
   ),
   User(
     firstName: 'administrator2',
     lastName: 'last Name',
     userGroup: UserGroup.Admin,
-    companyName: companies[0].name,
+    companyName: company.name,
     email: 'email${seq++}@example.org',
   ),
   User(
     firstName: 'administrator3',
     lastName: 'last Name',
     userGroup: UserGroup.Admin,
-    companyName: companies[0].name,
+    companyName: company.name,
     email: 'email${seq++}@example.org',
   ),
 ];
@@ -80,7 +77,7 @@ List<User> employees = [
     firstName: 'employee1',
     lastName: 'last Name',
     userGroup: UserGroup.Employee,
-    companyName: companies[0].name,
+    companyName: company.name,
     userId: 'username${seq++}',
     email: 'email${seq++}@example.org',
   ),
@@ -88,7 +85,7 @@ List<User> employees = [
     firstName: 'employee2',
     lastName: 'last Name',
     userGroup: UserGroup.Employee,
-    companyName: companies[0].name,
+    companyName: company.name,
     email: 'email${seq++}@example.org',
   )
 ];
@@ -96,18 +93,25 @@ List<User> employees = [
 List<User> leads = [
   User(
     firstName: 'lead1',
-    lastName: 'last Name',
+    lastName: 'last Name 1',
     userGroup: UserGroup.Lead,
-    companyName: companies[5].name,
+    companyName: companies[0].name,
     email: 'email${seq++}@example.org',
   ),
   User(
     firstName: 'lead2',
-    lastName: 'last Name',
+    lastName: 'last Name 2',
     userGroup: UserGroup.Lead,
-    companyName: companies[6].name,
+    companyName: companies[1].name,
     email: 'email${seq++}@example.org',
-  )
+  ),
+  User(
+    firstName: 'lead3',
+    lastName: 'last Name 3',
+    userGroup: UserGroup.Lead,
+    companyName: companies[2].name,
+    email: 'email${seq++}@example.org',
+  ),
 ];
 
 List<User> suppliers = [
@@ -115,14 +119,14 @@ List<User> suppliers = [
     firstName: 'supplier1',
     lastName: 'last Name',
     userGroup: UserGroup.Supplier,
-    companyName: companies[7].name,
+    companyName: companies[3].name,
     email: 'email${seq++}@example.org',
   ),
   User(
     firstName: 'supplier2',
     lastName: 'last Name',
     userGroup: UserGroup.Supplier,
-    companyName: companies[8].name,
+    companyName: companies[4].name,
     email: 'email${seq++}@example.org',
   )
 ];
@@ -131,14 +135,14 @@ List<User> customers = [
     firstName: 'customer1',
     lastName: 'last Name',
     userGroup: UserGroup.Customer,
-    companyName: companies[7].name,
+    companyName: companies[5].name,
     email: 'email${seq++}@example.org',
   ),
   User(
     firstName: 'customer2',
     lastName: 'last Name',
     userGroup: UserGroup.Customer,
-    companyName: companies[8].name,
+    companyName: companies[6].name,
     email: 'email${seq++}@example.org',
   )
 ];
@@ -197,28 +201,52 @@ List<Opportunity> opportunities = [
 
 List<Category> categories = [
   Category(
-      categoryName: 'FirstCategory1',
-      description: 'FirstCategory1 description',
+      categoryName: 'Category1',
+      description: 'Category1 description',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
   Category(
-      categoryName: 'FirstCategory2',
-      description: 'FirstCategory2 description',
+      categoryName: 'Category2',
+      description: 'Category2 description',
+      image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
+  Category(
+      categoryName: 'Category3',
+      description: 'Category3 description',
+      image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
+  Category(
+      categoryName: 'Category4 to be deleted',
+      description: 'Category4 description',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
 ];
 
 List<Product> products = [
   Product(
-      productName: 'This is the first product 1',
+      productName: 'This is product 1',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('23.99'),
       category: categories[0],
-      description: 'This is a dummy description of first product 1'),
+      productTypeId: productTypes[0],
+      description: 'This is a dummy description of first product'),
   Product(
-      productName: 'This is the second product 2',
+      productName: 'This is product 2',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('73.99'),
       category: categories[1],
-      description: 'This is a dummy description of second product 1'),
+      productTypeId: productTypes[1],
+      description: 'This is a dummy description of second product'),
+  Product(
+      productName: 'This is product 3',
+      image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
+      price: Decimal.parse('93.99'),
+      category: categories[0],
+      productTypeId: productTypes[2],
+      description: 'This is a dummy description of third product'),
+  Product(
+      productName: 'This is product 4',
+      image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
+      price: Decimal.parse('22.44'),
+      category: categories[0],
+      productTypeId: productTypes[2],
+      description: 'This is the fourth product to be deleted'),
 ];
 
 List<ItemType> salesItems = [
@@ -237,45 +265,45 @@ List<FinDoc> purchaseOrders = [
       sales: false,
       docType: FinDocType.order,
       description: 'The first order',
-      otherUser: User(companyName: 'achilles'),
+      otherUser: User(companyName: companies[0].name),
       items: [
         FinDocItem(
-            description: '30 mil pvc',
-            quantity: Decimal.parse('20400'),
-            price: Decimal.parse('0.21'))
+            description: products[0].productName,
+            quantity: Decimal.parse('20'),
+            price: Decimal.parse('7.21'))
       ]),
   FinDoc(
       sales: false,
       docType: FinDocType.order,
       description: 'The second order',
-      otherUser: User(companyName: 'ips corp'),
+      otherUser: User(companyName: companies[1].name),
       items: [
         FinDocItem(
-            description: 'ADHESIVE #66 - GALLON',
-            quantity: Decimal.parse('108'),
-            price: Decimal.parse('39.0042'))
+            description: products[1].productName,
+            quantity: Decimal.parse('40'),
+            price: Decimal.parse('17.21')),
       ]),
   FinDoc(
       sales: false,
       docType: FinDocType.order,
       description: 'The third order',
-      otherUser: User(companyName: 'core & main'),
+      otherUser: User(companyName: companies[2].name),
       items: [
         FinDocItem(
-            description: '8" 90 deg. PVC',
-            quantity: Decimal.parse('40'),
-            price: Decimal.parse('30'))
+            description: products[2].productName,
+            quantity: Decimal.parse('25'),
+            price: Decimal.parse('6.29')),
       ]),
   FinDoc(
       sales: false,
       docType: FinDocType.order,
       description: 'The fourth order',
-      otherUser: User(companyName: 'MELCO LININGS'),
+      otherUser: User(companyName: companies[3].name),
       items: [
         FinDocItem(
-            description: '6" 90 deg. PVC',
-            quantity: Decimal.parse('40'),
-            price: Decimal.parse('10'))
+            description: products[2].productName,
+            quantity: Decimal.parse('26'),
+            price: Decimal.parse('3.21'))
       ]),
 ];
 
@@ -314,4 +342,39 @@ List<Location> warehouseLocations = [
   Location(locationName: 'For purchase order 1'),
   Location(locationName: 'For purchase order 2'),
   Location(locationName: 'For purchase order 3'),
+];
+
+List<Asset> assets = [
+  Asset(
+    assetName: 'asset name 1',
+    availableToPromise: Decimal.parse('100'),
+    quantityOnHand: Decimal.parse('100'),
+    product: products[0],
+    statusId: assetStatusValues[0],
+    receivedDate: DateTime.now().subtract(Duration(days: 4)),
+  ),
+  Asset(
+    assetName: 'asset name 2',
+    availableToPromise: Decimal.parse('200'),
+    quantityOnHand: Decimal.parse('200'),
+    product: products[1],
+    statusId: assetStatusValues[0],
+    receivedDate: DateTime.now().subtract(Duration(days: 4)),
+  ),
+  Asset(
+    assetName: 'asset name 3',
+    availableToPromise: Decimal.parse('300'),
+    quantityOnHand: Decimal.parse('300'),
+    product: products[1],
+    statusId: assetStatusValues[0],
+    receivedDate: DateTime.now().subtract(Duration(days: 4)),
+  ),
+  Asset(
+    assetName: 'asset name 4 to be deleted',
+    availableToPromise: Decimal.parse('400'),
+    quantityOnHand: Decimal.parse('400'),
+    product: products[2],
+    statusId: assetStatusValues[0],
+    receivedDate: DateTime.now().subtract(Duration(days: 4)),
+  ),
 ];

@@ -1,5 +1,7 @@
 import 'package:admin/main.dart';
 import 'package:core/api_repository.dart';
+import 'package:core/domains/common/functions/persist_functions.dart';
+import 'package:core/domains/common/models/save_test_model.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -22,6 +24,5 @@ void main() {
     await CompanyTest.selectCompany(tester);
     await CompanyTest.updateCompany(tester);
     await CompanyTest.updateAddress(tester);
-    await CommonTest.logout(tester);
   }, skip: false);
 }

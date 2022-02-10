@@ -58,7 +58,7 @@ class _CompanyState extends State<CompanyPage> {
   TextEditingController _salesPercController = TextEditingController();
   late Currency _selectedCurrency;
   late bool isAdmin;
-  PickedFile? _imageFile;
+  XFile? _imageFile;
   dynamic _pickImageError;
   String? _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
@@ -89,7 +89,7 @@ class _CompanyState extends State<CompanyPage> {
   void _onImageButtonPressed(ImageSource source,
       {BuildContext? context}) async {
     try {
-      final pickedFile = await _picker.getImage(
+      final pickedFile = await _picker.pickImage(
         source: source,
       );
       setState(() {
@@ -103,7 +103,7 @@ class _CompanyState extends State<CompanyPage> {
   }
 
   Future<void> retrieveLostData() async {
-    final LostData response = await _picker.getLostData();
+    final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
       return;
     }

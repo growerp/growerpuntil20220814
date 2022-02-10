@@ -125,11 +125,13 @@ class CompanyTest {
     await CommonTest.tapByKey(tester, 'updateCompany', seconds: 5);
     // check address
     await CommonTest.tapByKey(tester, 'address');
-    expect(CommonTest.getTextFormField('address1'), equals(address.address1!));
-    expect(CommonTest.getTextFormField('address2'), equals(address.address2!));
     expect(
-        CommonTest.getTextFormField('postalCode'), equals(address.postalCode));
-    expect(CommonTest.getTextFormField('city'), equals(address.city!));
+        CommonTest.getTextFormField('address1'), contains(address.address1!));
+    expect(
+        CommonTest.getTextFormField('address2'), contains(address.address2!));
+    expect(CommonTest.getTextFormField('postalCode'),
+        contains(address.postalCode));
+    expect(CommonTest.getTextFormField('city'), contains(address.city!));
     expect(CommonTest.getTextFormField('province'), equals(address.province!));
     expect(CommonTest.getDropdownSearch('country'), equals(address.country));
   }
