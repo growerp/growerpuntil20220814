@@ -373,7 +373,7 @@ List<Asset> assets = [
     assetName: 'asset name 4 to be deleted',
     availableToPromise: Decimal.parse('400'),
     quantityOnHand: Decimal.parse('400'),
-    product: products[2],
+    product: products[0],
     statusId: assetStatusValues[0],
     receivedDate: DateTime.now().subtract(Duration(days: 4)),
   ),

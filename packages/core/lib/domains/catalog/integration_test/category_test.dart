@@ -77,8 +77,8 @@ class CategoryTest {
       WidgetTester tester, List<Category> categories) async {
     await CommonTest.refresh(tester);
     categories.forEachIndexed((index, category) {
-      expect(CommonTest.getTextField('name${index}'),
-          equals('${category.categoryName!}'));
+      expect(CommonTest.getTextField('name$index'),
+          equals(category.categoryName!));
     });
   }
 

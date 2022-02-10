@@ -22,20 +22,33 @@ import 'package:collection/collection.dart';
 
 class AssetTest {
   static Future<void> selectAsset(WidgetTester tester) async {
+    if (find
+        .byKey(Key('HomeFormAuth'))
+        .toString()
+        .startsWith('zero widgets with key')) {
+      await CommonTest.gotoMainMenu(tester);
+    }
     await CommonTest.selectOption(tester, 'dbCatalog', 'AssetListForm', '2');
   }
 
-  static Future<void> addAssets(WidgetTester tester, List<Asset> assets) async {
+  static Future<void> addAssets(WidgetTester tester, List<Asset> assets,
+      {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    if (test.assets.isNotEmpty) return; // already created
-    test = test.copyWith(assets: assets);
-    expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-    await enterAssetData(tester, assets);
-    await checkAssetList(tester, assets);
-    await PersistFunctions.persistTest(test.copyWith(
-      assets: await checkAssetDetail(tester, test.assets),
-      sequence: seq,
-    ));
+    if (test.assets.isEmpty) {
+      // not yet created
+      test = test.copyWith(assets: assets);
+      expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
+      await enterAssetData(tester, assets);
+      await PersistFunctions.persistTest(
+          test.copyWith(assets: assets, sequence: seq));
+    }
+    if (check && test.assets[0].assetId.isEmpty) {
+      await checkAssetList(tester, assets);
+      await PersistFunctions.persistTest(test.copyWith(
+        assets: await checkAssetDetail(tester, test.assets),
+        sequence: seq,
+      ));
+    }
   }
 
   static Future<void> enterAssetData(
@@ -59,6 +72,7 @@ class AssetTest {
       await CommonTest.enterDropDown(tester, 'statusDropDown', asset.statusId!);
       await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      await tester.pumpAndSettle(); // for the message to disappear
       index++;
     }
   }
@@ -67,8 +81,6 @@ class AssetTest {
       WidgetTester tester, List<Asset> assets) async {
     await CommonTest.refresh(tester);
     assets.forEachIndexed((index, asset) {
-      expect(
-          CommonTest.getTextField('name$index'), equals('${asset.assetName!}'));
       expect(CommonTest.getTextField('name$index'), equals(asset.assetName));
       if (!CommonTest.isPhone()) {
         expect(
@@ -84,6 +96,7 @@ class AssetTest {
     int index = 0;
     for (Asset asset in assets) {
       await CommonTest.tapByKey(tester, 'name${index}');
+      var id = CommonTest.getTextField('header').split('#')[1];
       expect(find.byKey(Key('AssetDialog')), findsOneWidget);
       expect(CommonTest.getTextFormField('name'), equals(asset.assetName!));
       expect(CommonTest.getTextFormField('quantityOnHand'),
@@ -91,7 +104,6 @@ class AssetTest {
       expect(CommonTest.getDropdownSearch('productDropDown'),
           asset.product!.productName!);
       expect(CommonTest.getDropdown('statusDropDown'), asset.statusId);
-      var id = CommonTest.getTextField('header').split('#')[1];
       assets[index] = assets[index].copyWith(assetId: id);
       index++;
       await CommonTest.tapByKey(tester, 'cancel');
@@ -115,7 +127,7 @@ class AssetTest {
     // check if already modified then skip
     if (test.assets[0].assetName != assets[0].assetName) return;
     List<Asset> updAssets = [];
-    for (Asset asset in assets) {
+    for (Asset asset in test.assets) {
       updAssets.add(asset.copyWith(
         assetName: asset.assetName! + 'u',
         quantityOnHand: Decimal.parse(asset.quantityOnHand.toString()) +
