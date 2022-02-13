@@ -39,18 +39,13 @@ class AccountingTest {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       // save invoice Id with order
       String invoiceId = CommonTest.getTextField('id0');
-      String seq = '0';
-      // if same as order number , wrong record, get next one
-      if (CommonTest.getTextField('id0') == order.orderId) {
-        invoiceId = CommonTest.getTextField('id1');
-        seq = '1';
-      }
+      invoiceId = CommonTest.getTextField('id0');
       finDocs.add(order.copyWith(invoiceId: invoiceId));
       // check list
-      await CommonTest.tapByKey(tester, 'id$seq'); // open items
+      await CommonTest.tapByKey(tester, 'id0'); // open items
       expect(order.items[0].productId,
           CommonTest.getTextField('itemLine0').split(' ')[1]);
-      await CommonTest.tapByKey(tester, 'id$seq'); // close items
+      await CommonTest.tapByKey(tester, 'id0'); // close items
     }
     await PersistFunctions.persistFinDocList(finDocs);
   }
@@ -64,18 +59,12 @@ class AccountingTest {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       // save invoice Id with order
       String invoiceId = CommonTest.getTextField('id0');
-      String seq = '0';
-      // if same as order number , wrong record, get next one
-      if (CommonTest.getTextField('id0') == order.orderId) {
-        invoiceId = CommonTest.getTextField('id1');
-        seq = '1';
-      }
       finDocs.add(order.copyWith(invoiceId: invoiceId));
       // check list
-      await CommonTest.tapByKey(tester, 'id$seq'); // open items
+      await CommonTest.tapByKey(tester, 'id0'); // open items
       expect(order.items[0].productId,
-          CommonTest.getTextField('itemLine$seq').split(' ')[1]);
-      await CommonTest.tapByKey(tester, 'id$seq'); // close items
+          CommonTest.getTextField('itemLine0').split(' ')[1]);
+      await CommonTest.tapByKey(tester, 'id0'); // close items
     }
     await PersistFunctions.persistFinDocList(finDocs);
   }
@@ -86,12 +75,7 @@ class AccountingTest {
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
-      String seq = '0';
-      // if same as order number , wrong record, get next one
-      if (CommonTest.getTextField('id0') == order.orderId) {
-        seq = '1';
-      }
-      await CommonTest.tapByKey(tester, 'nextStatus$seq', seconds: 5);
+      await CommonTest.tapByKey(tester, 'nextStatus0', seconds: 5);
       await CommonTest.checkText(tester, 'Approved');
     }
   }
@@ -102,12 +86,7 @@ class AccountingTest {
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
-      String seq = '0';
-      // if same as order number , wrong record, get next one
-      if (CommonTest.getTextField('id0') == order.orderId) {
-        seq = '1';
-      }
-      await CommonTest.tapByKey(tester, 'nextStatus$seq', seconds: 5);
+      await CommonTest.tapByKey(tester, 'nextStatus0', seconds: 5);
       await CommonTest.checkText(tester, 'Approved');
     }
   }
@@ -135,7 +114,7 @@ class AccountingTest {
       String paymentId = CommonTest.getTextField('id0');
       // if same as order number , wrong record, get next one
       if (CommonTest.getTextField('id0') == order.orderId) {
-        paymentId = CommonTest.getTextField('id1');
+        paymentId = CommonTest.getTextField('id0');
       }
       finDocs.add(order.copyWith(paymentId: paymentId));
       // check list
@@ -154,7 +133,7 @@ class AccountingTest {
       String paymentId = CommonTest.getTextField('id0');
       // if same as order number , wrong record, get next one
       if (CommonTest.getTextField('id0') == order.orderId) {
-        paymentId = CommonTest.getTextField('id1');
+        paymentId = CommonTest.getTextField('id0');
       }
       finDocs.add(order.copyWith(paymentId: paymentId));
       // check list
