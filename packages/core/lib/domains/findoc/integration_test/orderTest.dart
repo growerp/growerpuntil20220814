@@ -92,6 +92,7 @@ class OrderTest {
         await CommonTest.tapByKey(tester, 'ok');
       }
       // create order
+      await CommonTest.drag(tester, listViewName: 'listView1');
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
       // get productId
       await CommonTest.tapByKey(tester, 'id0');

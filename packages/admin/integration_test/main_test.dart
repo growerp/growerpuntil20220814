@@ -15,10 +15,10 @@
 import 'company_test.dart' as company;
 import 'category_test.dart' as category;
 import 'product_test.dart' as product;
-import '../lib/asset_test.dart' as asset;
+import 'asset_test.dart' as asset;
 import 'user_test.dart' as user;
 import 'purchase_order_test.dart' as purchaseOrder;
-import 'sales_order_test.dart' as salesOrder;
+import '../lib/sales_order_test.dart' as salesOrder;
 import 'package:integration_test/integration_test.dart';
 
 void main() {

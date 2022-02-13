@@ -19,7 +19,6 @@ void main() {
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
     await CompanyTest.createCompany(tester);
-    await CommonTest.login(tester);
     await CategoryTest.selectCategory(tester);
     await CategoryTest.addCategories(tester, categories);
     await CategoryTest.updateCategories(tester);

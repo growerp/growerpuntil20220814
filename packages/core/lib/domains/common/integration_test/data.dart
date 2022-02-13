@@ -137,6 +137,13 @@ List<User> customers = [
     userGroup: UserGroup.Customer,
     companyName: companies[5].name,
     email: 'email${seq++}@example.org',
+    companyAddress: Address(
+        address1: 'soi 5',
+        address2: 'suite 23',
+        postalCode: '30071',
+        city: 'Pucket',
+        province: 'California',
+        country: countries[3].name),
   ),
   User(
     firstName: 'customer2',
@@ -220,32 +227,32 @@ List<Category> categories = [
 
 List<Product> products = [
   Product(
-      productName: 'This is product 1',
+      productName: 'This is shipable product 1',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('23.99'),
       category: categories[0],
       productTypeId: productTypes[0],
       description: 'This is a dummy description of first product'),
   Product(
-      productName: 'This is product 2',
+      productName: 'This is shipable product 2',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('73.99'),
       category: categories[1],
-      productTypeId: productTypes[1],
+      productTypeId: productTypes[0],
       description: 'This is a dummy description of second product'),
   Product(
-      productName: 'This is product 3',
+      productName: 'This is rental product 3',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('93.99'),
       category: categories[0],
       productTypeId: productTypes[2],
       description: 'This is a dummy description of third product'),
   Product(
-      productName: 'This is product 4',
+      productName: 'This is service product 4',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('22.44'),
       category: categories[0],
-      productTypeId: productTypes[2],
+      productTypeId: productTypes[1],
       description: 'This is the fourth product to be deleted'),
 ];
 
@@ -265,7 +272,7 @@ List<FinDoc> purchaseOrders = [
       sales: false,
       docType: FinDocType.order,
       description: 'The first order',
-      otherUser: User(companyName: companies[0].name),
+      otherUser: suppliers[0],
       items: [
         FinDocItem(
             description: products[0].productName,
@@ -276,34 +283,12 @@ List<FinDoc> purchaseOrders = [
       sales: false,
       docType: FinDocType.order,
       description: 'The second order',
-      otherUser: User(companyName: companies[1].name),
+      otherUser: suppliers[1],
       items: [
         FinDocItem(
             description: products[1].productName,
             quantity: Decimal.parse('40'),
             price: Decimal.parse('17.21')),
-      ]),
-  FinDoc(
-      sales: false,
-      docType: FinDocType.order,
-      description: 'The third order',
-      otherUser: User(companyName: companies[2].name),
-      items: [
-        FinDocItem(
-            description: products[2].productName,
-            quantity: Decimal.parse('25'),
-            price: Decimal.parse('6.29')),
-      ]),
-  FinDoc(
-      sales: false,
-      docType: FinDocType.order,
-      description: 'The fourth order',
-      otherUser: User(companyName: companies[3].name),
-      items: [
-        FinDocItem(
-            description: products[2].productName,
-            quantity: Decimal.parse('26'),
-            price: Decimal.parse('3.21'))
       ]),
 ];
 
@@ -311,29 +296,19 @@ List<FinDoc> salesOrders = [
   FinDoc(
       sales: false,
       docType: FinDocType.order,
-      description: 'The first order',
-      otherUser: User(companyName: 'Thompson Construction'),
+      description: 'The first sales order',
+      otherUser: customers[0],
       items: [
         FinDocItem(
           description: products[0].productName,
           price: products[0].price,
-          quantity: Decimal.parse('27069'),
+          quantity: Decimal.parse('20'),
         ),
         FinDocItem(
           description: products[1].productName,
           price: products[1].price,
-          quantity: Decimal.parse('4'),
+          quantity: Decimal.parse('40'),
         ),
-        FinDocItem(
-          description: products[2].productName,
-          price: products[2].price,
-          quantity: Decimal.parse('8'),
-        ),
-        FinDocItem(
-          description: products[3].productName,
-          price: products[3].price,
-          quantity: Decimal.parse('9'),
-        )
       ]),
 ];
 

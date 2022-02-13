@@ -6,17 +6,21 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:core/domains/integration_test.dart';
 
+// uses data from create purchase order, run that one first
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('''GrowERP sales test''', (tester) async {
-    setUp(() async {
-      await GlobalConfiguration().loadFromAsset("app_settings");
-    });
+  setUp(() async {
+    await GlobalConfiguration().loadFromAsset("app_settings");
+  });
 
+  testWidgets('''GrowERP sales test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()));
     await CommonTest.login(tester);
+    await UserTest.selectCustomers(tester);
+    await UserTest.addCustomers(tester, [customers[0]], check: false);
     await OrderTest.selectSalesOrders(tester);
     await OrderTest.createSalesOrder(tester, salesOrders);
     await OrderTest.checkSalesOrder(tester);

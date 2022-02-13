@@ -17,7 +17,8 @@ void main() {
 
   testWidgets('''GrowERP Purchase test''', (tester) async {
     await CommonTest.startApp(
-        tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()));
+        tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
+        clear: true);
     await CompanyTest.createCompany(tester);
     await CategoryTest.selectCategory(tester);
     await CategoryTest.addCategories(tester, [categories[0], categories[1]],
@@ -26,7 +27,8 @@ void main() {
     await ProductTest.addProducts(tester, [products[0], products[1]],
         check: false);
     await UserTest.selectSuppliers(tester);
-    await UserTest.addSuppliers(tester, [suppliers[0]], check: false);
+    await UserTest.addSuppliers(tester, [suppliers[0], suppliers[1]],
+        check: false);
     await OrderTest.selectPurchaseOrders(tester);
     await OrderTest.createPurchaseOrder(tester, purchaseOrders);
     await OrderTest.checkPurchaseOrder(tester);

@@ -265,4 +265,30 @@ class CommonTest {
         find.byKey(Key('appBarCompanyName')).evaluate().single.widget as Text;
     return tff.data!.replaceAll(new RegExp(r'[^0-9]'), '');
   }
+
+  static Future<void> updateAddress(tester, Address address) async {
+    await drag(tester);
+    await tapByKey(tester, 'address');
+    await enterText(tester, 'address1', address.address1!);
+    await enterText(tester, 'address2', address.address2!);
+    await enterText(tester, 'postalCode', address.postalCode!);
+    await enterText(tester, 'city', address.city!);
+    await enterText(tester, 'province', address.province!);
+    await drag(tester);
+    await enterDropDownSearch(tester, 'country', address.country!);
+    await drag(tester);
+    await tapByKey(tester, 'updateAddress');
+  }
+
+  static Future<void> checkAddress(tester, Address address) async {
+    await drag(tester);
+    await tapByKey(tester, 'address');
+    expect(getTextFormField('address1'), contains(address.address1!));
+    expect(getTextFormField('address2'), contains(address.address2!));
+    expect(getTextFormField('postalCode'), contains(address.postalCode));
+    expect(getTextFormField('city'), contains(address.city!));
+    expect(getTextFormField('province'), equals(address.province!));
+    expect(getDropdownSearch('country'), equals(address.country));
+    await tapByKey(tester, 'cancel');
+  }
 }

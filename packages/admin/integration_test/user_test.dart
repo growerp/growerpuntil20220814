@@ -17,8 +17,9 @@ void main() {
 
   testWidgets('''GrowERP user test''', (tester) async {
     await CommonTest.startApp(
-        tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()));
-    await CommonTest.login(tester);
+        tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
+        clear: true);
+    await CompanyTest.createCompany(tester);
     await UserTest.selectAdministrators(tester);
     await UserTest.addAdministrators(tester, administrators);
     await UserTest.updateAdministrators(tester);

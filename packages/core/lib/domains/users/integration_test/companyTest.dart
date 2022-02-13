@@ -94,7 +94,8 @@ class CompanyTest {
   static Future<void> updateAddress(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     if (test.company!.address != null) return;
-    await updateAndCheckAddress(tester, company.address!);
+    await CommonTest.updateAddress(tester, company.address!);
+    await CommonTest.checkAddress(tester, company.address!);
     Company newCompany = company.copyWith(
         address: Address(
             address1: company.address!.address1! + 'u',
@@ -103,36 +104,12 @@ class CompanyTest {
             city: company.address!.city! + 'u',
             province: company.address!.province! + 'u',
             country: countries[1].name));
-    await updateAndCheckAddress(tester, newCompany.address!);
-    await CommonTest.tapByKey(tester, 'cancel');
+    await CommonTest.drag(tester);
+    await CommonTest.tapByKey(tester, 'updateCompany', seconds: 5);
+    await CommonTest.updateAddress(tester, newCompany.address!);
+    await CommonTest.checkAddress(tester, newCompany.address!);
     await PersistFunctions.persistTest(
         test.copyWith(sequence: seq, company: newCompany),
         backup: true); // last test for company ready for user test
-  }
-
-  static Future<void> updateAndCheckAddress(tester, Address address) async {
-    await CommonTest.tapByKey(tester, 'address');
-    await CommonTest.enterText(tester, 'address1', address.address1!);
-    await CommonTest.enterText(tester, 'address2', address.address2!);
-    await CommonTest.enterText(tester, 'postalCode', address.postalCode!);
-    await CommonTest.enterText(tester, 'city', address.city!);
-    await CommonTest.enterText(tester, 'province', address.province!);
-    await CommonTest.drag(tester);
-    await CommonTest.enterDropDownSearch(tester, 'country', address.country!);
-    await CommonTest.drag(tester);
-    await CommonTest.tapByKey(tester, 'updateAddress');
-    await CommonTest.drag(tester);
-    await CommonTest.tapByKey(tester, 'updateCompany', seconds: 5);
-    // check address
-    await CommonTest.tapByKey(tester, 'address');
-    expect(
-        CommonTest.getTextFormField('address1'), contains(address.address1!));
-    expect(
-        CommonTest.getTextFormField('address2'), contains(address.address2!));
-    expect(CommonTest.getTextFormField('postalCode'),
-        contains(address.postalCode));
-    expect(CommonTest.getTextFormField('city'), contains(address.city!));
-    expect(CommonTest.getTextFormField('province'), equals(address.province!));
-    expect(CommonTest.getDropdownSearch('country'), equals(address.country));
   }
 }

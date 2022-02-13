@@ -164,19 +164,22 @@ class UserTest {
       await CommonTest.enterText(tester, 'firstName', user.firstName!);
       await CommonTest.enterText(tester, 'lastName', user.lastName!);
       await CommonTest.enterText(tester, 'loginName', user.email!);
-      await CommonTest.drag(tester, listViewName: 'listView1');
+      await CommonTest.drag(tester);
       await CommonTest.enterText(tester, 'email', user.email!);
-      await CommonTest.drag(tester, listViewName: 'listView1');
+      await CommonTest.drag(tester);
       if (user.userGroup != UserGroup.Admin &&
           user.userGroup != UserGroup.Employee) {
         await CommonTest.enterText(tester, 'newCompanyName', user.companyName!);
-        await CommonTest.drag(tester, listViewName: 'listView1');
+        if (user.companyAddress != null) {
+          await CommonTest.updateAddress(tester, user.companyAddress!);
+        }
+        await CommonTest.drag(tester);
       }
       if (user.partyId != null) {
         await CommonTest.enterDropDown(
             tester, 'userGroup', user.userGroup.toString());
       }
-      await CommonTest.drag(tester, listViewName: 'listView1');
+      await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'updateUser', seconds: 5);
       index++;
     }
@@ -199,6 +202,7 @@ class UserTest {
     if (users[0].userGroup == UserGroup.Admin) index++;
     for (User user in users) {
       await CommonTest.tapByKey(tester, 'name${index}');
+      var id = CommonTest.getTextField('header').split('#')[1];
       expect(find.byKey(Key('UserDialog${user.userGroup.toString()}')),
           findsOneWidget);
       expect(CommonTest.getTextFormField('firstName'), equals(user.firstName!));
@@ -206,9 +210,11 @@ class UserTest {
       expect(CommonTest.getTextFormField('loginName'), equals(user.email!));
       expect(CommonTest.getTextFormField('email'), equals(user.email!));
       await CommonTest.drag(tester);
+      if (user.companyAddress != null) {
+        await CommonTest.checkAddress(tester, user.companyAddress!);
+      }
       expect(CommonTest.getDropdown('userGroup'),
           equals(user.userGroup.toString()));
-      var id = CommonTest.getTextField('header').split('#')[1];
       users[index1] = users[index1].copyWith(partyId: id);
       index++;
       index1++;
@@ -333,6 +339,15 @@ class UserTest {
         loginName: "${user.email!.split('@')[0]}"
             "u@${user.email!.split('@')[1]}",
         companyName: user.companyName! + 'u',
+        companyAddress: user.companyAddress != null
+            ? Address(
+                address1: user.companyAddress!.address1! + 'u',
+                address2: user.companyAddress!.address2! + 'u',
+                postalCode: user.companyAddress!.postalCode! + 'u',
+                city: user.companyAddress!.city! + 'u',
+                province: user.companyAddress!.province! + 'u',
+                country: countries[10].name)
+            : null,
       ));
     }
     return updUsers;

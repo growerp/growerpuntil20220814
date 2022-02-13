@@ -128,11 +128,12 @@ class _UserState extends State<UserPage> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Stack(clipBehavior: Clip.none, children: [
-          ListView(key: Key('listView1'), children: [
-            Container(
+          SingleChildScrollView(
+            key: Key('listView'),
+            child: Container(
                 padding: EdgeInsets.all(20),
                 width: 400,
-                height: 850,
+                height: 900,
                 child: BlocListener<UserBloc, UserState>(listener:
                     (context, state) {
                   if (state.status == UserStatus.failure) {
@@ -157,7 +158,7 @@ class _UserState extends State<UserPage> {
                               imageButtons(context, _onImageButtonPressed),
                           body: listChild()));
                 }))),
-          ]),
+          ),
           Positioned(top: -10, right: -10, child: DialogCloseButton())
         ]));
   }
@@ -217,229 +218,218 @@ class _UserState extends State<UserPage> {
 
     return Form(
         key: _formKey,
-        child: SingleChildScrollView(
-            // was added for integrtion tests
-            // because the screen is too long, need to make two column
-            key: Key('listView'),
-            keyboardDismissBehavior: widget.user.userGroup == UserGroup.Admin ||
-                    widget.user.userGroup == UserGroup.Employee
-                ? ScrollViewKeyboardDismissBehavior.manual
-                : ScrollViewKeyboardDismissBehavior.onDrag,
-            child: Column(children: <Widget>[
-              Center(
-                  child: Text(
-                'User ${widget.user.userGroup.toString()} #${updatedUser.partyId ?? " New"}',
-                style: TextStyle(
-                    fontSize: isPhone ? 10 : 20,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
-                key: Key('header'),
+        child: Column(children: <Widget>[
+          Center(
+              child: Text(
+            'User ${widget.user.userGroup.toString()} #${updatedUser.partyId ?? " New"}',
+            style: TextStyle(
+                fontSize: isPhone ? 10 : 20,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+            key: Key('header'),
+          )),
+          Visibility(
+              visible: updatedUser.userGroup == UserGroup.Admin ||
+                  updatedUser.userGroup == UserGroup.Employee,
+              child: Center(child: Text(companyName!))),
+          SizedBox(height: 10),
+          CircleAvatar(
+              backgroundColor: Colors.green,
+              radius: 80,
+              child: _imageFile != null
+                  ? kIsWeb
+                      ? Image.network(_imageFile!.path)
+                      : Image.file(File(_imageFile!.path))
+                  : widget.user.image != null
+                      ? Image.memory(widget.user.image!, height: 150)
+                      : Text(widget.user.firstName?.substring(0, 1) ?? '',
+                          style: TextStyle(fontSize: 30, color: Colors.black))),
+          SizedBox(height: 20),
+          TextFormField(
+            key: Key('firstName'),
+            decoration: InputDecoration(labelText: 'First Name'),
+            controller: _firstNameController,
+            validator: (value) {
+              if (value!.isEmpty) return 'Please enter a first name?';
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            key: Key('lastName'),
+            decoration: InputDecoration(labelText: 'Last Name'),
+            controller: _lastNameController,
+            validator: (value) {
+              if (value!.isEmpty) return 'Please enter a last name?';
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            key: Key('loginName'),
+            decoration: InputDecoration(labelText: 'User Login Name '),
+            controller: _nameController,
+            validator: (value) {
+              if (widget.user.userGroup == UserGroup.Admin && value!.isEmpty)
+                return 'An administrator needs a username!';
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            key: Key('email'),
+            decoration: InputDecoration(labelText: 'Email address'),
+            controller: _emailController,
+            validator: (String? value) {
+              if (value!.isEmpty) return 'Please enter Email address?';
+              if (!RegExp(
+                      r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                  .hasMatch(value)) {
+                return 'This is not a valid email';
+              }
+              return null;
+            },
+          ),
+          SizedBox(height: 10),
+          Visibility(
+              visible: updatedUser.userGroup != UserGroup.Admin &&
+                  updatedUser.userGroup != UserGroup.Employee,
+              child: Column(children: [
+                TextFormField(
+                  key: Key('newCompanyName'),
+                  decoration: InputDecoration(labelText: 'New Company Name'),
+                  controller: _companyController,
+                  validator: (value) {
+                    if (value!.isEmpty && _selectedCompany == null)
+                      return 'Please enter an existing or new company?';
+                    return null;
+                  },
+                ),
+                SizedBox(height: 10),
+                DropdownSearch<Company>(
+                  key: Key('companyName'),
+                  label: 'Existing Company',
+                  dialogMaxWidth: 300,
+                  autoFocusSearchBox: true,
+                  selectedItem: _selectedCompany,
+                  popupShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                  dropdownSearchDecoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0)),
+                  ),
+                  searchBoxDecoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0)),
+                  ),
+                  showSearchBox: true,
+                  searchBoxController: _companySearchBoxController,
+                  isFilteredOnline: true,
+                  itemAsString: (Company? u) => "${u!.name}",
+                  onFind: (String filter) =>
+                      getOwnedCompanies(_companySearchBoxController.text),
+                  onChanged: (Company? newValue) {
+                    setState(() {
+                      _selectedCompany = newValue;
+                    });
+                  },
+                  validator: (value) =>
+                      value == null && _companyController.text == ''
+                          ? "Select an existing or Create a new company"
+                          : null,
+                )
+              ])),
+          SizedBox(height: 10),
+          Visibility(
+              // use only tomodify by admin user
+              visible: updatedUser.partyId != null &&
+                  currentUser!.userGroup == UserGroup.Admin,
+              child: DropdownButtonFormField<UserGroup>(
+                decoration: InputDecoration(labelText: 'User Group'),
+                key: Key('userGroup'),
+                hint: Text('User Group'),
+                value: _selectedUserGroup,
+                validator: (value) => value == null ? 'field required' : null,
+                items: localUserGroups.map((item) {
+                  return DropdownMenuItem<UserGroup>(
+                      child: Text(item.toString()), value: item);
+                }).toList(),
+                onChanged: (UserGroup? newValue) {
+                  setState(() {
+                    _selectedUserGroup = newValue!;
+                  });
+                },
+                isExpanded: true,
               )),
-              Visibility(
-                  visible: updatedUser.userGroup == UserGroup.Admin ||
-                      updatedUser.userGroup == UserGroup.Employee,
-                  child: Center(child: Text(companyName!))),
-              SizedBox(height: 10),
-              CircleAvatar(
-                  backgroundColor: Colors.green,
-                  radius: 80,
-                  child: _imageFile != null
-                      ? kIsWeb
-                          ? Image.network(_imageFile!.path)
-                          : Image.file(File(_imageFile!.path))
-                      : widget.user.image != null
-                          ? Image.memory(widget.user.image!, height: 150)
-                          : Text(widget.user.firstName?.substring(0, 1) ?? '',
-                              style: TextStyle(
-                                  fontSize: 30, color: Colors.black))),
-              SizedBox(height: 20),
-              TextFormField(
-                key: Key('firstName'),
-                decoration: InputDecoration(labelText: 'First Name'),
-                controller: _firstNameController,
-                validator: (value) {
-                  if (value!.isEmpty) return 'Please enter a first name?';
-                  return null;
-                },
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                key: Key('lastName'),
-                decoration: InputDecoration(labelText: 'Last Name'),
-                controller: _lastNameController,
-                validator: (value) {
-                  if (value!.isEmpty) return 'Please enter a last name?';
-                  return null;
-                },
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                key: Key('loginName'),
-                decoration: InputDecoration(labelText: 'User Login Name '),
-                controller: _nameController,
-                validator: (value) {
-                  if (widget.user.userGroup == UserGroup.Admin &&
-                      value!.isEmpty)
-                    return 'An administrator needs a username!';
-                  return null;
-                },
-              ),
-              SizedBox(height: 10),
-              TextFormField(
-                key: Key('email'),
-                decoration: InputDecoration(labelText: 'Email address'),
-                controller: _emailController,
-                validator: (String? value) {
-                  if (value!.isEmpty) return 'Please enter Email address?';
-                  if (!RegExp(
-                          r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                      .hasMatch(value)) {
-                    return 'This is not a valid email';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 10),
-              Visibility(
-                  visible: updatedUser.userGroup != UserGroup.Admin &&
-                      updatedUser.userGroup != UserGroup.Employee,
-                  child: Column(children: [
-                    TextFormField(
-                      key: Key('newCompanyName'),
-                      decoration:
-                          InputDecoration(labelText: 'New Company Name'),
-                      controller: _companyController,
-                      validator: (value) {
-                        if (value!.isEmpty && _selectedCompany == null)
-                          return 'Please enter an existing or new company?';
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 10),
-                    DropdownSearch<Company>(
-                      key: Key('companyName'),
-                      label: 'Existing Company',
-                      dialogMaxWidth: 300,
-                      autoFocusSearchBox: true,
-                      selectedItem: _selectedCompany,
-                      popupShape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20.0)),
-                      dropdownSearchDecoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
-                      ),
-                      searchBoxDecoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
-                      ),
-                      showSearchBox: true,
-                      searchBoxController: _companySearchBoxController,
-                      isFilteredOnline: true,
-                      itemAsString: (Company? u) => "${u!.name}",
-                      onFind: (String filter) =>
-                          getOwnedCompanies(_companySearchBoxController.text),
-                      onChanged: (Company? newValue) {
-                        setState(() {
-                          _selectedCompany = newValue;
-                        });
-                      },
-                      validator: (value) =>
-                          value == null && _companyController.text == ''
-                              ? "Select an existing or Create a new company"
-                              : null,
-                    )
-                  ])),
-              SizedBox(height: 10),
-              Visibility(
-                  // use only tomodify by admin user
-                  visible: updatedUser.partyId != null &&
-                      currentUser!.userGroup == UserGroup.Admin,
-                  child: DropdownButtonFormField<UserGroup>(
-                    decoration: InputDecoration(labelText: 'User Group'),
-                    key: Key('userGroup'),
-                    hint: Text('User Group'),
-                    value: _selectedUserGroup,
-                    validator: (value) =>
-                        value == null ? 'field required' : null,
-                    items: localUserGroups.map((item) {
-                      return DropdownMenuItem<UserGroup>(
-                          child: Text(item.toString()), value: item);
-                    }).toList(),
-                    onChanged: (UserGroup? newValue) {
-                      setState(() {
-                        _selectedUserGroup = newValue!;
-                      });
-                    },
-                    isExpanded: true,
-                  )),
-              SizedBox(height: 10),
-              Visibility(
-                  visible: updatedUser.userGroup != UserGroup.Admin &&
-                      updatedUser.userGroup != UserGroup.Employee,
-                  child: Row(children: [
-                    Expanded(
-                        child: Text(updatedUser.companyAddress != null
-                            ? "${updatedUser.companyAddress!.city!} ${updatedUser.companyAddress!.country!}"
-                            : "No address yet")),
-                    SizedBox(
-                        width: 100,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            var result = await showDialog(
-                                barrierDismissible: true,
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AddressDialog(
-                                      address: updatedUser.companyAddress);
-                                });
-                            if (result != null)
-                              setState(() {
-                                updatedUser = updatedUser.copyWith(
-                                    companyAddress: result);
-                              });
-                          },
-                          child: Text(updatedUser.companyAddress != null
-                              ? 'Update\nAddress'
-                              : 'Add\nAddress'),
-                        ))
-                  ])),
-              SizedBox(height: 10),
-              Row(children: [
+          SizedBox(height: 10),
+          Visibility(
+              visible: updatedUser.userGroup != UserGroup.Admin &&
+                  updatedUser.userGroup != UserGroup.Employee,
+              child: Row(children: [
                 Expanded(
+                    child: Text(updatedUser.companyAddress != null
+                        ? "${updatedUser.companyAddress!.city!} ${updatedUser.companyAddress!.country!}"
+                        : "No address yet")),
+                SizedBox(
+                    width: 100,
                     child: ElevatedButton(
-                        key: Key('updateUser'),
-                        child: Text(
-                            updatedUser.partyId == null ? 'Create' : 'Update'),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            updatedUser = updatedUser.copyWith(
-                                firstName: _firstNameController.text,
-                                lastName: _lastNameController.text,
-                                email: _emailController.text,
-                                loginName: _nameController.text,
-                                userGroup: _selectedUserGroup,
-                                language: Localizations.localeOf(context)
-                                    .languageCode
-                                    .toString(),
-                                companyName: _companyController.text,
-                                // if new company name not empty partyId
-                                companyPartyId: _companyController.text == ''
-                                    ? _selectedCompany!.partyId
-                                    : '',
-                                image: await HelperFunctions.getResizedImage(
-                                    _imageFile?.path));
-                            if (_imageFile?.path != null &&
-                                updatedUser.image == null)
-                              HelperFunctions.showMessage(
-                                  context,
-                                  "Image upload error or larger than 200K",
-                                  Colors.red);
-                            else
-                              BlocProvider.of<UserBloc>(context)
-                                  .add(UserUpdate(updatedUser));
-                          }
-                        }))
-              ])
-            ])));
+                      key: Key('address'),
+                      onPressed: () async {
+                        var result = await showDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AddressDialog(
+                                  address: updatedUser.companyAddress);
+                            });
+                        if (result != null)
+                          setState(() {
+                            updatedUser =
+                                updatedUser.copyWith(companyAddress: result);
+                          });
+                      },
+                      child: Text(updatedUser.companyAddress != null
+                          ? 'Update\nAddress'
+                          : 'Add\nAddress'),
+                    ))
+              ])),
+          SizedBox(height: 10),
+          Row(children: [
+            Expanded(
+                child: ElevatedButton(
+                    key: Key('updateUser'),
+                    child:
+                        Text(updatedUser.partyId == null ? 'Create' : 'Update'),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        updatedUser = updatedUser.copyWith(
+                            firstName: _firstNameController.text,
+                            lastName: _lastNameController.text,
+                            email: _emailController.text,
+                            loginName: _nameController.text,
+                            userGroup: _selectedUserGroup,
+                            language: Localizations.localeOf(context)
+                                .languageCode
+                                .toString(),
+                            companyName: _companyController.text,
+                            // if new company name not empty partyId
+                            companyPartyId: _companyController.text.isEmpty
+                                ? updatedUser.companyPartyId
+                                : '',
+                            image: await HelperFunctions.getResizedImage(
+                                _imageFile?.path));
+                        if (_imageFile?.path != null &&
+                            updatedUser.image == null)
+                          HelperFunctions.showMessage(
+                              context,
+                              "Image upload error or larger than 200K",
+                              Colors.red);
+                        else
+                          BlocProvider.of<UserBloc>(context)
+                              .add(UserUpdate(updatedUser));
+                      }
+                    }))
+          ])
+        ]));
   }
 }
