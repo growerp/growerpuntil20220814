@@ -15,7 +15,7 @@ void main() {
   setUp(() async {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
-/*
+
   testWidgets('''GrowERP company test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
@@ -25,7 +25,7 @@ void main() {
     await CompanyTest.updateCompany(tester);
     await CompanyTest.updateAddress(tester);
   });
-*/
+
   testWidgets('''GrowERP category test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
@@ -53,7 +53,7 @@ void main() {
     await CommonTest.logout(tester);
   });
 
-/*  testWidgets('''GrowERP asset test''', (tester) async {
+  testWidgets('''GrowERP asset test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
@@ -179,5 +179,4 @@ void main() {
     await AccountingTest.checkSalesInvoicesComplete(tester);
     await CommonTest.logout(tester);
   });
-*/
 }
