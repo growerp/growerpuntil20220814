@@ -15,7 +15,7 @@
 import 'dart:math';
 import 'package:admin/main.dart';
 import 'package:dio/dio.dart';
-import 'package:core/integration_test/test_functions.dart1';
+import 'package:core/integration_test/test_functions.dart';
 import 'package:backend/@backend.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';

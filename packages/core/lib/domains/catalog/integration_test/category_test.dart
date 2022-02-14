@@ -68,6 +68,7 @@ class CategoryTest {
       await CommonTest.enterText(tester, 'description', category.description!);
       await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      await tester.pump(); // for the message to disappear
       await tester.pumpAndSettle(); // for the message to disappear
       index++;
     }

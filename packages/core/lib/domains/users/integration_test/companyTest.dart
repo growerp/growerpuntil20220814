@@ -22,6 +22,7 @@ class CompanyTest {
   static Future<void> createCompany(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     seq = test.sequence ?? 0;
+    seq++;
     if (test.company != null) return;
     // no company yet, so test
     await CommonTest.logout(tester);
@@ -30,7 +31,7 @@ class CompanyTest {
     await tester.pump(Duration(seconds: 3));
     await CommonTest.enterText(tester, 'firstName', admin.firstName!);
     await CommonTest.enterText(tester, 'lastName', admin.lastName!);
-    var email = admin.email!;
+    var email = admin.email!.replaceFirst('XXX', '${seq++}');
     await CommonTest.enterText(tester, 'email', email);
     await CommonTest.enterText(tester, 'companyName', company.name!);
     await CommonTest.drag(tester);

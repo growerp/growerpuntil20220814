@@ -40,7 +40,7 @@ class CommonTest {
     await BlocOverrides.runZoned(
         () async => await tester.pumpWidget(Phoenix(child: TopApp)),
         blocObserver: AppBlocObserver());
-    await tester.pumpAndSettle(Duration(seconds: 10));
+    await tester.pumpAndSettle(Duration(seconds: 5));
   }
 
   static Future<void> selectOption(

@@ -1,34 +1,11 @@
 Integration tests using integration test package.(WidgetTest)
 =============================================================
 
-currently under development......
-
-All tests can be run from the admin package with the command:
-flutter run integration/name_test.dart
-
-When you want to run in the browser run ./chromedriver in a seperate window.
-(see below)
-
-
-
-
-Automated run:
-in the admin directory, Moqui in:  growerpMoqui
-flutter pub run utils:runIntegration.dart
-
 On mobile.
 ----------
 
-single test:
-flutter drive  \
-    --driver=test_driver/integration_test.dart \
-    --target=integration_test/newCompany_test.dart
-    
-to run all tests with screenshot on error:
-flutter drive --screenshot=. \
-  --driver=test_driver/integration_test.dart \
-  --target=integration_test/main_tests.dart 
-
+run tests on mobile:
+flutter test integration_test/growerp_test.dart
 
 on chrome
 ---------
@@ -40,11 +17,7 @@ start in a terminal: ./chromedriver --port=4444
 
 Separate terminal:
 
-flutter drive  -d web-server \
-    --no-headless \
-    --driver=test_driver/integration_test.dart \
-    --target=integration_test/newCompany_test.dart
-
+flutter test integration_test/growerp_test.dart
 
 Chat test
 ---------

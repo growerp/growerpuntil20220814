@@ -55,11 +55,14 @@ class UserTest {
       WidgetTester tester, List<User> administrators,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
+    seq = test.sequence!;
     if (test.administrators.isEmpty) {
+      seq++;
       // not yet created
       test = test.copyWith(administrators: administrators);
       expect(find.byKey(Key('userItem')), findsNWidgets(1)); // initial admin
-      await enterUserData(tester, administrators);
+      test.copyWith(
+          administrators: await enterUserData(tester, administrators));
       await PersistFunctions.persistTest(
           test.copyWith(administrators: administrators));
     }
@@ -75,11 +78,12 @@ class UserTest {
   static Future<void> addEmployees(WidgetTester tester, List<User> employees,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
+    seq = test.sequence!;
     if (test.employees.isEmpty) {
       // not yet created
       test = test.copyWith(employees: employees);
       expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-      await enterUserData(tester, employees);
+      test.copyWith(employees: await enterUserData(tester, employees));
       await PersistFunctions.persistTest(test.copyWith(employees: employees));
     }
     if (check) {
@@ -94,11 +98,12 @@ class UserTest {
   static Future<void> addLeads(WidgetTester tester, List<User> leads,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
+    seq = test.sequence!;
     if (test.leads.isEmpty) {
       // not yet created
       test = test.copyWith(leads: leads);
       expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-      await enterUserData(tester, leads);
+      test.copyWith(leads: await enterUserData(tester, leads));
       await PersistFunctions.persistTest(test.copyWith(leads: leads));
     }
     if (check) {
@@ -113,11 +118,12 @@ class UserTest {
   static Future<void> addCustomers(WidgetTester tester, List<User> customers,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
+    seq = test.sequence!;
     if (test.customers.isEmpty) {
       // not yet created
       test = test.copyWith(customers: customers);
       expect(find.byKey(Key('userItem')), findsNWidgets(0));
-      await enterUserData(tester, customers);
+      test.copyWith(customers: await enterUserData(tester, customers));
       await PersistFunctions.persistTest(test.copyWith(customers: customers));
     }
     if (check) {
@@ -132,11 +138,12 @@ class UserTest {
   static Future<void> addSuppliers(WidgetTester tester, List<User> suppliers,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
+    seq = test.sequence!;
     if (test.suppliers.isEmpty) {
       // not yet created
       test = test.copyWith(suppliers: suppliers);
       expect(find.byKey(Key('userItem')), findsNWidgets(0));
-      await enterUserData(tester, suppliers);
+      test.copyWith(suppliers: await enterUserData(tester, suppliers));
       await PersistFunctions.persistTest(test.copyWith(suppliers: suppliers));
     }
     if (check) {
@@ -148,9 +155,10 @@ class UserTest {
     }
   }
 
-  static Future<void> enterUserData(
+  static Future<List<User>> enterUserData(
       WidgetTester tester, List<User> users) async {
     int index = 0;
+    int index1 = 0;
     if (users[0].userGroup == UserGroup.Admin) index++;
     for (User user in users) {
       if (user.partyId == null)
@@ -163,9 +171,10 @@ class UserTest {
           findsOneWidget);
       await CommonTest.enterText(tester, 'firstName', user.firstName!);
       await CommonTest.enterText(tester, 'lastName', user.lastName!);
-      await CommonTest.enterText(tester, 'loginName', user.email!);
+      var email = user.email!.replaceFirst('XXX', '${seq++}');
+      await CommonTest.enterText(tester, 'loginName', email);
       await CommonTest.drag(tester);
-      await CommonTest.enterText(tester, 'email', user.email!);
+      await CommonTest.enterText(tester, 'email', email);
       await CommonTest.drag(tester);
       if (user.userGroup != UserGroup.Admin &&
           user.userGroup != UserGroup.Employee) {
@@ -181,8 +190,11 @@ class UserTest {
       }
       await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'updateUser', seconds: 5);
+      users[index1] = user.copyWith(email: email, loginName: email);
       index++;
+      index1++;
     }
+    return (users);
   }
 
   static Future<void> checkUserList(

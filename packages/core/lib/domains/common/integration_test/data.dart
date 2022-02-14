@@ -35,7 +35,7 @@ Company company = Company(
 User admin = User(
   firstName: "John",
   lastName: "Doe",
-  email: "test${seq++}@example.com",
+  email: "testXXX@example.com",
   userGroup: UserGroup.Admin,
 );
 
@@ -55,21 +55,21 @@ List<User> administrators = [
     lastName: 'last Name',
     userGroup: UserGroup.Admin,
     companyName: company.name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   ),
   User(
     firstName: 'administrator2',
     lastName: 'last Name',
     userGroup: UserGroup.Admin,
     companyName: company.name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   ),
   User(
     firstName: 'administrator3',
     lastName: 'last Name',
     userGroup: UserGroup.Admin,
     companyName: company.name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   ),
 ];
 List<User> employees = [
@@ -78,15 +78,15 @@ List<User> employees = [
     lastName: 'last Name',
     userGroup: UserGroup.Employee,
     companyName: company.name,
-    userId: 'username${seq++}',
-    email: 'email${seq++}@example.org',
+    userId: 'usernameXXX',
+    email: 'emailXXX@example.org',
   ),
   User(
     firstName: 'employee2',
     lastName: 'last Name',
     userGroup: UserGroup.Employee,
     companyName: company.name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   )
 ];
 
@@ -96,21 +96,21 @@ List<User> leads = [
     lastName: 'last Name 1',
     userGroup: UserGroup.Lead,
     companyName: companies[0].name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   ),
   User(
     firstName: 'lead2',
     lastName: 'last Name 2',
     userGroup: UserGroup.Lead,
     companyName: companies[1].name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   ),
   User(
     firstName: 'lead3',
     lastName: 'last Name 3',
     userGroup: UserGroup.Lead,
     companyName: companies[2].name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   ),
 ];
 
@@ -120,14 +120,14 @@ List<User> suppliers = [
     lastName: 'last Name',
     userGroup: UserGroup.Supplier,
     companyName: companies[3].name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   ),
   User(
     firstName: 'supplier2',
     lastName: 'last Name',
     userGroup: UserGroup.Supplier,
     companyName: companies[4].name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   )
 ];
 List<User> customers = [
@@ -136,7 +136,7 @@ List<User> customers = [
     lastName: 'last Name',
     userGroup: UserGroup.Customer,
     companyName: companies[5].name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
     companyAddress: Address(
         address1: 'soi 5',
         address2: 'suite 23',
@@ -150,7 +150,7 @@ List<User> customers = [
     lastName: 'last Name',
     userGroup: UserGroup.Customer,
     companyName: companies[6].name,
-    email: 'email${seq++}@example.org',
+    email: 'emailXXX@example.org',
   )
 ];
 
@@ -227,28 +227,28 @@ List<Category> categories = [
 
 List<Product> products = [
   Product(
-      productName: 'This is shipable product 1',
+      productName: 'This is product 1 : shippable',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('23.99'),
       category: categories[0],
       productTypeId: productTypes[0],
       description: 'This is a dummy description of first product'),
   Product(
-      productName: 'This is shipable product 2',
+      productName: 'This is product 2 : shippable',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('73.99'),
       category: categories[1],
       productTypeId: productTypes[0],
       description: 'This is a dummy description of second product'),
   Product(
-      productName: 'This is rental product 3',
+      productName: 'This is product 3 : rental',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('93.99'),
       category: categories[0],
       productTypeId: productTypes[2],
       description: 'This is a dummy description of third product'),
   Product(
-      productName: 'This is service product 4',
+      productName: 'This is product 4 : service',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('22.44'),
       category: categories[0],
