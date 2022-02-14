@@ -61,13 +61,13 @@ class UserTest {
       // not yet created
       test = test.copyWith(administrators: administrators);
       expect(find.byKey(Key('userItem')), findsNWidgets(1)); // initial admin
-      test.copyWith(
+      test = test.copyWith(
           administrators: await enterUserData(tester, administrators));
       await PersistFunctions.persistTest(
-          test.copyWith(administrators: administrators));
+          test.copyWith(administrators: test.administrators));
     }
     if (check) {
-      await checkUserList(tester, administrators);
+      await checkUserList(tester, test.administrators);
       await PersistFunctions.persistTest(test.copyWith(
         administrators: await checkUserDetail(tester, test.administrators),
         sequence: seq,
@@ -83,11 +83,12 @@ class UserTest {
       // not yet created
       test = test.copyWith(employees: employees);
       expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-      test.copyWith(employees: await enterUserData(tester, employees));
-      await PersistFunctions.persistTest(test.copyWith(employees: employees));
+      test = test.copyWith(employees: await enterUserData(tester, employees));
+      await PersistFunctions.persistTest(
+          test.copyWith(employees: test.employees));
     }
     if (check) {
-      await checkUserList(tester, employees);
+      await checkUserList(tester, test.employees);
       await PersistFunctions.persistTest(test.copyWith(
         employees: await checkUserDetail(tester, test.employees),
         sequence: seq,
@@ -103,11 +104,11 @@ class UserTest {
       // not yet created
       test = test.copyWith(leads: leads);
       expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-      test.copyWith(leads: await enterUserData(tester, leads));
-      await PersistFunctions.persistTest(test.copyWith(leads: leads));
+      test = test.copyWith(leads: await enterUserData(tester, leads));
+      await PersistFunctions.persistTest(test.copyWith(leads: test.leads));
     }
     if (check) {
-      await checkUserList(tester, leads);
+      await checkUserList(tester, test.leads);
       await PersistFunctions.persistTest(test.copyWith(
         leads: await checkUserDetail(tester, test.leads),
         sequence: seq,
@@ -123,11 +124,12 @@ class UserTest {
       // not yet created
       test = test.copyWith(customers: customers);
       expect(find.byKey(Key('userItem')), findsNWidgets(0));
-      test.copyWith(customers: await enterUserData(tester, customers));
-      await PersistFunctions.persistTest(test.copyWith(customers: customers));
+      test = test.copyWith(customers: await enterUserData(tester, customers));
+      await PersistFunctions.persistTest(
+          test.copyWith(customers: test.customers));
     }
     if (check) {
-      await checkUserList(tester, customers);
+      await checkUserList(tester, test.customers);
       await PersistFunctions.persistTest(test.copyWith(
         customers: await checkUserDetail(tester, test.customers),
         sequence: seq,
@@ -143,11 +145,12 @@ class UserTest {
       // not yet created
       test = test.copyWith(suppliers: suppliers);
       expect(find.byKey(Key('userItem')), findsNWidgets(0));
-      test.copyWith(suppliers: await enterUserData(tester, suppliers));
-      await PersistFunctions.persistTest(test.copyWith(suppliers: suppliers));
+      test = test.copyWith(suppliers: await enterUserData(tester, suppliers));
+      await PersistFunctions.persistTest(
+          test.copyWith(suppliers: test.suppliers));
     }
     if (check) {
-      await checkUserList(tester, suppliers);
+      await checkUserList(tester, test.suppliers);
       await PersistFunctions.persistTest(test.copyWith(
         suppliers: await checkUserDetail(tester, test.suppliers),
         sequence: seq,
@@ -158,7 +161,6 @@ class UserTest {
   static Future<List<User>> enterUserData(
       WidgetTester tester, List<User> users) async {
     int index = 0;
-    int index1 = 0;
     if (users[0].userGroup == UserGroup.Admin) index++;
     List<User> newUsers = [];
     for (User user in users) {
@@ -193,7 +195,6 @@ class UserTest {
       await CommonTest.tapByKey(tester, 'updateUser', seconds: 5);
       newUsers.add(user.copyWith(email: email, loginName: email));
       index++;
-      index1++;
     }
     return (newUsers);
   }
@@ -211,7 +212,7 @@ class UserTest {
 
   static Future<List<User>> checkUserDetail(
       WidgetTester tester, List<User> users) async {
-    int index = 0, index1 = 0;
+    int index = 0;
     if (users[0].userGroup == UserGroup.Admin) index++;
     List<User> newUsers = [];
     for (User user in users) {
@@ -231,7 +232,6 @@ class UserTest {
           equals(user.userGroup.toString()));
       newUsers.add(user.copyWith(partyId: id));
       index++;
-      index1++;
       await CommonTest.tapByKey(tester, 'cancel');
     }
     return newUsers;
