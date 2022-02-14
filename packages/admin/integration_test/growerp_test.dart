@@ -15,7 +15,7 @@ void main() {
   setUp(() async {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
-/*
+
   testWidgets('''GrowERP company test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
@@ -99,7 +99,7 @@ void main() {
     await CompanyTest.updateAddress(tester);
     await CommonTest.logout(tester);
   });
-*/
+
   testWidgets('''GrowERP Purchase test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
