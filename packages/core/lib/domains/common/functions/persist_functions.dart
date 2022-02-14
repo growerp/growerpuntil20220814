@@ -115,19 +115,16 @@ class PersistFunctions {
   }
 
   static const String _testName = "savetest";
-  static const String _testBackupName = "savetestBackup";
   static Future<void> persistTest(SaveTest test, {bool backup = false}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString(_testName, jsonEncode(test.toJson()));
-    if (backup)
-      await prefs.setString(_testBackupName, jsonEncode(test.toJson()));
   }
 
   static Future<SaveTest> getTest({bool backup = false}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     // ignore informaton with a bad format
     try {
-      String? result = prefs.getString(backup ? _testBackupName : _testName);
+      String? result = prefs.getString(_testName);
       if (result != null)
         return getJsonObject<SaveTest>(
             result, (json) => SaveTest.fromJson(json));

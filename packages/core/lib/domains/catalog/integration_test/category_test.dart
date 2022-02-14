@@ -33,7 +33,7 @@ class CategoryTest {
   static Future<void> addCategories(
       WidgetTester tester, List<Category> categories,
       {bool check = true}) async {
-    SaveTest test = await PersistFunctions.getTest(backup: false);
+    SaveTest test = await PersistFunctions.getTest();
     if (test.categories.isEmpty) {
       // not yet created
       test = test.copyWith(categories: categories);
@@ -86,6 +86,7 @@ class CategoryTest {
   static Future<List<Category>> checkCategoryDetail(
       WidgetTester tester, List<Category> categories) async {
     int index = 0;
+    List<Category> newCategories = [];
     for (Category category in categories) {
       await CommonTest.tapByKey(tester, 'name${index}');
       var id = CommonTest.getTextField('header').split('#')[1];
@@ -94,11 +95,11 @@ class CategoryTest {
           CommonTest.getTextFormField('name'), equals(category.categoryName!));
       expect(CommonTest.getTextFormField('description'),
           equals(category.description!));
-      categories[index] = categories[index].copyWith(categoryId: id);
+      newCategories.add(category.copyWith(categoryId: id));
       index++;
       await CommonTest.tapByKey(tester, 'cancel');
     }
-    return categories;
+    return newCategories;
   }
 
   static Future<void> deleteCategories(WidgetTester tester) async {

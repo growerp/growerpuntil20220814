@@ -94,6 +94,7 @@ class AssetTest {
   static Future<List<Asset>> checkAssetDetail(
       WidgetTester tester, List<Asset> assets) async {
     int index = 0;
+    List<Asset> newAssets = [];
     for (Asset asset in assets) {
       await CommonTest.tapByKey(tester, 'name${index}');
       var id = CommonTest.getTextField('header').split('#')[1];
@@ -104,11 +105,11 @@ class AssetTest {
       expect(CommonTest.getDropdownSearch('productDropDown'),
           asset.product!.productName!);
       expect(CommonTest.getDropdown('statusDropDown'), asset.statusId);
-      assets[index] = assets[index].copyWith(assetId: id);
+      newAssets.add(asset.copyWith(assetId: id));
       index++;
       await CommonTest.tapByKey(tester, 'cancel');
     }
-    return assets;
+    return newAssets;
   }
 
   static Future<void> deleteAssets(WidgetTester tester) async {

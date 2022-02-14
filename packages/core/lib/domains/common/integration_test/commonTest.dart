@@ -31,7 +31,7 @@ class CommonTest {
       {bool clear = false}) async {
     SaveTest test = await PersistFunctions.getTest();
     seq = test.sequence == null ? 0 : test.sequence! + 10;
-    if (clear) {
+    if (clear == true) {
       await PersistFunctions.persistTest(SaveTest(sequence: seq));
     } else {
       await PersistFunctions.persistTest(test.copyWith(sequence: seq));

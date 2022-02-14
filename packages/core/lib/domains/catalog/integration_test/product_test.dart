@@ -98,6 +98,7 @@ class ProductTest {
   static Future<List<Product>> checkProductDetail(
       WidgetTester tester, List<Product> products) async {
     int index = 0;
+    List<Product> newProducts = [];
     for (Product product in products) {
       await CommonTest.tapByKey(tester, 'name${index}');
       var id = CommonTest.getTextField('header').split('#')[1];
@@ -109,11 +110,11 @@ class ProductTest {
           contains(product.category!.categoryName!));
       expect(
           CommonTest.getDropdown('productTypeDropDown'), product.productTypeId);
-      products[index] = products[index].copyWith(productId: id);
+      newProducts.add(product.copyWith(productId: id));
       index++;
       await CommonTest.tapByKey(tester, 'cancel');
     }
-    return products;
+    return newProducts;
   }
 
   static Future<void> deleteProducts(WidgetTester tester) async {
