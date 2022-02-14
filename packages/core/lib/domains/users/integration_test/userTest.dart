@@ -160,6 +160,7 @@ class UserTest {
     int index = 0;
     int index1 = 0;
     if (users[0].userGroup == UserGroup.Admin) index++;
+    List<User> newUsers = [];
     for (User user in users) {
       if (user.partyId == null)
         await CommonTest.tapByKey(tester, 'addNew');
@@ -190,11 +191,11 @@ class UserTest {
       }
       await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'updateUser', seconds: 5);
-      users[index1] = user.copyWith(email: email, loginName: email);
+      newUsers.add(user.copyWith(email: email, loginName: email));
       index++;
       index1++;
     }
-    return (users);
+    return (newUsers);
   }
 
   static Future<void> checkUserList(
@@ -212,6 +213,7 @@ class UserTest {
       WidgetTester tester, List<User> users) async {
     int index = 0, index1 = 0;
     if (users[0].userGroup == UserGroup.Admin) index++;
+    List<User> newUsers = [];
     for (User user in users) {
       await CommonTest.tapByKey(tester, 'name${index}');
       var id = CommonTest.getTextField('header').split('#')[1];
@@ -227,12 +229,12 @@ class UserTest {
       }
       expect(CommonTest.getDropdown('userGroup'),
           equals(user.userGroup.toString()));
-      users[index1] = users[index1].copyWith(partyId: id);
+      newUsers.add(user.copyWith(partyId: id));
       index++;
       index1++;
       await CommonTest.tapByKey(tester, 'cancel');
     }
-    return users;
+    return newUsers;
   }
 
   static Future<void> deleteAdministrators(WidgetTester tester) async {
