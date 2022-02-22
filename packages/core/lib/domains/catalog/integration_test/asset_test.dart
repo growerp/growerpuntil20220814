@@ -33,7 +33,7 @@ class AssetTest {
 
   static Future<void> addAssets(WidgetTester tester, List<Asset> assets,
       {bool check = true}) async {
-    SaveTest test = await PersistFunctions.getTest(backup: false);
+    SaveTest test = await PersistFunctions.getTest();
     if (test.assets.isEmpty) {
       // not yet created
       test = test.copyWith(assets: assets);

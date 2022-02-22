@@ -23,6 +23,7 @@ class CompanyTest {
     SaveTest test = await PersistFunctions.getTest();
     seq = test.sequence ?? 0;
     seq++;
+
     if (test.company != null) return;
     // no company yet, so test
     await CommonTest.logout(tester);
@@ -39,6 +40,7 @@ class CompanyTest {
     await CommonTest.tapByKey(tester, 'newCompany', seconds: 10);
     await PersistFunctions.persistTest(SaveTest(
         sequence: seq,
+        nowDate: DateTime.now(), // used in rental
         admin: admin.copyWith(email: email, loginName: email),
         company: company.copyWith(email: email)));
     await CommonTest.login(tester);

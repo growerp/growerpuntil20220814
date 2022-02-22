@@ -35,21 +35,18 @@ class ChatRoomSearchOn extends ChatRoomEvent {}
 class ChatRoomSearchOff extends ChatRoomEvent {}
 
 class ChatRoomUpdate extends ChatRoomEvent {
-  final String fromUserId; // needed to find correct member of chatRoom
   final ChatRoom chatRoom;
-  ChatRoomUpdate(this.chatRoom, this.fromUserId);
+  ChatRoomUpdate(this.chatRoom);
   @override
-  String toString() => "UpdateChatRoom: $chatRoom "
-      "hasRead: ${chatRoom.getFromMember(fromUserId)!.hasRead} "
-      "isActive: ${chatRoom.getFromMember(fromUserId)!.isActive}";
+  String toString() => "${chatRoom.chatRoomId.isEmpty ? 'Add' : 'Update'}"
+      "Room: $chatRoom Members: ${chatRoom.members}";
 }
 
-class ChatRoomCreate extends ChatRoomEvent {
-  final String fromUserId; // needed to find correct member of chatRoom
+class ChatRoomDelete extends ChatRoomEvent {
   final ChatRoom chatRoom;
-  ChatRoomCreate(this.chatRoom, this.fromUserId);
+  ChatRoomDelete(this.chatRoom);
   @override
-  String toString() => "AddChatRoom: $chatRoom";
+  String toString() => "Delete Room: $chatRoom Members: ${chatRoom.members}";
 }
 
 class ChatRoomReceiveWsChatMessage extends ChatRoomEvent {

@@ -33,7 +33,8 @@ class WarehouseTest {
   }
 
   static Future<void> checkIncomingShipments(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     List<FinDoc> finDocs = [];
@@ -49,11 +50,12 @@ class WarehouseTest {
           true);
       await CommonTest.tapByKey(tester, 'id0'); // close items
     }
-    await PersistFunctions.persistFinDocList(finDocs);
+    await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
   }
 
   static Future<void> acceptShipmentInWarehouse(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -66,7 +68,8 @@ class WarehouseTest {
   }
 
   static Future<void> sendOutGoingShipments(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     List<FinDoc> finDocs = [];
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
@@ -78,11 +81,12 @@ class WarehouseTest {
       await CommonTest.tapByKey(tester, 'nextStatus0', seconds: 5);
       expect(CommonTest.getTextField('status0'), equals('Completed'));
     }
-    await PersistFunctions.persistFinDocList(finDocs);
+    await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
   }
 
   static Future<void> checkWarehouseQOH(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {

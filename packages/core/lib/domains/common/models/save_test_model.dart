@@ -24,6 +24,7 @@ class SaveTest with _$SaveTest {
     int? sequence,
     Company? company,
     User? admin,
+    DateTime? nowDate,
     @Default([]) List<Company> companies,
     @Default([]) List<User> administrators,
     @Default([]) List<User> employees,
@@ -36,8 +37,7 @@ class SaveTest with _$SaveTest {
     @Default([]) List<Location> locations,
     @Default([]) List<Opportunity> opportunities,
     @Default([]) List<Task> tasks,
-    @Default([]) List<FinDoc> salesorders,
-    @Default([]) List<FinDoc> purchaseOrders,
+    @Default([]) List<FinDoc> orders,
   }) = _SaveTest;
   SaveTest._();
 

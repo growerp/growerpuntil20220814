@@ -35,7 +35,7 @@ class _ChatState extends State<ChatDialog> {
     _scrollController.addListener(_onScroll);
     _chatMessageBloc = BlocProvider.of<ChatMessageBloc>(context)
       ..add(ChatMessageFetch(
-          chatRoomId: widget.chatRoom.chatRoomId!, limit: limit));
+          chatRoomId: widget.chatRoom.chatRoomId, limit: limit));
     Timer(
       Duration(seconds: 1),
       () => _scrollController.jumpTo(0.0),
@@ -50,39 +50,44 @@ class _ChatState extends State<ChatDialog> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state.status == AuthStatus.authenticated)
         authenticate = state.authenticate!;
-      return BlocBuilder<ChatMessageBloc, ChatMessageState>(
-          builder: (context, state) {
+      return BlocConsumer<ChatMessageBloc, ChatMessageState>(
+          listener: ((context, state) {
         if (state.status == ChatMessageStatus.failure)
           HelperFunctions.showMessage(context, '${state.message}', Colors.red);
-        if (state.status == ChatMessageStatus.success)
+      }), builder: (context, state) {
+        if (state.status == ChatMessageStatus.success ||
+            state.status == ChatMessageStatus.failure) {
           messages = state.chatMessages;
-        return Container(
-            padding: EdgeInsets.all(20),
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                      key: Key('ChatDialog'),
-                      insetPadding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Stack(clipBehavior: Clip.none, children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.all(20),
-                            width: 500,
-                            height: 600,
-                            child: ScaffoldMessenger(
-                                key: scaffoldMessengerKey,
-                                child: Scaffold(
-                                  backgroundColor: Colors.transparent,
-                                  body: chatPage(context),
-                                ))),
-                        Positioned(
-                            top: -10, right: -10, child: DialogCloseButton())
-                      ]),
-                    ))));
+          return Container(
+              padding: EdgeInsets.all(20),
+              child: GestureDetector(
+                  onTap: () => Navigator.of(context).pop(),
+                  child: GestureDetector(
+                      onTap: () {},
+                      child: Dialog(
+                        key: Key('ChatDialog'),
+                        insetPadding: EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child:
+                            Stack(clipBehavior: Clip.none, children: <Widget>[
+                          Container(
+                              padding: EdgeInsets.all(20),
+                              width: 500,
+                              height: 600,
+                              child: ScaffoldMessenger(
+                                  key: scaffoldMessengerKey,
+                                  child: Scaffold(
+                                    backgroundColor: Colors.transparent,
+                                    body: chatPage(context),
+                                  ))),
+                          Positioned(
+                              top: -10, right: -10, child: DialogCloseButton())
+                        ]),
+                      ))));
+        } else
+          return Center(child: CircularProgressIndicator());
       });
     });
   }
@@ -91,8 +96,8 @@ class _ChatState extends State<ChatDialog> {
     return Container(
         child: Column(children: [
       Center(
-          child: Text(
-              "To: ${widget.chatRoom.getChatRoomName(authenticate.user!.userId!)}")),
+          child: Text("To: ${widget.chatRoom.chatRoomName} "
+              "#${widget.chatRoom.chatRoomId}")),
       Expanded(
           child: RefreshIndicator(
               onRefresh: (() async {
@@ -166,7 +171,7 @@ class _ChatState extends State<ChatDialog> {
     final currentScroll = _scrollController.position.pixels;
     if (currentScroll > 0 && maxScroll - currentScroll <= _scrollThreshold) {
       _chatMessageBloc.add(ChatMessageFetch(
-          chatRoomId: widget.chatRoom.chatRoomId!,
+          chatRoomId: widget.chatRoom.chatRoomId,
           limit: limit,
           searchString: searchString));
     }

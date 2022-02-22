@@ -168,7 +168,7 @@ class _MenuItemState extends State<DisplayMenuItem>
                 barrierDismissible: true,
                 context: context,
                 builder: (BuildContext context) {
-                  return ChatRoomsDialog();
+                  return ChatRoomListDialog();
                 },
               )
             }));

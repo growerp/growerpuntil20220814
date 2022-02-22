@@ -22,13 +22,9 @@ flutter test integration_test/growerp_test.dart
 Chat test
 ---------
 
-1. make sure the debug company of John doe exists:
-    flutter run -d chrome
-    and login with default debug values
-2. start the chat echo: flutter run integration_test/chatEcho_test.dart
-    and login with default debud parameters.
+1. make sure the debug company of John doe exists.
+2. start the chat echo: flutter run -t lib/chatEcho_main.dart
+    and login with default debug parameters.
 3. run the chat test in a separate process: 
-flutter drive  \
-    --driver=test_driver/integration_test.dart \
-    --target=integration_test/chat_test.dart
+    flutter test chat_test.dart
     

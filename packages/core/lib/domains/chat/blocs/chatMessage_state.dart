@@ -45,7 +45,7 @@ class ChatMessageState extends Equatable {
     return ChatMessageState(
       status: status ?? this.status,
       chatMessages: chatMessages ?? this.chatMessages,
-      message: message ?? this.message,
+      message: this.message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,
@@ -53,7 +53,7 @@ class ChatMessageState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [chatMessages, hasReachedMax, search];
+  List<Object?> get props => [chatMessages, hasReachedMax, search, message];
 
   @override
   String toString() => '$status { #chatMessages: ${chatMessages.length}, '

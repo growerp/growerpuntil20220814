@@ -14,9 +14,12 @@
 
 import 'package:core/domains/common/functions/persist_functions.dart';
 import 'package:core/domains/domains.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:intl/intl.dart';
 import '../../common/integration_test/commonTest.dart';
 import '../models/models.dart';
+import 'package:intl/intl.dart';
 
 class OrderTest {
   static Future<void> selectPurchaseOrders(WidgetTester tester) async {
@@ -64,7 +67,8 @@ class OrderTest {
           .copyWith(orderId: CommonTest.getTextField('id0'), items: [newItem]));
     }
     // save when successfull
-    await PersistFunctions.persistFinDocList(orders);
+    SaveTest test = await PersistFunctions.getTest();
+    await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
   }
 
   static Future<void> createSalesOrder(
@@ -108,11 +112,52 @@ class OrderTest {
           orderId: CommonTest.getTextField('id0'), items: newItems));
     }
     // save when successfull
-    await PersistFunctions.persistFinDocList(orders);
+    SaveTest test = await PersistFunctions.getTest();
+    await PersistFunctions.persistTest(test.copyWith(orders: orders));
+  }
+
+  static Future<void> createRentalSalesOrder(
+      WidgetTester tester, List<FinDoc> finDocs) async {
+    SaveTest test = await PersistFunctions.getTest();
+    var usFormat = new DateFormat('M/d/yyyy');
+    for (FinDoc finDoc in finDocs) {
+      await CommonTest.tapByKey(tester, 'addNew');
+      await CommonTest.tapByKey(tester, 'customer');
+      await CommonTest.tapByText(tester, finDoc.otherUser!.companyName!);
+      await CommonTest.tapByKey(tester, 'itemRental');
+      await CommonTest.tapByKey(tester, 'product');
+      await CommonTest.tapByText(tester, finDoc.items[0].description!);
+      await CommonTest.tapByKey(tester, 'setDate');
+      await CommonTest.tapByTooltip(tester, 'Switch to input');
+      await tester.enterText(find.byType(TextField).last,
+          usFormat.format(finDoc.items[0].rentalFromDate!));
+      await tester.pump();
+      await CommonTest.tapByText(tester, 'OK');
+      DateTime textField = DateTime.parse(CommonTest.getTextField('date'));
+      expect(usFormat.format(textField),
+          usFormat.format(finDoc.items[0].rentalFromDate!));
+      await CommonTest.enterText(
+          tester, 'quantity', finDoc.items[0].quantity.toString());
+      await CommonTest.tapByKey(tester, 'okRental');
+      await CommonTest.tapByKey(tester, 'update', seconds: 10);
+      // get productId
+      await CommonTest.tapByKey(tester, 'id0');
+      List<FinDocItem> newItems = List.of(finDoc.items);
+      for (int index = 0; index < finDoc.items.length; index++) {
+        var productId = CommonTest.getTextField('itemLine$index').split(' ')[1];
+        FinDocItem newItem = finDoc.items[index].copyWith(productId: productId);
+        newItems[index] = newItem;
+      }
+      await CommonTest.tapByKey(tester, 'id0');
+      test.orders.add(finDoc.copyWith(
+          orderId: CommonTest.getTextField('id0'), items: newItems));
+    }
+    await PersistFunctions.persistTest(test);
   }
 
   static Future<void> checkPurchaseOrder(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       // check list
@@ -132,7 +177,8 @@ class OrderTest {
   }
 
   static Future<void> checkSalesOrder(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       // check list
@@ -153,9 +199,43 @@ class OrderTest {
     }
   }
 
+  static Future<void> checkRentalSalesOrder(WidgetTester tester) async {
+    SaveTest test = await PersistFunctions.getTest();
+    var intlFormat = new DateFormat('yyyy-MM-dd');
+    int x = 0;
+    for (FinDoc order in test.orders) {
+      expect(CommonTest.getTextField('status$x'), equals('in Preparation'));
+      await CommonTest.tapByKey(tester, 'id$x', seconds: 5);
+      expect(CommonTest.getTextField('itemLine$x'),
+          contains(intlFormat.format(order.items[0].rentalFromDate!)));
+      x++;
+    }
+  }
+
+  static Future<void> checkRentalSalesOrderBlocDates(
+      WidgetTester tester) async {
+    SaveTest test = await PersistFunctions.getTest();
+    var usFormat = new DateFormat('M/d/yyyy');
+    await CommonTest.tapByKey(tester, 'addNew');
+    await CommonTest.tapByKey(tester, 'itemRental');
+    await CommonTest.tapByKey(tester, 'product');
+    await CommonTest.tapByText(tester, test.orders[0].items[0].description!);
+    await CommonTest.tapByKey(tester, 'setDate');
+    await CommonTest.tapByTooltip(tester, 'Switch to input');
+    await tester.enterText(find.byType(TextField).last,
+        usFormat.format(test.orders[0].items[0].rentalFromDate!));
+    await tester.pump();
+    await CommonTest.tapByText(tester, 'OK');
+    expect(find.text('Out of range.'), findsOneWidget);
+    await CommonTest.tapByText(tester, 'CANCEL');
+    await CommonTest.tapByKey(tester, 'cancel');
+    await CommonTest.tapByKey(tester, 'cancel');
+  }
+
   static Future<void> sendPurchaseOrder(
       WidgetTester tester, List<FinDoc> orders) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       await CommonTest.tapByKey(tester, 'nextStatus0',
@@ -166,9 +246,9 @@ class OrderTest {
     await CommonTest.gotoMainMenu(tester);
   }
 
-  static Future<void> approveSalesOrder(
-      WidgetTester tester, List<FinDoc> orders) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+  static Future<void> approveSalesOrder(WidgetTester tester) async {
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       await CommonTest.tapByKey(tester, 'nextStatus0',
@@ -180,7 +260,8 @@ class OrderTest {
   }
 
   static Future<void> checkOrderCompleted(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     for (FinDoc order in orders) {
       await CommonTest.doSearch(tester, searchString: order.orderId!);
       expect(CommonTest.getTextField('status0'), equals('Completed'));
@@ -189,7 +270,8 @@ class OrderTest {
 
   /// check if the purchase order has been completed successfuly
   static Future<void> checkPurchaseOrdersComplete(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {

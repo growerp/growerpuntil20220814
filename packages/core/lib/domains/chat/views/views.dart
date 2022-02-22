@@ -1,3 +1,3 @@
 export 'chatRoom_dialog.dart';
-export 'chatRoomsDialog.dart';
+export 'chatRoomListDialog.dart';
 export 'chat_dialog.dart';

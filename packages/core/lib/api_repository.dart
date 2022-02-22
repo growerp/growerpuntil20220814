@@ -199,7 +199,6 @@ class APIRepository {
           'demoData': demoData.toString()
         },
       );
-      print("======= ${response.toString()}");
       return getResponse<Authenticate>(
           "authenticate", response, (json) => Authenticate.fromJson(json));
     } on Exception catch (e) {
@@ -322,11 +321,12 @@ class APIRepository {
 
   Future<ApiResult<User>> createUser(User user) async {
     try {
-      final response = await dioClient.post('rest/s1/growerp/100/User', apiKey!,
-          data: <String, dynamic>{
-            'user': jsonEncode(user.toJson()),
-            'moquiSessionToken': sessionToken
-          });
+      final response = await dioClient
+          .post('rest/s1/growerp/100/User', apiKey!, data: <String, dynamic>{
+        'user': jsonEncode(user.toJson()),
+        'password': kDebugMode ? 'qqqqqq9!' : null,
+        'moquiSessionToken': sessionToken
+      });
       return getResponse<User>("user", response, (json) => User.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
@@ -851,7 +851,6 @@ class APIRepository {
   Future<ApiResult<List<ChatRoom>>> getChatRooms(
       {int? start,
       int? limit,
-      String? chatRoomId,
       String? chatRoomName,
       String? userId,
       bool? isPrivate,
@@ -861,7 +860,6 @@ class APIRepository {
       final response = await dioClient.get(
           'rest/s1/growerp/100/ChatRoom', apiKey!,
           queryParameters: <String, dynamic>{
-            'chatRoomId': chatRoomId,
             'chatRoomName': chatRoomName,
             'userId': userId,
             'start': start,
@@ -872,6 +870,22 @@ class APIRepository {
           });
       return getResponseList<ChatRoom>(
           "chatRooms", response, (json) => ChatRoom.fromJson(json));
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<ChatRoom>> getChatRoom({
+    required String? chatRoomId,
+  }) async {
+    try {
+      final response = await dioClient.get(
+          'rest/s1/growerp/100/ChatRoom', apiKey!,
+          queryParameters: <String, dynamic>{
+            'chatRoomId': chatRoomId,
+          });
+      return getResponse<ChatRoom>(
+          "chatRoom", response, (json) => ChatRoom.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

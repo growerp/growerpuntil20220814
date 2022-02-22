@@ -13,6 +13,7 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:core/domains/authenticate/blocs/auth_bloc.dart';
@@ -59,10 +60,16 @@ class ChatMessageBloc extends Bloc<ChatMessageEvent, ChatMessageState> {
     if (state.hasReachedMax && !event.refresh && event.searchString.isEmpty)
       return;
     try {
+      if (state.status == ChatMessageStatus.initial) {
+        final myStream = chatServer.stream();
+        // ignore: unused_local_variable
+        final subscription = myStream.listen((data) => add(
+            ChatMessageReceiveWs(WsChatMessage.fromJson(jsonDecode(data)))));
+      }
       // start from record zero for initial and refresh
       if (state.status == ChatMessageStatus.initial || event.refresh) {
-        ApiResult<List<ChatMessage>> compResult =
-            await repos.getChatMessages(searchString: event.searchString);
+        ApiResult<List<ChatMessage>> compResult = await repos.getChatMessages(
+            chatRoomId: event.chatRoomId, searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: ChatMessageStatus.success,
@@ -77,8 +84,8 @@ class ChatMessageBloc extends Bloc<ChatMessageEvent, ChatMessageState> {
       if (event.searchString.isNotEmpty && state.searchString.isEmpty ||
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
-        ApiResult<List<ChatMessage>> compResult =
-            await repos.getChatMessages(searchString: event.searchString);
+        ApiResult<List<ChatMessage>> compResult = await repos.getChatMessages(
+            chatRoomId: event.chatRoomId, searchString: event.searchString);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: ChatMessageStatus.success,
@@ -91,8 +98,8 @@ class ChatMessageBloc extends Bloc<ChatMessageEvent, ChatMessageState> {
       }
       // get next page also for search
 
-      ApiResult<List<ChatMessage>> compResult =
-          await repos.getChatMessages(searchString: event.searchString);
+      ApiResult<List<ChatMessage>> compResult = await repos.getChatMessages(
+          chatRoomId: event.chatRoomId, searchString: event.searchString);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: ChatMessageStatus.success,

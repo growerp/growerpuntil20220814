@@ -58,20 +58,23 @@ class CommonTest {
     await checkWidgetKey(tester, formName);
   }
 
-  static Future<void> login(WidgetTester tester) async {
+  static Future<void> login(WidgetTester tester,
+      {String? username, String? password}) async {
     SaveTest test = await PersistFunctions.getTest();
-    if (test.company == null || test.admin == null) {
+    if ((test.company == null || test.admin == null) &&
+        (username == null || password == null)) {
       print("Need company test to be run first");
       return;
     }
-    await tester.pumpAndSettle(Duration(seconds: 5));
     if (find
         .byKey(Key('HomeFormAuth'))
         .toString()
         .startsWith('zero widgets with key')) {
       await pressLoginWithExistingId(tester);
-      await enterText(tester, 'username', test.admin!.email!);
-      await enterText(tester, 'password', 'qqqqqq9!');
+      await enterText(
+          tester, 'username', username == null ? test.admin!.email! : username);
+      await enterText(
+          tester, 'password', password == null ? 'qqqqqq9!' : password);
       await pressLogin(tester);
       await checkText(tester, 'Main'); // dashboard
     }
@@ -250,6 +253,12 @@ class CommonTest {
       {int seconds = 1}) async {
     await tester
         .tap(find.textContaining(RegExp(text, caseSensitive: false)).last);
+    await tester.pumpAndSettle(Duration(seconds: seconds));
+  }
+
+  static Future<void> tapByTooltip(WidgetTester tester, String text,
+      {int seconds = 1}) async {
+    await tester.tap(find.byTooltip(text));
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 

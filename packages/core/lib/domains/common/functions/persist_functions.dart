@@ -89,31 +89,6 @@ class PersistFunctions {
     await prefs.remove('${finDoc.sales.toString}${finDoc.docType}');
   }
 
-  static Future<void> persistFinDocList(List<FinDoc> finDocList) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var jsonList =
-        jsonEncode(finDocList.map((i) => i.toJson()).toList()).toString();
-    await prefs.setString('finDocList', jsonList);
-  }
-
-  static Future<List<FinDoc>> getFinDocList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    // ignore informaton with a bad format
-    try {
-      String? result = prefs.getString('finDocList');
-      if (result != null)
-        return getJsonList<FinDoc>(result, (json) => FinDoc.fromJson(json));
-      return [];
-    } catch (_) {
-      return [];
-    }
-  }
-
-  static Future<void> removeFindocList() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.remove('finDocList');
-  }
-
   static const String _testName = "savetest";
   static Future<void> persistTest(SaveTest test, {bool backup = false}) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

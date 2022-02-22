@@ -23,29 +23,15 @@ import 'package:core/domains/domains.dart';
 
 import '../../../api_repository.dart';
 
-class ChatRoomDialog extends StatelessWidget {
-  final FormArguments formArguments;
-  const ChatRoomDialog({Key? key, required this.formArguments})
-      : super(key: key);
-
+class ChatRoomDialog extends StatefulWidget {
+  final ChatRoom chatRoom;
+  ChatRoomDialog(this.chatRoom);
   @override
-  Widget build(BuildContext context) {
-    return ChatRoomPage(
-        formArguments.message, formArguments.object as ChatRoom?);
-  }
+  _ChatRoomState createState() => _ChatRoomState(chatRoom);
 }
 
-class ChatRoomPage extends StatefulWidget {
-  final String? message;
-  final ChatRoom? chatRoom;
-  ChatRoomPage(this.message, this.chatRoom);
-  @override
-  _ChatRoomState createState() => _ChatRoomState(message, chatRoom);
-}
-
-class _ChatRoomState extends State<ChatRoomPage> {
-  final String? message;
-  final ChatRoom? chatRoom;
+class _ChatRoomState extends State<ChatRoomDialog> {
+  final ChatRoom chatRoom;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _chatRoomSearchBoxController = TextEditingController();
@@ -53,74 +39,58 @@ class _ChatRoomState extends State<ChatRoomPage> {
 
   bool loading = false;
   User? _selectedUser;
-  Authenticate? authenticate;
 
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  _ChatRoomState(this.message, this.chatRoom) {
-    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
-  }
+  _ChatRoomState(this.chatRoom);
 
   @override
   void initState() {
     super.initState();
-    if (chatRoom != null) {
-      _nameController.text = chatRoom!.chatRoomName ?? '';
-    }
+    _nameController.text = chatRoom.chatRoomName ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     var repos = context.read<APIRepository>();
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state.status == AuthStatus.authenticated)
-        authenticate = state.authenticate!;
-      return BlocConsumer<ChatRoomBloc, ChatRoomState>(
-          listener: (context, state) {
-        if (state.status == ChatRoomStatus.failure) {
-          loading = false;
-          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
-        }
-        if (state.status == ChatRoomStatus.success) {
-          HelperFunctions.showMessage(
-              context, '${state.message}', Colors.green);
-          Navigator.of(context).pop();
-        }
-      }, builder: (BuildContext context, state) {
-        return Container(
-            padding: EdgeInsets.all(20),
-            child: GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                      key: Key('ChatRoomDialog'),
-                      insetPadding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Stack(clipBehavior: Clip.none, children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.all(20),
-                            width: 500,
-                            height: 500,
-                            child: ScaffoldMessenger(
-                                key: scaffoldMessengerKey,
-                                child: Scaffold(
-                                  backgroundColor: Colors.transparent,
-                                  body:
-                                      _showForm(authenticate!, repos, isPhone),
-                                ))),
-                        Positioned(
-                            top: -10, right: -10, child: DialogCloseButton())
-                      ]),
-                    ))));
-      });
+    return BlocConsumer<ChatRoomBloc, ChatRoomState>(
+        listener: (context, state) {
+      if (state.status == ChatRoomStatus.failure) {
+        loading = false;
+        HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+      }
+      if (state.status == ChatRoomStatus.success) {
+        HelperFunctions.showMessage(context, '${state.message}', Colors.green);
+        Navigator.of(context).pop();
+      }
+    }, builder: (BuildContext context, state) {
+      return Container(
+          padding: EdgeInsets.all(20),
+          child: Dialog(
+            key: Key('ChatRoomDialog'),
+            insetPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Stack(clipBehavior: Clip.none, children: <Widget>[
+              Container(
+                  padding: EdgeInsets.all(20),
+                  width: 500,
+                  height: 500,
+                  child: ScaffoldMessenger(
+                      key: scaffoldMessengerKey,
+                      child: Scaffold(
+                        backgroundColor: Colors.transparent,
+                        body: _showForm(repos, isPhone),
+                      ))),
+              Positioned(top: -10, right: -10, child: DialogCloseButton())
+            ]),
+          ));
     });
   }
 
-  Widget _showForm(Authenticate authenticate, var repos, bool isPhone) {
+  Widget _showForm(var repos, bool isPhone) {
     return Center(
         child: Container(
             child: Form(
@@ -129,9 +99,9 @@ class _ChatRoomState extends State<ChatRoomPage> {
                   Center(
                       child: Text(
                           "Chat# " +
-                              (chatRoom == null
+                              (chatRoom.chatRoomId.isEmpty
                                   ? "New"
-                                  : "${chatRoom!.chatRoomName}"),
+                                  : "${chatRoom.chatRoomId}"),
                           style: TextStyle(
                               fontSize: isPhone ? 10 : 20,
                               color: Colors.black,
@@ -177,35 +147,19 @@ class _ChatRoomState extends State<ChatRoomPage> {
                   ElevatedButton(
                       key: Key('update'),
                       child: Text(
-                          chatRoom?.chatRoomId == null ? 'Create' : 'Update'),
+                          chatRoom.chatRoomId.isEmpty ? 'Create' : 'Update'),
                       onPressed: () async {
                         if (_formKey.currentState!.validate() && !loading) {
-                          ChatRoom newChatRoom = ChatRoom(
-                              chatRoomId: chatRoom != null
-                                  ? chatRoom!.chatRoomId
-                                  : null,
-                              chatRoomName: _nameController.text.isEmpty
-                                  ? null
-                                  : _nameController.text,
-                              isPrivate: _selectedUser != null ? true : false,
-                              members: []);
-                          newChatRoom.members.add(ChatRoomMember(
-                              member: authenticate.user!,
-                              hasRead: true,
-                              isActive: true));
-                          if (_selectedUser != null)
-                            newChatRoom.members.add(ChatRoomMember(
-                                member: _selectedUser!,
-                                hasRead: false,
-                                isActive: true));
-                          if (newChatRoom.chatRoomId == null)
-                            BlocProvider.of<ChatRoomBloc>(context).add(
-                                ChatRoomCreate(
-                                    newChatRoom, authenticate.user!.userId!));
-                          else
-                            BlocProvider.of<ChatRoomBloc>(context).add(
-                                ChatRoomUpdate(
-                                    newChatRoom, authenticate.user!.userId!));
+                          BlocProvider.of<ChatRoomBloc>(context).add(
+                              ChatRoomUpdate(chatRoom.copyWith(
+                                  chatRoomName: _nameController.text.isEmpty
+                                      ? null
+                                      : _nameController.text,
+                                  isPrivate: true,
+                                  members: [
+                                ChatRoomMember(
+                                    member: _selectedUser!, isActive: true)
+                              ])));
                         }
                       }),
                 ]))));

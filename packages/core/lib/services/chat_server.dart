@@ -20,7 +20,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:io' show Platform;
 
 class ChatServer {
-  late WebSocketChannel? channel;
+  late WebSocketChannel channel;
   late String chatUrl;
   late StreamController streamController;
 
@@ -28,23 +28,19 @@ class ChatServer {
     if (kReleaseMode) {
       this.chatUrl = GlobalConfiguration().get("chatUrl");
     } else if (kIsWeb || Platform.isIOS || Platform.isLinux) {
-      this.chatUrl = 'ws://localhost:8081';
+      this.chatUrl = GlobalConfiguration().get("chatUrlDebug");
     } else if (Platform.isAndroid) {
       this.chatUrl = 'ws://10.0.2.2:8081';
     }
   }
 
-//  bool connect(Authenticate auth) {
-  bool connect(String apiKey, String userId) {
+  connect(String apiKey, String userId) {
     channel = WebSocketChannel.connect(Uri.parse('$chatUrl/$userId/$apiKey'));
-    if (channel == null) return false;
-    streamController = StreamController.broadcast();
-    streamController.addStream(channel!.stream);
-    return true;
+    streamController = StreamController.broadcast()..addStream(channel.stream);
   }
 
   send(String message) {
-    channel!.sink.add(message);
+    channel.sink.add(message);
   }
 
   stream() {
@@ -52,7 +48,7 @@ class ChatServer {
   }
 
   close() {
-    channel!.sink.close();
+    channel.sink.close();
     streamController.close();
   }
 }

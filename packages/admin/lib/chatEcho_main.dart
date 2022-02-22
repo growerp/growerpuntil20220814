@@ -14,7 +14,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-// start with: flutter run -t lib/chatEcho_app.dart
+// start with: flutter run -t lib/chatEcho_main.dart
 
 import 'dart:async';
 import 'package:core/api_repository.dart';
@@ -27,7 +27,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-
+import 'package:core/widgets/@widgets.dart';
 import 'generated/l10n.dart';
 import 'router.dart' as router;
 
@@ -36,10 +36,11 @@ Future main() async {
 
   await GlobalConfiguration().loadFromAsset('app_settings');
 
-  final dbServer = APIRepository();
-  final chatServer = ChatServer();
-
-  runApp(Phoenix(child: ChatApp(dbServer: dbServer, chatServer: chatServer)));
+  BlocOverrides.runZoned(
+    () => runApp(Phoenix(
+        child: ChatApp(dbServer: APIRepository(), chatServer: ChatServer()))),
+    blocObserver: AppBlocObserver(),
+  );
 }
 
 class ChatApp extends StatelessWidget {
@@ -175,8 +176,7 @@ class _ChatRoomsState extends State<ChatRooms> {
   void initState() {
     super.initState();
     entityName = classificationId == 'AppHotel' ? 'Room' : 'ChatRoom';
-    _chatRoomBloc = BlocProvider.of<ChatRoomBloc>(context)
-      ..add(ChatRoomFetch(limit: limit));
+    _chatRoomBloc = BlocProvider.of<ChatRoomBloc>(context);
     search = false;
     limit = 20;
   }
@@ -186,55 +186,51 @@ class _ChatRoomsState extends State<ChatRooms> {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state.status == AuthStatus.authenticated) {
         authenticate = state.authenticate!;
-        return BlocBuilder<ChatRoomBloc, ChatRoomState>(
+        return BlocConsumer<ChatRoomBloc, ChatRoomState>(
+            listener: (context, state) {},
             builder: (context, state) {
-          if (state.status == ChatRoomStatus.success) {
-            chatRooms = state.chatRooms;
-            if (chatRooms.isEmpty) {
-              return const Center(
-                  heightFactor: 20,
-                  child: Text('waiting for chats to arrive....',
-                      key: Key('empty'), textAlign: TextAlign.center));
-            }
-            // receive chat message (caused chatroom added on the list)
-            _chatMessageBloc = BlocProvider.of<ChatMessageBloc>(context)
-              ..add(ChatMessageFetch(
-                  chatRoomId: chatRooms[0].chatRoomId!, limit: limit));
-            return BlocBuilder<ChatMessageBloc, ChatMessageState>(
-                builder: (context, state) {
-              if (state.status == ChatMessageStatus.success) {
-                messages = state.chatMessages;
-                if (messages.isNotEmpty) {
-                  // echo message
-                  _chatMessageBloc.add(ChatMessageSendWs(WsChatMessage(
-                      toUserId:
-                          chatRooms[0].getToUserId(authenticate.user!.userId!),
-                      fromUserId: authenticate.user!.userId!,
-                      chatRoomId: chatRooms[0].chatRoomId,
-                      content: messages[0].content!)));
-                  // remove chat room from list, reset isActive flag
-                  final ind =
-                      chatRooms[0].getMemberIndex(authenticate.user!.userId!);
-                  // new member with update
-                  final newMember = chatRooms[0]
-                      .members[ind]
-                      .copyWith(isActive: false, hasRead: true);
-                  final newMembers = chatRooms[0].members;
-                  newMembers[ind] = newMember;
-                  // copy members pdate copy
-                  _chatRoomBloc.add(
-                    ChatRoomUpdate(chatRooms[0].copyWith(members: newMembers),
-                        authenticate.user!.userId!),
-                  );
+              if (state.status == ChatRoomStatus.failure)
+                return Center(child: Text('Error: ${state.message}'));
+              if (state.status == ChatRoomStatus.success) {
+                chatRooms = state.chatRooms;
+                if (chatRooms.isEmpty) {
+                  return const Center(
+                      heightFactor: 20,
+                      child: Text('waiting for chats to arrive....',
+                          key: Key('empty'), textAlign: TextAlign.center));
                 }
+                // receive chat message (caused chatroom added on the list)
+                _chatMessageBloc = BlocProvider.of<ChatMessageBloc>(context)
+                  ..add(ChatMessageFetch(
+                      chatRoomId: chatRooms[0].chatRoomId, limit: limit));
+                return BlocBuilder<ChatMessageBloc, ChatMessageState>(
+                    builder: (context, state) {
+                  if (state.status == ChatMessageStatus.success) {
+                    messages = state.chatMessages;
+                    if (chatRooms.isNotEmpty && messages.isNotEmpty) {
+                      // echo message
+                      _chatMessageBloc.add(ChatMessageSendWs(WsChatMessage(
+                          toUserId: chatRooms[0]
+                              .getToUserId(authenticate.user!.userId!),
+                          fromUserId: authenticate.user!.userId!,
+                          chatRoomId: chatRooms[0].chatRoomId,
+                          content: messages[0].content!)));
+                      // delete chatroom: set not active
+                      _chatRoomBloc.add(
+                        ChatRoomDelete(chatRooms[0]),
+                      );
+                      _chatRoomBloc.add(
+                        ChatRoomFetch(refresh: true),
+                      );
+                      chatRooms = [];
+                    }
+                  }
+                  return const Center(child: Text(' processing'));
+                });
+              } else {
+                return const Center(child: Text(' processing'));
               }
-              Timer(const Duration(seconds: 1), () {});
-              return const Center(child: Text(' processing'));
             });
-          } else {
-            return const Center(child: Text(' processing'));
-          }
-        });
       }
       return const Center(child: Text('Not Authorized!'));
     });

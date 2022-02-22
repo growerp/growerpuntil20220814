@@ -90,6 +90,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await PersistFunctions.persistAuthenticate(state.authenticate!);
         repos.setApiKey(state.authenticate!.apiKey!,
             state.authenticate!.moquiSessionToken!);
+        chat.connect(
+            state.authenticate!.apiKey!, state.authenticate!.user!.userId!);
       }
     } else {
       await PersistFunctions.persistAuthenticate(
@@ -213,7 +215,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       PersistFunctions.persistAuthenticate(state.authenticate!);
       chat.connect(
           state.authenticate!.apiKey!, state.authenticate!.user!.userId!);
-      print("chat server connected");
     }
   }
 

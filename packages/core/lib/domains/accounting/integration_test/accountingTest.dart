@@ -31,7 +31,8 @@ class AccountingTest {
   }
 
   static Future<void> checkPurchaseInvoices(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     List<FinDoc> finDocs = [];
@@ -47,11 +48,12 @@ class AccountingTest {
           CommonTest.getTextField('itemLine0').split(' ')[1]);
       await CommonTest.tapByKey(tester, 'id0'); // close items
     }
-    await PersistFunctions.persistFinDocList(finDocs);
+    await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
   }
 
   static Future<void> checkSalesInvoices(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     List<FinDoc> finDocs = [];
@@ -66,11 +68,12 @@ class AccountingTest {
           CommonTest.getTextField('itemLine0').split(' ')[1]);
       await CommonTest.tapByKey(tester, 'id0'); // close items
     }
-    await PersistFunctions.persistFinDocList(finDocs);
+    await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
   }
 
   static Future<void> approvePurchaseInvoices(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -81,7 +84,8 @@ class AccountingTest {
   }
 
   static Future<void> sendSalesInvoices(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -104,7 +108,8 @@ class AccountingTest {
   }
 
   static Future<void> checkPurchasePayments(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     List<FinDoc> finDocs = [];
@@ -119,11 +124,12 @@ class AccountingTest {
       finDocs.add(order.copyWith(paymentId: paymentId));
       // check list
     }
-    await PersistFunctions.persistFinDocList(finDocs);
+    await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
   }
 
   static Future<void> checkSalesPayments(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     List<FinDoc> finDocs = [];
@@ -138,7 +144,7 @@ class AccountingTest {
       finDocs.add(order.copyWith(paymentId: paymentId));
       // check list
     }
-    await PersistFunctions.persistFinDocList(finDocs);
+    await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
   }
 
   static Future<void> selectTransactions(WidgetTester tester) async {
@@ -148,7 +154,8 @@ class AccountingTest {
   }
 
   static Future<void> checkTransactions(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -162,7 +169,8 @@ class AccountingTest {
   /// assume we are in the purchase payment list
   /// conform that a payment has been send
   static Future<void> payPurchasePayment(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -172,7 +180,8 @@ class AccountingTest {
   }
 
   static Future<void> receiveCustomerPayment(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -183,7 +192,8 @@ class AccountingTest {
 
   /// check if the purchase process has been completed successfuly
   static Future<void> checkPurchasePaymentsComplete(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -193,7 +203,8 @@ class AccountingTest {
   }
 
   static Future<void> checkSalesPaymentsComplete(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -204,7 +215,8 @@ class AccountingTest {
 
   /// check if the purchase process has been completed successfuly
   static Future<void> checkPurchaseInvoicesComplete(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {
@@ -214,7 +226,8 @@ class AccountingTest {
   }
 
   static Future<void> checkSalesInvoicesComplete(WidgetTester tester) async {
-    List<FinDoc> orders = await PersistFunctions.getFinDocList();
+    SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
     for (FinDoc order in orders) {

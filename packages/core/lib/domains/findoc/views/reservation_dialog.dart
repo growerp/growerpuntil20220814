@@ -257,13 +257,16 @@ class _ReservationState extends State<ReservationDialog> {
                         key: Key('product'),
                         itemAsString: (Product? u) => "${u!.productName}",
                         onFind: (String filter) async {
-                          var response = await repos.getProduct(
-                            filter: _productSearchBoxController.text,
-                            assetClassId: classificationId == 'AppHotel'
-                                ? 'Hotel Room'
-                                : null,
-                          );
-                          return productsFromJson(response.toString());
+                          ApiResult<List<Product>> result =
+                              await repos.getProduct(
+                                  filter: _productSearchBoxController.text,
+                                  assetClassId: classificationId == 'AppHotel'
+                                      ? 'Hotel Room'
+                                      : null);
+                          return result.when(
+                              success: (data) => data,
+                              failure: (_) =>
+                                  [Product(productName: 'get data error!')]);
                         },
                         onChanged: (Product? newValue) async {
                           _selectedProduct = newValue;

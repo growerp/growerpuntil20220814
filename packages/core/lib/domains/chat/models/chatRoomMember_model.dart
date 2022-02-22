@@ -31,5 +31,6 @@ class ChatRoomMember with _$ChatRoomMember {
       _$ChatRoomMemberFromJson(json);
 
   String toString() =>
-      'ChatRoom Member: ${member?.firstName} ${member?.lastName}';
+      'ChatRoom Member: ${member?.firstName} ${member?.lastName} '
+      'userId: ${member?.userId} partyId: ${member?.partyId}';
 }

@@ -183,6 +183,12 @@ List<TimeEntry> timeEntries = [
       date: DateTime.now().subtract(Duration(days: 2)))
 ];
 
+List<ChatRoom> chatRooms = [
+  ChatRoom(chatRoomName: 'chat room 1'),
+  ChatRoom(chatRoomName: 'chat room 2'),
+  ChatRoom(chatRoomName: 'chat room 3'),
+];
+
 List<Opportunity> opportunities = [
   Opportunity(
     opportunityName: 'Dummy Opp Name 1',
@@ -294,7 +300,7 @@ List<FinDoc> purchaseOrders = [
 
 List<FinDoc> salesOrders = [
   FinDoc(
-      sales: false,
+      sales: true,
       docType: FinDocType.order,
       description: 'The first sales order',
       otherUser: customers[0],
@@ -308,6 +314,23 @@ List<FinDoc> salesOrders = [
           description: products[1].productName,
           price: products[1].price,
           quantity: Decimal.parse('40'),
+        ),
+      ]),
+];
+
+List<FinDoc> rentalSalesOrders = [
+  FinDoc(
+      sales: false,
+      docType: FinDocType.order,
+      description: 'The first rental sales order',
+      otherUser: customers[0],
+      items: [
+        FinDocItem(
+          description: products[2].productName,
+          price: products[2].price,
+          quantity: Decimal.parse('2'), // nuber of days
+          rentalFromDate: DateTime.now().add(Duration(days: 2)),
+          rentalThruDate: DateTime.now().add(Duration(days: 4)),
         ),
       ]),
 ];
@@ -337,10 +360,10 @@ List<Asset> assets = [
     receivedDate: DateTime.now().subtract(Duration(days: 4)),
   ),
   Asset(
-    assetName: 'asset name 3',
-    availableToPromise: Decimal.parse('300'),
-    quantityOnHand: Decimal.parse('300'),
-    product: products[1],
+    assetName: 'asset name 3 for rental',
+    availableToPromise: Decimal.parse('1'),
+    quantityOnHand: Decimal.parse('1'),
+    product: products[2],
     statusId: assetStatusValues[0],
     receivedDate: DateTime.now().subtract(Duration(days: 4)),
   ),

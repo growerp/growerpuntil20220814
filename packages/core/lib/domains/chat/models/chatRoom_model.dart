@@ -24,10 +24,19 @@ part 'chatRoom_model.g.dart';
 class ChatRoom with _$ChatRoom {
   ChatRoom._();
   factory ChatRoom({
-    String? chatRoomId,
+    @Default("") String chatRoomId,
+
+    /// will be filled with the 'other' users name when oneToOne chat,
+    /// when multiperson room will have the name of the room
     String? chatRoomName,
+
+    /// to easily show last message in list show last message here
     String? lastMessage,
-    bool? isPrivate,
+    @Default(true) bool isPrivate,
+
+    ///temporary filled field to show value of current user
+    ///actual field in chatRoom member
+    @Default(false) bool hasRead,
     @Default([]) List<ChatRoomMember> members,
   }) = _ChatRoom;
 
@@ -36,14 +45,6 @@ class ChatRoom with _$ChatRoom {
 
   int getMemberIndex(String userId) {
     return members.indexWhere((element) => element.member?.userId == userId);
-  }
-
-  String getChatRoomName(String currentUserId) {
-    if (chatRoomName != null) return chatRoomName!;
-    ChatRoomMember chatRoomMember = members
-        .firstWhere((element) => element.member?.userId != currentUserId);
-    return chatRoomName ??
-        "${chatRoomMember.member?.firstName} ${chatRoomMember.member?.lastName}";
   }
 
   String? getToUserId(String currentUserId) {
@@ -61,6 +62,13 @@ class ChatRoom with _$ChatRoom {
   ChatRoomMember? getFromMember(String currentUserId) {
     return members
         .firstWhere((element) => element.member?.userId == currentUserId);
+  }
+
+  int getUserIndex(User user) {
+    late int index;
+    for (index = 0; index < members.length; index++)
+      if (members[index].member?.userId == user.userId) break;
+    return index == members.length ? -1 : index;
   }
 
   String toString() => 'ChatRoom name: $chatRoomName[$chatRoomId]';

@@ -37,7 +37,6 @@ class ChatRoomState extends Equatable {
     ChatRoomStatus? status,
     String? message,
     List<ChatRoom>? chatRooms,
-    bool error = false,
     bool? hasReachedMax,
     String? searchString,
     bool? search,
@@ -45,7 +44,7 @@ class ChatRoomState extends Equatable {
     return ChatRoomState(
       status: status ?? this.status,
       chatRooms: chatRooms ?? this.chatRooms,
-      message: message ?? this.message,
+      message: this.message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,
@@ -53,7 +52,7 @@ class ChatRoomState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [chatRooms, hasReachedMax, search];
+  List<Object?> get props => [chatRooms, hasReachedMax, search, message];
 
   @override
   String toString() => '$status { #chatRooms: ${chatRooms.length}, '

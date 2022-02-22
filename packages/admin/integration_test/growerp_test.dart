@@ -3,6 +3,7 @@ import 'package:core/api_repository.dart';
 import 'package:core/domains/catalog/integration_test/asset_test.dart';
 import 'package:core/domains/catalog/integration_test/category_test.dart';
 import 'package:core/domains/catalog/integration_test/product_test.dart';
+import 'package:core/domains/chat/integration_test/chat_test.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
@@ -157,7 +158,7 @@ void main() {
     await OrderTest.selectSalesOrders(tester);
     await OrderTest.createSalesOrder(tester, salesOrders);
     await OrderTest.checkSalesOrder(tester);
-    await OrderTest.approveSalesOrder(tester, salesOrders);
+    await OrderTest.approveSalesOrder(tester);
     await WarehouseTest.selectOutgoingShipments(tester);
     await WarehouseTest.sendOutGoingShipments(tester);
     await AccountingTest.selectSalesInvoices(tester);
@@ -179,4 +180,48 @@ void main() {
     await AccountingTest.checkSalesInvoicesComplete(tester);
     await CommonTest.logout(tester);
   });
+
+  // not implemented yes: create/check rental sales order not done yet
+  // use orderRental_test.dart for now.
+  testWidgets('''GrowERP asset rental sales order test''', (tester) async {
+    await CommonTest.startApp(
+        tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
+        clear: true);
+
+    await CompanyTest.createCompany(tester);
+    await CategoryTest.selectCategory(tester);
+    await CategoryTest.addCategories(tester, [categories[0]], check: false);
+    await ProductTest.selectProduct(tester);
+    await ProductTest.addProducts(tester, [products[2]], check: false);
+    await AssetTest.selectAsset(tester);
+    await AssetTest.addAssets(tester, [assets[2]], check: false);
+    await UserTest.selectCustomers(tester);
+    await UserTest.addCustomers(tester, [customers[0]], check: false);
+    await OrderTest.selectSalesOrders(tester);
+    await OrderTest.createRentalSalesOrder(tester, rentalSalesOrders);
+    await OrderTest.checkRentalSalesOrder(tester);
+    await OrderTest.checkRentalSalesOrderBlocDates(tester);
+    await OrderTest.approveSalesOrder(tester);
+    await AccountingTest.selectSalesInvoices(tester);
+    await AccountingTest.checkSalesInvoices(tester);
+    await AccountingTest.sendSalesInvoices(tester);
+    await OrderTest.selectSalesOrders(tester);
+    await OrderTest.checkOrderCompleted(tester);
+  });
+
+  // not implemented yet, use integration_test/chat_test.dart and lib/chatEcho_main.dart
+  testWidgets('''GrowERP chat test''', (tester) async {
+    await CommonTest.startApp(
+        tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
+        clear: true);
+    await CommonTest.login(tester);
+    await UserTest.selectAdministrators(tester);
+    await UserTest.addAdministrators(tester, [administrators[0]]);
+    await ChatTest.selectChatRoom(tester);
+    await ChatTest.addRooms(tester, chatRooms);
+    await ChatTest.updateRooms(tester);
+    await ChatTest.deleteRooms(tester);
+    await ChatTest.sendDirectMessage(tester);
+    await ChatTest.sendRoomMessage(tester);
+  }, skip: true);
 }

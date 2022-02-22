@@ -20,17 +20,16 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 
-class ChatRoomsDialog extends StatefulWidget {
-  const ChatRoomsDialog();
+class ChatRoomListDialog extends StatefulWidget {
+  const ChatRoomListDialog();
   @override
   _ChatRoomsState createState() => _ChatRoomsState();
 }
 
-class _ChatRoomsState extends State<ChatRoomsDialog> {
+class _ChatRoomsState extends State<ChatRoomListDialog> {
   final _scrollController = ScrollController();
   double _scrollThreshold = 200.0;
   late ChatRoomBloc _chatRoomBloc;
-  Authenticate authenticate = Authenticate();
   List<ChatRoom> chatRooms = [];
   int limit = 20;
   late bool search;
@@ -53,71 +52,56 @@ class _ChatRoomsState extends State<ChatRoomsDialog> {
   @override
   Widget build(BuildContext context) {
     limit = (MediaQuery.of(context).size.height / 35).round();
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state.status == AuthStatus.authenticated) {
-        authenticate = state.authenticate!;
-        return BlocConsumer<ChatRoomBloc, ChatRoomState>(
-            listener: (context, state) {
-          if (state.status == ChatRoomStatus.failure)
-            HelperFunctions.showMessage(
-                context, '${state.message}', Colors.red);
-          if (state.status == ChatRoomStatus.success)
-            HelperFunctions.showMessage(
-                context, '${state.message}', Colors.green);
-        }, builder: (context, state) {
-          if (state.status == ChatRoomStatus.success) {
-            chatRooms = state.chatRooms;
-            return Container(
-                padding: EdgeInsets.all(20),
+    return BlocConsumer<ChatRoomBloc, ChatRoomState>(
+        listener: (context, state) {
+      if (state.status == ChatRoomStatus.failure)
+        HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+      if (state.status == ChatRoomStatus.success)
+        HelperFunctions.showMessage(context, '${state.message}', Colors.green);
+    }, builder: (context, state) {
+      if (state.status == ChatRoomStatus.success) {
+        chatRooms = state.chatRooms;
+        return Container(
+            padding: EdgeInsets.all(20),
+            child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
                 child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: GestureDetector(
-                        onTap: () {},
-                        child: Dialog(
-                          key: Key('ChatRoomsDialog'),
-                          insetPadding: EdgeInsets.all(10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child:
-                              Stack(clipBehavior: Clip.none, children: <Widget>[
-                            Container(
-                                padding: EdgeInsets.all(20),
-                                width: 500,
-                                height: 600,
-                                child: ScaffoldMessenger(
-                                    key: scaffoldMessengerKey,
-                                    child: Scaffold(
-                                      floatingActionButton:
-                                          FloatingActionButton(
-                                              key: Key("addNew"),
-                                              onPressed: () async {
-                                                await showDialog(
-                                                    barrierDismissible: true,
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return ChatRoomDialog(
-                                                          formArguments:
-                                                              FormArguments());
-                                                    });
-                                              },
-                                              tooltip: 'Add New',
-                                              child: Icon(Icons.add)),
-                                      backgroundColor: Colors.transparent,
-                                      body: roomList(state),
-                                    ))),
-                            Positioned(
-                                top: -10,
-                                right: -10,
-                                child: DialogCloseButton())
-                          ]),
-                        ))));
-          }
-          return Center(child: CircularProgressIndicator());
-        });
+                    onTap: () {},
+                    child: Dialog(
+                      key: Key('ChatRoomListDialog'),
+                      insetPadding: EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Stack(clipBehavior: Clip.none, children: <Widget>[
+                        Container(
+                            padding: EdgeInsets.all(20),
+                            width: 500,
+                            height: 600,
+                            child: ScaffoldMessenger(
+                                key: scaffoldMessengerKey,
+                                child: Scaffold(
+                                  floatingActionButton: FloatingActionButton(
+                                      key: Key("addNew"),
+                                      onPressed: () async {
+                                        await showDialog(
+                                            barrierDismissible: true,
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return ChatRoomDialog(ChatRoom());
+                                            });
+                                      },
+                                      tooltip: 'Add New',
+                                      child: Icon(Icons.add)),
+                                  backgroundColor: Colors.transparent,
+                                  body: roomList(state),
+                                ))),
+                        Positioned(
+                            top: -10, right: -10, child: DialogCloseButton())
+                      ]),
+                    ))));
       }
-      return Container(child: Center(child: Text("Not Authorized!")));
+      return Center(child: CircularProgressIndicator());
     });
   }
 
@@ -149,7 +133,6 @@ class _ChatRoomsState extends State<ChatRoomsDialog> {
                     child: ListDetail(
                         index: index,
                         chatRooms: chatRooms,
-                        authenticate: authenticate,
                         chatRoomBloc: _chatRoomBloc));
           },
         ));
@@ -233,20 +216,15 @@ class ListDetail extends StatelessWidget {
   const ListDetail({
     Key? key,
     required this.chatRooms,
-    required this.authenticate,
     required ChatRoomBloc chatRoomBloc,
     required this.index,
-  })  : _chatRoomBloc = chatRoomBloc,
-        super(key: key);
+  }) : super(key: key);
 
   final List<ChatRoom> chatRooms;
-  final Authenticate authenticate;
-  final ChatRoomBloc _chatRoomBloc;
   final int index;
 
   @override
   Widget build(BuildContext context) {
-    String fromUserId = authenticate.user!.userId!;
     return ListTile(
         leading: CircleAvatar(
           backgroundColor: Colors.green,
@@ -257,12 +235,12 @@ class ListDetail extends StatelessWidget {
         title: Row(
           children: <Widget>[
             Expanded(
-                child: Text(chatRooms[index].getChatRoomName(fromUserId)),
+                child: Text(chatRooms[index].chatRoomName ?? '??'),
                 key: Key('chatRoomName$index')),
             if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET))
               Expanded(
                   child: Text(
-                      chatRooms[index].getFromMember(fromUserId)!.hasRead!
+                      chatRooms[index].hasRead
                           ? 'All messages read'
                           : 'unread messages',
                       key: Key('hasRead$index'))),
@@ -288,20 +266,8 @@ class ListDetail extends StatelessWidget {
           key: Key('delete$index'),
           icon: Icon(Icons.close),
           onPressed: () {
-            //index of member
-            int ind =
-                chatRooms[index].getMemberIndex(authenticate.user!.userId!);
-            // new member with update
-            ChatRoomMember newMember =
-                chatRooms[index].members[ind].copyWith(isActive: false);
-            // copy members
-            List<ChatRoomMember> newMembers = chatRooms[index].members;
-            // update copy
-            newMembers[ind] = newMember;
-            _chatRoomBloc.add(
-              ChatRoomUpdate(chatRooms[index].copyWith(members: newMembers),
-                  authenticate.user!.userId!),
-            );
+            BlocProvider.of<ChatRoomBloc>(context)
+                .add(ChatRoomDelete(chatRooms[index]));
           },
         ));
   }
