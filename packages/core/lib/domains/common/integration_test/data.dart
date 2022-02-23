@@ -231,6 +231,7 @@ List<Category> categories = [
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits)),
 ];
 
+// products can only refer to category 0,1 or product test fails
 List<Product> products = [
   Product(
       productName: 'This is product 1 : shippable',
@@ -250,7 +251,7 @@ List<Product> products = [
       productName: 'This is product 3 : rental',
       image: Uint8List.fromList('R0lGODlhAQABAAAAACwAAAAAAQABAAA='.codeUnits),
       price: Decimal.parse('93.99'),
-      category: categories[0],
+      category: categories[0], // only category 0 or rental test fails
       productTypeId: productTypes[2],
       description: 'This is a dummy description of third product'),
   Product(
@@ -341,7 +342,7 @@ List<Location> warehouseLocations = [
   Location(locationName: 'For purchase order 2'),
   Location(locationName: 'For purchase order 3'),
 ];
-
+// assets can only refer to product 0 and 1 or asset test fails
 List<Asset> assets = [
   Asset(
     assetName: 'asset name 1',
@@ -363,7 +364,7 @@ List<Asset> assets = [
     assetName: 'asset name 3 for rental',
     availableToPromise: Decimal.parse('1'),
     quantityOnHand: Decimal.parse('1'),
-    product: products[2],
+    product: products[2], // only products 2 or rental test fails
     statusId: assetStatusValues[0],
     receivedDate: DateTime.now().subtract(Duration(days: 4)),
   ),
