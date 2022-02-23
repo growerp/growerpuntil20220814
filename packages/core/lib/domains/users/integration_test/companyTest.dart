@@ -19,13 +19,13 @@ import '../../domains.dart';
 import '../../integration_test.dart';
 
 class CompanyTest {
-  static Future<void> createCompany(WidgetTester tester) async {
+  static Future<void> createCompany(WidgetTester tester,
+      {bool demoData = false}) async {
     SaveTest test = await PersistFunctions.getTest();
-    seq = test.sequence ?? 0;
+    int seq = test.sequence ?? 0;
     seq++;
-
-    if (test.company != null) return;
-    // no company yet, so test
+    await PersistFunctions.persistTest(test.copyWith(sequence: seq));
+    if (test.company != null) return; // company already created
     await CommonTest.logout(tester);
     // tap new company button, enter data
     await CommonTest.tapByKey(tester, 'newCompButton');
@@ -36,8 +36,10 @@ class CompanyTest {
     await CommonTest.enterText(tester, 'email', email);
     await CommonTest.enterText(tester, 'companyName', company.name!);
     await CommonTest.drag(tester);
-    await CommonTest.tapByKey(tester, 'demoData'); // no demo data
+    if (demoData == false)
+      await CommonTest.tapByKey(tester, 'demoData'); // no demo data
     await CommonTest.tapByKey(tester, 'newCompany', seconds: 10);
+    // start with clean saveTest
     await PersistFunctions.persistTest(SaveTest(
         sequence: seq,
         nowDate: DateTime.now(), // used in rental
@@ -77,8 +79,8 @@ class CompanyTest {
     // and check them
     checkCompanyFields(newCompany);
     var id = CommonTest.getTextField('header').split('#')[1];
-    await PersistFunctions.persistTest(test.copyWith(
-        sequence: seq, company: newCompany.copyWith(partyId: id)));
+    await PersistFunctions.persistTest(
+        test.copyWith(company: newCompany.copyWith(partyId: id)));
   }
 
   static void checkCompanyFields(Company company,
@@ -111,8 +113,7 @@ class CompanyTest {
     await CommonTest.tapByKey(tester, 'updateCompany', seconds: 5);
     await CommonTest.updateAddress(tester, newCompany.address!);
     await CommonTest.checkAddress(tester, newCompany.address!);
-    await PersistFunctions.persistTest(
-        test.copyWith(sequence: seq, company: newCompany),
+    await PersistFunctions.persistTest(test.copyWith(company: newCompany),
         backup: true); // last test for company ready for user test
   }
 }

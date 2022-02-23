@@ -16,8 +16,6 @@ import 'dart:typed_data';
 import 'package:decimal/decimal.dart';
 import 'package:core/domains/domains.dart';
 
-int seq = 0;
-
 Company company = Company(
   name: "Main Company",
   currency: currencies[0],

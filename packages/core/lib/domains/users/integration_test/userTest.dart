@@ -55,7 +55,7 @@ class UserTest {
       WidgetTester tester, List<User> administrators,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    seq = test.sequence!;
+    int seq = test.sequence!;
     if (test.administrators.isEmpty) {
       seq++;
       // not yet created
@@ -78,7 +78,7 @@ class UserTest {
   static Future<void> addEmployees(WidgetTester tester, List<User> employees,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    seq = test.sequence!;
+    int seq = test.sequence!;
     if (test.employees.isEmpty) {
       // not yet created
       test = test.copyWith(employees: employees);
@@ -90,8 +90,8 @@ class UserTest {
     if (check) {
       await checkUserList(tester, test.employees);
       await PersistFunctions.persistTest(test.copyWith(
-        employees: await checkUserDetail(tester, test.employees),
         sequence: seq,
+        employees: await checkUserDetail(tester, test.employees),
       ));
     }
   }
@@ -99,7 +99,7 @@ class UserTest {
   static Future<void> addLeads(WidgetTester tester, List<User> leads,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    seq = test.sequence!;
+    int seq = test.sequence!;
     if (test.leads.isEmpty) {
       // not yet created
       test = test.copyWith(leads: leads);
@@ -119,7 +119,7 @@ class UserTest {
   static Future<void> addCustomers(WidgetTester tester, List<User> customers,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    seq = test.sequence!;
+    int seq = test.sequence!;
     if (test.customers.isEmpty) {
       // not yet created
       test = test.copyWith(customers: customers);
@@ -140,7 +140,7 @@ class UserTest {
   static Future<void> addSuppliers(WidgetTester tester, List<User> suppliers,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    seq = test.sequence!;
+    int seq = test.sequence!;
     if (test.suppliers.isEmpty) {
       // not yet created
       test = test.copyWith(suppliers: suppliers);
@@ -160,6 +160,8 @@ class UserTest {
 
   static Future<List<User>> enterUserData(
       WidgetTester tester, List<User> users) async {
+    SaveTest test = await PersistFunctions.getTest();
+    int seq = test.sequence!;
     int index = 0;
     if (users[0].userGroup == UserGroup.Admin) index++;
     List<User> newUsers = [];
@@ -196,6 +198,7 @@ class UserTest {
       newUsers.add(user.copyWith(email: email, loginName: email));
       index++;
     }
+    await PersistFunctions.persistTest(test.copyWith(sequence: seq));
     return (newUsers);
   }
 

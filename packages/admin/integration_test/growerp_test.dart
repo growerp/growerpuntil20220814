@@ -1,14 +1,10 @@
 import 'package:admin/main.dart';
 import 'package:core/api_repository.dart';
-import 'package:core/domains/catalog/integration_test/asset_test.dart';
-import 'package:core/domains/catalog/integration_test/category_test.dart';
-import 'package:core/domains/catalog/integration_test/product_test.dart';
-import 'package:core/domains/chat/integration_test/chat_test.dart';
+import 'package:core/domains/integration_test.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:core/domains/integration_test.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();

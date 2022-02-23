@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'dart:io';
 import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/widgets/observer.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -21,8 +22,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:core/domains/domains.dart';
-
-import '../../integration_test.dart';
+import 'package:integration_test/integration_test.dart';
 
 class CommonTest {
   String classificationId = GlobalConfiguration().get("classificationId");
@@ -30,17 +30,25 @@ class CommonTest {
   static Future<void> startApp(WidgetTester tester, Widget TopApp,
       {bool clear = false}) async {
     SaveTest test = await PersistFunctions.getTest();
-    seq = test.sequence == null ? 0 : test.sequence! + 10;
+    int seq = test.sequence == null ? 0 : test.sequence! + 1;
     if (clear == true) {
       await PersistFunctions.persistTest(SaveTest(sequence: seq));
     } else {
       await PersistFunctions.persistTest(test.copyWith(sequence: seq));
     }
-    test = await PersistFunctions.getTest();
     await BlocOverrides.runZoned(
         () async => await tester.pumpWidget(Phoenix(child: TopApp)),
         blocObserver: AppBlocObserver());
     await tester.pumpAndSettle(Duration(seconds: 5));
+  }
+
+  static takeScreenshot(WidgetTester tester,
+      IntegrationTestWidgetsFlutterBinding binding, String name) async {
+    if (Platform.isAndroid) {
+      await binding.convertFlutterSurfaceToImage();
+      await tester.pumpAndSettle();
+    }
+    await binding.takeScreenshot(name);
   }
 
   static Future<void> selectOption(

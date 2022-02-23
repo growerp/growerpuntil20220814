@@ -34,6 +34,7 @@ class CategoryTest {
       WidgetTester tester, List<Category> categories,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
+    int seq = test.sequence!;
     if (test.categories.isEmpty) {
       // not yet created
       test = test.copyWith(categories: categories);

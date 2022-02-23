@@ -34,6 +34,7 @@ class ProductTest {
   static Future<void> addProducts(WidgetTester tester, List<Product> products,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
+    int seq = test.sequence!;
     if (test.products.isEmpty) {
       // not yet created
       test = test.copyWith(products: products);
