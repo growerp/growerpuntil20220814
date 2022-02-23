@@ -63,7 +63,8 @@ void main() {
     await CategoryTest.addCategories(tester, [categories[0], categories[1]],
         check: false);
     await ProductTest.selectProduct(tester);
-    await ProductTest.addProducts(tester, [products[0], products[1]],
+    await ProductTest.addProducts(
+        tester, [products[0], products[1], products[2]],
         check: false);
     await AssetTest.selectAsset(tester);
     await AssetTest.addAssets(tester, assets);
