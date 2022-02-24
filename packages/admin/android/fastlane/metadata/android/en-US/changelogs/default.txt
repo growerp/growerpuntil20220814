@@ -1,1 +1,1 @@
-New Version with fixes.
+First version which has all basic ERP functions including accounting.

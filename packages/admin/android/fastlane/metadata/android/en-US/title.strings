@@ -2,6 +2,8 @@
 "dashboard" = "Application Dashboard.";
 "company" = "Company Information";
 "catalog" = "Products & Assets & Categories";
-"sales" = "Sales orders & Customers";
-"accounting" = "Accounting Dashboard";
-"ledger" = "Ledger tree & transactions";
+"orders" = "Orders & Customers/Suppliers";
+"warehouse" = "Warehouse locations & shipments";
+"account" = "Accounting Dashboard";
+"ledgers" = "Ledger tree & transactions";
+"chat" = "Internal Chat window";

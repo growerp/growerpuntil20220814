@@ -5,8 +5,8 @@ On mobile.
 ----------
 
 run tests on mobile:
-    flutter drive /
-     --driver=test_driver/integration_test.dart /
+    flutter drive \
+     --driver=test_driver/integration_test.dart \
      --target=integration_test/growerp_test.dart
 
 on chrome
@@ -18,8 +18,8 @@ https://flutter.dev/docs/cookbook/testing/integration/introduction#6b-web
 start in a terminal: ./chromedriver --port=4444
 
 Separate terminal:
-    flutter drive /
-     --driver=test_driver/integration_test.dart /
+    flutter drive \
+     --driver=test_driver/integration_test.dart \
      --target=integration_test/growerp_test.dart
 
 Chat test

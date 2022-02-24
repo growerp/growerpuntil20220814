@@ -548,7 +548,7 @@ packages:
     source: hosted
     version: "2.1.2"
   printing:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: printing
       url: "https://pub.dartlang.org"
