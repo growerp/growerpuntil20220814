@@ -1,5 +1,5 @@
 name: admin
-version: 0.0.3+30
+version: 0.0.3+31
 publish_to: none
 
 environment:
@@ -29,6 +29,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+  test: ^1.19.5
   utils:
     path: ../utils/
 

@@ -14,6 +14,7 @@
 
 import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart';
 
 /// making screen shots with frames for IOS/Android
 /// Android: uses all emulators available showing with the 'flutter emulators' command
@@ -76,7 +77,7 @@ void main(List<String> arguments) {
     }
 
     // clear directory
-/*    var lister = Directory(Platform.isMacOS ? iosDir : androidDir)
+    var lister = Directory(Platform.isMacOS ? iosDir : androidDir)
         .list(recursive: false);
     lister.listen((file) => {
           if (basename(file.path) != 'keyword.strings' &&
@@ -86,7 +87,7 @@ void main(List<String> arguments) {
               basename(file.path) != 'title.strings')
             file.delete(),
         });
-*/
+
     // process every emulator and then frameit
     await Future.forEach(emulators, (List el) async {
       if (el[0] != 'frameIt') {
