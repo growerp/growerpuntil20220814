@@ -17,7 +17,7 @@ Steps AFTER preparation below:
     fastlane supply \
         --aab ../build/app/outputs/bundle/release/app-release.aab \
         --track beta --in_app_update_priority 3 \
-        --version_code 8
+        --version_code 7
    upload just binary:
     fastlane upload
 
