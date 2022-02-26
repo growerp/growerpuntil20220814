@@ -36,7 +36,7 @@ class APIRepository {
   APIRepository() {
     var dio = Dio();
     _baseUrl = kReleaseMode
-        ? databaseUrl
+        ? '$databaseUrl/'
         : (kIsWeb || Platform.isIOS || Platform.isLinux)
             ? '$databaseUrlDebug/'
             : 'http://10.0.2.2:8080/';
