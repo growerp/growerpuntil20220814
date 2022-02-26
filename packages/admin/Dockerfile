@@ -31,13 +31,14 @@ ENV PATH="/usr/local/flutter/bin:/usr/local/flutter/bin/cache/dart-sdk/bin:${PAT
 RUN flutter channel stable && flutter upgrade
 
 # Copy files to container and build
-# RUN mkdir /usr/local/
-RUN git clone https://github.com/growerp/growerp.git /usr/local/growerp && \
-    cd /usr/local/growerp/packages/admin
-WORKDIR /usr/local/growerp
+RUN git clone https://github.com/growerp/growerp.git /usr/local/growerp
+RUN cd /usr/local/growerp/packages/core && \
+    flutter pub get && \
+    flutter pub run build_runner build
+WORKDIR /usr/local/growerp/packages/admin
 RUN /usr/local/flutter/bin/flutter build web --release
 
 # Stage 2 - Create the run-time image
 FROM nginx
-COPY --from=build-env /usr/local/growerp/build/web /usr/share/nginx/html
+COPY --from=build-env /usr/local/growerp/packages/admin/build/web /usr/share/nginx/html
 EXPOSE 80
