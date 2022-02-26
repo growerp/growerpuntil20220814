@@ -10,9 +10,11 @@ Steps AFTER preparation below:
     buildnr should always increase, version is shown to the user
 4. in web/index.html increase version:
     main.dart.js?version=?
-5. create app bundle in admin home:
+5. adjust the backend urls (test or production)
+    in assets/cfg/app_settings.json
+6. create app bundle in admin home:
     flutter build appbundle
-6. Upload in Play store: (in android dir)
+7. Upload in Play store: (in android dir)
     (everything including build/meta/screenshots)
     fastlane supply \
         --aab ../build/app/outputs/bundle/release/app-release.aab \
