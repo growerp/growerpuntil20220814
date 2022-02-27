@@ -29,12 +29,17 @@ certicate access (rediculus!!)
 
 Fastlane:
 ---------
-1. increase number in ios/Runner/Info.plist AND CFBundleShortVersionString X.X.X
+1. increase numbers in ios/Runner/Info.plist:
+    CFBundleShortVersionString: major version seen by the user ie: 0.0.13
+    CFBundleVersion: seqeuntial nuber within version
 2. build flutter: (project home)
     flutter build ios --release --no-codesign
 3. compile and sign (in ios dir)
     fastlane gym
 4. upload: (in ios dir)
-    fastlane upload
+    binary only: fastlane upload
+    all including meta: fastlane deliver --overwrite_screenshots
+    just screenshots: fastlane deliver --overwrite_screenshots --skip_binary_upload
 
-login to the appstore console, give reason of update and subit for review
+login to the appstore console:
+create new major version, give reason of update and submit for review
