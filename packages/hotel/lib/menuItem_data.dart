@@ -94,12 +94,12 @@ List<MenuItem> menuItems = [
           form: FinDocListForm(
               key: Key("SalesOrder"),
               sales: true,
-              docType: FinDocType.Order,
+              docType: FinDocType.order,
               onlyRental: true),
           label: "Reservations",
           icon: Icon(Icons.home),
           floatButtonForm: ReservationDialog(
-            finDoc: FinDoc(sales: true, docType: FinDocType.Order, items: []),
+            finDoc: FinDoc(sales: true, docType: FinDocType.order, items: []),
           ),
         ),
         TabItem(
@@ -128,9 +128,9 @@ List<MenuItem> menuItems = [
           form: FinDocListForm(
               key: Key("Check-In"),
               sales: true,
-              docType: FinDocType.Order,
+              docType: FinDocType.order,
               onlyRental: true,
-              statusId: 'FinDocCreated'),
+              status: 'FinDocCreated'),
           label: "CheckIn",
           icon: Icon(Icons.home),
         ),
@@ -138,9 +138,9 @@ List<MenuItem> menuItems = [
           form: FinDocListForm(
               key: Key("Check-Out"),
               sales: true,
-              docType: FinDocType.Order,
+              docType: FinDocType.order,
               onlyRental: true,
-              statusId: 'FinDocApproved'),
+              status: 'FinDocApproved'),
           label: "CheckOut",
           icon: Icon(Icons.home),
         ),

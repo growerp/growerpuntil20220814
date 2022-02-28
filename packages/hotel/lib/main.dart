@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 import 'package:core/api_repository.dart';
+import 'package:core/extensions.dart';
 import 'package:core/services/chat_server.dart';
 import 'menuItem_data.dart';
 import 'package:flutter/material.dart';
@@ -53,6 +54,7 @@ Future main() async {
     }
   }
 
+  CustomizableDateTime.customTime = DateTime.now().add(Duration(days: 0));
   BlocOverrides.runZoned(
     () => runApp(Phoenix(
         child: TopApp(dbServer: APIRepository(), chatServer: ChatServer()))),

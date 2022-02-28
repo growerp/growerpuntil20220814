@@ -9,6 +9,7 @@ This Hotel branch will contain an app withe the following functions:
 
 1. Customer reservation
 2. Room management
-3. Invoicing
+3. checkin/out
+4. Accounting
 
 For the backend you need the Moqui or OFBiz ERP system (moqui.org) 
