@@ -348,26 +348,25 @@ class _ReservationState extends State<ReservationDialog> {
                                   if (_formKey.currentState!.validate()) {
                                     FinDoc newFinDoc = widget.finDoc
                                         .copyWith(otherUser: _selectedUser);
-                                    FinDocItem newItem = widget.finDoc.items[0]
-                                        .copyWith(
-                                            productId: _selectedProduct!
-                                                .productId,
-                                            price: Decimal.parse(
-                                                _priceController.text),
-                                            description: _selectedProduct!
-                                                .productName,
-                                            rentalFromDate: _selectedDate,
-                                            rentalThruDate: _selectedDate.add(
-                                                Duration(
-                                                    days: int.parse(
-                                                        _daysController.text))),
-                                            quantity: _quantityController
-                                                    .text.isEmpty
+                                    FinDocItem newItem = FinDocItem(
+                                        productId: _selectedProduct!.productId,
+                                        price: Decimal.parse(
+                                            _priceController.text),
+                                        description:
+                                            _selectedProduct!.productName,
+                                        rentalFromDate: _selectedDate,
+                                        rentalThruDate: _selectedDate.add(
+                                            Duration(
+                                                days: int.parse(
+                                                    _daysController.text))),
+                                        quantity:
+                                            _quantityController.text.isEmpty
                                                 ? Decimal.parse('1')
                                                 : Decimal.parse(
                                                     _quantityController.text));
                                     if (widget.original?.orderId == null)
-                                      newFinDoc.copyWith(items: [newItem]);
+                                      newFinDoc =
+                                          newFinDoc.copyWith(items: [newItem]);
                                     else {
                                       List<FinDocItem> newItemList =
                                           List.of(widget.original!.items);

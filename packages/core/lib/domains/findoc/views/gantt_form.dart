@@ -54,11 +54,13 @@ class GanttPage extends StatefulWidget {
 class GanttPageState extends State<GanttPage> {
   late DateTime ganttFromDate;
   late int columnPeriod; //DAY,  WEEK, MONTH
+  late FinDocBloc _finDocBloc;
 
   @override
   void initState() {
     super.initState();
     columnPeriod = DAY;
+    _finDocBloc = BlocProvider.of<FinDocBloc>(context);
   }
 
   @override
@@ -102,6 +104,24 @@ class GanttPageState extends State<GanttPage> {
     }
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          key: Key("addNew"),
+          onPressed: () async {
+            await showDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return BlocProvider.value(
+                      value: _finDocBloc,
+                      child: ReservationDialog(
+                          finDoc: FinDoc(
+                              sales: true,
+                              docType: FinDocType.order,
+                              items: [])));
+                });
+          },
+          tooltip: 'Add New',
+          child: Icon(Icons.add)),
       body: Column(
         children: <Widget>[
           SizedBox(height: 10),

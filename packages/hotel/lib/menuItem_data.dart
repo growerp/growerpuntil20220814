@@ -24,7 +24,6 @@ List<MenuItem> menuItems = [
     readGroups: [UserGroup.Admin, UserGroup.Employee],
     writeGroups: [UserGroup.Admin],
     child: GanttForm(),
-    floatButtonForm: ReservationDialog(finDoc: FinDoc(items: [])),
   ),
   MenuItem(
     image: "assets/images/companyGrey.png",
@@ -98,9 +97,6 @@ List<MenuItem> menuItems = [
               onlyRental: true),
           label: "Reservations",
           icon: Icon(Icons.home),
-          floatButtonForm: ReservationDialog(
-            finDoc: FinDoc(sales: true, docType: FinDocType.order, items: []),
-          ),
         ),
         TabItem(
           form: UserListForm(
