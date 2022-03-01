@@ -101,13 +101,13 @@ class _CartTotal extends StatelessWidget {
           }, child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
             return BlocBuilder<SalesCartBloc, CartState>(
                 builder: (context, cartState) {
-              if (state.status == CartStatus.inProcess) {
+              if (cartState.status == CartStatus.inProcess) {
                 order = cartState.finDoc;
                 return Row(children: <Widget>[
-                  Text((cartState.finDoc.grandTotal ?? 0.00).toString(),
+                  Text(("Total: ${cartState.finDoc.grandTotal ?? 0.00}  "),
                       style: hugeStyle),
                   ElevatedButton(
-                      child: Text('BUY', style: hugeStyle),
+                      child: Text('Buy?', style: hugeStyle),
                       onPressed: order.items.length == 0
                           ? null
                           : () async {

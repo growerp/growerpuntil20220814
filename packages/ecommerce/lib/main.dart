@@ -54,18 +54,18 @@ class TopApp extends StatelessWidget {
                   AuthBloc(dbServer, chatServer)..add(AuthLoad())),
           BlocProvider<SalesOrderBloc>(
               create: (context) =>
-                  FinDocBloc(dbServer, true, FinDocType.Order)),
+                  FinDocBloc(dbServer, true, FinDocType.order)),
           BlocProvider<CustomerBloc>(
               create: (context) => UserBloc(dbServer, UserGroup.Customer,
                   BlocProvider.of<AuthBloc>(context))),
           BlocProvider<SalesCartBloc>(
               create: (context) => CartBloc(
                   sales: true,
-                  docType: FinDocType.Order,
+                  docType: FinDocType.order,
                   finDocBloc:
                       BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc)
                 ..add(CartFetch(FinDoc(
-                    sales: true, docType: FinDocType.Order, items: [])))),
+                    sales: true, docType: FinDocType.order, items: [])))),
         ],
         child: MyApp(),
       ),
@@ -100,9 +100,8 @@ class MyApp extends StatelessWidget {
               state.authenticate!.company == null)
             return FatalErrorForm("No company found in system\n"
                 "Go to the admin app to create one!");
-          if (state.status == AuthStatus.unAuthenticated)
-            return local.HomeForm(message: state.message);
-          if (state.status == AuthStatus.unAuthenticated)
+          if (state.status == AuthStatus.unAuthenticated ||
+              state.status == AuthStatus.authenticated)
             return local.HomeForm(message: state.message);
           return SplashForm();
         }));

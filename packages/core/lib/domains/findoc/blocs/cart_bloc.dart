@@ -143,7 +143,7 @@ class CartBloc extends Bloc<CartEvent, CartState>
       items.add(event.newItem
           .copyWith(itemSeqId: (finDoc.items.length + 1).toString()));
       Decimal grandTotal = Decimal.parse('0');
-      finDoc.items.forEach((x) {
+      items.forEach((x) {
         grandTotal += x.quantity! * x.price!;
       });
       finDoc = event.finDoc.copyWith(
@@ -153,7 +153,7 @@ class CartBloc extends Bloc<CartEvent, CartState>
           grandTotal: grandTotal);
       // save cart
       await PersistFunctions.persistFinDoc(finDoc);
-      emit(
+      return emit(
         state.copyWith(
           status: CartStatus.inProcess,
           finDoc: finDoc,
