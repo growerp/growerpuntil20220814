@@ -70,7 +70,7 @@ class UserTest {
       await checkUserList(tester, test.administrators);
       await PersistFunctions.persistTest(test.copyWith(
         administrators: await checkUserDetail(tester, test.administrators),
-        sequence: seq,
+        sequence: seq + 10,
       ));
     }
   }
@@ -90,8 +90,8 @@ class UserTest {
     if (check) {
       await checkUserList(tester, test.employees);
       await PersistFunctions.persistTest(test.copyWith(
-        sequence: seq,
         employees: await checkUserDetail(tester, test.employees),
+        sequence: seq + 10,
       ));
     }
   }
@@ -111,7 +111,7 @@ class UserTest {
       await checkUserList(tester, test.leads);
       await PersistFunctions.persistTest(test.copyWith(
         leads: await checkUserDetail(tester, test.leads),
-        sequence: seq,
+        sequence: seq + 10,
       ));
     }
   }
@@ -132,7 +132,7 @@ class UserTest {
       await checkUserList(tester, test.customers);
       await PersistFunctions.persistTest(test.copyWith(
         customers: await checkUserDetail(tester, test.customers),
-        sequence: seq,
+        sequence: seq + 10,
       ));
     }
   }
@@ -153,7 +153,7 @@ class UserTest {
       await checkUserList(tester, test.suppliers);
       await PersistFunctions.persistTest(test.copyWith(
         suppliers: await checkUserDetail(tester, test.suppliers),
-        sequence: seq,
+        sequence: seq + 10,
       ));
     }
   }

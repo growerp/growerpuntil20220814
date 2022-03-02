@@ -58,7 +58,7 @@ class OrderTest {
       // create order
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
       // get productId
-      await CommonTest.tapByKey(tester, 'id0');
+      await CommonTest.tapByKey(tester, 'id0'); // added at the start
       FinDocItem newItem = order.items[0].copyWith(
           productId: CommonTest.getTextField('itemLine0').split(' ')[1]);
       await CommonTest.tapByKey(tester, 'id0');
@@ -68,7 +68,7 @@ class OrderTest {
     }
     // save when successfull
     SaveTest test = await PersistFunctions.getTest();
-    await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
+    await PersistFunctions.persistTest(test.copyWith(orders: orders));
   }
 
   static Future<void> createSalesOrder(
@@ -141,14 +141,14 @@ class OrderTest {
       await CommonTest.tapByKey(tester, 'okRental');
       await CommonTest.tapByKey(tester, 'update', seconds: 10);
       // get productId
-      await CommonTest.tapByKey(tester, 'id0');
+      await CommonTest.tapByKey(tester, 'id0'); // added at the top
       List<FinDocItem> newItems = List.of(finDoc.items);
       for (int index = 0; index < finDoc.items.length; index++) {
         var productId = CommonTest.getTextField('itemLine$index').split(' ')[1];
         FinDocItem newItem = finDoc.items[index].copyWith(productId: productId);
         newItems[index] = newItem;
       }
-      await CommonTest.tapByKey(tester, 'id0');
+      await CommonTest.tapByKey(tester, 'id0'); // close again
       test.orders.add(finDoc.copyWith(
           orderId: CommonTest.getTextField('id0'), items: newItems));
     }
