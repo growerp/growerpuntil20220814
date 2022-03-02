@@ -142,7 +142,6 @@ void main() {
     // check purchase orders complete
     await OrderTest.selectPurchaseOrders(tester);
     await OrderTest.checkPurchaseOrdersComplete(tester);
-    await CommonTest.logout(tester);
   });
 
   testWidgets('''GrowERP sales test''', (tester) async {

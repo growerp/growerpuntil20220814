@@ -30,7 +30,7 @@ class CommonTest {
   static Future<void> startApp(WidgetTester tester, Widget TopApp,
       {bool clear = false}) async {
     SaveTest test = await PersistFunctions.getTest();
-    int seq = test.sequence == null ? 0 : test.sequence! + 1;
+    int seq = test.sequence == null ? 0 : test.sequence! + 10;
     if (clear == true) {
       await PersistFunctions.persistTest(SaveTest(sequence: seq));
     } else {
