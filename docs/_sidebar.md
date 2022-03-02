@@ -1,6 +1,6 @@
 - Introduction
 
-  - [Organization](organization.md)
+  - [Get Started](getStarted.md)
 
 - End User Components
   - Apps
