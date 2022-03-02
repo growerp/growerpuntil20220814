@@ -178,8 +178,6 @@ void main() {
     await CommonTest.logout(tester);
   });
 
-  // not implemented yes: create/check rental sales order not done yet
-  // use orderRental_test.dart for now.
   testWidgets('''GrowERP asset rental sales order test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),

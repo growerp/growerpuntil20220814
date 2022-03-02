@@ -19,9 +19,7 @@ class DialogCloseButton extends StatelessWidget {
   Widget build(BuildContext context) => Center(
         child: InkWell(
             key: Key('cancel'),
-            onTap: () {
-              Navigator.of(context).pop();
-            },
+            onTap: () => Navigator.of(context).pop(),
             child: Container(
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
