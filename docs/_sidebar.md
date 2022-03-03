@@ -1,36 +1,51 @@
 - Introduction
+  - [What is GrowERP?](whatIsGrowerp.md)
 
-  - [Get Started](getStarted.md)
-
-- End User Components
+- End User Documentation
+  - General business flow
+  - Login/out
+  - Chat
+  - Catalog
+  - User types
+  - Orders
   - Apps
     - Administrator
     - Hotel
     - Freelance
     - Ecommerce
-
-- Functional
-  - Getting started
-  - general businesss flow
-  - login/out
-  - Chat
-  - Catalog
-  - User types
-  - Orders
   - Accounting
     - invoices/Payments
-    - Ledger
-    - reports 
+    - Ledger/transactions
+    - reports
 
-- Technical
-  - introduction
-  - Flutter frontend
-    - domains
-      - Authorization
-      - Catalog
-      - Chat
-      - Common
-      - FinDoc
-      - Users
+- Technical documentation
+  - [Introduction](techIntroduction.md)
+  - Packages
+    - [admin](admin/README.md)
+    - [hotel](hotel/README.md)
+    - [freelance](freelance/README.md)
+    - [ecommerce](ecommerce/README.md)
+    - [core](core/README.md)
+    - [utils](utils/README.md)
+  - [Domains](domains)
+    - Authentication
+    - Catalog
+      - Categories
+      - Products
+      - Assets
+    - Chat
+    - Common
+    - Opportunities
+    - Tasks
+    - FinDoc
+    - Users
+    - Warehouse
   - Moqui backend
   - Chat server
+  - Deployment
+    - [Android](fastlane/android/README.md)
+    - [IOS](fastlane/ios/README.md)
+    - backend servers
+      - web
+      - chat
+      - database
