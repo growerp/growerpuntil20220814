@@ -1,3 +1,5 @@
+<center><img src="https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/assets/images/growerp.jpg" height="100" alt="GrowERP" /></center>
+
 - Introduction
   - [What is GrowERP?](whatIsGrowerp.md)
 
@@ -42,10 +44,12 @@
     - Warehouse
   - Moqui backend
   - Chat server
-  - Deployment
-    - [Android](fastlane/android/README.md)
-    - [IOS](fastlane/ios/README.md)
-    - backend servers
-      - web
-      - chat
-      - database
+  - [Deployment
+    - [Implementation Plan](implementationPlan.md)
+    - Installation
+      - [Android](fastlane/android/README.md)
+      - [IOS](fastlane/ios/README.md)
+      - backend servers
+        - web
+        - chat
+        - database
