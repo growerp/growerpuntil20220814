@@ -9,16 +9,35 @@
   <link rel="stylesheet" href="//unpkg.com/docsify/lib/themes/vue.css" />
   <link rel="stylesheet" href="//unpkg.com/docsify/themes/vue.css">
   <link rel="icon" type="image/png" href="favicon-32x32.png"/>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.css">
 </head>
 <body>
   <div id="app">Please wait...</div>
+  <script src="//cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
   <script>
-    window.$docsify = {
+    var num = 0;
+    mermaid.initialize({ startOnLoad: false });
+      window.$docsify = {
       loadSidebar: true,
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md'
+      },
       homepage:
           "https://raw.githubusercontent.com/growerp/growerp/master/README.md",
       repo: 'https://github.com/growerp/growerp',
       coverpage: true,
+      markdown: {
+        renderer: {
+          code: function(code, lang) {
+            if (lang === "mermaid") {
+              return (
+                '<div class="mermaid">' + mermaid.render('mermaid-svg-' + num++, code) + "</div>"
+              );
+            }
+            return this.origin.code.apply(this, arguments);
+          }
+        }
+      }
     }
   </script>
   <!-- Docsify v4 -->

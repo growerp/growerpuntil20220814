@@ -4,8 +4,8 @@
   - [What is GrowERP?](whatIsGrowerp.md)
 
 - End User Documentation
-  - General business flow
-  - Login/out
+  * [General business flow](userDoc/generalBusinessFlow.md)
+  * [Authentication](userDoc/authentication.md)
   - Chat
   - Catalog
   - User types
@@ -29,7 +29,7 @@
     - [ecommerce](ecommerce/README.md)
     - [core](core/README.md)
     - [utils](utils/README.md)
-  - [Domains](domains)
+  - Domains
     - Authentication
     - Catalog
       - Categories
