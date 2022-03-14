@@ -14,11 +14,10 @@
 
 import 'dart:convert';
 import 'dart:typed_data';
-import 'package:core/domains/common/models/currency_model.dart';
 import 'package:decimal/decimal.dart';
-import 'address_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:core/services/jsonConverters.dart';
+import '../../domains.dart';
 
 part 'company_model.freezed.dart';
 part 'company_model.g.dart';
@@ -42,9 +41,11 @@ class Company with _$Company {
     String? partyId,
     String? name,
     String? email,
+    String? telephoneNr,
     Currency? currency,
     @Uint8ListConverter() Uint8List? image,
     Address? address,
+    PaymentMethod? paymentMethod,
     @DecimalConverter() Decimal? vatPerc,
     @DecimalConverter() Decimal? salesPerc,
   }) = _Company;

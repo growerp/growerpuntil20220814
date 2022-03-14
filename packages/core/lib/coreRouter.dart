@@ -25,7 +25,7 @@ Route<dynamic> coreRoute(RouteSettings settings) {
     case '/company':
       return MaterialPageRoute(
           builder: (context) =>
-              CompanyInfoForm(settings.arguments as FormArguments));
+              CompanyForm(settings.arguments as FormArguments));
     case '/changePw':
       return MaterialPageRoute(builder: (context) => ChangePwForm());
     case '/accounting':

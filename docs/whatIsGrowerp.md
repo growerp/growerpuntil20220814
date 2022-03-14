@@ -13,8 +13,7 @@ backend version which can operate without the GrowERP frontend.
 Because the [Flutter](https://flutter.dev) framework is used, GrowERP can be installed on most platforms natively
 i.e. can compete with other applications on that platform compared to speed, interfaces and integration.
 
-Functions from the full backend version can be relatively easily added to the frontend because
-just the interface and screens are required.
+Additional functions from the backend system can be relatively easily added to the frontend by providing extra screens.
 
-The system can operate in single or multiple company mode when a single instance of the system can support multiple companies which are complete separated
+The system can operate in single or multiple company mode where a single instance of the system can support multiple companies which are complete separated.
 

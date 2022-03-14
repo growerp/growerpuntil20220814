@@ -135,7 +135,7 @@ class _OpportunityState extends State<OpportunityDialog> {
           failure: (_) => [User(lastName: 'get data error!')]);
     }
 
-    List<Widget> widgets = [
+    List<Widget> _widgets = [
       TextFormField(
         key: Key('name'),
         decoration: InputDecoration(labelText: 'Opportunity Name'),
@@ -279,22 +279,22 @@ class _OpportunityState extends State<OpportunityDialog> {
     List<Widget> rows = [];
     if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET)) {
       // change list in two columns
-      for (var i = 0; i < widgets.length; i++)
+      for (var i = 0; i < _widgets.length; i++)
         rows.add(Row(
           children: [
             Expanded(
                 child:
-                    Padding(padding: EdgeInsets.all(10), child: widgets[i++])),
+                    Padding(padding: EdgeInsets.all(10), child: _widgets[i++])),
             Expanded(
                 child: Padding(
                     padding: EdgeInsets.all(10),
-                    child: i < widgets.length ? widgets[i] : Container()))
+                    child: i < _widgets.length ? _widgets[i] : Container()))
           ],
         ));
     }
     List<Widget> column = [];
-    for (var i = 0; i < widgets.length; i++)
-      column.add(Padding(padding: EdgeInsets.all(10), child: widgets[i]));
+    for (var i = 0; i < _widgets.length; i++)
+      column.add(Padding(padding: EdgeInsets.all(10), child: _widgets[i]));
 
     return Form(
         key: _formKeyOpportunity,

@@ -100,3 +100,20 @@ class FinDocStatusValConverter
     return object.toString();
   }
 }
+
+class CreditCardTypeConverter
+    implements JsonConverter<CreditCardType?, String?> {
+  const CreditCardTypeConverter();
+
+  @override
+  CreditCardType? fromJson(String? json) {
+    if (json == null) return null;
+    return CreditCardType.tryParse(json);
+  }
+
+  @override
+  String? toJson(CreditCardType? object) {
+    if (object == null) return null;
+    return object.toString();
+  }
+}

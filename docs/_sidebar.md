@@ -44,8 +44,8 @@
     - Warehouse
   - Moqui backend
   - Chat server
-  - [Deployment
-    - [Implementation Plan](implementationPlan.md)
+  - [Integration Test](integrationTest.md)
+  - Deployment
     - Installation
       - [Android](fastlane/android/README.md)
       - [IOS](fastlane/ios/README.md)

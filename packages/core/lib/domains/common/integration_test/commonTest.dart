@@ -294,7 +294,7 @@ class CommonTest {
     await drag(tester);
     await enterDropDownSearch(tester, 'country', address.country!);
     await drag(tester);
-    await tapByKey(tester, 'updateAddress');
+    await tapByKey(tester, 'updateAddress', seconds: 5);
   }
 
   static Future<void> checkAddress(tester, Address address) async {
@@ -307,5 +307,33 @@ class CommonTest {
     expect(getTextFormField('province'), equals(address.province!));
     expect(getDropdownSearch('country'), equals(address.country));
     await tapByKey(tester, 'cancel');
+  }
+
+  static Future<void> updatePaymentMethod(
+      tester, PaymentMethod paymentMethod) async {
+    await drag(tester);
+    await tapByKey(tester, 'paymentMethod');
+    await enterDropDown(
+        tester, 'cardTypeDropDown', paymentMethod.creditCardType.toString());
+    await enterText(
+        tester, 'creditCardNumber', paymentMethod.creditCardNumber!);
+    await enterText(tester, 'expireMonth', paymentMethod.expireMonth!);
+    await enterText(tester, 'expireYear', paymentMethod.expireYear!);
+    await tapByKey(tester, 'updatePaymentMethod', seconds: 5);
+    await tester.pumpAndSettle(Duration(seconds: 5));
+  }
+
+  static Future<void> checkPaymentMethod(
+      tester, PaymentMethod paymentMethod) async {
+    int length = paymentMethod.creditCardNumber!.length;
+    await drag(tester);
+    expect(
+        getTextField('paymentMethodLabel'),
+        contains(
+            paymentMethod.creditCardNumber!.substring(length - 4, length)));
+    expect(getTextField('paymentMethodLabel'),
+        contains(paymentMethod.expireMonth! + '/'));
+    expect(getTextField('paymentMethodLabel'),
+        contains(paymentMethod.expireYear!));
   }
 }

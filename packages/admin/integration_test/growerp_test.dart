@@ -21,6 +21,7 @@ void main() {
     await CompanyTest.selectCompany(tester);
     await CompanyTest.updateCompany(tester);
     await CompanyTest.updateAddress(tester);
+    await CompanyTest.updatePaymentMethod(tester);
   });
 
   testWidgets('''GrowERP category test''', (tester) async {

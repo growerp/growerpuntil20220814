@@ -24,9 +24,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:core/domains/domains.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class CompanyInfoForm extends StatelessWidget {
+class CompanyForm extends StatelessWidget {
   final FormArguments formArguments;
-  CompanyInfoForm(this.formArguments);
+  CompanyForm(this.formArguments);
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +47,12 @@ class CompanyPage extends StatefulWidget {
 
 class _CompanyState extends State<CompanyPage> {
   final String? message;
-  final Authenticate authenticate;
   final _formKey = GlobalKey<FormState>();
+  late Authenticate authenticate;
   late Company company;
   late User user;
-  Address? companyAddress;
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _telephoneController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _vatPercController = TextEditingController();
   TextEditingController _salesPercController = TextEditingController();
@@ -72,18 +72,20 @@ class _CompanyState extends State<CompanyPage> {
   @override
   void initState() {
     super.initState();
+    authenticate = widget.authenticate.copyWith();
     company = authenticate.company!;
     user = authenticate.user!;
-    companyAddress = authenticate.company!.address;
     isAdmin = authenticate.user!.userGroup == UserGroup.Admin;
-    _selectedCurrency = currencies.firstWhere((element) =>
-        element.currencyId == authenticate.company?.currency?.currencyId);
+    _selectedCurrency = currencies.firstWhere(
+        (element) => element.currencyId == company.currency?.currencyId);
     _nameController..text = company.name!;
     _emailController..text = company.email!;
     _vatPercController
       ..text = company.vatPerc == null ? '' : company.vatPerc.toString();
     _salesPercController
       ..text = company.salesPerc == null ? '' : company.salesPerc.toString();
+    if (company.telephoneNr != null)
+      _telephoneController..text = company.telephoneNr!;
   }
 
   void _onImageButtonPressed(ImageSource source,
@@ -135,6 +137,9 @@ class _CompanyState extends State<CompanyPage> {
           return Center(
               child: Text('failed to fetch company info ${state.message}'));
         case AuthStatus.authenticated:
+          authenticate = state.authenticate!;
+          company = authenticate.company!;
+          user = authenticate.user!;
           return ScaffoldMessenger(
               key: scaffoldMessengerKey,
               child: Scaffold(
@@ -153,11 +158,10 @@ class _CompanyState extends State<CompanyPage> {
                                   textAlign: TextAlign.center,
                                 );
                               }
-                              return _showForm(authenticate, isAdmin, company);
+                              return _showForm(isAdmin, company, state);
                             })
-                        : _showForm(authenticate, isAdmin, company),
+                        : _showForm(isAdmin, company, state),
                   )));
-
         default:
           return LoadingIndicator();
       }
@@ -173,7 +177,7 @@ class _CompanyState extends State<CompanyPage> {
     return null;
   }
 
-  Widget _showForm(Authenticate authenticate, bool isAdmin, Company company) {
+  Widget _showForm(bool isAdmin, Company company, AuthState state) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
@@ -197,7 +201,7 @@ class _CompanyState extends State<CompanyPage> {
                         child: Column(children: [
                           Center(
                               child: Text(
-                            'id:#${authenticate.company!.partyId}',
+                            'id:#${company.partyId}',
                             style: TextStyle(
                                 fontSize: isPhone ? 10 : 20,
                                 color: Colors.black,
@@ -253,6 +257,13 @@ class _CompanyState extends State<CompanyPage> {
                             },
                           ),
                           SizedBox(height: 10),
+                          TextFormField(
+                            key: Key('telephoneNr'),
+                            decoration:
+                                InputDecoration(labelText: 'Telephone number'),
+                            controller: _telephoneController,
+                          ),
+                          SizedBox(height: 10),
                           DropdownButtonFormField<Currency>(
                             key: Key('currency'),
                             decoration: InputDecoration(labelText: 'Currency'),
@@ -305,8 +316,9 @@ class _CompanyState extends State<CompanyPage> {
                           Row(children: [
                             Expanded(
                                 child: Text(
-                                    companyAddress != null
-                                        ? "${companyAddress!.city!} ${companyAddress!.country!}"
+                                    company.address != null
+                                        ? "${company.address?.city} "
+                                            "${company.address?.country!}"
                                         : "No address yet",
                                     key: Key('addressLabel'))),
                             SizedBox(
@@ -320,12 +332,13 @@ class _CompanyState extends State<CompanyPage> {
                                               context: context,
                                               builder: (BuildContext context) {
                                                 return AddressDialog(
-                                                    address: companyAddress);
+                                                    address: company.address);
                                               });
                                           if (result is Address)
-                                            setState(() {
-                                              companyAddress = result;
-                                            });
+                                            BlocProvider.of<AuthBloc>(context)
+                                                .add(AuthUpdateCompany(
+                                                    company.copyWith(
+                                                        address: result)));
                                         }
                                       : null,
                                   child: Text(company.address != null
@@ -336,10 +349,47 @@ class _CompanyState extends State<CompanyPage> {
                           SizedBox(height: 10),
                           Row(children: [
                             Expanded(
+                                child: Text(
+                                    company.paymentMethod != null
+                                        ? "${company.paymentMethod?.ccDescription}"
+                                        : "No payment methods yet",
+                                    key: Key('paymentMethodLabel'))),
+                            SizedBox(
+                                width: 100,
+                                child: ElevatedButton(
+                                    key: Key('paymentMethod'),
+                                    onPressed: isAdmin
+                                        ? () async {
+                                            var result = await showDialog(
+                                                barrierDismissible: true,
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return PaymentMethodDialog(
+                                                      paymentMethod: company
+                                                          .paymentMethod);
+                                                });
+                                            if (result is PaymentMethod) {
+                                              BlocProvider.of<AuthBloc>(context)
+                                                  .add(AuthUpdateCompany(
+                                                      company.copyWith(
+                                                          paymentMethod:
+                                                              result)));
+                                            }
+                                          }
+                                        : null,
+                                    child: Text((company.paymentMethod != null
+                                            ? 'Update'
+                                            : 'Add') +
+                                        ' Payment Method')))
+                          ]),
+                          SizedBox(height: 10),
+                          Row(children: [
+                            Expanded(
                                 child: Visibility(
                                     visible: isAdmin,
                                     child: ElevatedButton(
-                                        key: Key('updateCompany'),
+                                        key: Key('update'),
                                         child: Text(
                                           company.partyId == null
                                               ? 'Create'
@@ -349,16 +399,21 @@ class _CompanyState extends State<CompanyPage> {
                                             ? () async {
                                                 if (_formKey.currentState!
                                                     .validate()) {
-                                                  //        && !Loading)
                                                   company = Company(
                                                       partyId: company.partyId,
                                                       email:
                                                           _emailController.text,
                                                       name:
                                                           _nameController.text,
+                                                      telephoneNr:
+                                                          _telephoneController
+                                                              .text,
                                                       currency:
                                                           _selectedCurrency,
-                                                      address: companyAddress,
+                                                      address: company.address,
+                                                      paymentMethod:
+                                                          authenticate.company
+                                                              ?.paymentMethod,
                                                       vatPerc: Decimal.parse(
                                                           _vatPercController
                                                                   .text.isEmpty
@@ -371,9 +426,7 @@ class _CompanyState extends State<CompanyPage> {
                                                               ? '0'
                                                               : _salesPercController
                                                                   .text),
-                                                      image: await HelperFunctions
-                                                          .getResizedImage(
-                                                              _imageFile?.path));
+                                                      image: await HelperFunctions.getResizedImage(_imageFile?.path));
                                                   if (_imageFile?.path !=
                                                           null &&
                                                       company.image == null)

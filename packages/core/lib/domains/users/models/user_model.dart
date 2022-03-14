@@ -33,19 +33,21 @@ class User with _$User {
     bool? loginDisabled,
     String? loginName,
 
-    /// company email address of this person
+    /// email address of this person
     String? email,
 
+    /// when customer register they can give their telephonenr to use as membername
+    String? telephoneNr,
+
     /// admin, employee, customer, supplier etc...
+    // ignore: invalid_annotation_target
     @JsonKey(name: 'userGroupId') @UserGroupConverter() UserGroup? userGroup,
     String? language,
-
-    /// when customer register they give their telno
-    String? externalId,
     @Uint8ListConverter() Uint8List? image,
     String? companyPartyId, // allocated by system cannot be changed.
     String? companyName,
     Address? companyAddress,
+    PaymentMethod? companyPaymentMethod,
   }) = _User;
   User._();
 

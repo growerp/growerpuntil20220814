@@ -36,7 +36,7 @@ List<MenuItem> menuItems = [
     writeGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
     tabItems: [
       TabItem(
-        form: CompanyInfoForm(FormArguments()),
+        form: CompanyForm(FormArguments()),
         label: 'Company Info',
         icon: const Icon(Icons.home),
       ),

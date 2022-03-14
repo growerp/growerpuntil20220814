@@ -114,7 +114,9 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
                   (element) => element.partyId == event.company.partyId);
               companies[index] = data;
               return state.copyWith(
-                  status: CompanyStatus.success, companies: companies);
+                  status: CompanyStatus.success,
+                  companies: companies,
+                  message: 'Company ${event.company.name} updated');
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: CompanyStatus.failure, message: error.toString())));
@@ -126,7 +128,9 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
             success: (data) {
               companies.insert(0, data);
               return state.copyWith(
-                  status: CompanyStatus.success, companies: companies);
+                  status: CompanyStatus.success,
+                  companies: companies,
+                  message: 'Company ${event.company.name} added');
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: CompanyStatus.failure, message: error.toString())));

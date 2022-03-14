@@ -49,14 +49,14 @@ class CompanyTest {
   }
 
   static Future<void> selectCompany(WidgetTester tester) async {
-    await CommonTest.selectOption(tester, 'tapCompany', 'CompanyInfoForm');
+    await CommonTest.selectOption(tester, 'tapCompany', 'CompanyForm');
   }
 
   static Future<void> updateCompany(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     if (company.name != test.company!.name!) return;
     checkCompanyFields(test.company!, perc: false);
-    await CommonTest.tapByKey(tester, 'updateCompany');
+    await CommonTest.tapByKey(tester, 'update');
     checkCompanyFields(test.company!, perc: false);
     // add a '1' to all fields
     Company newCompany = Company(
@@ -64,10 +64,12 @@ class CompanyTest {
         email: "${test.company!.email!.split('@')[0]}"
             "1@${test.company!.email!.split('@')[1]}",
         currency: currencies[1],
+        telephoneNr: '9999999999',
         vatPerc: company.vatPerc! + Decimal.parse('1'),
         salesPerc: company.salesPerc! + Decimal.parse('1'));
     await CommonTest.enterText(tester, 'companyName', newCompany.name!);
     await CommonTest.enterText(tester, 'email', newCompany.email!);
+    await CommonTest.enterText(tester, 'telephoneNr', newCompany.telephoneNr!);
     await CommonTest.enterDropDown(
         tester, 'currency', currencies[1].description!);
     await CommonTest.enterText(
@@ -75,7 +77,7 @@ class CompanyTest {
     await CommonTest.enterText(
         tester, 'salesPerc', newCompany.salesPerc.toString());
     await CommonTest.drag(tester);
-    await CommonTest.tapByKey(tester, 'updateCompany', seconds: 5);
+    await CommonTest.tapByKey(tester, 'update', seconds: 5);
     // and check them
     checkCompanyFields(newCompany);
     var id = CommonTest.getTextField('header').split('#')[1];
@@ -83,17 +85,22 @@ class CompanyTest {
         test.copyWith(company: newCompany.copyWith(partyId: id)));
   }
 
-  static void checkCompanyFields(Company company,
-      {bool perc = true, String address = 'No address yet'}) {
+  /// check company fields however not when perc == false: \
+  /// no perc fields and telephone because not populated initially
+  static void checkCompanyFields(Company company, {bool perc = true}) {
     expect(CommonTest.getTextFormField('companyName'), equals(company.name!));
     expect(CommonTest.getTextFormField('email'), equals(company.email));
+    expect(CommonTest.getTextFormField('telephoneNr'),
+        equals(perc ? company.telephoneNr : ''));
     expect(CommonTest.getDropdown('currency'),
         equals(company.currency?.description));
     expect(CommonTest.getTextFormField('vatPerc'),
         equals(perc ? company.vatPerc.toString() : ''));
     expect(CommonTest.getTextFormField('salesPerc'),
         equals(perc ? company.salesPerc.toString() : ''));
-    expect(CommonTest.getTextField('addressLabel'), equals(address));
+    expect(CommonTest.getTextField('addressLabel'), equals('No address yet'));
+    expect(CommonTest.getTextField('paymentMethodLabel'),
+        equals('No payment methods yet'));
   }
 
   static Future<void> updateAddress(WidgetTester tester) async {
@@ -110,10 +117,26 @@ class CompanyTest {
             province: company.address!.province! + 'u',
             country: countries[1].name));
     await CommonTest.drag(tester);
-    await CommonTest.tapByKey(tester, 'updateCompany', seconds: 5);
     await CommonTest.updateAddress(tester, newCompany.address!);
     await CommonTest.checkAddress(tester, newCompany.address!);
-    await PersistFunctions.persistTest(test.copyWith(company: newCompany),
-        backup: true); // last test for company ready for user test
+    await PersistFunctions.persistTest(test.copyWith(company: newCompany));
+  }
+
+  static Future<void> updatePaymentMethod(WidgetTester tester) async {
+    SaveTest test = await PersistFunctions.getTest();
+    await CommonTest.updatePaymentMethod(tester, company.paymentMethod!);
+    await CommonTest.checkPaymentMethod(tester, company.paymentMethod!);
+    Company newCompany = company.copyWith(
+        paymentMethod: PaymentMethod(
+      creditCardType: CreditCardType.visa,
+      creditCardNumber: '4242424242424242',
+      expireMonth: '5',
+      expireYear: '2025',
+    ));
+    await CommonTest.drag(tester);
+    await CommonTest.updatePaymentMethod(tester, newCompany.paymentMethod!);
+    await CommonTest.checkPaymentMethod(tester, newCompany.paymentMethod!);
+    await PersistFunctions.persistTest(test.copyWith(
+        company: newCompany)); // last test for company ready for user test
   }
 }

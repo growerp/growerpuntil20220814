@@ -28,6 +28,11 @@ Company company = Company(
       city: 'Los Angeles',
       province: 'California',
       country: countries[0].name),
+  paymentMethod: PaymentMethod(
+      creditCardNumber: '5555555555554444',
+      creditCardType: CreditCardType.mc,
+      expireMonth: '3',
+      expireYear: '2033'),
 );
 
 User admin = User(
@@ -54,6 +59,7 @@ List<User> administrators = [
     userGroup: UserGroup.Admin,
     companyName: company.name,
     email: 'emailXXX@example.org',
+    telephoneNr: '111111111111',
   ),
   User(
     firstName: 'administrator2',
@@ -61,6 +67,7 @@ List<User> administrators = [
     userGroup: UserGroup.Admin,
     companyName: company.name,
     email: 'emailXXX@example.org',
+    telephoneNr: '2222222222222',
   ),
   User(
     firstName: 'administrator3',
@@ -68,6 +75,7 @@ List<User> administrators = [
     userGroup: UserGroup.Admin,
     companyName: company.name,
     email: 'emailXXX@example.org',
+    telephoneNr: '3333333333',
   ),
 ];
 List<User> employees = [
@@ -78,6 +86,7 @@ List<User> employees = [
     companyName: company.name,
     userId: 'usernameXXX',
     email: 'emailXXX@example.org',
+    telephoneNr: '444444444444',
   ),
   User(
     firstName: 'employee2',
@@ -85,6 +94,7 @@ List<User> employees = [
     userGroup: UserGroup.Employee,
     companyName: company.name,
     email: 'emailXXX@example.org',
+    telephoneNr: '555555555555',
   )
 ];
 
@@ -95,6 +105,7 @@ List<User> leads = [
     userGroup: UserGroup.Lead,
     companyName: companies[0].name,
     email: 'emailXXX@example.org',
+    telephoneNr: '6666666666666',
   ),
   User(
     firstName: 'lead2',
@@ -102,6 +113,7 @@ List<User> leads = [
     userGroup: UserGroup.Lead,
     companyName: companies[1].name,
     email: 'emailXXX@example.org',
+    telephoneNr: '77777777777777',
   ),
   User(
     firstName: 'lead3',
@@ -109,6 +121,7 @@ List<User> leads = [
     userGroup: UserGroup.Lead,
     companyName: companies[2].name,
     email: 'emailXXX@example.org',
+    telephoneNr: '888888888888888',
   ),
 ];
 
@@ -119,6 +132,7 @@ List<User> suppliers = [
     userGroup: UserGroup.Supplier,
     companyName: companies[3].name,
     email: 'emailXXX@example.org',
+    telephoneNr: '99999999999999',
   ),
   User(
     firstName: 'supplier2',
@@ -126,15 +140,17 @@ List<User> suppliers = [
     userGroup: UserGroup.Supplier,
     companyName: companies[4].name,
     email: 'emailXXX@example.org',
+    telephoneNr: '10101010101010',
   )
 ];
 List<User> customers = [
   User(
     firstName: 'customer1',
-    lastName: 'last Name',
+    lastName: 'lastName1',
     userGroup: UserGroup.Customer,
     companyName: companies[5].name,
     email: 'emailXXX@example.org',
+    telephoneNr: '111111111111',
     companyAddress: Address(
         address1: 'soi 5',
         address2: 'suite 23',
@@ -142,13 +158,19 @@ List<User> customers = [
         city: 'Pucket',
         province: 'California',
         country: countries[3].name),
+    companyPaymentMethod: PaymentMethod(
+        creditCardNumber: '5555555555554444',
+        creditCardType: CreditCardType.mc,
+        expireMonth: '11',
+        expireYear: '2032'),
   ),
   User(
     firstName: 'customer2',
-    lastName: 'last Name',
+    lastName: 'lastName2',
     userGroup: UserGroup.Customer,
     companyName: companies[6].name,
     email: 'emailXXX@example.org',
+    telephoneNr: '12121212121212',
   )
 ];
 

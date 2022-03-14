@@ -49,6 +49,7 @@ class _UserState extends State<UserPage> {
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _nameController = TextEditingController();
+  final _telephoneController = TextEditingController();
   final _emailController = TextEditingController();
   final _companyController = TextEditingController();
   final _companySearchBoxController = TextEditingController();
@@ -75,6 +76,7 @@ class _UserState extends State<UserPage> {
       _firstNameController.text = widget.user.firstName ?? '';
       _lastNameController.text = widget.user.lastName ?? '';
       _nameController.text = widget.user.loginName ?? '';
+      _telephoneController.text = widget.user.telephoneNr ?? '';
       _emailController.text = widget.user.email ?? '';
       _selectedCompany = Company(
           partyId: widget.user.companyPartyId, name: widget.user.companyName);
@@ -82,8 +84,7 @@ class _UserState extends State<UserPage> {
     _selectedUserGroup = widget.user.userGroup ?? UserGroup.Undefined;
     ;
     localUserGroups = UserGroup.companyUserGroupList();
-
-    updatedUser = widget.user.copyWith();
+    updatedUser = widget.user;
   }
 
   void _onImageButtonPressed(ImageSource source,
@@ -133,7 +134,7 @@ class _UserState extends State<UserPage> {
             child: Container(
                 padding: EdgeInsets.all(20),
                 width: 400,
-                height: 900,
+                height: 1020,
                 child: BlocListener<UserBloc, UserState>(listener:
                     (context, state) {
                   if (state.status == UserStatus.failure) {
@@ -228,6 +229,15 @@ class _UserState extends State<UserPage> {
                 fontWeight: FontWeight.bold),
             key: Key('header'),
           )),
+          Center(
+              child: Text(
+            'Company #${updatedUser.companyPartyId ?? ""}',
+            style: TextStyle(
+                fontSize: isPhone ? 10 : 20,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+            key: Key('compHeader'),
+          )),
           Visibility(
               visible: updatedUser.userGroup == UserGroup.Admin ||
                   updatedUser.userGroup == UserGroup.Employee,
@@ -274,6 +284,12 @@ class _UserState extends State<UserPage> {
                 return 'An administrator needs a username!';
               return null;
             },
+          ),
+          SizedBox(height: 10),
+          TextFormField(
+            key: Key('telephoneNr'),
+            decoration: InputDecoration(labelText: 'Telephone number'),
+            controller: _telephoneController,
           ),
           SizedBox(height: 10),
           TextFormField(
@@ -341,7 +357,7 @@ class _UserState extends State<UserPage> {
               ])),
           SizedBox(height: 10),
           Visibility(
-              // use only tomodify by admin user
+              // use only to modify by admin user
               visible: updatedUser.partyId != null &&
                   currentUser!.userGroup == UserGroup.Admin,
               child: DropdownButtonFormField<UserGroup>(
@@ -364,12 +380,16 @@ class _UserState extends State<UserPage> {
           SizedBox(height: 10),
           Visibility(
               visible: updatedUser.userGroup != UserGroup.Admin &&
-                  updatedUser.userGroup != UserGroup.Employee,
+                  updatedUser.userGroup != UserGroup.Employee &&
+                  updatedUser.partyId != null,
               child: Row(children: [
                 Expanded(
-                    child: Text(updatedUser.companyAddress != null
-                        ? "${updatedUser.companyAddress!.city!} ${updatedUser.companyAddress!.country!}"
-                        : "No address yet")),
+                    child: Text(
+                        updatedUser.companyAddress != null
+                            ? "${updatedUser.companyAddress!.city!} "
+                                "${updatedUser.companyAddress!.country!}"
+                            : "No address yet",
+                        key: Key('addressLabel'))),
                 SizedBox(
                     width: 100,
                     child: ElevatedButton(
@@ -382,16 +402,49 @@ class _UserState extends State<UserPage> {
                               return AddressDialog(
                                   address: updatedUser.companyAddress);
                             });
-                        if (result != null)
-                          setState(() {
-                            updatedUser =
-                                updatedUser.copyWith(companyAddress: result);
-                          });
+                        if (result is Address)
+                          BlocProvider.of<UserBloc>(context).add(UserUpdate(
+                              updatedUser.copyWith(companyAddress: result)));
                       },
                       child: Text(updatedUser.companyAddress != null
                           ? 'Update\nAddress'
                           : 'Add\nAddress'),
                     ))
+              ])),
+          SizedBox(height: 10),
+          Visibility(
+              visible: updatedUser.userGroup != UserGroup.Admin &&
+                  updatedUser.userGroup != UserGroup.Employee &&
+                  updatedUser.partyId != null,
+              child: Row(children: [
+                Expanded(
+                    child: Text(
+                        updatedUser.companyPaymentMethod != null
+                            ? "${updatedUser.companyPaymentMethod?.ccDescription}"
+                            : "No payment methods yet",
+                        key: Key('paymentMethodLabel'))),
+                SizedBox(
+                    width: 100,
+                    child: ElevatedButton(
+                        key: Key('paymentMethod'),
+                        onPressed: () async {
+                          var result = await showDialog(
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return PaymentMethodDialog(
+                                    paymentMethod:
+                                        updatedUser.companyPaymentMethod);
+                              });
+                          if (result is PaymentMethod)
+                            BlocProvider.of<UserBloc>(context).add(UserUpdate(
+                                updatedUser.copyWith(
+                                    companyPaymentMethod: result)));
+                        },
+                        child: Text((updatedUser.companyPaymentMethod != null
+                                ? 'Update'
+                                : 'Add') +
+                            ' Payment Method')))
               ])),
           SizedBox(height: 10),
           Row(children: [
@@ -407,6 +460,7 @@ class _UserState extends State<UserPage> {
                             lastName: _lastNameController.text,
                             email: _emailController.text,
                             loginName: _nameController.text,
+                            telephoneNr: _telephoneController.text,
                             userGroup: _selectedUserGroup,
                             language: Localizations.localeOf(context)
                                 .languageCode

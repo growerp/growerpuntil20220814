@@ -107,9 +107,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     if (event.company?.partyId == state.authenticate?.company?.partyId) {
-      emit(state.copyWith(
-          status: AuthStatus.authenticated,
-          authenticate: state.authenticate!.copyWith(company: event.company)));
+      //only update owner company
+      ApiResult<Company> compResult = await repos.updateCompany(event.company!);
+      emit(state.copyWith(status: AuthStatus.loading));
+      return emit(compResult.when(
+          success: (data) {
+            return state.copyWith(
+                authenticate: state.authenticate?.copyWith(company: data),
+                status: AuthStatus.authenticated,
+                message: 'Company ${event.company?.name} updated');
+          },
+          failure: (NetworkExceptions error) => state.copyWith(
+              status: AuthStatus.failure, message: error.toString())));
     }
   }
 
@@ -118,9 +127,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     if (event.user.partyId == state.authenticate?.user!.partyId) {
-      emit(state.copyWith(
-          status: AuthStatus.authenticated,
-          authenticate: state.authenticate!.copyWith(user: event.user)));
+      //only update owner company
+      ApiResult<User> compResult = await repos.updateUser(event.user);
+      return emit(compResult.when(
+          success: (data) {
+            return state.copyWith(
+                authenticate: state.authenticate?.copyWith(user: data),
+                message:
+                    'User ${event.user.firstName} ${event.user.lastName} updated');
+          },
+          failure: (NetworkExceptions error) => state.copyWith(
+              status: AuthStatus.failure, message: error.toString())));
     }
   }
 
@@ -142,7 +159,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           return state.copyWith(
               status: AuthStatus.unAuthenticated,
               authenticate: data,
-              message: '     Register Company and Admin successfull,\n'
+              message: '     Register Company and Admin successful,\n'
                   ' you can now login with the password sent by email');
         },
         failure: (NetworkExceptions error) => state.copyWith(
@@ -164,7 +181,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(state.copyWith(status: AuthStatus.registered));
           return state.copyWith(
               status: AuthStatus.unAuthenticated,
-              message: '          Register successfull,\n'
+              message: '          Register successful,\n'
                   'you can now login with the password sent by email.',
               authenticate: state.authenticate!.copyWith(user: data));
         },
@@ -225,7 +242,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ApiResult<void> apiResult =
         await repos.resetPassword(username: event.username);
     emit(apiResult.when(
-        success: (_) => state,
+        success: (_) => state.copyWith(message: 'Password reset'),
         failure: (NetworkExceptions error) => state.copyWith(
             status: AuthStatus.failure, message: error.toString())));
   }

@@ -122,11 +122,9 @@ class UserTest {
     int seq = test.sequence!;
     if (test.customers.isEmpty) {
       // not yet created
-      test = test.copyWith(customers: customers);
       expect(find.byKey(Key('userItem')), findsNWidgets(0));
       test = test.copyWith(customers: await enterUserData(tester, customers));
-      await PersistFunctions.persistTest(
-          test.copyWith(customers: test.customers));
+      await PersistFunctions.persistTest(test.copyWith(sequence: seq + 10));
     }
     if (check) {
       await checkUserList(tester, test.customers);
@@ -180,14 +178,19 @@ class UserTest {
       await CommonTest.enterText(tester, 'loginName', email);
       await CommonTest.drag(tester);
       await CommonTest.enterText(tester, 'email', email);
+      await CommonTest.enterText(tester, 'telephoneNr', user.telephoneNr!);
       await CommonTest.drag(tester);
+      // changing to new company will clear paymentMethod and address
       if (user.userGroup != UserGroup.Admin &&
           user.userGroup != UserGroup.Employee) {
-        await CommonTest.enterText(tester, 'newCompanyName', user.companyName!);
-        if (user.companyAddress != null) {
-          await CommonTest.updateAddress(tester, user.companyAddress!);
+        if ((user.companyPaymentMethod == null &&
+                user.companyAddress == null) ||
+            // need for new
+            user.partyId == null) {
+          await CommonTest.enterText(
+              tester, 'newCompanyName', user.companyName!);
+          await CommonTest.drag(tester);
         }
-        await CommonTest.drag(tester);
       }
       if (user.partyId != null) {
         await CommonTest.enterDropDown(
@@ -195,10 +198,19 @@ class UserTest {
       }
       await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'updateUser', seconds: 5);
+      await CommonTest.refresh(tester);
+      if (user.companyAddress != null) {
+        await CommonTest.tapByKey(tester, 'name$index');
+        await CommonTest.updateAddress(tester, user.companyAddress!);
+      }
+      if (user.companyPaymentMethod != null) {
+        await CommonTest.tapByKey(tester, 'name$index');
+        await CommonTest.updatePaymentMethod(
+            tester, user.companyPaymentMethod!);
+      }
       newUsers.add(user.copyWith(email: email, loginName: email));
       index++;
     }
-    await PersistFunctions.persistTest(test.copyWith(sequence: seq));
     return (newUsers);
   }
 
@@ -227,14 +239,29 @@ class UserTest {
       expect(CommonTest.getTextFormField('lastName'), equals(user.lastName!));
       expect(CommonTest.getTextFormField('loginName'), equals(user.email!));
       expect(CommonTest.getTextFormField('email'), equals(user.email!));
+      expect(CommonTest.getTextFormField('telephoneNr'),
+          equals(user.telephoneNr!));
       await CommonTest.drag(tester);
-      if (user.companyAddress != null) {
-        await CommonTest.checkAddress(tester, user.companyAddress!);
-      }
       expect(CommonTest.getDropdown('userGroup'),
           equals(user.userGroup.toString()));
       newUsers.add(user.copyWith(partyId: id));
       index++;
+
+      if (user.userGroup != UserGroup.Admin &&
+          user.userGroup != UserGroup.Employee) {
+        if (user.companyAddress == null)
+          expect(CommonTest.getTextField('addressLabel'),
+              equals('No address yet'));
+        else
+          await CommonTest.checkAddress(tester, user.companyAddress!);
+
+        if (user.companyPaymentMethod == null)
+          expect(CommonTest.getTextField('paymentMethodLabel'),
+              equals('No payment methods yet'));
+        else
+          await CommonTest.checkPaymentMethod(
+              tester, user.companyPaymentMethod!);
+      }
       await CommonTest.tapByKey(tester, 'cancel');
     }
     return newUsers;
@@ -348,6 +375,9 @@ class UserTest {
   static List<User> updateUsers(List<User> users) {
     List<User> updUsers = [];
     for (User user in users) {
+      var addChar = 'u';
+      if (user.companyPaymentMethod != null || user.companyAddress != null)
+        addChar = '';
       updUsers.add(user.copyWith(
         firstName: user.firstName! + 'u',
         lastName: user.lastName! + 'u',
@@ -355,7 +385,7 @@ class UserTest {
             "u@${user.email!.split('@')[1]}",
         loginName: "${user.email!.split('@')[0]}"
             "u@${user.email!.split('@')[1]}",
-        companyName: user.companyName! + 'u',
+        companyName: user.companyName! + addChar,
         companyAddress: user.companyAddress != null
             ? Address(
                 address1: user.companyAddress!.address1! + 'u',
@@ -364,6 +394,14 @@ class UserTest {
                 city: user.companyAddress!.city! + 'u',
                 province: user.companyAddress!.province! + 'u',
                 country: countries[10].name)
+            : null,
+        companyPaymentMethod: user.companyPaymentMethod != null
+            ? PaymentMethod(
+                creditCardType: CreditCardType.visa,
+                creditCardNumber: '4242424242424242',
+                expireMonth: '5',
+                expireYear: '2025',
+              )
             : null,
       ));
     }
