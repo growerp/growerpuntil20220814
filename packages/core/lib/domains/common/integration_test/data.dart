@@ -55,7 +55,7 @@ List<Company> companies = [
 List<User> administrators = [
   User(
     firstName: 'administrator1',
-    lastName: 'last Name',
+    lastName: 'last Name1',
     userGroup: UserGroup.Admin,
     companyName: company.name,
     email: 'emailXXX@example.org',
@@ -63,7 +63,7 @@ List<User> administrators = [
   ),
   User(
     firstName: 'administrator2',
-    lastName: 'last Name',
+    lastName: 'last Name2',
     userGroup: UserGroup.Admin,
     companyName: company.name,
     email: 'emailXXX@example.org',
@@ -71,7 +71,7 @@ List<User> administrators = [
   ),
   User(
     firstName: 'administrator3',
-    lastName: 'last Name',
+    lastName: 'last Name3',
     userGroup: UserGroup.Admin,
     companyName: company.name,
     email: 'emailXXX@example.org',
@@ -81,7 +81,7 @@ List<User> administrators = [
 List<User> employees = [
   User(
     firstName: 'employee1',
-    lastName: 'last Name',
+    lastName: 'last Name1',
     userGroup: UserGroup.Employee,
     companyName: company.name,
     userId: 'usernameXXX',
@@ -90,7 +90,7 @@ List<User> employees = [
   ),
   User(
     firstName: 'employee2',
-    lastName: 'last Name',
+    lastName: 'last Name2',
     userGroup: UserGroup.Employee,
     companyName: company.name,
     email: 'emailXXX@example.org',
@@ -128,7 +128,7 @@ List<User> leads = [
 List<User> suppliers = [
   User(
     firstName: 'supplier1',
-    lastName: 'last Name',
+    lastName: 'last Name1',
     userGroup: UserGroup.Supplier,
     companyName: companies[3].name,
     email: 'emailXXX@example.org',
@@ -136,7 +136,7 @@ List<User> suppliers = [
   ),
   User(
     firstName: 'supplier2',
-    lastName: 'last Name',
+    lastName: 'last Name2',
     userGroup: UserGroup.Supplier,
     companyName: companies[4].name,
     email: 'emailXXX@example.org',

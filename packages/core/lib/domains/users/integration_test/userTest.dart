@@ -57,14 +57,11 @@ class UserTest {
     SaveTest test = await PersistFunctions.getTest(backup: false);
     int seq = test.sequence!;
     if (test.administrators.isEmpty) {
-      seq++;
       // not yet created
-      test = test.copyWith(administrators: administrators);
       expect(find.byKey(Key('userItem')), findsNWidgets(1)); // initial admin
       test = test.copyWith(
           administrators: await enterUserData(tester, administrators));
-      await PersistFunctions.persistTest(
-          test.copyWith(administrators: test.administrators));
+      await PersistFunctions.persistTest(test.copyWith(sequence: seq + 10));
     }
     if (check) {
       await checkUserList(tester, test.administrators);
