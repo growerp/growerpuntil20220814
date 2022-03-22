@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   decimal: ^2.1.0
   intl: ^0.17.0
   global_configuration: ^2.0.0-nullsafety.0
@@ -35,7 +37,7 @@ dependencies:
   json_annotation: ^4.4.0
   dio: ^4.0.4
 
-  #UTITILES
+  #UTILITIES
   freezed_annotation: ^1.1.0
   freezed: ^1.0.1
   connectivity: ^3.0.6

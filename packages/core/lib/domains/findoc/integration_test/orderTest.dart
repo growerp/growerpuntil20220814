@@ -18,8 +18,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
 import '../../common/integration_test/commonTest.dart';
-import '../models/models.dart';
-import 'package:intl/intl.dart';
 
 class OrderTest {
   static Future<void> selectPurchaseOrders(WidgetTester tester) async {

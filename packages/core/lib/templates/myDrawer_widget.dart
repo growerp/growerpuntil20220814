@@ -87,4 +87,5 @@ Widget? myDrawer(BuildContext context, Authenticate authenticate, bool isPhone,
             },
           ),
         ));
+  return Text('error: should not arrive here');
 }

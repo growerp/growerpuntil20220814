@@ -29,6 +29,7 @@ class FinDocStatusVal {
   static const FinDocStatusVal Approved = FinDocStatusVal._('FinDocApproved');
   static const FinDocStatusVal Completed = FinDocStatusVal._('FinDocCompleted');
   static const FinDocStatusVal Cancelled = FinDocStatusVal._('FinDocCancelled');
+  static const FinDocStatusVal Unknown = FinDocStatusVal._('??');
 
   static FinDocStatusVal? tryParse(String val) {
     switch (val) {
@@ -42,6 +43,8 @@ class FinDocStatusVal {
         return Completed;
       case 'FinDocCancelled':
         return Cancelled;
+      default:
+        return Unknown;
     }
   }
 
@@ -53,6 +56,8 @@ class FinDocStatusVal {
         return Approved;
       case Approved:
         return Completed;
+      default:
+        return currentStatus;
     }
   }
 
@@ -67,6 +72,8 @@ class FinDocStatusVal {
       case Completed:
         return true;
       case Cancelled:
+        return true;
+      default:
         return true;
     }
   }

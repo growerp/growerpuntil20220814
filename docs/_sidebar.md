@@ -42,8 +42,8 @@
     - FinDoc
     - Users
     - Warehouse
-  - Moqui backend
-  - Chat server
+  - [Moqui backend](moquiBackend.md)
+  - [Chat server](chatServer.md)
   - [Integration Test](integrationTest.md)
   - Deployment
     - Installation

@@ -1,0 +1,1 @@
+[filename](https://raw.githubusercontent.com/growerp/growerp-chat/master/README.md ':include :type=md')
