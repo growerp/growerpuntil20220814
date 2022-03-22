@@ -17,9 +17,13 @@ void main() {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
+
+    /// [createCompany]
     await CompanyTest.createCompany(tester);
     await CompanyTest.selectCompany(tester);
     await CompanyTest.updateCompany(tester);
+
+    /// [createCompany]
     await CompanyTest.updateAddress(tester);
     await CompanyTest.updatePaymentMethod(tester);
   });

@@ -1,8 +1,8 @@
-# GrowERP Ecommerce app
+# GrowERP pos app
 
-An Ecommerce application, a companion for the UserGroup.SuperAdmin application present in the master branch of this repository.
+An pos application, a companion for the UserGroup.SuperAdmin application present in the master branch of this repository.
 
-It has the standard functions of Ecommerce:
+It has the standard functions of pos:
 
 Showing categories and products which can be added to a shopping cart. From this cart the order can be created.
 

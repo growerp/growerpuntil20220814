@@ -8,13 +8,13 @@
   * [Authentication](userDoc/authentication.md)
   - Chat
   - Catalog
-  - User types
   - Orders
   - Apps
     - Administrator
     - Hotel
+    - POS Point Of Sale
     - Freelance
-    - Ecommerce
+    - E-commerce
   - Accounting
     - invoices/Payments
     - Ledger/transactions
