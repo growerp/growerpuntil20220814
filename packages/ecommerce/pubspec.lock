@@ -211,6 +211,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  credit_card_type_detector:
+    dependency: transitive
+    description:
+      name: credit_card_type_detector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  credit_card_validator:
+    dependency: transitive
+    description:
+      name: credit_card_validator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   cross_file:
     dependency: transitive
     description:
@@ -245,7 +259,7 @@ packages:
       name: decimal
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0"
+    version: "2.1.0"
   diff_match_patch:
     dependency: transitive
     description:
@@ -673,7 +687,7 @@ packages:
       name: rational
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.1"
+    version: "2.1.0"
   responsive_framework:
     dependency: "direct main"
     description:
@@ -687,7 +701,7 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.26.0"
+    version: "0.27.3"
   shared_preferences:
     dependency: "direct main"
     description:

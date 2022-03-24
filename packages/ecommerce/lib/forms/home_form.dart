@@ -91,7 +91,8 @@ class _HomeState extends State<HomePage> {
         if (state.status == CategoryStatus.success) {
           categories = state.categories;
           if (selectedCategoryId == null)
-            selectedCategoryId = categories![0].categoryId;
+            selectedCategoryId =
+                categories!.isNotEmpty ? categories![0].categoryId : '';
           _productBloc.add(ProductFetch(categoryId: selectedCategoryId!));
           return BlocBuilder<ProductBloc, ProductState>(
               builder: (context, state) {

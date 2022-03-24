@@ -31,7 +31,7 @@ Test file example fragment:
 
 Full file: [companyTest.dart](https://raw.githubusercontent.com/growerp/growerp/master/packages/core/lib/domains/users/integration_test/companyTest.dart)
 
-### example lowest level.
+### Example lowest level.
 The lowest level is in the common domain in the core package.
 
 [filename](https://raw.githubusercontent.com/growerp/growerp/master/packages/core/lib/domains/common/integration_test/commonTest.dart ':include :type=code :fragment=lowLevel')

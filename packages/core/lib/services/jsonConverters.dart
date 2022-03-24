@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:core/domains/domains.dart';
 import 'package:decimal/decimal.dart';
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 class Uint8ListConverter implements JsonConverter<Uint8List?, String?> {
@@ -47,6 +48,24 @@ class DateTimeConverter implements JsonConverter<DateTime?, String?> {
 
   @override
   String? toJson(DateTime? object) {
+    if (object == null) return null;
+    return object.toString();
+  }
+}
+
+class TimeConverter implements JsonConverter<TimeOfDay?, String?> {
+  const TimeConverter();
+
+  @override
+  TimeOfDay? fromJson(String? json) {
+    if (json == null) return null;
+    return TimeOfDay(
+        hour: int.parse(json.substring(0, 2)),
+        minute: int.parse(json.substring(3, 5)));
+  }
+
+  @override
+  String? toJson(TimeOfDay? object) {
     if (object == null) return null;
     return object.toString();
   }

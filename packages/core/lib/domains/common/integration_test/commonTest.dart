@@ -145,7 +145,7 @@ class CommonTest {
         findsOneWidget);
   }
 
-  /// lowLevel
+  /// [lowLevel]
   static Future<void> drag(WidgetTester tester,
       {int seconds = 1, String listViewName = 'listView'}) async {
     double offSet = -200.0;
@@ -153,7 +153,7 @@ class CommonTest {
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 
-  /// lowLevel
+  /// [lowLevel]
 
   static Future<void> refresh(WidgetTester tester) async {
     await tester.drag(find.byKey(Key('listView')).last, Offset(0, 200));

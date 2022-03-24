@@ -28,7 +28,7 @@ class CompanyTest {
     if (test.company != null) return; // company already created
     await CommonTest.logout(tester);
     // tap new company button, enter data
-    /// newCompany
+    /// [newCompany]
     await CommonTest.tapByKey(tester, 'newCompButton');
     await tester.pump(Duration(seconds: 3));
     await CommonTest.enterText(tester, 'firstName', admin.firstName!);
@@ -36,7 +36,7 @@ class CompanyTest {
     var email = admin.email!.replaceFirst('XXX', '${seq++}');
     await CommonTest.enterText(tester, 'email', email);
 
-    /// newCompany
+    /// [newCompany]
     await CommonTest.enterText(tester, 'companyName', company.name!);
     await CommonTest.drag(tester);
     if (demoData == false)
