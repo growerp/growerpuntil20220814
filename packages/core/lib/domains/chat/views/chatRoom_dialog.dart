@@ -111,24 +111,26 @@ class _ChatRoomState extends State<ChatRoomDialog> {
                     key: Key('userDropDown'),
                     popupShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0)),
-                    label: 'Private chat with Other User',
                     dialogMaxWidth: 300,
-                    autoFocusSearchBox: true,
+                    searchFieldProps: TextFieldProps(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                      ),
+                      controller: _userSearchBoxController,
+                    ),
                     selectedItem: _selectedUser,
                     dropdownSearchDecoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
-                    ),
-                    searchBoxDecoration: InputDecoration(
+                      labelText: 'Private chat with Other User',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0)),
                     ),
                     showSearchBox: true,
-                    searchBoxController: _userSearchBoxController,
                     isFilteredOnline: true,
                     showClearButton: false,
                     itemAsString: (User? u) => "${u!.firstName} ${u.lastName}",
-                    onFind: (String filter) async {
+                    onFind: (String? filter) async {
                       ApiResult<List<User>> result = await repos.getUser(
                           filter: _chatRoomSearchBoxController.text);
                       return result.when(

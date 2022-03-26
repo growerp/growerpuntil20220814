@@ -294,7 +294,7 @@ packages:
       name: dropdown_search
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3"
+    version: "2.0.1"
   equatable:
     dependency: "direct main"
     description:
@@ -365,7 +365,7 @@ packages:
       name: flutter_markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.9"
+    version: "0.6.9+1"
   flutter_phoenix:
     dependency: "direct main"
     description:
@@ -665,7 +665,7 @@ packages:
       name: pdf
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.7.2"
+    version: "3.7.3"
   petitparser:
     dependency: transitive
     description:
@@ -700,7 +700,7 @@ packages:
       name: printing
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.7.3"
+    version: "5.7.4"
   process:
     dependency: transitive
     description:
@@ -742,7 +742,7 @@ packages:
       name: rational
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   responsive_framework:
     dependency: "direct main"
     description:
@@ -1076,7 +1076,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.4"
   xdg_directories:
     dependency: transitive
     description:

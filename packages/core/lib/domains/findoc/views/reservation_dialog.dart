@@ -171,27 +171,29 @@ class _ReservationState extends State<ReservationDialog> {
                       Row(children: [
                         Expanded(
                             child: DropdownSearch<User>(
-                          label: 'Customer',
                           dialogMaxWidth: 300,
-                          autoFocusSearchBox: true,
+                          searchFieldProps: TextFieldProps(
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0)),
+                            ),
+                            controller: _userSearchBoxController,
+                          ),
                           selectedItem: _selectedUser,
                           popupShape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20.0)),
                           dropdownSearchDecoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0)),
-                          ),
-                          searchBoxDecoration: InputDecoration(
+                            labelText: 'Customer',
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0)),
                           ),
                           showSearchBox: true,
-                          searchBoxController: _userSearchBoxController,
                           isFilteredOnline: true,
                           key: Key('customer'),
                           itemAsString: (User? u) =>
                               "${u!.firstName} ${u.lastName}, ${u.companyName}",
-                          onFind: (String filter) async {
+                          onFind: (String? filter) async {
                             ApiResult<List<User>> result = await repos.getUser(
                                 userGroups: [UserGroup.Customer],
                                 filter: _userSearchBoxController.text);
@@ -239,24 +241,29 @@ class _ReservationState extends State<ReservationDialog> {
                             ? 'Room Type'
                             : 'Product',
                         dialogMaxWidth: 300,
-                        autoFocusSearchBox: true,
+                        searchFieldProps: TextFieldProps(
+                          autofocus: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0)),
+                          ),
+                          controller: _productSearchBoxController,
+                        ),
                         selectedItem: _selectedProduct,
                         popupShape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0)),
                         dropdownSearchDecoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(25.0)),
-                        ),
-                        searchBoxDecoration: InputDecoration(
+                          labelText: classificationId == 'AppHotel'
+                              ? 'Room Type'
+                              : 'Product',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0)),
                         ),
                         showSearchBox: true,
-                        searchBoxController: _productSearchBoxController,
                         isFilteredOnline: true,
                         key: Key('product'),
                         itemAsString: (Product? u) => "${u!.productName}",
-                        onFind: (String filter) async {
+                        onFind: (String? filter) async {
                           ApiResult<List<Product>> result =
                               await repos.getProduct(
                                   filter: _productSearchBoxController.text,

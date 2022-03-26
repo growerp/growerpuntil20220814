@@ -253,25 +253,29 @@ class _ProductState extends State<ProductDialog> {
                               key: Key('categoryDropDown'),
                               label: 'Category',
                               dialogMaxWidth: 300,
-                              autoFocusSearchBox: true,
+                              searchFieldProps: TextFieldProps(
+                                autofocus: true,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(25.0)),
+                                ),
+                                controller: _categorySearchBoxController,
+                              ),
                               selectedItem: _selectedCategory,
                               popupShape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20.0)),
                               dropdownSearchDecoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.0)),
-                              ),
-                              searchBoxDecoration: InputDecoration(
+                                labelText: 'Category',
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25.0)),
                               ),
                               showSearchBox: true,
-                              searchBoxController: _categorySearchBoxController,
                               isFilteredOnline: true,
                               showClearButton: false,
                               itemAsString: (Category? u) =>
                                   "${u?.categoryName}",
-                              onFind: (String filter) async {
+                              onFind: (String? filter) async {
                                 ApiResult<List<Category>> result =
                                     await repos.getCategory(
                                         filter:

@@ -324,25 +324,27 @@ class _UserState extends State<UserPage> {
                 SizedBox(height: 10),
                 DropdownSearch<Company>(
                   key: Key('companyName'),
-                  label: 'Existing Company',
                   dialogMaxWidth: 300,
-                  autoFocusSearchBox: true,
+                  searchFieldProps: TextFieldProps(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0)),
+                    ),
+                    controller: _companySearchBoxController,
+                  ),
                   selectedItem: _selectedCompany,
                   popupShape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                   dropdownSearchDecoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
-                  ),
-                  searchBoxDecoration: InputDecoration(
+                    labelText: 'Existing Company',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0)),
                   ),
                   showSearchBox: true,
-                  searchBoxController: _companySearchBoxController,
                   isFilteredOnline: true,
                   itemAsString: (Company? u) => "${u!.name}",
-                  onFind: (String filter) =>
+                  onFind: (String? filter) =>
                       getOwnedCompanies(_companySearchBoxController.text),
                   onChanged: (Company? newValue) {
                     setState(() {

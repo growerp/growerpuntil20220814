@@ -171,31 +171,34 @@ class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
                                     height: 60,
                                     child: DropdownSearch<Location>(
                                       key: Key('locationDropDown'),
-                                      label: 'Location',
                                       dialogMaxWidth: 300,
-                                      autoFocusSearchBox: true,
+                                      searchFieldProps: TextFieldProps(
+                                        autofocus: true,
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(25.0)),
+                                        ),
+                                        controller:
+                                            _locationSearchBoxControllers[
+                                                index],
+                                      ),
                                       selectedItem: _selectedLocations[index],
                                       popupShape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20.0)),
                                       dropdownSearchDecoration: InputDecoration(
-                                        border: OutlineInputBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(25.0)),
-                                      ),
-                                      searchBoxDecoration: InputDecoration(
+                                        labelText: 'Location',
                                         border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(25.0)),
                                       ),
                                       showSearchBox: true,
-                                      searchBoxController:
-                                          _locationSearchBoxControllers[index],
                                       isFilteredOnline: true,
                                       showClearButton: false,
                                       itemAsString: (Location? u) =>
                                           "${u?.locationName}",
-                                      onFind: (String filter) async {
+                                      onFind: (String? filter) async {
                                         ApiResult<List<Location>> result =
                                             await repos.getLocation(
                                                 filter:

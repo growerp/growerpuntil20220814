@@ -112,7 +112,7 @@ class _AssetState extends State<AssetDialog> {
                             ])))))));
   }
 
-  Widget _showForm(repos, isPhone) {
+  Widget _showForm(APIRepository repos, bool isPhone) {
     return Center(
         child: Container(
             child: Form(
@@ -170,26 +170,28 @@ class _AssetState extends State<AssetDialog> {
                     key: Key('productDropDown'),
                     popupShape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0)),
-                    label: classificationId == 'AppHotel'
-                        ? 'Room Type'
-                        : 'Product',
                     dialogMaxWidth: 300,
-                    autoFocusSearchBox: true,
+                    searchFieldProps: TextFieldProps(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                      ),
+                      controller: _productSearchBoxController,
+                    ),
                     selectedItem: _selectedProduct,
                     dropdownSearchDecoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
-                    ),
-                    searchBoxDecoration: InputDecoration(
+                      labelText: classificationId == 'AppHotel'
+                          ? 'Room Type'
+                          : 'Product',
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0)),
                     ),
                     showSearchBox: true,
-                    searchBoxController: _productSearchBoxController,
                     isFilteredOnline: true,
                     showClearButton: false,
                     itemAsString: (Product? u) => "${u!.productName}",
-                    onFind: (String filter) async {
+                    onFind: (String? filter) async {
                       ApiResult<List<Product>> result = await repos.getProduct(
                           filter: _productSearchBoxController.text,
                           assetClassId: classificationId == 'AppHotel'
