@@ -308,7 +308,11 @@ class FinDocListState extends State<FinDocList> {
           hasReachedMax = state.hasReachedMax;
 
           return Scaffold(
-              floatingActionButton: widget.docType == FinDocType.order
+              floatingActionButton: [
+                FinDocType.order,
+                FinDocType.invoice,
+                FinDocType.payment,
+              ].contains(widget.docType)
                   ? FloatingActionButton(
                       key: Key("addNew"),
                       onPressed: () async {

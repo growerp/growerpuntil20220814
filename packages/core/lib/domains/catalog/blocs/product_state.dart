@@ -45,7 +45,7 @@ class ProductState extends Equatable {
     return ProductState(
       status: status ?? this.status,
       products: products ?? this.products,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

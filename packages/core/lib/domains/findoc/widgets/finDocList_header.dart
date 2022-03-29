@@ -58,9 +58,7 @@ class FinDocListHeader extends StatelessWidget {
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.transparent),
                           ),
-                          hintText: docType == FinDocType.shipment
-                              ? 'enter order or shipment ID'
-                              : 'search with ID'),
+                          hintText: 'search with ID'),
                       onChanged: ((value) {
                         searchString = value;
                       }),
@@ -94,7 +92,7 @@ class FinDocListHeader extends StatelessWidget {
               SizedBox(width: 76, child: Text("Total")),
               SizedBox(width: 90, child: Text("Status")),
               if (!isPhone) Expanded(child: Text("Email Address")),
-              if (!isPhone) Expanded(child: Text("Order description")),
+              if (!isPhone) Expanded(child: Text("$docType description")),
             ]),
             trailing: SizedBox(width: isPhone ? 40 : 195)));
   }

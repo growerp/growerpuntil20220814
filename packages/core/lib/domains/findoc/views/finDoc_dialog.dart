@@ -34,21 +34,24 @@ class FinDocDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (finDoc.docType == FinDocType.order) {
-      FinDocBloc finDocBloc = BlocProvider.of<FinDocBloc>(context);
-      if (finDoc.sales)
-        return BlocProvider<SalesCartBloc>(
-            create: (context) => CartBloc(
-                docType: finDoc.docType!, sales: true, finDocBloc: finDocBloc)
-              ..add(CartFetch(finDoc)),
-            child: FinDocPage(finDoc));
-      return BlocProvider<PurchaseCartBloc>(
+    FinDocBloc finDocBloc = BlocProvider.of<FinDocBloc>(context);
+    if (finDoc.sales)
+      return BlocProvider<SalesCartBloc>(
           create: (context) => CartBloc(
-              docType: finDoc.docType!, sales: false, finDocBloc: finDocBloc)
+              docType: finDoc.docType!,
+              sales: true,
+              finDocBloc: finDocBloc,
+              repos: context.read<APIRepository>())
             ..add(CartFetch(finDoc)),
           child: FinDocPage(finDoc));
-    }
-    return Center(child: Text('Cart can only be used with an order'));
+    return BlocProvider<PurchaseCartBloc>(
+        create: (context) => CartBloc(
+            docType: finDoc.docType!,
+            sales: false,
+            finDocBloc: finDocBloc,
+            repos: context.read<APIRepository>())
+          ..add(CartFetch(finDoc)),
+        child: FinDocPage(finDoc));
   }
 }
 
@@ -124,8 +127,9 @@ class _MyFinDocState extends State<FinDocPage> {
                         fontWeight: FontWeight.bold))),
             SizedBox(height: isPhone ? 10 : 20),
             headerEntry(repos),
-            SizedBox(height: isPhone ? 110 : 40, child: updateButtons(repos)),
-            finDocItemList(),
+            SizedBox(
+                height: isPhone ? 110 : 40, child: updateButtons(repos, state)),
+            finDocItemList(state),
             SizedBox(height: 10),
             Center(
                 child: Text(
@@ -258,7 +262,7 @@ class _MyFinDocState extends State<FinDocPage> {
     );
   }
 
-  Widget updateButtons(repos) {
+  Widget updateButtons(repos, state) {
     List<Widget> buttons = [
       ElevatedButton(
           child: Text("Update header"),
@@ -271,8 +275,8 @@ class _MyFinDocState extends State<FinDocPage> {
           key: Key('addItem'),
           child: Text('Add other Item'),
           onPressed: () async {
-            final dynamic finDocItem =
-                await addAnotherItemDialog(context, repos, finDocUpdated.sales);
+            final dynamic finDocItem = await addAnotherItemDialog(
+                context, repos, finDocUpdated.sales, state);
             if (finDocItem != null)
               _cartBloc.add(CartAdd(
                   finDoc: finDocUpdated.copyWith(
@@ -280,19 +284,21 @@ class _MyFinDocState extends State<FinDocPage> {
                       description: _descriptionController.text),
                   newItem: finDocItem));
           }),
-      ElevatedButton(
-          key: Key('itemRental'),
-          child: Text('Asset Rental'),
-          onPressed: () async {
-            final dynamic finDocItem =
-                await addRentalItemDialog(context, repos);
-            if (finDocItem != null)
-              _cartBloc.add(CartAdd(
-                  finDoc: finDocUpdated.copyWith(
-                      otherUser: _selectedUser,
-                      description: _descriptionController.text),
-                  newItem: finDocItem));
-          }),
+      Visibility(
+          visible: finDoc.docType == FinDocType.order,
+          child: ElevatedButton(
+              key: Key('itemRental'),
+              child: Text('Asset Rental'),
+              onPressed: () async {
+                final dynamic finDocItem =
+                    await addRentalItemDialog(context, repos);
+                if (finDocItem != null)
+                  _cartBloc.add(CartAdd(
+                      finDoc: finDocUpdated.copyWith(
+                          otherUser: _selectedUser,
+                          description: _descriptionController.text),
+                      newItem: finDocItem));
+              })),
       ElevatedButton(
           key: Key('addProduct'),
           child: Text('Add Product'),
@@ -369,7 +375,7 @@ class _MyFinDocState extends State<FinDocPage> {
         ]);
   }
 
-  Widget finDocItemList() {
+  Widget finDocItemList(CartState state) {
     List<FinDocItem> items = finDocUpdated.items;
 
     return Expanded(
@@ -411,6 +417,8 @@ class _MyFinDocState extends State<FinDocPage> {
                     child: Text("no items found!",
                         key: Key('empty'), textAlign: TextAlign.center));
               final item = items[index - 1];
+              var itemType = state.itemTypes
+                  .firstWhere((e) => e.itemTypeId == item.itemTypeId);
               return ListTile(
                   key: Key('productItem'),
                   leading: !isPhone
@@ -422,7 +430,7 @@ class _MyFinDocState extends State<FinDocPage> {
                   title: Row(children: <Widget>[
                     if (!isPhone)
                       Expanded(
-                          child: Text("${item.itemTypeName}",
+                          child: Text("${itemType.itemTypeName}",
                               textAlign: TextAlign.left,
                               key: Key('itemType$index'))),
                     Expanded(
@@ -455,15 +463,11 @@ class _MyFinDocState extends State<FinDocPage> {
 }
 
 Future addAnotherItemDialog(
-    BuildContext context, dynamic repos, bool sales) async {
+    BuildContext context, dynamic repos, bool sales, CartState state) async {
   final _priceController = TextEditingController();
   final _itemDescriptionController = TextEditingController();
   final _quantityController = TextEditingController();
   ItemType? _selectedItemType;
-  ApiResult<List<ItemType>> result = await repos.getItemTypes(sales: sales);
-  List<ItemType> itemTypes = result.when(
-      success: (data) => data,
-      failure: (_) => [ItemType(itemTypeName: 'get data error!')]);
   return showDialog<FinDocItem>(
     context: context,
     barrierDismissible: true,
@@ -487,7 +491,7 @@ Future addAnotherItemDialog(
                         value: _selectedItemType,
                         validator: (value) =>
                             value == null ? 'field required' : null,
-                        items: itemTypes.map((item) {
+                        items: state.itemTypes.map((item) {
                           return DropdownMenuItem<ItemType>(
                               child: Text(item.itemTypeName!), value: item);
                         }).toList(),

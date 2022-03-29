@@ -40,7 +40,6 @@ dependencies:
   #UTILITIES
   freezed_annotation: ^1.1.0
   freezed: ^1.0.1
-  connectivity: ^3.0.6
   credit_card_validator: ^2.0.1
 
 dev_dependencies:

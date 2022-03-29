@@ -44,7 +44,7 @@ class ChatRoomState extends Equatable {
     return ChatRoomState(
       status: status ?? this.status,
       chatRooms: chatRooms ?? this.chatRooms,
-      message: this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

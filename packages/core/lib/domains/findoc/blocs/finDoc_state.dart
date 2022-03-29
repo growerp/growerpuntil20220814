@@ -44,7 +44,7 @@ class FinDocState extends Equatable {
     return FinDocState(
       status: status ?? this.status,
       finDocs: finDocs ?? this.finDocs,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

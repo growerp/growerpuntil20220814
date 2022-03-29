@@ -45,7 +45,7 @@ class AssetState extends Equatable {
     return AssetState(
       status: status ?? this.status,
       assets: assets ?? this.assets,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

@@ -19,6 +19,9 @@ import 'package:decimal/decimal.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import '../../../api_repository.dart';
+import '../../../services/api_result.dart';
+import '../../../services/network_exceptions.dart';
 import '../../domains.dart';
 
 part 'cart_event.dart';
@@ -30,9 +33,13 @@ mixin SalesCartBloc on Bloc<CartEvent, CartState> {}
 class CartBloc extends Bloc<CartEvent, CartState>
     with PurchaseCartBloc, SalesCartBloc {
   CartBloc(
-      {required this.sales, required this.docType, required this.finDocBloc})
+      {required this.repos,
+      required this.sales,
+      required this.docType,
+      required this.finDocBloc})
       : super(CartState(
-            finDoc: FinDoc(sales: sales, docType: docType, items: []))) {
+            finDoc: FinDoc(sales: sales, docType: docType, items: []),
+            itemTypes: [])) {
     on<CartFetch>(_onCartFetch);
     on<CartCreateFinDoc>(_onCartCreateFinDoc);
     on<CartCancelFinDoc>(_onCartCancelFinDoc);
@@ -42,10 +49,10 @@ class CartBloc extends Bloc<CartEvent, CartState>
     on<CartClear>(_onCartClear);
   }
 
+  final APIRepository repos;
   final bool sales;
   final FinDocType docType;
   final FinDocBloc finDocBloc;
-  late FinDoc finDoc;
 
   Future<void> _onCartFetch(
     CartFetch event,
@@ -53,19 +60,22 @@ class CartBloc extends Bloc<CartEvent, CartState>
   ) async {
     try {
       if (state.status == CartStatus.initial) {
-        finDoc = event.finDoc;
+        FinDoc? resultFinDoc;
         if (event.finDoc.idIsNull()) {
           // get saved cart
-          FinDoc? result = await PersistFunctions.getFinDoc(
+          resultFinDoc = await PersistFunctions.getFinDoc(
               event.finDoc.sales, event.finDoc.docType!);
-          if (result != null) finDoc = result;
         }
-        emit(
-          state.copyWith(
-            status: CartStatus.inProcess,
-            finDoc: finDoc,
-          ),
-        );
+        // get item types
+        ApiResult<List<ItemType>> result =
+            await repos.getItemTypes(sales: sales);
+        return emit(result.when(
+            success: (data) => state.copyWith(
+                status: CartStatus.inProcess,
+                itemTypes: data,
+                finDoc: resultFinDoc != null ? resultFinDoc : event.finDoc),
+            failure: (NetworkExceptions error) => state.copyWith(
+                status: CartStatus.failure, message: error.toString())));
       }
     } catch (error) {
       emit(state.copyWith(
@@ -79,7 +89,7 @@ class CartBloc extends Bloc<CartEvent, CartState>
     Emitter<CartState> emit,
   ) async {
     try {
-      state.copyWith(status: CartStatus.saving);
+      emit(state.copyWith(status: CartStatus.saving));
       finDocBloc.add(FinDocUpdate(event.finDoc));
       add(CartClear());
       return emit(
@@ -139,14 +149,14 @@ class CartBloc extends Bloc<CartEvent, CartState>
     Emitter<CartState> emit,
   ) async {
     try {
-      List<FinDocItem> items = List.from(finDoc.items);
-      items.add(event.newItem
-          .copyWith(itemSeqId: (finDoc.items.length + 1).toString()));
+      List<FinDocItem> items = List.from(state.finDoc.items);
+      items.insert(
+          0, event.newItem.copyWith(itemSeqId: (items.length + 1).toString()));
       Decimal grandTotal = Decimal.parse('0');
       items.forEach((x) {
         grandTotal += x.quantity! * x.price!;
       });
-      finDoc = event.finDoc.copyWith(
+      var finDoc = event.finDoc.copyWith(
           otherUser: event.finDoc.otherUser,
           description: event.finDoc.description,
           items: items,
@@ -170,15 +180,15 @@ class CartBloc extends Bloc<CartEvent, CartState>
     Emitter<CartState> emit,
   ) async {
     try {
-      finDoc.items.removeAt(event.index);
+      List<FinDocItem> items = List.from(state.finDoc.items);
+      items.removeAt(event.index);
       Decimal grandTotal = Decimal.parse('0');
       int i = 0;
-      finDoc.items.forEach((x) {
-        finDoc.items[i] =
-            finDoc.items[i].copyWith(itemSeqId: (1 + i++).toString());
+      items.forEach((x) {
+        items[i] = items[i].copyWith(itemSeqId: (1 + i++).toString());
         grandTotal += x.quantity! * x.price!;
       });
-      finDoc = finDoc.copyWith(grandTotal: grandTotal);
+      var finDoc = state.finDoc.copyWith(grandTotal: grandTotal, items: items);
       // save cart
       await PersistFunctions.persistFinDoc(finDoc);
       emit(
@@ -198,7 +208,7 @@ class CartBloc extends Bloc<CartEvent, CartState>
     Emitter<CartState> emit,
   ) async {
     try {
-      finDoc = FinDoc(sales: sales, docType: docType, items: []);
+      var finDoc = FinDoc(sales: sales, docType: docType, items: []);
       // clear cart
       await PersistFunctions.removeFinDoc(finDoc);
       return emit(

@@ -47,7 +47,7 @@ Route<dynamic> coreRoute(RouteSettings settings) {
     case '/printer':
       return MaterialPageRoute(
           builder: (context) =>
-              PrintingForm(formArguments: settings.arguments as FormArguments));
+              PrintingForm(finDocIn: settings.arguments as FinDoc));
     default:
       return MaterialPageRoute(
           builder: (context) => FatalErrorForm(

@@ -199,7 +199,11 @@ class FinDocListItem extends StatelessWidget {
                 status: FinDocStatusVal.nextStatus(finDoc.status!))));
           }),
       Visibility(
-          visible: finDoc.docType == FinDocType.order,
+          visible: [
+            FinDocType.order,
+            FinDocType.invoice,
+            FinDocType.payment,
+          ].contains(finDoc.docType),
           child: IconButton(
             icon: Icon(Icons.edit),
             key: Key('edit$index'),

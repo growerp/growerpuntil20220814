@@ -74,9 +74,10 @@ class PdfFormats {
   static Widget buildCustomerAddress(User customer) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("${customer.firstName} ${customer.lastName}",
+          Text("${customer.companyName}"),
+          Text("${customer.firstName ?? ''} ${customer.lastName ?? ''}",
               style: TextStyle(fontWeight: FontWeight.bold)),
-          Text(customer.email!),
+          Text(customer.email ?? ''),
         ],
       );
 
@@ -135,7 +136,7 @@ class PdfFormats {
     final data = finDoc.items.map((item) {
       return [
         item.description,
-        item.itemTypeId,
+        item.itemTypeName,
         item.quantity,
         item.price,
         item.price! * item.quantity!,

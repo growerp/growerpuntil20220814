@@ -20,11 +20,13 @@ import 'package:core/domains/domains.dart';
 part 'finDoc_model.freezed.dart';
 part 'finDoc_model.g.dart';
 
+/// A generalized model for order, shipment, invoice, payment, transaction.
+/// defined by the docType and sales (true/false)
 @freezed
 class FinDoc with _$FinDoc {
   FinDoc._();
   factory FinDoc({
-    @FinDocTypeConverter() FinDocType? docType, // invoice, payment etc
+    @FinDocTypeConverter() FinDocType? docType, // order, invoice, payment etc
     @Default(true) bool sales,
     String? orderId,
     String? shipmentId,

@@ -45,7 +45,7 @@ class OpportunityState extends Equatable {
     return OpportunityState(
       status: status ?? this.status,
       opportunities: opportunities ?? this.opportunities,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

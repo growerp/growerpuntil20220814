@@ -45,7 +45,7 @@ class LocationState extends Equatable {
     return LocationState(
       status: status ?? this.status,
       locations: locations ?? this.locations,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

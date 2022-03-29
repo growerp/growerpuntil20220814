@@ -16,22 +16,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:printing/printing.dart';
 import 'package:core/domains/domains.dart';
-
 import '../../../api_repository.dart';
 
 class PrintingForm extends StatelessWidget {
-  final FormArguments formArguments;
-  const PrintingForm({Key? key, required this.formArguments}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return PrintingPage(finDocIn: formArguments.object as FinDoc);
-  }
-}
-
-class PrintingPage extends StatelessWidget {
   final FinDoc finDocIn;
-  const PrintingPage({Key? key, required this.finDocIn}) : super(key: key);
+  const PrintingForm({Key? key, required this.finDocIn}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,29 +34,20 @@ class PrintingPage extends StatelessWidget {
         child: BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
           if (state.status == AuthStatus.authenticated)
             authenticate = state.authenticate!;
-          return BlocBuilder<FinDocBloc, FinDocState>(
-              builder: (context, state) {
-            switch (state.status) {
-              case FinDocStatus.failure:
-                return Center(
-                    child: Text('failed to fetch findocs: ${state.message}'));
-              case FinDocStatus.success:
-                return Stack(children: [
-                  PdfPreview(
-                    build: (format) => PdfFormats.finDocPdf(
-                        format, authenticate.company!, finDocIn),
-                  ),
-                  ElevatedButton(
-                      key: Key('back'),
-                      child: Text('Back'),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                ]);
-              default:
-                return const Center(child: CircularProgressIndicator());
-            }
-          });
+          return Stack(children: [
+            PdfPreview(
+              build: (format) =>
+                  PdfFormats.finDocPdf(format, authenticate.company!, finDocIn),
+            ),
+            SizedBox(
+                height: 100,
+                child: ElevatedButton(
+                    key: Key('back'),
+                    child: Icon(Icons.arrow_back),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    })),
+          ]);
         }));
   }
 }

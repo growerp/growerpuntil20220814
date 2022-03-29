@@ -45,7 +45,7 @@ class GlAccountState extends Equatable {
     return GlAccountState(
       status: status ?? this.status,
       glAccounts: glAccounts ?? this.glAccounts,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

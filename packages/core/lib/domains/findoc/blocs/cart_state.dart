@@ -20,22 +20,26 @@ class CartState extends Equatable {
   CartState({
     this.status = CartStatus.initial,
     required this.finDoc,
+    required this.itemTypes,
     this.message,
   });
 
   final CartStatus status;
   final String? message;
+  final List<ItemType> itemTypes;
   final FinDoc finDoc;
 
   CartState copyWith({
     CartStatus? status,
     String? message,
     FinDoc? finDoc,
+    List<ItemType>? itemTypes,
   }) {
     return CartState(
       status: status ?? this.status,
       finDoc: finDoc ?? this.finDoc,
-      message: message ?? this.message,
+      message: message,
+      itemTypes: itemTypes ?? this.itemTypes,
     );
   }
 

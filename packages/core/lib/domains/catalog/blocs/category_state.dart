@@ -49,7 +49,7 @@ class CategoryState extends Equatable {
       status: status ?? this.status,
       categories: categories ?? this.categories,
       companyPartyId: companyPartyId ?? this.companyPartyId,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,

@@ -43,7 +43,7 @@ class TaskState extends Equatable {
   }) {
     return TaskState(
       status: status ?? this.status,
-      message: message ?? this.message,
+      message: message,
       tasks: tasks ?? this.tasks,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,

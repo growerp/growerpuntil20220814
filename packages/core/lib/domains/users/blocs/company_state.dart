@@ -45,7 +45,7 @@ class CompanyState extends Equatable {
     return CompanyState(
       status: status ?? this.status,
       companies: companies ?? this.companies,
-      message: message ?? this.message,
+      message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
       search: search ?? this.search,
