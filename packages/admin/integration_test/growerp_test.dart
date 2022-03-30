@@ -137,10 +137,10 @@ void main() {
     await OrderTest.checkOrderCompleted(tester);
     await AccountingTest.selectPurchasePayments(tester);
     // confirm purchase payment paid
-    await AccountingTest.payPurchasePayment(tester);
+    await AccountingTest.sendReceivePayment(tester);
     // check purchase payment complete
     await AccountingTest.selectPurchasePayments(tester);
-    await AccountingTest.checkPurchasePaymentsComplete(tester);
+    await AccountingTest.checkPaymentComplete(tester);
     // check purchase invoice complete
     await AccountingTest.selectPurchaseInvoices(tester);
     await AccountingTest.checkPurchaseInvoicesComplete(tester);
@@ -173,9 +173,9 @@ void main() {
     await AccountingTest.checkTransactions(tester);
     await AccountingTest.selectSalesPayments(tester);
     // confirm sales payment received
-    await AccountingTest.receiveCustomerPayment(tester);
+    await AccountingTest.sendReceivePayment(tester);
     // check sales payment complete
-    await AccountingTest.checkSalesPaymentsComplete(tester);
+    await AccountingTest.checkPaymentComplete(tester);
     // check sales invoice complete
     await AccountingTest.selectSalesInvoices(tester);
     await AccountingTest.checkSalesInvoicesComplete(tester);

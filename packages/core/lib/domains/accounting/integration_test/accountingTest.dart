@@ -14,7 +14,9 @@
 
 import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/domains/domains.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../common/integration_test/commonTest.dart';
 
 class AccountingTest {
@@ -28,6 +30,81 @@ class AccountingTest {
     await CommonTest.selectOption(tester, 'dbAccounting', 'AcctDashBoard');
     await CommonTest.selectOption(
         tester, 'accntSales', 'FinDocListFormSalesInvoice');
+  }
+
+  static Future<void> addPayments(WidgetTester tester, List<FinDoc> payments,
+      {bool check = true}) async {
+    SaveTest test = await PersistFunctions.getTest();
+    int seq = test.sequence!;
+    if (test.payments.isEmpty) {
+      // not yet created
+      test = test.copyWith(payments: payments);
+      expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
+      await enterPaymentData(tester, payments);
+      await PersistFunctions.persistTest(
+          test.copyWith(payments: payments, sequence: seq));
+    }
+    if (check && test.payments[0].paymentId == null) {
+      await checkPaymentList(tester, payments);
+      await PersistFunctions.persistTest(test.copyWith(
+        payments: await checkPaymentDetail(tester, test.payments),
+        sequence: seq,
+      ));
+    }
+  }
+
+  static Future<void> enterPaymentData(
+      WidgetTester tester, List<FinDoc> payments) async {
+    int index = 0;
+    for (FinDoc payment in payments) {
+      if (payment.paymentId == null)
+        await CommonTest.tapByKey(tester, 'addNew');
+      else {
+        await CommonTest.tapByKey(tester, 'name$index');
+        expect(
+            CommonTest.getTextField('header').split('#')[1], payment.paymentId);
+      }
+      await CommonTest.checkWidgetKey(
+          tester, "PaymentDialog${payment.sales ? 'Sales' : 'Purchase'}");
+      await CommonTest.enterDropDownSearch(
+          tester,
+          "${payment.sales ? 'customer' : 'supplier'}",
+          payment.otherUser!.lastName!);
+      await CommonTest.tapByKey(
+          tester, 'amount'); // required because keyboard come up
+      await CommonTest.enterText(
+          tester, 'amount', payment.grandTotal!.toString());
+      await CommonTest.drag(tester);
+      await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      await tester.pumpAndSettle(); // for the message to disappear
+      index++;
+    }
+  }
+
+  static Future<void> checkPaymentList(
+      WidgetTester tester, List<FinDoc> payments) async {
+    await CommonTest.refresh(tester);
+    payments.forEachIndexed((index, payment) {
+      expect(
+          CommonTest.getTextField('amount$index'), equals(payment.grandTotal));
+    });
+  }
+
+  static Future<List<FinDoc>> checkPaymentDetail(
+      WidgetTester tester, List<FinDoc> payments) async {
+    int index = 0;
+    List<FinDoc> newPayments = [];
+    for (FinDoc payment in payments) {
+      await CommonTest.tapByKey(tester, 'name${index}');
+      var id = CommonTest.getTextField('header').split('#')[1];
+      expect(find.byKey(Key('PaymentDialog')), findsOneWidget);
+      expect(
+          CommonTest.getTextFormField('amount'), equals(payment.grandTotal!));
+      newPayments.add(payment.copyWith(paymentId: id));
+      index++;
+      await CommonTest.tapByKey(tester, 'cancel');
+    }
+    return newPayments;
   }
 
   static Future<void> checkPurchaseInvoices(WidgetTester tester) async {
@@ -168,18 +245,7 @@ class AccountingTest {
 
   /// assume we are in the purchase payment list
   /// conform that a payment has been send
-  static Future<void> payPurchasePayment(WidgetTester tester) async {
-    SaveTest test = await PersistFunctions.getTest();
-    List<FinDoc> orders = test.orders;
-    expect(orders.isNotEmpty, true,
-        reason: 'This test needs orders created in previous steps');
-    for (FinDoc order in orders) {
-      await CommonTest.doSearch(tester, searchString: order.paymentId!);
-      await CommonTest.tapByKey(tester, 'nextStatus0'); // open items
-    }
-  }
-
-  static Future<void> receiveCustomerPayment(WidgetTester tester) async {
+  static Future<void> sendReceivePayment(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,
@@ -191,18 +257,7 @@ class AccountingTest {
   }
 
   /// check if the purchase process has been completed successfuly
-  static Future<void> checkPurchasePaymentsComplete(WidgetTester tester) async {
-    SaveTest test = await PersistFunctions.getTest();
-    List<FinDoc> orders = test.orders;
-    expect(orders.isNotEmpty, true,
-        reason: 'This test needs orders created in previous steps');
-    for (FinDoc order in orders) {
-      await CommonTest.doSearch(tester, searchString: order.paymentId!);
-      expect(CommonTest.getTextField('status0'), 'Completed');
-    }
-  }
-
-  static Future<void> checkSalesPaymentsComplete(WidgetTester tester) async {
+  static Future<void> checkPaymentComplete(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     List<FinDoc> orders = test.orders;
     expect(orders.isNotEmpty, true,

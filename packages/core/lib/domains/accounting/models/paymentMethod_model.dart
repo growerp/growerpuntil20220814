@@ -24,6 +24,7 @@ part 'paymentMethod_model.g.dart';
 class PaymentMethod with _$PaymentMethod {
   PaymentMethod._();
   factory PaymentMethod({
+    String? ccPaymentMethodId,
     String? ccDescription,
     String? creditCardNumber,
     @CreditCardTypeConverter() CreditCardType? creditCardType,

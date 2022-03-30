@@ -17,7 +17,6 @@ import 'package:core/domains/domains.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:global_configuration/global_configuration.dart';
-import '../findoc.dart';
 
 class FinDocListItem extends StatelessWidget {
   const FinDocListItem({
@@ -30,6 +29,7 @@ class FinDocListItem extends StatelessWidget {
     required this.onlyRental,
     required this.finDocBloc,
     this.additionalItemButton,
+    this.paymentMethod,
   }) : super(key: key);
 
   final FinDoc finDoc;
@@ -40,6 +40,7 @@ class FinDocListItem extends StatelessWidget {
   final bool onlyRental;
   final FinDocBloc finDocBloc;
   final Widget? additionalItemButton;
+  final PaymentMethod? paymentMethod;
 
   @override
   Widget build(BuildContext context) {
@@ -156,7 +157,8 @@ class FinDocListItem extends StatelessWidget {
                           : finDoc.status != null &&
                                   FinDocStatusVal.statusFixed(finDoc.status!) ==
                                       false
-                              ? itemButtons(context, additionalItemButton)
+                              ? itemButtons(
+                                  context, additionalItemButton, paymentMethod)
                               : finDoc.sales == true &&
                                       finDoc.status == FinDocStatusVal.Approved
                                   ? additionalItemButton
@@ -164,7 +166,8 @@ class FinDocListItem extends StatelessWidget {
             )));
   }
 
-  Widget itemButtons(BuildContext context, Widget? additionalItemButton) {
+  Widget itemButtons(BuildContext context, Widget? additionalItemButton,
+      PaymentMethod? paymentMethod) {
     return Row(children: [
       Visibility(
           visible: !isPhone,
@@ -218,7 +221,12 @@ class FinDocListItem extends StatelessWidget {
                         child: onlyRental == true
                             ? ReservationDialog(
                                 finDoc: finDoc, original: finDoc)
-                            : FinDocDialog(finDoc: finDoc));
+                            : finDoc.docType == FinDocType.payment
+                                ? PaymentDialog(
+                                    finDoc,
+                                    paymentMethod: paymentMethod,
+                                  )
+                                : FinDocDialog(finDoc: finDoc));
                   });
             },
           )),

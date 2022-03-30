@@ -27,12 +27,12 @@ Company company = Company(
       postalCode: '90210',
       city: 'Los Angeles',
       province: 'California',
-      country: countries[0].name),
+      country: countries[50].name),
   paymentMethod: PaymentMethod(
-      creditCardNumber: '5555555555554444',
-      creditCardType: CreditCardType.mc,
-      expireMonth: '3',
-      expireYear: '2033'),
+      creditCardNumber: '4012888888881881',
+      creditCardType: CreditCardType.visa,
+      expireMonth: '10',
+      expireYear: '2026'),
 );
 
 User admin = User(
@@ -133,6 +133,18 @@ List<User> suppliers = [
     companyName: companies[3].name,
     email: 'emailXXX@example.org',
     telephoneNr: '99999999999999',
+    companyAddress: Address(
+        address1: 'beach Boulevar',
+        address2: 'suite 2',
+        postalCode: '30071',
+        city: 'Trang',
+        province: 'California',
+        country: countries[3].name),
+    companyPaymentMethod: PaymentMethod(
+        creditCardNumber: '5555555555554444',
+        creditCardType: CreditCardType.mc,
+        expireMonth: '09',
+        expireYear: '2025'),
   ),
   User(
     firstName: 'supplier2',
@@ -317,6 +329,15 @@ List<FinDoc> purchaseOrders = [
             quantity: Decimal.parse('40'),
             price: Decimal.parse('17.21')),
       ]),
+];
+
+List<FinDoc> purchasePayments = [
+  FinDoc(
+    sales: false,
+    docType: FinDocType.payment,
+    otherUser: suppliers[0],
+    grandTotal: Decimal.parse("66.22"),
+  ),
 ];
 
 List<FinDoc> salesOrders = [

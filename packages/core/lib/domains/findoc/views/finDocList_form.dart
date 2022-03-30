@@ -322,10 +322,14 @@ class FinDocListState extends State<FinDocList> {
                             builder: (BuildContext context) {
                               return BlocProvider.value(
                                   value: _finDocBloc,
-                                  child: FinDocDialog(
-                                      finDoc: FinDoc(
+                                  child: widget.docType == FinDocType.payment
+                                      ? PaymentDialog(FinDoc(
                                           sales: widget.sales,
-                                          docType: widget.docType)));
+                                          docType: widget.docType))
+                                      : FinDocDialog(
+                                          finDoc: FinDoc(
+                                              sales: widget.sales,
+                                              docType: widget.docType)));
                             });
                       },
                       tooltip: 'Add New',
