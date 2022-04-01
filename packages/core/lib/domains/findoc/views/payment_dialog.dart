@@ -21,6 +21,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import '../../../api_repository.dart';
 import '../../../services/api_result.dart';
+import '../../common/functions/helper_functions.dart';
 
 class PaymentDialog extends StatefulWidget {
   final FinDoc finDoc;
@@ -38,10 +39,7 @@ class _PaymentState extends State<PaymentDialog> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   late bool isPhone;
-  late bool ccChecked;
-  late bool bankChecked;
-  late bool cashChecked;
-  late bool checkChecked;
+  PaymentInstrument paymentInstrument = PaymentInstrument.other;
   final _userSearchBoxController = TextEditingController();
   final _amountController = TextEditingController();
   _PaymentState(this.finDoc);
@@ -54,39 +52,41 @@ class _PaymentState extends State<PaymentDialog> {
     _selectedUser = finDocUpdated.otherUser;
     _amountController.text =
         finDoc.grandTotal == null ? '' : finDoc.grandTotal.toString();
-    ccChecked = false;
-    bankChecked = false;
-    cashChecked = false;
-    checkChecked = false;
   }
 
   @override
   Widget build(BuildContext context) {
     isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    return GestureDetector(
-        onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                        key: Key(
-                            "PaymentDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
-                        insetPadding: EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Stack(clipBehavior: Clip.none, children: [
-                          Container(
-                              width: 400,
-                              height:
-                                  700, // not increase height otherwise tests will fail
-                              child: paymentForm()),
-                          Positioned(
-                              top: -10, right: -10, child: DialogCloseButton())
-                        ]))))));
+    return BlocListener<FinDocBloc, FinDocState>(
+      listener: (context, state) {
+        if (state.status == FinDocStatus.success) Navigator.of(context).pop();
+        if (state.status == FinDocStatus.failure)
+          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+      },
+      child: GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: ScaffoldMessenger(
+              key: scaffoldMessengerKey,
+              child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: GestureDetector(
+                      onTap: () {},
+                      child: Dialog(
+                          key: Key(
+                              "PaymentDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
+                          insetPadding: EdgeInsets.all(10),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Stack(clipBehavior: Clip.none, children: [
+                            Container(
+                                width: 400, height: 800, child: paymentForm()),
+                            Positioned(
+                                top: -10,
+                                right: -10,
+                                child: DialogCloseButton())
+                          ])))))),
+    );
   }
 
   Widget paymentForm() {
@@ -191,10 +191,13 @@ class _PaymentState extends State<PaymentDialog> {
                             checkColor: Colors.white,
                             fillColor:
                                 MaterialStateProperty.resolveWith(getColor),
-                            value: ccChecked,
+                            value: paymentInstrument ==
+                                PaymentInstrument.creditcard,
                             onChanged: (bool? value) {
                               setState(() {
-                                ccChecked = value!;
+                                if (value == true)
+                                  paymentInstrument =
+                                      PaymentInstrument.creditcard;
                               });
                             }),
                         Expanded(
@@ -207,10 +210,11 @@ class _PaymentState extends State<PaymentDialog> {
                     Checkbox(
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: cashChecked,
+                        value: paymentInstrument == PaymentInstrument.cash,
                         onChanged: (bool? value) {
                           setState(() {
-                            cashChecked = value!;
+                            if (value == true)
+                              paymentInstrument = PaymentInstrument.cash;
                           });
                         }),
                     Expanded(
@@ -222,10 +226,11 @@ class _PaymentState extends State<PaymentDialog> {
                     Checkbox(
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: checkChecked,
+                        value: paymentInstrument == PaymentInstrument.check,
                         onChanged: (bool? value) {
                           setState(() {
-                            checkChecked = value!;
+                            if (value == true)
+                              paymentInstrument = PaymentInstrument.check;
                           });
                         }),
                     Expanded(
@@ -237,10 +242,11 @@ class _PaymentState extends State<PaymentDialog> {
                     Checkbox(
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: bankChecked,
+                        value: paymentInstrument == PaymentInstrument.bank,
                         onChanged: (bool? value) {
                           setState(() {
-                            bankChecked = value!;
+                            if (value == true)
+                              paymentInstrument = PaymentInstrument.bank;
                           });
                         }),
                     Expanded(
@@ -261,6 +267,7 @@ class _PaymentState extends State<PaymentDialog> {
                 finDocBloc.add(FinDocUpdate(finDocUpdated.copyWith(
                   otherUser: _selectedUser,
                   grandTotal: Decimal.parse(_amountController.text),
+                  paymentInstrument: paymentInstrument,
                 )));
               }),
         ]));

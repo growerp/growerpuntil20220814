@@ -106,40 +106,50 @@ class CompanyTest {
         equals('No payment methods yet'));
   }
 
-  static Future<void> updateAddress(WidgetTester tester) async {
+  static Future<void> updateAddress(WidgetTester tester,
+      {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
     if (test.company!.address != null) return;
     await CommonTest.updateAddress(tester, company.address!);
-    await CommonTest.checkAddress(tester, company.address!);
-    Company newCompany = company.copyWith(
-        address: Address(
-            address1: company.address!.address1! + 'u',
-            address2: company.address!.address2! + 'u',
-            postalCode: company.address!.postalCode! + 'u',
-            city: company.address!.city! + 'u',
-            province: company.address!.province! + 'u',
-            country: countries[1].name));
-    await CommonTest.drag(tester);
-    await CommonTest.updateAddress(tester, newCompany.address!);
-    await CommonTest.checkAddress(tester, newCompany.address!);
-    await PersistFunctions.persistTest(test.copyWith(company: newCompany));
+    if (check == true) {
+      await CommonTest.checkAddress(tester, company.address!);
+      Company newCompany = company.copyWith(
+          address: Address(
+              address1: company.address!.address1! + 'u',
+              address2: company.address!.address2! + 'u',
+              postalCode: company.address!.postalCode! + 'u',
+              city: company.address!.city! + 'u',
+              province: company.address!.province! + 'u',
+              country: countries[1].name));
+      await CommonTest.drag(tester);
+      await CommonTest.updateAddress(tester, newCompany.address!);
+      await CommonTest.checkAddress(tester, newCompany.address!);
+
+      await PersistFunctions.persistTest(test.copyWith(company: newCompany));
+    } else {
+      await PersistFunctions.persistTest(test.copyWith(company: company));
+    }
   }
 
-  static Future<void> updatePaymentMethod(WidgetTester tester) async {
+  static Future<void> updatePaymentMethod(WidgetTester tester,
+      {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
     await CommonTest.updatePaymentMethod(tester, company.paymentMethod!);
-    await CommonTest.checkPaymentMethod(tester, company.paymentMethod!);
-    Company newCompany = company.copyWith(
-        paymentMethod: PaymentMethod(
-      creditCardType: CreditCardType.visa,
-      creditCardNumber: '4242424242424242',
-      expireMonth: '5',
-      expireYear: '2025',
-    ));
-    await CommonTest.drag(tester);
-    await CommonTest.updatePaymentMethod(tester, newCompany.paymentMethod!);
-    await CommonTest.checkPaymentMethod(tester, newCompany.paymentMethod!);
-    await PersistFunctions.persistTest(test.copyWith(
-        company: newCompany)); // last test for company ready for user test
+    if (check == true) {
+      await CommonTest.checkPaymentMethod(tester, company.paymentMethod!);
+      Company newCompany = company.copyWith(
+          paymentMethod: PaymentMethod(
+        creditCardType: CreditCardType.visa,
+        creditCardNumber: '4242424242424242',
+        expireMonth: '5',
+        expireYear: '2025',
+      ));
+      await CommonTest.drag(tester);
+      await CommonTest.updatePaymentMethod(tester, newCompany.paymentMethod!);
+      await CommonTest.checkPaymentMethod(tester, newCompany.paymentMethod!);
+      await PersistFunctions.persistTest(test.copyWith(company: newCompany));
+    } else {
+      await PersistFunctions.persistTest(test.copyWith(company: company));
+    }
   }
 }

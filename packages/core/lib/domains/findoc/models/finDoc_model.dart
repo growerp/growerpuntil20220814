@@ -33,6 +33,7 @@ class FinDoc with _$FinDoc {
     String? invoiceId,
     String? paymentId,
     String? transactionId,
+    @PaymentInstrumentConverter() PaymentInstrument? paymentInstrument,
     @JsonKey(name: 'statusId')
     @FinDocStatusValConverter()
         FinDocStatusVal? status,

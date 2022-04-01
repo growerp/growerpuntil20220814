@@ -157,8 +157,7 @@ class FinDocListItem extends StatelessWidget {
                           : finDoc.status != null &&
                                   FinDocStatusVal.statusFixed(finDoc.status!) ==
                                       false
-                              ? itemButtons(
-                                  context, additionalItemButton, paymentMethod)
+                              ? itemButtons(context, paymentMethod)
                               : finDoc.sales == true &&
                                       finDoc.status == FinDocStatusVal.Approved
                                   ? additionalItemButton
@@ -166,8 +165,7 @@ class FinDocListItem extends StatelessWidget {
             )));
   }
 
-  Widget itemButtons(BuildContext context, Widget? additionalItemButton,
-      PaymentMethod? paymentMethod) {
+  Widget itemButtons(BuildContext context, PaymentMethod? paymentMethod) {
     return Row(children: [
       Visibility(
           visible: !isPhone,

@@ -247,11 +247,11 @@ class AccountingTest {
   /// conform that a payment has been send
   static Future<void> sendReceivePayment(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
-    List<FinDoc> orders = test.orders;
-    expect(orders.isNotEmpty, true,
+    List<FinDoc> payments = test.payments;
+    expect(payments.isNotEmpty, true,
         reason: 'This test needs orders created in previous steps');
-    for (FinDoc order in orders) {
-      await CommonTest.doSearch(tester, searchString: order.paymentId!);
+    for (FinDoc payment in payments) {
+      await CommonTest.doSearch(tester, searchString: payment.paymentId!);
       await CommonTest.tapByKey(tester, 'nextStatus0'); // open items
     }
   }

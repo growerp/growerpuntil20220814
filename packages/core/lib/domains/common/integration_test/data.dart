@@ -103,7 +103,7 @@ List<User> leads = [
     firstName: 'lead1',
     lastName: 'last Name 1',
     userGroup: UserGroup.Lead,
-    companyName: companies[0].name,
+    companyName: 'Lead company 0',
     email: 'emailXXX@example.org',
     telephoneNr: '6666666666666',
   ),
@@ -111,7 +111,7 @@ List<User> leads = [
     firstName: 'lead2',
     lastName: 'last Name 2',
     userGroup: UserGroup.Lead,
-    companyName: companies[1].name,
+    companyName: 'Lead company 1',
     email: 'emailXXX@example.org',
     telephoneNr: '77777777777777',
   ),
@@ -119,7 +119,7 @@ List<User> leads = [
     firstName: 'lead3',
     lastName: 'last Name 3',
     userGroup: UserGroup.Lead,
-    companyName: companies[2].name,
+    companyName: 'Lead company 2',
     email: 'emailXXX@example.org',
     telephoneNr: '888888888888888',
   ),
@@ -130,7 +130,7 @@ List<User> suppliers = [
     firstName: 'supplier1',
     lastName: 'last Name1',
     userGroup: UserGroup.Supplier,
-    companyName: companies[3].name,
+    companyName: 'supplier company 3',
     email: 'emailXXX@example.org',
     telephoneNr: '99999999999999',
     companyAddress: Address(
@@ -150,7 +150,7 @@ List<User> suppliers = [
     firstName: 'supplier2',
     lastName: 'last Name2',
     userGroup: UserGroup.Supplier,
-    companyName: companies[4].name,
+    companyName: 'supplier company 4',
     email: 'emailXXX@example.org',
     telephoneNr: '10101010101010',
   )
@@ -160,7 +160,7 @@ List<User> customers = [
     firstName: 'customer1',
     lastName: 'lastName1',
     userGroup: UserGroup.Customer,
-    companyName: companies[5].name,
+    companyName: 'customer company5',
     email: 'emailXXX@example.org',
     telephoneNr: '111111111111',
     companyAddress: Address(
@@ -336,6 +336,14 @@ List<FinDoc> purchasePayments = [
     sales: false,
     docType: FinDocType.payment,
     otherUser: suppliers[0],
+    grandTotal: Decimal.parse("66.22"),
+  ),
+];
+List<FinDoc> salesPayments = [
+  FinDoc(
+    sales: true,
+    docType: FinDocType.payment,
+    otherUser: customers[0],
     grandTotal: Decimal.parse("66.22"),
   ),
 ];
