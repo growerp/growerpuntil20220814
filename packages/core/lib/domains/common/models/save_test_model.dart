@@ -21,7 +21,7 @@ part 'save_test_model.g.dart';
 @freezed
 class SaveTest with _$SaveTest {
   factory SaveTest({
-    int? sequence,
+    @Default(0) int sequence,
     Company? company,
     User? admin,
     DateTime? nowDate,

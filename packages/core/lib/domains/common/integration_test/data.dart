@@ -77,6 +77,30 @@ List<User> administrators = [
     email: 'emailXXX@example.org',
     telephoneNr: '3333333333',
   ),
+  User(
+    firstName: 'administrator4',
+    lastName: 'last Name4',
+    userGroup: UserGroup.Admin,
+    companyName: company.name,
+    email: 'emailXXX@example.org',
+    telephoneNr: '4444444444',
+  ),
+  User(
+    firstName: 'administrator5',
+    lastName: 'last Name5',
+    userGroup: UserGroup.Admin,
+    companyName: company.name,
+    email: 'emailXXX@example.org',
+    telephoneNr: '5555555555',
+  ),
+  User(
+    firstName: 'administrator6',
+    lastName: 'last Name6',
+    userGroup: UserGroup.Admin,
+    companyName: company.name,
+    email: 'emailXXX@example.org',
+    telephoneNr: '6666666666',
+  ),
 ];
 List<User> employees = [
   User(
@@ -95,6 +119,39 @@ List<User> employees = [
     companyName: company.name,
     email: 'emailXXX@example.org',
     telephoneNr: '555555555555',
+  ),
+  User(
+    firstName: 'employee3',
+    lastName: 'last Name3',
+    userGroup: UserGroup.Employee,
+    companyName: company.name,
+    userId: 'usernameXXX',
+    email: 'emailXXX@example.org',
+    telephoneNr: '6666666666',
+  ),
+  User(
+    firstName: 'employee4',
+    lastName: 'last Name4',
+    userGroup: UserGroup.Employee,
+    companyName: company.name,
+    email: 'emailXXX@example.org',
+    telephoneNr: '777777777',
+  ),
+  User(
+    firstName: 'employee5',
+    lastName: 'last Name5',
+    userGroup: UserGroup.Employee,
+    companyName: company.name,
+    email: 'emailXXX@example.org',
+    telephoneNr: '888888888',
+  ),
+  User(
+    firstName: 'employee6',
+    lastName: 'last Name6',
+    userGroup: UserGroup.Employee,
+    companyName: company.name,
+    email: 'emailXXX@example.org',
+    telephoneNr: '9999999999',
   )
 ];
 
@@ -123,6 +180,30 @@ List<User> leads = [
     email: 'emailXXX@example.org',
     telephoneNr: '888888888888888',
   ),
+  User(
+    firstName: 'lead4',
+    lastName: 'last Name 4',
+    userGroup: UserGroup.Lead,
+    companyName: 'Lead company 3',
+    email: 'emailXXX@example.org',
+    telephoneNr: '9999999999',
+  ),
+  User(
+    firstName: 'lead5',
+    lastName: 'last Name 5',
+    userGroup: UserGroup.Lead,
+    companyName: 'Lead company 4',
+    email: 'emailXXX@example.org',
+    telephoneNr: '000000000000',
+  ),
+  User(
+    firstName: 'lead6',
+    lastName: 'last Name 6',
+    userGroup: UserGroup.Lead,
+    companyName: 'Lead company 5',
+    email: 'emailXXX@example.org',
+    telephoneNr: '11111111111111',
+  ),
 ];
 
 List<User> suppliers = [
@@ -140,11 +221,12 @@ List<User> suppliers = [
         city: 'Trang',
         province: 'California',
         country: countries[3].name),
-    companyPaymentMethod: PaymentMethod(
+/*    companyPaymentMethod: PaymentMethod(
         creditCardNumber: '5555555555554444',
         creditCardType: CreditCardType.mc,
         expireMonth: '09',
         expireYear: '2025'),
+*/
   ),
   User(
     firstName: 'supplier2',
@@ -153,6 +235,35 @@ List<User> suppliers = [
     companyName: 'supplier company 4',
     email: 'emailXXX@example.org',
     telephoneNr: '10101010101010',
+  ),
+  User(
+    firstName: 'supplier3',
+    lastName: 'last Name3',
+    userGroup: UserGroup.Supplier,
+    companyName: 'supplier company 4',
+    email: 'emailXXX@example.org',
+    telephoneNr: '99999999999999',
+    companyAddress: Address(
+        address1: 'beach Boulevar4',
+        address2: 'suite 24',
+        postalCode: '300714',
+        city: 'Trang4',
+        province: 'California4',
+        country: countries[4].name),
+/*    companyPaymentMethod: PaymentMethod(
+        creditCardNumber: '2223003122003222',
+        creditCardType: CreditCardType.mc,
+        expireMonth: '10',
+        expireYear: '2026'),
+*/
+  ),
+  User(
+    firstName: 'supplier4',
+    lastName: 'last Name4',
+    userGroup: UserGroup.Supplier,
+    companyName: 'supplier company 5',
+    email: 'emailXXX@example.org',
+    telephoneNr: '202020202020',
   )
 ];
 List<User> customers = [
@@ -330,6 +441,68 @@ List<FinDoc> purchaseOrders = [
             price: Decimal.parse('17.21')),
       ]),
 ];
+List<FinDoc> purchaseInvoices = [
+  FinDoc(
+      sales: false,
+      docType: FinDocType.invoice,
+      description: 'Invoice 1',
+      otherUser: suppliers[0],
+      grandTotal: Decimal.parse('144.2'),
+      items: [
+        FinDocItem(
+            description: products[0].productName,
+            quantity: Decimal.parse('20'),
+            price: Decimal.parse('7.21'))
+      ]),
+  FinDoc(
+      sales: false,
+      docType: FinDocType.invoice,
+      description: 'Invoice 2',
+      otherUser: suppliers[1],
+      grandTotal: Decimal.parse('688.4'),
+      items: [
+        FinDocItem(
+            description: products[1].productName,
+            quantity: Decimal.parse('40'),
+            price: Decimal.parse('17.21')),
+      ]),
+  FinDoc(
+      sales: false,
+      docType: FinDocType.invoice,
+      description: 'Invoice 3',
+      otherUser: suppliers[1],
+      grandTotal: Decimal.parse('448.4'),
+      items: [
+        FinDocItem(
+            description: products[1].productName,
+            quantity: Decimal.parse('40'),
+            price: Decimal.parse('11.21')),
+      ]),
+  FinDoc(
+      sales: false,
+      docType: FinDocType.invoice,
+      description: 'Invoice 4',
+      otherUser: suppliers[1],
+      grandTotal: Decimal.parse('112.10'),
+      items: [
+        FinDocItem(
+            description: products[0].productName,
+            quantity: Decimal.parse('10'),
+            price: Decimal.parse('11.21'))
+      ]),
+  FinDoc(
+      sales: false,
+      docType: FinDocType.invoice,
+      description: 'Invoice 5',
+      otherUser: suppliers[0],
+      grandTotal: Decimal.parse('1660.5'),
+      items: [
+        FinDocItem(
+            description: products[1].productName,
+            quantity: Decimal.parse('50'),
+            price: Decimal.parse('33.21')),
+      ]),
+];
 
 List<FinDoc> purchasePayments = [
   FinDoc(
@@ -345,6 +518,12 @@ List<FinDoc> salesPayments = [
     docType: FinDocType.payment,
     otherUser: customers[0],
     grandTotal: Decimal.parse("66.22"),
+  ),
+  FinDoc(
+    sales: true,
+    docType: FinDocType.payment,
+    otherUser: customers[1],
+    grandTotal: Decimal.parse("77.11"),
   ),
 ];
 
@@ -364,6 +543,45 @@ List<FinDoc> salesOrders = [
           description: products[1].productName,
           price: products[1].price,
           quantity: Decimal.parse('40'),
+        ),
+      ]),
+];
+
+List<FinDoc> salesInvoices = [
+  FinDoc(
+      sales: true,
+      docType: FinDocType.invoice,
+      description: 'The first sales invoice',
+      otherUser: customers[0],
+      grandTotal: Decimal.parse('3439.4'),
+      items: [
+        FinDocItem(
+          description: products[0].productName,
+          price: products[0].price,
+          quantity: Decimal.parse('20'),
+        ),
+        FinDocItem(
+          description: products[1].productName,
+          price: products[1].price,
+          quantity: Decimal.parse('40'),
+        ),
+      ]),
+  FinDoc(
+      sales: true,
+      docType: FinDocType.invoice,
+      description: 'The second sales invoice',
+      otherUser: customers[1],
+      grandTotal: Decimal.parse('1939.4'),
+      items: [
+        FinDocItem(
+          description: products[1].productName,
+          price: products[1].price,
+          quantity: Decimal.parse('10'),
+        ),
+        FinDocItem(
+          description: products[0].productName,
+          price: products[0].price,
+          quantity: Decimal.parse('50'),
         ),
       ]),
 ];

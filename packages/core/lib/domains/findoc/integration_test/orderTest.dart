@@ -73,7 +73,7 @@ class OrderTest {
       WidgetTester tester, List<FinDoc> finDocs) async {
     List<FinDoc> orders = [];
     for (FinDoc order in finDocs) {
-      // enter purchase order dialog
+      // enter order dialog
       await CommonTest.tapByKey(tester, 'addNew');
       await CommonTest.checkWidgetKey(tester, 'FinDocDialogSalesOrder');
       await CommonTest.tapByKey(tester, 'clear', seconds: 2);
@@ -88,9 +88,9 @@ class OrderTest {
         await CommonTest.enterDropDownSearch(
             tester, 'product', item.description!);
         await CommonTest.drag(tester, listViewName: 'listView3');
-        await CommonTest.enterText(tester, 'price', item.price.toString());
+        await CommonTest.enterText(tester, 'itemPrice', item.price.toString());
         await CommonTest.enterText(
-            tester, 'quantity', item.quantity.toString());
+            tester, 'itemQuantity', item.quantity.toString());
         await CommonTest.tapByKey(tester, 'ok');
       }
       // create order

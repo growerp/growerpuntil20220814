@@ -22,7 +22,7 @@ class CompanyTest {
   static Future<void> createCompany(WidgetTester tester,
       {bool demoData = false}) async {
     SaveTest test = await PersistFunctions.getTest();
-    int seq = test.sequence ?? 0;
+    int seq = test.sequence;
     seq++;
     await PersistFunctions.persistTest(test.copyWith(sequence: seq));
     if (test.company != null) return; // company already created

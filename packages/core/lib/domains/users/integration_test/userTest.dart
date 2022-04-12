@@ -55,108 +55,88 @@ class UserTest {
       WidgetTester tester, List<User> administrators,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    int seq = test.sequence!;
     if (test.administrators.isEmpty) {
-      // not yet created
-      expect(find.byKey(Key('userItem')), findsNWidgets(1)); // initial admin
-      test = test.copyWith(
-          administrators: await enterUserData(tester, administrators));
-      await PersistFunctions.persistTest(test.copyWith(sequence: seq + 10));
+      await PersistFunctions.persistTest(test.copyWith(
+          administrators:
+              await enterUserData(tester, administrators, test.sequence),
+          sequence: test.sequence + 10));
     }
     if (check) {
+      test = await PersistFunctions.getTest(backup: false);
       await checkUserList(tester, test.administrators);
       await PersistFunctions.persistTest(test.copyWith(
-        administrators: await checkUserDetail(tester, test.administrators),
-        sequence: seq + 10,
-      ));
+          administrators: await checkUserDetail(tester, test.administrators)));
     }
   }
 
   static Future<void> addEmployees(WidgetTester tester, List<User> employees,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    int seq = test.sequence!;
     if (test.employees.isEmpty) {
-      // not yet created
-      test = test.copyWith(employees: employees);
-      expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-      test = test.copyWith(employees: await enterUserData(tester, employees));
-      await PersistFunctions.persistTest(
-          test.copyWith(employees: test.employees));
+      await PersistFunctions.persistTest(test.copyWith(
+          employees: await enterUserData(tester, employees, test.sequence),
+          sequence: test.sequence + 10));
     }
     if (check) {
+      test = await PersistFunctions.getTest(backup: false);
       await checkUserList(tester, test.employees);
       await PersistFunctions.persistTest(test.copyWith(
-        employees: await checkUserDetail(tester, test.employees),
-        sequence: seq + 10,
-      ));
+          employees: await checkUserDetail(tester, test.employees)));
     }
   }
 
   static Future<void> addLeads(WidgetTester tester, List<User> leads,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    int seq = test.sequence!;
     if (test.leads.isEmpty) {
-      // not yet created
-      test = test.copyWith(leads: leads);
-      expect(find.byKey(Key('userItem')), findsNWidgets(0)); // initial admin
-      test = test.copyWith(leads: await enterUserData(tester, leads));
-      await PersistFunctions.persistTest(test.copyWith(leads: test.leads));
+      await PersistFunctions.persistTest(test.copyWith(
+          leads: await enterUserData(tester, leads, test.sequence),
+          sequence: test.sequence + 10));
     }
     if (check) {
+      test = await PersistFunctions.getTest(backup: false);
       await checkUserList(tester, test.leads);
-      await PersistFunctions.persistTest(test.copyWith(
-        leads: await checkUserDetail(tester, test.leads),
-        sequence: seq + 10,
-      ));
+      await PersistFunctions.persistTest(
+          test.copyWith(leads: await checkUserDetail(tester, test.leads)));
     }
   }
 
   static Future<void> addCustomers(WidgetTester tester, List<User> customers,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    int seq = test.sequence!;
     if (test.customers.isEmpty) {
-      // not yet created
       expect(find.byKey(Key('userItem')), findsNWidgets(0));
-      test = test.copyWith(customers: await enterUserData(tester, customers));
-      await PersistFunctions.persistTest(test.copyWith(sequence: seq + 10));
+      await PersistFunctions.persistTest(test.copyWith(
+          customers: await enterUserData(tester, customers, test.sequence),
+          sequence: test.sequence + 10));
     }
     if (check) {
+      test = await PersistFunctions.getTest(backup: false);
       await checkUserList(tester, test.customers);
       await PersistFunctions.persistTest(test.copyWith(
-        customers: await checkUserDetail(tester, test.customers),
-        sequence: seq + 10,
-      ));
+          customers: await checkUserDetail(tester, test.customers)));
     }
   }
 
   static Future<void> addSuppliers(WidgetTester tester, List<User> suppliers,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    int seq = test.sequence!;
     if (test.suppliers.isEmpty) {
-      // not yet created
-      test = test.copyWith(suppliers: suppliers);
       expect(find.byKey(Key('userItem')), findsNWidgets(0));
-      test = test.copyWith(suppliers: await enterUserData(tester, suppliers));
-      await PersistFunctions.persistTest(
-          test.copyWith(suppliers: test.suppliers));
+      await PersistFunctions.persistTest(test.copyWith(
+          suppliers: await enterUserData(tester, suppliers, test.sequence),
+          sequence: test.sequence + 10));
     }
     if (check) {
+      test = await PersistFunctions.getTest(backup: false);
       await checkUserList(tester, test.suppliers);
       await PersistFunctions.persistTest(test.copyWith(
-        suppliers: await checkUserDetail(tester, test.suppliers),
-        sequence: seq + 10,
-      ));
+          suppliers: await checkUserDetail(tester, test.suppliers)));
     }
   }
 
   static Future<List<User>> enterUserData(
-      WidgetTester tester, List<User> users) async {
-    SaveTest test = await PersistFunctions.getTest();
-    int seq = test.sequence!;
+      WidgetTester tester, List<User> users, int seq) async {
     int index = 0;
     if (users[0].userGroup == UserGroup.Admin) index++;
     List<User> newUsers = [];
@@ -319,89 +299,63 @@ class UserTest {
     expect(find.byKey(Key('userItem')), findsNWidgets(count - 1));
   }
 
-  static Future<void> updateAdministrators(WidgetTester tester) async {
+  static Future<void> updateAdministrators(
+      WidgetTester tester, List<User> administrators) async {
     SaveTest test = await PersistFunctions.getTest();
     // check if already modified then skip
-    if (test.administrators[0].firstName != administrators[0].firstName) return;
-    test = test.copyWith(administrators: updateUsers(test.administrators));
-    await enterUserData(tester, test.administrators);
-    await checkUserDetail(tester, test.administrators);
-    await PersistFunctions.persistTest(test);
-  }
-
-  static Future<void> updateEmployees(WidgetTester tester) async {
-    SaveTest test = await PersistFunctions.getTest();
-    // check if already modified then skip
-    if (test.employees[0].firstName != employees[0].firstName) return;
-    test = test.copyWith(employees: updateUsers(test.employees));
-    await enterUserData(tester, test.employees);
-    await checkUserDetail(tester, test.employees);
-    await PersistFunctions.persistTest(test);
-  }
-
-  static Future<void> updateLeads(WidgetTester tester) async {
-    SaveTest test = await PersistFunctions.getTest();
-    // check if already modified then skip
-    if (test.leads[0].firstName != leads[0].firstName) return;
-    test = test.copyWith(leads: updateUsers(test.leads));
-    await enterUserData(tester, test.leads);
-    await checkUserDetail(tester, test.leads);
-    await PersistFunctions.persistTest(test);
-  }
-
-  static Future<void> updateCustomers(WidgetTester tester) async {
-    SaveTest test = await PersistFunctions.getTest();
-    // check if already modified then skip
-    if (test.customers[0].firstName != customers[0].firstName) return;
-    test = test.copyWith(customers: updateUsers(test.customers));
-    await enterUserData(tester, test.customers);
-    await checkUserDetail(tester, test.customers);
-    await PersistFunctions.persistTest(test);
-  }
-
-  static Future<void> updateSuppliers(WidgetTester tester) async {
-    SaveTest test = await PersistFunctions.getTest();
-    // check if already modified then skip
-    if (test.suppliers[0].firstName != suppliers[0].firstName) return;
-    test = test.copyWith(suppliers: updateUsers(test.suppliers));
-    await enterUserData(tester, test.suppliers);
-    await checkUserDetail(tester, test.suppliers);
-    await PersistFunctions.persistTest(test);
-  }
-
-  static List<User> updateUsers(List<User> users) {
-    List<User> updUsers = [];
-    for (User user in users) {
-      var addChar = 'u';
-      if (user.companyPaymentMethod != null || user.companyAddress != null)
-        addChar = '';
-      updUsers.add(user.copyWith(
-        firstName: user.firstName! + 'u',
-        lastName: user.lastName! + 'u',
-        email: "${user.email!.split('@')[0]}"
-            "u@${user.email!.split('@')[1]}",
-        loginName: "${user.email!.split('@')[0]}"
-            "u@${user.email!.split('@')[1]}",
-        companyName: user.companyName! + addChar,
-        companyAddress: user.companyAddress != null
-            ? Address(
-                address1: user.companyAddress!.address1! + 'u',
-                address2: user.companyAddress!.address2! + 'u',
-                postalCode: user.companyAddress!.postalCode! + 'u',
-                city: user.companyAddress!.city! + 'u',
-                province: user.companyAddress!.province! + 'u',
-                country: countries[10].name)
-            : null,
-        companyPaymentMethod: user.companyPaymentMethod != null
-            ? PaymentMethod(
-                creditCardType: CreditCardType.visa,
-                creditCardNumber: '4242424242424242',
-                expireMonth: '5',
-                expireYear: '2025',
-              )
-            : null,
-      ));
+    if (test.administrators[0].firstName == administrators[0].firstName) {
+      await PersistFunctions.persistTest(test.copyWith(
+          administrators:
+              await enterUserData(tester, administrators, test.sequence),
+          sequence: test.sequence + 10));
     }
-    return updUsers;
+    await checkUserDetail(tester, test.administrators);
+  }
+
+  static Future<void> updateEmployees(
+      WidgetTester tester, List<User> employees) async {
+    SaveTest test = await PersistFunctions.getTest();
+    // check if already modified then skip
+    if (test.employees[0].firstName == employees[0].firstName) {
+      await PersistFunctions.persistTest(test.copyWith(
+          employees: await enterUserData(tester, employees, test.sequence),
+          sequence: test.sequence + 10));
+    }
+    await checkUserDetail(tester, test.employees);
+  }
+
+  static Future<void> updateCustomers(
+      WidgetTester tester, List<User> customers) async {
+    SaveTest test = await PersistFunctions.getTest();
+    // check if already modified then skip
+    if (test.customers[0].firstName == customers[0].firstName) {
+      await PersistFunctions.persistTest(test.copyWith(
+          customers: await enterUserData(tester, customers, test.sequence),
+          sequence: test.sequence + 10));
+    }
+    await checkUserDetail(tester, test.customers);
+  }
+
+  static Future<void> updateSuppliers(
+      WidgetTester tester, List<User> suppliers) async {
+    SaveTest test = await PersistFunctions.getTest();
+    // check if already modified then skip
+    if (test.suppliers[0].firstName == suppliers[0].firstName) {
+      await PersistFunctions.persistTest(test.copyWith(
+          suppliers: await enterUserData(tester, suppliers, test.sequence),
+          sequence: test.sequence + 10));
+    }
+    await checkUserDetail(tester, test.suppliers);
+  }
+
+  static Future<void> updateLeads(WidgetTester tester, List<User> leads) async {
+    SaveTest test = await PersistFunctions.getTest();
+    // check if already modified then skip
+    if (test.leads[0].firstName == leads[0].firstName) {
+      await PersistFunctions.persistTest(test.copyWith(
+          leads: await enterUserData(tester, leads, test.sequence),
+          sequence: test.sequence + 10));
+    }
+    await checkUserDetail(tester, test.leads);
   }
 }

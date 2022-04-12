@@ -155,9 +155,13 @@ class _MenuItemState extends State<DisplayMenuItem>
           key: Key('homeButton'),
           icon: Icon(Icons.home),
           tooltip: 'Go Home',
-          onPressed: () => {
-                Navigator.pushNamed(context, '/', arguments: FormArguments()),
-              }));
+          onPressed: () {
+            if (route.startsWith('/acct'))
+              Navigator.pushNamed(context, '/accounting',
+                  arguments: FormArguments());
+            else
+              Navigator.pushNamed(context, '/', arguments: FormArguments());
+          }));
 
     actions.add(IconButton(
         //  key: Key('topChatButton'), // causes a duplicate key?
@@ -254,7 +258,8 @@ class _MenuItemState extends State<DisplayMenuItem>
                             color: Colors.white),
                         tabs: tabText,
                       ),
-                title: appBarTitle(context, authenticate, title),
+                title: appBarTitle(context, authenticate,
+                    '$title ${bottomItems[tabIndex].label}'),
                 actions: actions),
             drawer: myDrawer(context, authenticate, isPhone, widget.menuList),
             floatingActionButton: floatingActionButtonList[tabIndex],

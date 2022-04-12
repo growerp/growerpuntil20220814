@@ -76,15 +76,15 @@ class AcctDashBoard extends StatelessWidget {
               "",
               "",
             ),
-/*                  makeDashboardItem(
-                    context,
-                    acctMenuItems[4],
-                    "",
-                    "",
-                    "",
-                    "",
-                  ),
-*/
+            makeDashboardItem(
+              'Main dashboard',
+              context,
+              acctMenuItems[4],
+              "",
+              "",
+              "",
+              "",
+            ),
           ],
         );
       }

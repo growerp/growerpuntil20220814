@@ -24,7 +24,7 @@ List<MenuItem> acctMenuItems = [
   MenuItem(
     image: "assets/images/accountingGrey.png",
     selectedImage: "assets/images/accounting.png",
-    title: "     Acct\nDashBoard",
+    title: "Accounting DashBoard",
     route: '/accounting',
     readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
     child: AcctDashBoard(),
@@ -32,7 +32,7 @@ List<MenuItem> acctMenuItems = [
   MenuItem(
       image: "assets/images/orderGrey.png",
       selectedImage: "assets/images/order.png",
-      title: " Acct\nSales",
+      title: "Accounting Sales\n",
       route: '/acctSales',
       readGroups: [
         UserGroup.Admin,
@@ -44,7 +44,7 @@ List<MenuItem> acctMenuItems = [
               key: Key("SalesInvoice"),
               sales: true,
               docType: FinDocType.invoice),
-          label: "Sales invoices",
+          label: "Invoices",
           icon: Icon(Icons.home),
         ),
         TabItem(
@@ -52,14 +52,14 @@ List<MenuItem> acctMenuItems = [
               key: Key("SalesPayment"),
               sales: true,
               docType: FinDocType.payment),
-          label: "Sales payments(Receipts)",
+          label: "Incoming Payments",
           icon: Icon(Icons.home),
         ),
       ]),
   MenuItem(
       image: "assets/images/supplierGrey.png",
       selectedImage: "assets/images/supplier.png",
-      title: "    Acct\nPurchase",
+      title: "Accounting Purchase\n",
       route: '/acctPurchase',
       readGroups: [
         UserGroup.Admin,
@@ -74,7 +74,7 @@ List<MenuItem> acctMenuItems = [
               key: Key("PurchaseInvoice"),
               sales: false,
               docType: FinDocType.invoice),
-          label: "Purchase invoices",
+          label: "Invoices",
           icon: Icon(Icons.home),
         ),
         TabItem(
@@ -82,15 +82,15 @@ List<MenuItem> acctMenuItems = [
               key: Key("PurchasePayment"),
               sales: false,
               docType: FinDocType.payment),
-          label: "Purchase payments",
+          label: "Payments",
           icon: Icon(Icons.home),
         ),
       ]),
   MenuItem(
       image: "assets/images/accountingGrey.png",
       selectedImage: "assets/images/accounting.png",
-      title: "Ledger",
-      route: '/ledger',
+      title: "Accounting Ledger\n",
+      route: '/acctLedger',
       readGroups: [
         UserGroup.Admin,
         UserGroup.SuperAdmin
@@ -109,7 +109,7 @@ List<MenuItem> acctMenuItems = [
               key: Key("Transaction"),
               sales: true,
               docType: FinDocType.transaction),
-          label: "Transactions",
+          label: "Ledger Transactions",
           icon: Icon(Icons.home),
         ),
       ]),
@@ -122,9 +122,10 @@ List<MenuItem> acctMenuItems = [
       writeGroups: [UserGroup.Admin]),
 */
   MenuItem(
-      image: "assets/images/dashBoardGrey.png",
-      selectedImage: "assets/images/dashBoard.png",
-      title: "Main",
-      route: '/',
-      readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin]),
+    image: "assets/images/dashBoardGrey.png",
+    selectedImage: "assets/images/dashBoard.png",
+    title: "Main dashboard",
+    route: '/',
+    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
+  ),
 ];

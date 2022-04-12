@@ -57,36 +57,42 @@ class _PaymentState extends State<PaymentDialog> {
   @override
   Widget build(BuildContext context) {
     isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    return BlocListener<FinDocBloc, FinDocState>(
-      listener: (context, state) {
-        if (state.status == FinDocStatus.success) Navigator.of(context).pop();
-        if (state.status == FinDocStatus.failure)
-          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
-      },
-      child: GestureDetector(
-          onTap: () => Navigator.of(context).pop(),
-          child: ScaffoldMessenger(
-              key: scaffoldMessengerKey,
-              child: Scaffold(
-                  backgroundColor: Colors.transparent,
-                  body: GestureDetector(
-                      onTap: () {},
-                      child: Dialog(
-                          key: Key(
-                              "PaymentDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
-                          insetPadding: EdgeInsets.all(10),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Stack(clipBehavior: Clip.none, children: [
-                            Container(
-                                width: 400, height: 800, child: paymentForm()),
-                            Positioned(
-                                top: -10,
-                                right: -10,
-                                child: DialogCloseButton())
-                          ])))))),
-    );
+    return GestureDetector(
+        onTap: () => Navigator.of(context).pop(),
+        child: ScaffoldMessenger(
+          key: scaffoldMessengerKey,
+          child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: GestureDetector(
+                  onTap: () {},
+                  child: Dialog(
+                      key: Key(
+                          "PaymentDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
+                      insetPadding: EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: BlocListener<FinDocBloc, FinDocState>(
+                          listener: (context, state) {
+                            if (state.status == FinDocStatus.success)
+                              Navigator.of(context).pop();
+                            if (state.status == FinDocStatus.failure)
+                              HelperFunctions.showMessage(
+                                  context, '${state.message}', Colors.red);
+                          },
+                          child: SingleChildScrollView(
+                              physics: ClampingScrollPhysics(),
+                              child: Stack(clipBehavior: Clip.none, children: [
+                                Container(
+                                    width: 400,
+                                    height: 650,
+                                    child: paymentForm()),
+                                Positioned(
+                                    top: -10,
+                                    right: -10,
+                                    child: DialogCloseButton())
+                              ])))))),
+        ));
   }
 
   Widget paymentForm() {
@@ -111,11 +117,12 @@ class _PaymentState extends State<PaymentDialog> {
           Center(
               child: Text(
                   "${finDoc.sales ? 'Sales/incoming' : 'Purchase/outgoing'} "
-                  "Payment# ${finDoc.paymentId ?? 'new'}",
+                  "Payment #${finDoc.paymentId ?? 'new'}",
                   style: TextStyle(
                       fontSize: isPhone ? 10 : 20,
                       color: Colors.black,
-                      fontWeight: FontWeight.bold))),
+                      fontWeight: FontWeight.bold),
+                  key: Key('header'))),
           SizedBox(height: 30),
           DropdownSearch<User>(
             dialogMaxWidth: 300,
@@ -139,7 +146,7 @@ class _PaymentState extends State<PaymentDialog> {
             isFilteredOnline: true,
             key: Key(finDocUpdated.sales ? 'customer' : 'supplier'),
             itemAsString: (User? u) =>
-                "${u!.companyName},\n${u.firstName} ${u.lastName}",
+                "${u!.companyName},\n${u.firstName ?? ''} ${u.lastName ?? ''}",
             onFind: (String? filter) async {
               ApiResult<List<User>> result = await repos.getUser(
                   userGroups: [UserGroup.Customer, UserGroup.Supplier],
@@ -179,15 +186,11 @@ class _PaymentState extends State<PaymentDialog> {
                 children: [
                   Visibility(
                       visible: (finDoc.sales == true &&
-                              _selectedUser
-                                      ?.companyPaymentMethod?.ccDescription !=
-                                  null) ||
-                          (finDoc.sales == false &&
-                              authBloc.state.authenticate?.company
-                                      ?.paymentMethod?.ccDescription !=
-                                  null),
+                          _selectedUser?.companyPaymentMethod?.ccDescription !=
+                              null),
                       child: Row(children: [
                         Checkbox(
+                            key: Key('creditCard'),
                             checkColor: Colors.white,
                             fillColor:
                                 MaterialStateProperty.resolveWith(getColor),
@@ -208,6 +211,7 @@ class _PaymentState extends State<PaymentDialog> {
                       ])),
                   Row(children: [
                     Checkbox(
+                        key: Key('cash'),
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
                         value: paymentInstrument == PaymentInstrument.cash,
@@ -224,6 +228,7 @@ class _PaymentState extends State<PaymentDialog> {
                   ]),
                   Row(children: [
                     Checkbox(
+                        key: Key('check'),
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
                         value: paymentInstrument == PaymentInstrument.check,
@@ -240,6 +245,7 @@ class _PaymentState extends State<PaymentDialog> {
                   ]),
                   Row(children: [
                     Checkbox(
+                        key: Key('bank'),
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
                         value: paymentInstrument == PaymentInstrument.bank,

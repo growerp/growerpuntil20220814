@@ -13,22 +13,15 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
 
-  testWidgets('''GrowERP Stripe receive payment test''', (tester) async {
-    // no clear because dependend on purchase test
+  testWidgets('''GrowERP category test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
     await CompanyTest.createCompany(tester);
-    await CommonTest.login(tester);
-    await CompanyTest.selectCompany(tester);
-    await UserTest.selectCustomers(tester);
-    await UserTest.addCustomers(tester, [customers[0]], check: false);
-    await AccountingTest.selectSalesPayments(tester);
-    await AccountingTest.addPayments(tester, salesPayments, check: false);
-    await AccountingTest.sendReceivePayment(tester);
-    await AccountingTest.checkPaymentComplete(tester);
-    await AccountingTest.selectTransactions(tester);
-    await AccountingTest.checkTransactions(tester);
+    await CategoryTest.selectCategories(tester);
+    await CategoryTest.addCategories(tester, categories);
+    await CategoryTest.updateCategories(tester);
+    await CategoryTest.deleteCategories(tester);
     await CommonTest.logout(tester);
   });
 }

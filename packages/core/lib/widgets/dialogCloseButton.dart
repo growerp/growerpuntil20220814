@@ -18,7 +18,6 @@ class DialogCloseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: InkWell(
-            key: Key('cancel'),
             onTap: () => Navigator.of(context).pop(),
             child: Container(
                 decoration: BoxDecoration(
@@ -27,6 +26,7 @@ class DialogCloseButton extends StatelessWidget {
                 ),
                 child: Icon(
                   Icons.close,
+                  key: Key('cancel'),
                   color: Colors.red,
                 ))),
       );

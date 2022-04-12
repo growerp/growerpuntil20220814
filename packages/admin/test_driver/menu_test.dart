@@ -191,8 +191,8 @@ void main() {
       await waitFor(find.byValueKey('/acctPurchase'), expected: true);
 
       // ledger
-      await tapMenuButton('tap/ledger');
-      await waitFor(find.byValueKey('/ledger'), expected: true);
+      await tapMenuButton('tap/acctLedger');
+      await waitFor(find.byValueKey('/acctLedger'), expected: true);
       if (imagePrefix != 'test_driver/screenshots')
         await takeScreenshot('ledgers');
 

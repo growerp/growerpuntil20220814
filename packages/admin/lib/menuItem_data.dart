@@ -223,7 +223,7 @@ List<MenuItem> acctMenuItems = [
       image: 'assets/images/accountingGrey.png',
       selectedImage: 'assets/images/accounting.png',
       title: 'Ledger',
-      route: '/ledger',
+      route: '/acctLedger',
       readGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
       writeGroups: [UserGroup.Admin]),
   MenuItem(

@@ -27,9 +27,9 @@ class PaymentInstrument {
   }
 
   static const PaymentInstrument cash = PaymentInstrument._('Cash');
-  static const PaymentInstrument creditcard = PaymentInstrument._('Creditcard');
-  static const PaymentInstrument bank = PaymentInstrument._('Bank');
-  static const PaymentInstrument check = PaymentInstrument._('Check');
+  static const PaymentInstrument creditcard = PaymentInstrument._('CreditCard');
+  static const PaymentInstrument bank = PaymentInstrument._('BankAccount');
+  static const PaymentInstrument check = PaymentInstrument._('CompanyCheck');
   static const PaymentInstrument other = PaymentInstrument._('Other');
 
   static PaymentInstrument tryParse(String val) {
@@ -38,9 +38,9 @@ class PaymentInstrument {
         return cash;
       case 'creditcard':
         return creditcard;
-      case 'bank':
+      case 'bankaccount':
         return bank;
-      case 'check':
+      case 'companycheck':
         return check;
       default:
         return other;

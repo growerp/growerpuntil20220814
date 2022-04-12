@@ -13,20 +13,18 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
 
-  // not implemented yet, use integration_test/chat_test.dart and lib/chatEcho_main.dart
-  testWidgets('''GrowERP chat test''', (tester) async {
+  testWidgets('''GrowERP company test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
-    await CommonTest.login(tester);
-    await UserTest.selectAdministrators(tester);
-    await UserTest.addAdministrators(tester, [administrators[0]]);
-    await ChatTest.selectChatRoom(tester);
-    await ChatTest.addRooms(tester, chatRooms);
-    await ChatTest.updateRooms(tester);
-    await ChatTest.deleteRooms(tester);
-    // needchat echo running
-//    await ChatTest.sendDirectMessage(tester);
-//    await ChatTest.sendRoomMessage(tester);
-  }, skip: true);
+
+    /// [createCompany]
+    await CompanyTest.createCompany(tester);
+    await CompanyTest.selectCompany(tester);
+    await CompanyTest.updateCompany(tester);
+
+    /// [createCompany]
+    await CompanyTest.updateAddress(tester);
+    await CompanyTest.updatePaymentMethod(tester);
+  });
 }

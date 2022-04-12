@@ -62,9 +62,9 @@ class FinDocListItem extends StatelessWidget {
                 SizedBox(width: 10),
                 Expanded(
                     child: Text(
-                        "${finDoc.otherUser!.firstName ?? ''} "
-                        "${finDoc.otherUser!.lastName ?? ''}\n"
-                        "${finDoc.otherUser!.companyName ?? ''}",
+                        "${finDoc.otherUser?.firstName ?? ''} "
+                        "${finDoc.otherUser?.lastName ?? ''}\n"
+                        "${finDoc.otherUser?.companyName ?? ''}",
                         key: Key("otherUser$index"))),
                 if (!isPhone && docType != FinDocType.payment)
                   SizedBox(width: 80, child: Text("${finDoc.items.length}")),
@@ -99,7 +99,7 @@ class FinDocListItem extends StatelessWidget {
                   key: Key('description$index'),
                 )),
             ]),
-            children: items(finDoc),
+            children: items(finDoc.items),
             trailing: SizedBox(
               width: isPhone ? 100 : 195,
               child: docType == FinDocType.payment &&
@@ -231,8 +231,8 @@ class FinDocListItem extends StatelessWidget {
     ]);
   }
 
-  List<Widget> items(FinDoc findoc) {
-    return List.from(finDoc.items.mapIndexed((index, e) =>
+  List<Widget> items(List<FinDocItem> items) {
+    return List.from(items.mapIndexed((index, e) =>
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           SizedBox(width: 50),
           Expanded(

@@ -38,7 +38,7 @@ Route<dynamic> coreRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => DisplayMenuItem(
               menuList: acctMenuItems, menuIndex: 2, tabIndex: 0));
-    case '/ledger':
+    case '/acctLedger':
       return MaterialPageRoute(
           builder: (context) => DisplayMenuItem(
               menuList: acctMenuItems, menuIndex: 3, tabIndex: 0));

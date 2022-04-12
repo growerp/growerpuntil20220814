@@ -19,7 +19,7 @@ To promote re-usage of test snippets we have three levels of tests.
 The top level integration tests are stored in the top level packages because menu structure can be different for every top level app like 'admin', 'hotel' etc.  
 Test file example fragment from the admin package: admin/integration_test/growerp_test.dart
 
-[filename](https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/integration_test/growerp_test.dart ':include :type=code :fragment=createCompany')
+[filename](https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/integration_test/company_test.dart ':include :type=code :fragment=createCompany')
 
 Full file: [growerp_test.dart](https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/integration_test/growerp_test.dart)
 

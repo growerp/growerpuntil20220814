@@ -21,7 +21,7 @@ import 'package:core/domains/domains.dart';
 import 'package:collection/collection.dart';
 
 class ProductTest {
-  static Future<void> selectProduct(WidgetTester tester) async {
+  static Future<void> selectProducts(WidgetTester tester) async {
     if (find
         .byKey(Key('HomeFormAuth'))
         .toString()
@@ -34,7 +34,7 @@ class ProductTest {
   static Future<void> addProducts(WidgetTester tester, List<Product> products,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest(backup: false);
-    int seq = test.sequence!;
+    int seq = test.sequence;
     if (test.products.isEmpty) {
       // not yet created
       test = test.copyWith(products: products);

@@ -30,7 +30,7 @@ class CommonTest {
   static Future<void> startApp(WidgetTester tester, Widget TopApp,
       {bool clear = false}) async {
     SaveTest test = await PersistFunctions.getTest();
-    int seq = test.sequence == null ? 0 : test.sequence! + 10;
+    int seq = test.sequence == null ? 0 : test.sequence + 10;
     if (clear == true) {
       await PersistFunctions.persistTest(SaveTest(sequence: seq));
     } else {
@@ -140,6 +140,15 @@ class CommonTest {
     expect(find.byKey(Key(widgetKey)), findsNWidgets(count));
   }
 
+  static Future<bool> doesExistKey(WidgetTester tester, String widgetKey,
+      [int count = 1]) async {
+    if (find
+        .byKey(Key(widgetKey))
+        .toString()
+        .startsWith('zero widgets with key')) return false;
+    return true;
+  }
+
   static Future<void> checkText(WidgetTester tester, String text) async {
     expect(find.textContaining(RegExp(text, caseSensitive: false)).last,
         findsOneWidget);
@@ -207,6 +216,7 @@ class CommonTest {
     if (tff.selectedItem is Country) return tff.selectedItem.name;
     if (tff.selectedItem is Category) return tff.selectedItem.categoryName;
     if (tff.selectedItem is Product) return tff.selectedItem.productName;
+    if (tff.selectedItem is User) return tff.selectedItem.companyName;
     return tff.selectedItem.toString();
   }
 

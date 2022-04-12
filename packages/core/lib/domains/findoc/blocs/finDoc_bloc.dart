@@ -111,7 +111,6 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
                 status: FinDocStatus.failure, message: error.toString())));
       }
       // get next page also for search
-
       ApiResult<List<FinDoc>> compResult = await repos.getFinDoc(
           sales: sales, docType: docType, searchString: event.searchString);
       return emit(compResult.when(
@@ -134,10 +133,13 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
   ) async {
     try {
       List<FinDoc> finDocs = List.from(state.finDocs);
+      // need sort because were loaded at the top of the list:better seen by the user
+      List<FinDocItem> items = List.from(event.finDoc.items);
+      items.sort((a, b) => a.itemSeqId!.compareTo(b.itemSeqId!));
       if (event.finDoc.idIsNull()) {
         // create
-        ApiResult<FinDoc> compResult = await repos.createFinDoc(
-            event.finDoc.copyWith(classificationId: classificationId));
+        ApiResult<FinDoc> compResult = await repos.createFinDoc(event.finDoc
+            .copyWith(classificationId: classificationId, items: items));
         return emit(compResult.when(
             success: (data) {
               finDocs.insert(0, data);
@@ -148,8 +150,8 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
                 status: FinDocStatus.failure, message: error.toString())));
       } else {
         // update
-        ApiResult<FinDoc> compResult = await repos.updateFinDoc(
-            event.finDoc.copyWith(classificationId: classificationId));
+        ApiResult<FinDoc> compResult = await repos.updateFinDoc(event.finDoc
+            .copyWith(classificationId: classificationId, items: items));
         return emit(compResult.when(
             success: (data) {
               late int index;

@@ -121,6 +121,7 @@ class _MyFinDocState extends State<FinDocPage> {
             SizedBox(height: isPhone ? 10 : 20),
             Center(
                 child: Text('${finDoc.docType} #${finDoc.id()}',
+                    key: Key('header'),
                     style: TextStyle(
                         fontSize: isPhone ? 10 : 20,
                         color: Colors.black,
@@ -156,7 +157,7 @@ class _MyFinDocState extends State<FinDocPage> {
                     onTap: () {},
                     child: Dialog(
                         key: Key(
-                            "FinDocDialog${finDoc.sales ? 'Sales' : 'Purchase'}"
+                            "FinDocDialog${finDoc.sales == true ? 'Sales' : 'Purchase'}"
                             "${finDoc.docType}"),
                         insetPadding: EdgeInsets.all(10),
                         shape: RoundedRectangleBorder(
@@ -215,9 +216,9 @@ class _MyFinDocState extends State<FinDocPage> {
                 ),
                 showSearchBox: true,
                 isFilteredOnline: true,
-                key: Key(finDocUpdated.sales ? 'customer' : 'supplier'),
+                key: Key(finDocUpdated.sales == true ? 'customer' : 'supplier'),
                 itemAsString: (User? u) =>
-                    "${u!.companyName},\n${u.firstName} ${u.lastName}",
+                    "${u!.companyName},\n${u.firstName ?? ''} ${u.lastName ?? ''}",
                 onFind: (String? filter) async {
                   ApiResult<List<User>> result = await repos.getUser(
                       userGroups: [UserGroup.Customer, UserGroup.Supplier],
@@ -432,28 +433,29 @@ class _MyFinDocState extends State<FinDocPage> {
                       Expanded(
                           child: Text("${itemType.itemTypeName}",
                               textAlign: TextAlign.left,
-                              key: Key('itemType$index'))),
+                              key: Key('itemType${index - 1}'))),
                     Expanded(
                         child: Text("${item.description}",
-                            key: Key('itemDescription$index'),
+                            key: Key('itemDescription${index - 1}'),
                             textAlign: TextAlign.left)),
                     Expanded(
                         child: Text("${item.quantity}",
                             textAlign: TextAlign.center,
-                            key: Key('itemQuantity$index'))),
+                            key: Key('itemQuantity${index - 1}'))),
                     Expanded(
-                        child:
-                            Text("${item.price}", key: Key('itemPrice$index'))),
+                        child: Text("${item.price}",
+                            key: Key('itemPrice${index - 1}'))),
                     if (!isPhone)
                       Expanded(
                         child: Text(
                             "${(item.price! * item.quantity!).toString()}",
                             textAlign: TextAlign.center),
-                        key: Key('subTotal$index'),
+                        key: Key('subTotal${index - 1}'),
                       ),
                   ]),
                   trailing: IconButton(
                     icon: Icon(Icons.delete_forever),
+                    key: Key("delete${index - 1}"),
                     onPressed: () {
                       _cartBloc.add(CartDeleteItem(index - 1));
                     },
@@ -646,7 +648,7 @@ Future addProductItemDialog(BuildContext context, repos) async {
                                 }),
                             SizedBox(height: 20),
                             TextFormField(
-                              key: Key('price'),
+                              key: Key('itemPrice'),
                               decoration:
                                   InputDecoration(labelText: 'Price/Amount'),
                               controller: _priceController,
@@ -658,7 +660,7 @@ Future addProductItemDialog(BuildContext context, repos) async {
                             ),
                             SizedBox(height: 20),
                             TextFormField(
-                              key: Key('quantity'),
+                              key: Key('itemQuantity'),
                               keyboardType: TextInputType.number,
                               inputFormatters: <TextInputFormatter>[
                                 FilteringTextInputFormatter.allow(
