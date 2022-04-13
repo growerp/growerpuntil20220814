@@ -30,7 +30,7 @@ class CommonTest {
   static Future<void> startApp(WidgetTester tester, Widget TopApp,
       {bool clear = false}) async {
     SaveTest test = await PersistFunctions.getTest();
-    int seq = test.sequence == null ? 0 : test.sequence + 10;
+    int seq = test.sequence + 100;
     if (clear == true) {
       await PersistFunctions.persistTest(SaveTest(sequence: seq));
     } else {
@@ -296,7 +296,13 @@ class CommonTest {
     return tff.data!.replaceAll(new RegExp(r'[^0-9]'), '');
   }
 
-  static Future<void> updateAddress(tester, Address address) async {
+  static int getWidgetCountByKey(WidgetTester tester, String key) {
+    var finder = find.byKey(Key(key));
+    return tester.widgetList(finder).length;
+  }
+
+  static Future<void> updateAddress(
+      WidgetTester tester, Address address) async {
     await drag(tester);
     await tapByKey(tester, 'address');
     await enterText(tester, 'address1', address.address1!);
@@ -310,7 +316,7 @@ class CommonTest {
     await tapByKey(tester, 'updateAddress', seconds: 5);
   }
 
-  static Future<void> checkAddress(tester, Address address) async {
+  static Future<void> checkAddress(WidgetTester tester, Address address) async {
     await drag(tester);
     await tapByKey(tester, 'address');
     expect(getTextFormField('address1'), contains(address.address1!));
@@ -323,7 +329,7 @@ class CommonTest {
   }
 
   static Future<void> updatePaymentMethod(
-      tester, PaymentMethod paymentMethod) async {
+      WidgetTester tester, PaymentMethod paymentMethod) async {
     await drag(tester);
     await tapByKey(tester, 'paymentMethod');
     await enterDropDown(
@@ -337,7 +343,7 @@ class CommonTest {
   }
 
   static Future<void> checkPaymentMethod(
-      tester, PaymentMethod paymentMethod) async {
+      WidgetTester tester, PaymentMethod paymentMethod) async {
     int length = paymentMethod.creditCardNumber!.length;
     await drag(tester);
     expect(

@@ -49,7 +49,7 @@ class APIRepository {
       // print("====interceptor apiKey: ${this.apiKey}");
       if (restRequestLogs) {
         print(
-            '===Outgoing dio request path: ${options.baseUrl}${options.path}');
+            '===Outgoing dio request ${options.method} path: ${options.baseUrl}${options.path}');
         print('===Outgoing dio request headers: ${options.headers}');
         print('===Outgoing dio request data: ${options.data}');
       }

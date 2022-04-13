@@ -16,9 +16,9 @@ void main() {
   testWidgets('''GrowERP Purchase Invoice test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
-        clear: true);
+        clear: false);
     // prepare
-    await CompanyTest.createCompany(tester);
+/*    await CompanyTest.createCompany(tester);
     await CommonTest.login(tester);
     await CategoryTest.selectCategories(tester);
     await CategoryTest.addCategories(tester, categories.sublist(0, 2),
@@ -28,9 +28,10 @@ void main() {
     await UserTest.selectSuppliers(tester);
     await UserTest.addSuppliers(tester, suppliers.sublist(0, 2), check: false);
     // purchase
+*/
     await InvoiceTest.selectPurchaseInvoices(tester);
-    await InvoiceTest.addInvoices(tester, purchaseInvoices.sublist(0, 3));
-    await InvoiceTest.updateInvoices(tester, purchaseInvoices.sublist(3, 5));
+//    await InvoiceTest.addInvoices(tester, purchaseInvoices.sublist(0, 3));
+//    await InvoiceTest.updateInvoices(tester, purchaseInvoices.sublist(3, 5));
     await InvoiceTest.deleteLastInvoice(tester);
     await InvoiceTest.sendOrApproveInvoices(tester);
     await PaymentTest.selectPurchasePayments(tester);

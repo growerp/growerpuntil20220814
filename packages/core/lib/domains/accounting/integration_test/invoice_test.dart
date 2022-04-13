@@ -35,8 +35,8 @@ class InvoiceTest {
   static Future<void> addInvoices(WidgetTester tester, List<FinDoc> invoices,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-//    test = test.copyWith(invoices: []); //======= remove
-//    await PersistFunctions.persistTest(test); //=====remove
+    //test = test.copyWith(invoices: []); //======= remove
+    //await PersistFunctions.persistTest(test); //=====remove
     if (test.invoices.isEmpty) {
       await PersistFunctions.persistTest(
           test.copyWith(invoices: await enterInvoiceData(tester, invoices)));
@@ -62,17 +62,12 @@ class InvoiceTest {
     await checkInvoice(tester, test.invoices);
   }
 
-  static Future<void> deleteInvoices(WidgetTester tester) async {
-    if (CommonTest.isPhone()) {
-      print("invoice delete not tested on Phone: option not available");
-      return;
-    }
-    SaveTest test = await PersistFunctions.getTest();
-    expect(find.byKey(Key('finDocItem')), findsNWidgets(test.invoices.length));
-    await CommonTest.tapByKey(tester, 'delete${test.invoices.length - 1}',
-        seconds: 5);
-    expect(
-        find.byKey(Key('userItem')), findsNWidgets(test.invoices.length - 1));
+  static Future<void> deleteLastInvoice(WidgetTester tester) async {
+    var count = CommonTest.getWidgetCountByKey(tester, 'finDocItem');
+    await CommonTest.tapByKey(tester, 'edit${count - 1}');
+    await CommonTest.tapByKey(tester, 'cancelFinDoc', seconds: 5);
+    await CommonTest.refresh(tester);
+    expect(find.byKey(Key('finDocItem')), findsNWidgets(count - 1));
   }
 
   static Future<List<FinDoc>> enterInvoiceData(
@@ -83,7 +78,8 @@ class InvoiceTest {
       if (invoice.invoiceId == null)
         await CommonTest.tapByKey(tester, 'addNew');
       else {
-        await CommonTest.tapByKey(tester, 'edit$index');
+        await CommonTest.doSearch(tester, searchString: invoice.invoiceId!);
+        await CommonTest.tapByKey(tester, 'edit0');
         expect(
             CommonTest.getTextField('header').split('#')[1], invoice.invoiceId);
       }
@@ -132,6 +128,7 @@ class InvoiceTest {
       await tester.pumpAndSettle(); // for the message to disappear
       index++;
     }
+    await CommonTest.closeSearch(tester);
     return newInvoices;
   }
 
@@ -176,6 +173,7 @@ class InvoiceTest {
       }
       await CommonTest.tapByKey(tester, 'cancel');
     }
+    await CommonTest.closeSearch(tester);
   }
 
   static Future<void> checkInvoices(WidgetTester tester) async {

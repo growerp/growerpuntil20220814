@@ -21,6 +21,7 @@ Company company = Company(
   currency: currencies[0],
   salesPerc: Decimal.parse("5"),
   vatPerc: Decimal.parse("20"),
+  email: "testXXX@example.com",
   address: Address(
       address1: 'mountain Ally 223',
       address2: 'suite 23',

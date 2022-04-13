@@ -341,7 +341,7 @@ class _MyFinDocState extends State<FinDocPage> {
           Visibility(
               visible: !finDoc.idIsNull(),
               child: ElevatedButton(
-                  key: Key('cancelOrder'),
+                  key: Key('cancelFinDoc'),
                   child: Text('Cancel ' + '${finDocUpdated.docType}'),
                   onPressed: () {
                     _cartBloc.add(CartCancelFinDoc(finDocUpdated));

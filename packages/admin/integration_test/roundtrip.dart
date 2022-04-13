@@ -6,6 +6,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
 
+/// the full business roundtrip for physical products
+/// purchase products and receive in warehouse
+/// sell the puchase products from the warehouse.
+/// full accounting
+
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 

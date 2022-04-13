@@ -23,8 +23,6 @@ class CompanyTest {
       {bool demoData = false}) async {
     SaveTest test = await PersistFunctions.getTest();
     int seq = test.sequence;
-    seq++;
-    await PersistFunctions.persistTest(test.copyWith(sequence: seq));
     if (test.company != null) return; // company already created
     await CommonTest.logout(tester);
     // tap new company button, enter data
@@ -37,7 +35,7 @@ class CompanyTest {
     await CommonTest.enterText(tester, 'email', email);
 
     /// [newCompany]
-    await CommonTest.enterText(tester, 'companyName', company.name!);
+    await CommonTest.enterText(tester, 'companyName', '${company.name!} $seq');
     await CommonTest.drag(tester);
     if (demoData == false)
       await CommonTest.tapByKey(tester, 'demoData'); // no demo data
@@ -58,14 +56,15 @@ class CompanyTest {
   static Future<void> updateCompany(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     if (company.name != test.company!.name!) return;
+    int seq = test.sequence;
     checkCompanyFields(test.company!, perc: false);
     await CommonTest.tapByKey(tester, 'update');
     checkCompanyFields(test.company!, perc: false);
     // add a '1' to all fields
+    var email = company.email!.replaceFirst('XXX', '${seq++}');
     Company newCompany = Company(
         name: company.name! + '1',
-        email: "${test.company!.email!.split('@')[0]}"
-            "1@${test.company!.email!.split('@')[1]}",
+        email: email,
         currency: currencies[1],
         telephoneNr: '9999999999',
         vatPerc: company.vatPerc! + Decimal.parse('1'),
@@ -84,8 +83,8 @@ class CompanyTest {
     // and check them
     checkCompanyFields(newCompany);
     var id = CommonTest.getTextField('header').split('#')[1];
-    await PersistFunctions.persistTest(
-        test.copyWith(company: newCompany.copyWith(partyId: id)));
+    await PersistFunctions.persistTest(test.copyWith(
+        company: newCompany.copyWith(partyId: id), sequence: seq));
   }
 
   /// check company fields however not when perc == false: \
