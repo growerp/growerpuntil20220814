@@ -19,7 +19,9 @@ enum FinDocStatus { initial, loading, success, failure }
 class FinDocState extends Equatable {
   const FinDocState({
     this.status = FinDocStatus.initial,
-    this.finDocs = const <FinDoc>[],
+    this.finDocs = const [],
+    this.paymentTypes = const [],
+    this.itemTypes = const [],
     this.message,
     this.hasReachedMax = false,
     this.searchString = '',
@@ -29,6 +31,8 @@ class FinDocState extends Equatable {
   final FinDocStatus status;
   final String? message;
   final List<FinDoc> finDocs;
+  final List<PaymentType> paymentTypes;
+  final List<ItemType> itemTypes;
   final bool hasReachedMax;
   final String searchString;
   final bool search;
@@ -37,6 +41,8 @@ class FinDocState extends Equatable {
     FinDocStatus? status,
     String? message,
     List<FinDoc>? finDocs,
+    List<ItemType>? itemTypes,
+    List<PaymentType>? paymentTypes,
     bool? hasReachedMax,
     String? searchString,
     bool? search,
@@ -44,6 +50,8 @@ class FinDocState extends Equatable {
     return FinDocState(
       status: status ?? this.status,
       finDocs: finDocs ?? this.finDocs,
+      itemTypes: itemTypes ?? this.itemTypes,
+      paymentTypes: paymentTypes ?? this.paymentTypes,
       message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,

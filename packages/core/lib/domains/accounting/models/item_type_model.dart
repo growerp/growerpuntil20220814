@@ -15,15 +15,15 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 
-part 'itemType_model.freezed.dart';
-part 'itemType_model.g.dart';
+part 'item_type_model.freezed.dart';
+part 'item_type_model.g.dart';
 
 @freezed
 class ItemType with _$ItemType {
   ItemType._();
   factory ItemType({
-    String? itemTypeId,
-    String? itemTypeName,
+    @Default('') String itemTypeId,
+    @Default('') String itemTypeName,
   }) = _ItemType;
 
   factory ItemType.fromJson(Map<String, dynamic> json) =>

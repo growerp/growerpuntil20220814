@@ -31,11 +31,12 @@ class CompanyTest {
     await tester.pump(Duration(seconds: 3));
     await CommonTest.enterText(tester, 'firstName', admin.firstName!);
     await CommonTest.enterText(tester, 'lastName', admin.lastName!);
-    var email = admin.email!.replaceFirst('XXX', '${seq++}');
+    var email = admin.email!.replaceFirst('XXX', '$seq');
     await CommonTest.enterText(tester, 'email', email);
 
     /// [newCompany]
-    await CommonTest.enterText(tester, 'companyName', '${company.name!} $seq');
+    await CommonTest.enterText(
+        tester, 'companyName', '${company.name!} ${seq++}');
     await CommonTest.drag(tester);
     if (demoData == false)
       await CommonTest.tapByKey(tester, 'demoData'); // no demo data
@@ -45,7 +46,8 @@ class CompanyTest {
         sequence: seq,
         nowDate: DateTime.now(), // used in rental
         admin: admin.copyWith(email: email, loginName: email),
-        company: company.copyWith(email: email)));
+        company:
+            company.copyWith(email: email, name: '${company.name!} $seq')));
     await CommonTest.login(tester);
   }
 

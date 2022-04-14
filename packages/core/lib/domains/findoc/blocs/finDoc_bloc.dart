@@ -19,9 +19,9 @@ import 'package:core/domains/domains.dart';
 import 'package:core/services/api_result.dart';
 import 'package:core/services/network_exceptions.dart';
 import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:stream_transform/stream_transform.dart';
-
 import '../../../api_repository.dart';
 
 part 'finDoc_event.dart';
@@ -82,17 +82,43 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
     try {
       // start from record zero for initial and refresh
       if (state.status == FinDocStatus.initial || event.refresh) {
-        ApiResult<List<FinDoc>> compResult = await repos.getFinDoc(
-            sales: sales, docType: docType, searchString: event.searchString);
-        return emit(compResult.when(
-            success: (data) => state.copyWith(
-                  status: FinDocStatus.success,
-                  finDocs: data,
-                  hasReachedMax: data.length < _finDocLimit ? true : false,
-                  searchString: '',
-                ),
-            failure: (NetworkExceptions error) => state.copyWith(
-                status: FinDocStatus.failure, message: error.toString())));
+        List<ApiResult<List<dynamic>>> results =
+            await Future.wait<ApiResult<List<dynamic>>>([
+          repos.getFinDoc(
+              sales: sales, docType: docType, searchString: event.searchString),
+          repos.getItemTypes(sales: sales),
+          repos.getPaymentTypes(sales: sales),
+        ]);
+        results.forEachIndexed((index, result) {
+          switch (index) {
+            case 0:
+              return emit(result.when(
+                  success: (data) => state.copyWith(
+                        status: FinDocStatus.success,
+                        finDocs: data as List<FinDoc>,
+                        hasReachedMax:
+                            data.length < _finDocLimit ? true : false,
+                        searchString: '',
+                      ),
+                  failure: (NetworkExceptions error) => state.copyWith(
+                      status: FinDocStatus.failure,
+                      message: error.toString())));
+            case 1:
+              return emit(result.when(
+                  success: (data) =>
+                      state.copyWith(itemTypes: data as List<ItemType>),
+                  failure: (NetworkExceptions error) => state.copyWith(
+                      status: FinDocStatus.failure,
+                      message: error.toString())));
+            case 2:
+              return emit(result.when(
+                  success: (data) =>
+                      state.copyWith(paymentTypes: data as List<PaymentType>),
+                  failure: (NetworkExceptions error) => state.copyWith(
+                      status: FinDocStatus.failure,
+                      message: error.toString())));
+          }
+        });
       }
       // get first search page also for changed search
       if (event.searchString.isNotEmpty && state.searchString.isEmpty ||

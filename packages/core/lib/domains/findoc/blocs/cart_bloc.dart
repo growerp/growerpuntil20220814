@@ -14,7 +14,6 @@
 
 import 'dart:async';
 import 'package:core/domains/common/functions/persist_functions.dart';
-import 'package:core/domains/findoc/findoc.dart';
 import 'package:decimal/decimal.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

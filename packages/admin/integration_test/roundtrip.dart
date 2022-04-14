@@ -18,7 +18,7 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
 
-  testWidgets('''GrowERP Purchase test''', (tester) async {
+  testWidgets('''GrowERP roundtrip Purchase test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
@@ -64,7 +64,7 @@ void main() {
     await OrderTest.checkPurchaseOrdersComplete(tester);
   });
 
-  testWidgets('''GrowERP sales test''', (tester) async {
+  testWidgets('''GrowERP roundtrip sales test''', (tester) async {
     // no clear because dependend on purchase test
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()));

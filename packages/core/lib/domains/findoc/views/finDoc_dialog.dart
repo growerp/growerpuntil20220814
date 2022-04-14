@@ -495,7 +495,7 @@ Future addAnotherItemDialog(
                             value == null ? 'field required' : null,
                         items: state.itemTypes.map((item) {
                           return DropdownMenuItem<ItemType>(
-                              child: Text(item.itemTypeName!), value: item);
+                              child: Text(item.itemTypeName), value: item);
                         }).toList(),
                         onChanged: (ItemType? newValue) {
                           _selectedItemType = newValue;

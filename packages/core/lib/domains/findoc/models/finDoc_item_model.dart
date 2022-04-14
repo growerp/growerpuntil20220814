@@ -18,8 +18,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:core/services/jsonConverters.dart';
 import 'package:flutter/foundation.dart';
 
-part 'finDocItem_model.freezed.dart';
-part 'finDocItem_model.g.dart';
+part 'finDoc_item_model.freezed.dart';
+part 'finDoc_item_model.g.dart';
 
 @freezed
 class FinDocItem with _$FinDocItem {

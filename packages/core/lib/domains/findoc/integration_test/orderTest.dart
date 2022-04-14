@@ -49,9 +49,9 @@ class OrderTest {
           tester, 'product', order.items[0].description!);
       await CommonTest.drag(tester, listViewName: 'listView3');
       await CommonTest.enterText(
-          tester, 'price', order.items[0].price.toString());
+          tester, 'itemPrice', order.items[0].price.toString());
       await CommonTest.enterText(
-          tester, 'quantity', order.items[0].quantity.toString());
+          tester, 'itemQuantity', order.items[0].quantity.toString());
       await CommonTest.tapByKey(tester, 'ok');
       // create order
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
