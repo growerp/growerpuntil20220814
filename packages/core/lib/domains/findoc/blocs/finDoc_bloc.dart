@@ -121,7 +121,7 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
         });
       }
       // get first search page also for changed search
-      if (event.searchString.isNotEmpty && state.searchString.isEmpty ||
+      else if (event.searchString.isNotEmpty && state.searchString.isEmpty ||
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
         ApiResult<List<FinDoc>> compResult = await repos.getFinDoc(
@@ -137,16 +137,18 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
                 status: FinDocStatus.failure, message: error.toString())));
       }
       // get next page also for search
-      ApiResult<List<FinDoc>> compResult = await repos.getFinDoc(
-          sales: sales, docType: docType, searchString: event.searchString);
-      return emit(compResult.when(
-          success: (data) => state.copyWith(
-                status: FinDocStatus.success,
-                finDocs: List.of(state.finDocs)..addAll(data),
-                hasReachedMax: data.length < _finDocLimit ? true : false,
-              ),
-          failure: (NetworkExceptions error) => state.copyWith(
-              status: FinDocStatus.failure, message: error.toString())));
+      else {
+        ApiResult<List<FinDoc>> compResult = await repos.getFinDoc(
+            sales: sales, docType: docType, searchString: event.searchString);
+        return emit(compResult.when(
+            success: (data) => state.copyWith(
+                  status: FinDocStatus.success,
+                  finDocs: List.of(state.finDocs)..addAll(data),
+                  hasReachedMax: data.length < _finDocLimit ? true : false,
+                ),
+            failure: (NetworkExceptions error) => state.copyWith(
+                status: FinDocStatus.failure, message: error.toString())));
+      }
     } catch (error) {
       emit(state.copyWith(
           status: FinDocStatus.failure, message: error.toString()));
@@ -205,7 +207,9 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
               }
               finDocs[index] = data;
               return state.copyWith(
-                  status: FinDocStatus.success, finDocs: finDocs);
+                  status: FinDocStatus.success,
+                  finDocs: finDocs,
+                  message: "$docType ${event.finDoc.id()} updated");
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: FinDocStatus.failure, message: error.toString())));

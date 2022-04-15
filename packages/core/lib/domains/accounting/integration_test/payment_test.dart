@@ -42,9 +42,7 @@ class PaymentTest {
           test.copyWith(payments: await enterPaymentData(tester, payments)));
     }
     if (check) {
-      SaveTest test = await PersistFunctions.getTest();
-      await PersistFunctions.persistTest(
-          test.copyWith(payments: await checkPayment(tester, test.payments)));
+      await checkPayment(tester, test.payments);
     }
   }
 
@@ -63,15 +61,27 @@ class PaymentTest {
     await checkPayment(tester, test.payments);
   }
 
+  static Future<void> deleteLastPayment(WidgetTester tester) async {
+    var count = CommonTest.getWidgetCountByKey(tester, 'finDocItem');
+    await CommonTest.refresh(tester);
+    await CommonTest.tapByKey(tester, 'edit${count - 1}');
+    await CommonTest.tapByKey(tester, 'cancelFinDoc', seconds: 5);
+    await CommonTest.refresh(tester);
+    expect(find.byKey(Key('finDocItem')), findsNWidgets(count - 1));
+    SaveTest test = await PersistFunctions.getTest();
+    await PersistFunctions.persistTest(test.copyWith(
+        payments: test.payments.sublist(0, test.payments.length - 1)));
+  }
+
   static Future<List<FinDoc>> enterPaymentData(
       WidgetTester tester, List<FinDoc> payments) async {
-    int index = 0;
     List<FinDoc> newPayments = [];
     for (FinDoc payment in payments) {
       if (payment.paymentId == null)
         await CommonTest.tapByKey(tester, 'addNew');
       else {
-        await CommonTest.tapByKey(tester, 'edit$index');
+        await CommonTest.doSearch(tester, searchString: payment.paymentId!);
+        await CommonTest.tapByKey(tester, 'edit0');
         expect(
             CommonTest.getTextField('header').split('#')[1], payment.paymentId);
       }
@@ -85,40 +95,66 @@ class PaymentTest {
           tester, 'amount'); // required because keyboard come up
       await CommonTest.enterText(
           tester, 'amount', payment.grandTotal!.toString());
-      if (await CommonTest.doesExistKey(tester, 'creditCard') == true)
-        await CommonTest.tapByKey(tester, 'creditCard');
-      else
-        await CommonTest.tapByKey(tester, 'cash');
-      await CommonTest.drag(tester);
-      await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      switch (payment.paymentInstrument) {
+        case PaymentInstrument.bank:
+          await CommonTest.tapByKey(tester, 'bank');
+          break;
+        case PaymentInstrument.creditcard:
+          await CommonTest.tapByKey(tester, 'creditCard');
+          break;
+        case PaymentInstrument.check:
+          await CommonTest.tapByKey(tester, 'check');
+          break;
+        case PaymentInstrument.cash:
+          await CommonTest.tapByKey(tester, 'cash');
+          break;
+      }
+      await CommonTest.drag(tester, listViewName: 'listView2');
+      await CommonTest.enterDropDown(
+          tester, 'itemType', payment.items[0].itemTypeName!);
+      await CommonTest.tapByKey(tester, 'update', seconds: 8);
       newPayments
           .add(payment.copyWith(paymentId: CommonTest.getTextField('id0')));
-      await tester
-          .pumpAndSettle(); // for the message to disappear      index++;
+      await tester.pumpAndSettle(); // for the message to disappear
     }
     return newPayments;
   }
 
-  static Future<List<FinDoc>> checkPayment(
+  static Future<void> checkPayment(
       WidgetTester tester, List<FinDoc> payments) async {
-    int index = 0;
-    List<FinDoc> newPayments = [];
     for (FinDoc payment in payments) {
-      expect(CommonTest.getTextField('grandTotal$index'),
+      await CommonTest.doSearch(tester,
+          searchString: payment.paymentId!, seconds: 8);
+      expect(CommonTest.getTextField('otherUser0'),
+          contains(payment.otherUser?.companyName));
+      expect(CommonTest.getTextField('status0'),
+          equals(finDocStatusValues[FinDocStatusVal.Created.toString()]));
+      expect(CommonTest.getTextField('grandTotal0'),
           equals(payment.grandTotal.toString()));
-      var id = CommonTest.getTextField('id$index');
-      await CommonTest.tapByKey(tester, 'edit${index}');
+      await CommonTest.tapByKey(tester, 'edit0');
       expect(
           find.byKey(Key(
               'PaymentDialog${payment.sales == true ? "Sales" : "Purchase"}')),
           findsOneWidget);
       expect(CommonTest.getTextFormField('amount'),
           equals(payment.grandTotal!.toString()));
-      newPayments.add(payment.copyWith(paymentId: id));
-      index++;
+      switch (payment.paymentInstrument) {
+        case PaymentInstrument.creditcard:
+          expect(CommonTest.getCheckbox('creditCard'), equals(true));
+          break;
+        case PaymentInstrument.bank:
+          expect(CommonTest.getCheckbox('bank'), equals(true));
+          break;
+        case PaymentInstrument.cash:
+          expect(CommonTest.getCheckbox('cash'), equals(true));
+          break;
+        case PaymentInstrument.check:
+          expect(CommonTest.getCheckbox('check'), equals(true));
+          break;
+      }
       await CommonTest.tapByKey(tester, 'cancel');
     }
-    return newPayments;
+    await CommonTest.closeSearch(tester);
   }
 
   static Future<void> checkPayments(WidgetTester tester) async {
@@ -163,7 +199,7 @@ class PaymentTest {
             ? test.invoices
             : test.payments;
     for (FinDoc payment in payments) {
-      await CommonTest.doSearch(tester, searchString: payment.id() ?? '');
+      await CommonTest.doSearch(tester, searchString: payment.id()!);
       if (CommonTest.getTextField('status0') ==
           finDocStatusValues[FinDocStatusVal.InPreparation.toString()])
         await CommonTest.tapByKey(tester, 'nextStatus0', seconds: 5);
@@ -174,6 +210,7 @@ class PaymentTest {
           finDocStatusValues[FinDocStatusVal.Approved.toString()])
         await CommonTest.tapByKey(tester, 'nextStatus0', seconds: 5);
     }
+    await CommonTest.closeSearch(tester);
   }
 
   /// check if the purchase process has been completed successfuly

@@ -60,7 +60,7 @@ class FinDocState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, finDocs, hasReachedMax, search];
+  List<Object?> get props => [status, finDocs, itemTypes, paymentTypes, search];
 
   @override
   String toString() => '$status { #finDocs: ${finDocs.length}, '

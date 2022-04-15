@@ -93,16 +93,15 @@ class CommonTest {
   }
 
   static Future<void> doSearch(WidgetTester tester,
-      {required String searchString}) async {
+      {required String searchString, int seconds = 5}) async {
     if (find
         .byKey(Key('searchButton'))
         .toString()
         .startsWith('zero widgets with key')) {
-      await refresh(tester);
       await tapByKey(tester, 'search');
     }
     await enterText(tester, 'searchField', searchString);
-    await tapByKey(tester, 'searchButton', seconds: 5);
+    await tapByKey(tester, 'searchButton', seconds: seconds);
   }
 
   static Future<void> closeSearch(WidgetTester tester) async {
@@ -231,9 +230,8 @@ class CommonTest {
     return tff.controller!.text;
   }
 
-  static bool getCheckBox(String key) {
-    CheckboxListTile tff =
-        find.byKey(Key(key)).evaluate().single.widget as CheckboxListTile;
+  static bool getCheckbox(String key) {
+    Checkbox tff = find.byKey(Key(key)).evaluate().single.widget as Checkbox;
     return tff.value ?? false;
   }
 

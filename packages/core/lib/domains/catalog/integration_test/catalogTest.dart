@@ -38,7 +38,7 @@ class CatalogTest {
       if (product.price != null)
         await CommonTest.enterText(tester, 'price', product.price!.toString());
       await CommonTest.drag(tester);
-      if (CommonTest.getCheckBox('useWarehouse') != product.useWarehouse)
+      if (CommonTest.getCheckbox('useWarehouse') != product.useWarehouse)
         await CommonTest.tapByKey(tester, 'useWarehouse');
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
     }

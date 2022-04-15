@@ -13,20 +13,23 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
 
-  testWidgets('''GrowERP send payment test''', (tester) async {
+  testWidgets('''GrowERP purchase payment test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
     await CompanyTest.createCompany(tester);
-    await CommonTest.login(tester);
     await CompanyTest.selectCompany(tester);
+    await CompanyTest.updateAddress(tester, check: false);
+    await CompanyTest.updatePaymentMethod(tester, check: false);
     await UserTest.selectSuppliers(tester);
-    await UserTest.addSuppliers(tester, [suppliers[0]], check: false);
+    await UserTest.addSuppliers(tester, suppliers.sublist(0, 2), check: false);
     await PaymentTest.selectPurchasePayments(tester);
-    await PaymentTest.addPayments(tester, purchasePayments);
+    await PaymentTest.addPayments(tester, purchasePayments.sublist(0, 2));
+    await PaymentTest.updatePayments(tester, purchasePayments.sublist(2, 4));
+    await PaymentTest.deleteLastPayment(tester);
     await PaymentTest.sendReceivePayment(tester);
     await PaymentTest.checkPaymentComplete(tester);
-//    await TransactionTest.selectTransactions(tester);
-//    await TransactionTest.checkTransactionComplete(tester);
+    await TransactionTest.selectTransactions(tester);
+    await TransactionTest.checkTransactionComplete(tester);
   });
 }

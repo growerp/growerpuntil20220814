@@ -36,10 +36,11 @@ class _PaymentState extends State<PaymentDialog> {
   late APIRepository repos;
   late FinDoc finDocUpdated;
   User? _selectedUser;
+  ItemType? _selectedItemType;
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   late bool isPhone;
-  PaymentInstrument paymentInstrument = PaymentInstrument.other;
+  PaymentInstrument? _paymentInstrument;
   final _userSearchBoxController = TextEditingController();
   final _amountController = TextEditingController();
   _PaymentState(this.finDoc);
@@ -52,6 +53,13 @@ class _PaymentState extends State<PaymentDialog> {
     _selectedUser = finDocUpdated.otherUser;
     _amountController.text =
         finDoc.grandTotal == null ? '' : finDoc.grandTotal.toString();
+    _selectedItemType = finDocUpdated.items.isNotEmpty
+        ? ItemType(
+            itemTypeId: finDocUpdated.items[0].itemTypeId!, itemTypeName: '')
+        : null;
+    _paymentInstrument = finDocUpdated.paymentInstrument == null
+        ? null
+        : finDocUpdated.paymentInstrument!;
   }
 
   @override
@@ -72,30 +80,37 @@ class _PaymentState extends State<PaymentDialog> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: BlocListener<FinDocBloc, FinDocState>(
-                          listener: (context, state) {
-                            if (state.status == FinDocStatus.success)
-                              Navigator.of(context).pop();
-                            if (state.status == FinDocStatus.failure)
-                              HelperFunctions.showMessage(
-                                  context, '${state.message}', Colors.red);
-                          },
-                          child: SingleChildScrollView(
+                      child: BlocConsumer<FinDocBloc, FinDocState>(
+                        listener: (context, state) {
+                          if (state.status == FinDocStatus.success)
+                            Navigator.of(context).pop();
+                          if (state.status == FinDocStatus.failure)
+                            HelperFunctions.showMessage(
+                                context, '${state.message}', Colors.red);
+                        },
+                        builder: (context, state) {
+                          return SingleChildScrollView(
+                              key: Key('listView2'),
                               physics: ClampingScrollPhysics(),
                               child: Stack(clipBehavior: Clip.none, children: [
                                 Container(
                                     width: 400,
-                                    height: 650,
-                                    child: paymentForm()),
+                                    height: 750,
+                                    child: paymentForm(state)),
                                 Positioned(
                                     top: -10,
                                     right: -10,
                                     child: DialogCloseButton())
-                              ])))))),
+                              ]));
+                        },
+                      )))),
         ));
   }
 
-  Widget paymentForm() {
+  Widget paymentForm(FinDocState state) {
+    if (_selectedItemType != null)
+      _selectedItemType = state.itemTypes
+          .firstWhere((el) => _selectedItemType!.itemTypeId == el.itemTypeId);
     FinDocBloc finDocBloc = BlocProvider.of<FinDocBloc>(context);
     AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
     Color getColor(Set<MaterialState> states) {
@@ -186,20 +201,25 @@ class _PaymentState extends State<PaymentDialog> {
                 children: [
                   Visibility(
                       visible: (finDoc.sales == true &&
-                          _selectedUser?.companyPaymentMethod?.ccDescription !=
-                              null),
+                              _selectedUser
+                                      ?.companyPaymentMethod?.ccDescription !=
+                                  null) ||
+                          (finDoc.sales == false &&
+                              authBloc.state.authenticate?.company
+                                      ?.paymentMethod?.ccDescription !=
+                                  null),
                       child: Row(children: [
                         Checkbox(
                             key: Key('creditCard'),
                             checkColor: Colors.white,
                             fillColor:
                                 MaterialStateProperty.resolveWith(getColor),
-                            value: paymentInstrument ==
+                            value: _paymentInstrument ==
                                 PaymentInstrument.creditcard,
                             onChanged: (bool? value) {
                               setState(() {
                                 if (value == true)
-                                  paymentInstrument =
+                                  _paymentInstrument =
                                       PaymentInstrument.creditcard;
                               });
                             }),
@@ -214,11 +234,11 @@ class _PaymentState extends State<PaymentDialog> {
                         key: Key('cash'),
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: paymentInstrument == PaymentInstrument.cash,
+                        value: _paymentInstrument == PaymentInstrument.cash,
                         onChanged: (bool? value) {
                           setState(() {
                             if (value == true)
-                              paymentInstrument = PaymentInstrument.cash;
+                              _paymentInstrument = PaymentInstrument.cash;
                           });
                         }),
                     Expanded(
@@ -231,11 +251,11 @@ class _PaymentState extends State<PaymentDialog> {
                         key: Key('check'),
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: paymentInstrument == PaymentInstrument.check,
+                        value: _paymentInstrument == PaymentInstrument.check,
                         onChanged: (bool? value) {
                           setState(() {
                             if (value == true)
-                              paymentInstrument = PaymentInstrument.check;
+                              _paymentInstrument = PaymentInstrument.check;
                           });
                         }),
                     Expanded(
@@ -248,11 +268,11 @@ class _PaymentState extends State<PaymentDialog> {
                         key: Key('bank'),
                         checkColor: Colors.white,
                         fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: paymentInstrument == PaymentInstrument.bank,
+                        value: _paymentInstrument == PaymentInstrument.bank,
                         onChanged: (bool? value) {
                           setState(() {
                             if (value == true)
-                              paymentInstrument = PaymentInstrument.bank;
+                              _paymentInstrument = PaymentInstrument.bank;
                           });
                         }),
                     Expanded(
@@ -265,17 +285,51 @@ class _PaymentState extends State<PaymentDialog> {
             ),
           ),
           SizedBox(height: 20),
-          ElevatedButton(
-              key: Key('update'),
-              child: Text((finDoc.idIsNull() ? 'Create ' : 'Update ') +
-                  '${finDocUpdated.docType}'),
-              onPressed: () {
-                finDocBloc.add(FinDocUpdate(finDocUpdated.copyWith(
-                  otherUser: _selectedUser,
-                  grandTotal: Decimal.parse(_amountController.text),
-                  paymentInstrument: paymentInstrument,
-                )));
-              }),
+          DropdownButtonFormField<ItemType>(
+            key: Key('itemType'),
+            decoration: InputDecoration(labelText: 'Item Type'),
+            hint: Text('ItemType'),
+            value: _selectedItemType,
+            validator: (value) => value == null ? 'field required' : null,
+            items: state.itemTypes.map((item) {
+              return DropdownMenuItem<ItemType>(
+                  child: Text(item.itemTypeName), value: item);
+            }).toList(),
+            onChanged: (ItemType? newValue) {
+              _selectedItemType = newValue;
+            },
+            isExpanded: true,
+          ),
+          SizedBox(height: 20),
+          Row(
+            children: [
+              ElevatedButton(
+                  key: Key('cancelFinDoc'),
+                  child: Text('Cancel Payment'),
+                  onPressed: () {
+                    finDocBloc.add(FinDocUpdate(finDocUpdated.copyWith(
+                      status: FinDocStatusVal.Cancelled,
+                    )));
+                  }),
+              SizedBox(width: 20),
+              Expanded(
+                child: ElevatedButton(
+                    key: Key('update'),
+                    child: Text((finDoc.idIsNull() ? 'Create ' : 'Update ') +
+                        '${finDocUpdated.docType}'),
+                    onPressed: () {
+                      finDocBloc.add(FinDocUpdate(finDocUpdated.copyWith(
+                        otherUser: _selectedUser,
+                        grandTotal: Decimal.parse(_amountController.text),
+                        paymentInstrument: _paymentInstrument,
+                        items: [
+                          FinDocItem(itemTypeId: _selectedItemType?.itemTypeId)
+                        ],
+                      )));
+                    }),
+              ),
+            ],
+          ),
         ]));
   }
 }

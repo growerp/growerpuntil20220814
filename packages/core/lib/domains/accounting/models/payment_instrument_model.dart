@@ -28,7 +28,7 @@ class PaymentInstrument {
 
   static const PaymentInstrument cash = PaymentInstrument._('Cash');
   static const PaymentInstrument creditcard = PaymentInstrument._('CreditCard');
-  static const PaymentInstrument bank = PaymentInstrument._('BankAccount');
+  static const PaymentInstrument bank = PaymentInstrument._('WireTransfer');
   static const PaymentInstrument check = PaymentInstrument._('CompanyCheck');
   static const PaymentInstrument other = PaymentInstrument._('Other');
 
@@ -38,7 +38,7 @@ class PaymentInstrument {
         return cash;
       case 'creditcard':
         return creditcard;
-      case 'bankaccount':
+      case 'wiretransfer':
         return bank;
       case 'companycheck':
         return check;

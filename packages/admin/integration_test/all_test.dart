@@ -17,7 +17,7 @@ import 'category_test.dart' as category;
 import 'product_test.dart' as product;
 import 'asset_test.dart' as asset;
 import 'sales_payment_test.dart' as sales_payment;
-import 'send_payment_test.dart' as purchase_payment;
+import 'purchase_payment_test.dart' as purchase_payment;
 import 'sales_invoice_test.dart' as sales_invoice;
 import 'purchase_invoice_test.dart' as purchase_invoice;
 import 'roundtrip.dart' as purchase_sales;

@@ -22,7 +22,7 @@ class CompanyTest {
   static Future<void> createCompany(WidgetTester tester,
       {bool demoData = false}) async {
     SaveTest test = await PersistFunctions.getTest();
-    int seq = test.sequence;
+    int seq = test.sequence + 1;
     if (test.company != null) return; // company already created
     await CommonTest.logout(tester);
     // tap new company button, enter data
@@ -31,7 +31,7 @@ class CompanyTest {
     await tester.pump(Duration(seconds: 3));
     await CommonTest.enterText(tester, 'firstName', admin.firstName!);
     await CommonTest.enterText(tester, 'lastName', admin.lastName!);
-    var email = admin.email!.replaceFirst('XXX', '$seq');
+    var email = admin.email!.replaceFirst('XXX', '${seq++}');
     await CommonTest.enterText(tester, 'email', email);
 
     /// [newCompany]
@@ -110,7 +110,7 @@ class CompanyTest {
   static Future<void> updateAddress(WidgetTester tester,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-    if (test.company!.address != null) return;
+    if (test.company?.address == null) return;
     await CommonTest.updateAddress(tester, company.address!);
     if (check == true) {
       await CommonTest.checkAddress(tester, company.address!);
