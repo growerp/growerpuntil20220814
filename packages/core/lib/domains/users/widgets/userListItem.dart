@@ -44,7 +44,9 @@ class UserListItem extends StatelessWidget {
             ),
             subtitle: !isDeskTop
                 ? Text(
-                    user.email!.contains('example.com') ? " " : "${user.email}",
+                    user.email != null && user.email!.contains('example.com')
+                        ? " "
+                        : "${user.email}",
                     key: Key("email$index"))
                 : null,
             title: Row(

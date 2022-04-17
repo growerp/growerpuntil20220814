@@ -108,11 +108,13 @@ class _PaymentState extends State<PaymentDialog> {
   }
 
   Widget paymentForm(FinDocState state) {
-    if (_selectedItemType != null)
+    if (_selectedItemType != null) {
       _selectedItemType = state.itemTypes
           .firstWhere((el) => _selectedItemType!.itemTypeId == el.itemTypeId);
-    FinDocBloc finDocBloc = BlocProvider.of<FinDocBloc>(context);
-    AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
+    }
+    FinDocBloc finDocBloc = context.read<FinDocBloc>();
+    AuthBloc authBloc = context.read<AuthBloc>();
+//    finDocBloc.add(FinDocGetItemTypes(sales: finDocUpdated.sales));
     Color getColor(Set<MaterialState> states) {
       const Set<MaterialState> interactiveStates = <MaterialState>{
         MaterialState.pressed,
@@ -187,6 +189,11 @@ class _PaymentState extends State<PaymentDialog> {
                     new EdgeInsets.symmetric(vertical: 35.0, horizontal: 10.0),
                 labelText: 'Amount'),
             controller: _amountController,
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value!.isEmpty) return 'Enter Price or Amount?';
+              return null;
+            },
           ),
           SizedBox(height: 20),
           Container(
@@ -290,7 +297,8 @@ class _PaymentState extends State<PaymentDialog> {
             decoration: InputDecoration(labelText: 'Item Type'),
             hint: Text('ItemType'),
             value: _selectedItemType,
-            validator: (value) => value == null ? 'field required' : null,
+            validator: (value) =>
+                value == null ? 'Enter a item type for posting?' : null,
             items: state.itemTypes.map((item) {
               return DropdownMenuItem<ItemType>(
                   child: Text(item.itemTypeName), value: item);

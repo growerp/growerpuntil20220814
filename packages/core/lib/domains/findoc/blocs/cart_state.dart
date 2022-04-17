@@ -20,7 +20,7 @@ class CartState extends Equatable {
   CartState({
     this.status = CartStatus.initial,
     required this.finDoc,
-    required this.itemTypes,
+    this.itemTypes = const [],
     this.message,
   });
 

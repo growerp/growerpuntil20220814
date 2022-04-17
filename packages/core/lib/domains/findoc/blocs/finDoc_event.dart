@@ -57,3 +57,11 @@ class FinDocConfirmPayment extends FinDocEvent {
   const FinDocConfirmPayment(this.payment);
   final FinDoc payment;
 }
+
+class FinDocGetUsers extends FinDocEvent {
+  const FinDocGetUsers({this.userGroups, this.filter});
+  final List<UserGroup>? userGroups;
+  final String? filter;
+}
+
+class FinDocGetItemTypes extends FinDocEvent {}

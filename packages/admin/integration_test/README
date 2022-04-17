@@ -7,7 +7,7 @@ On mobile.
 run tests on mobile:
     flutter drive \
      --driver=test_driver/integration_test.dart \
-     --target=integration_test/growerp_test.dart
+     --target=integration_test/all_test.dart
 
 on chrome
 ---------
@@ -20,7 +20,7 @@ start in a terminal: ./chromedriver --port=4444
 Separate terminal:
     flutter drive \
      --driver=test_driver/integration_test.dart \
-     --target=integration_test/growerp_test.dart
+     --target=integration_test/all_test.dart
 
 Chat test
 ---------

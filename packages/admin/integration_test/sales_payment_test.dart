@@ -13,12 +13,11 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
 
-  testWidgets('''GrowERP receive payment test''', (tester) async {
+  testWidgets('''GrowERP sales/receive payment test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
     await CompanyTest.createCompany(tester);
-    await CommonTest.login(tester);
     await UserTest.selectCustomers(tester);
     await UserTest.addCustomers(tester, customers.sublist(0, 2), check: false);
     await PaymentTest.selectSalesPayments(tester);

@@ -155,17 +155,18 @@ class CommonTest {
 
   /// [lowLevel]
   static Future<void> drag(WidgetTester tester,
-      {int seconds = 1, String listViewName = 'listView'}) async {
-    double offSet = -200.0;
-    await tester.drag(find.byKey(Key(listViewName)).last, Offset(0.0, offSet));
+      {int seconds = 1,
+      String listViewName = 'listView',
+      offset = -200.0}) async {
+    await tester.drag(find.byKey(Key(listViewName)).last, Offset(0.0, offset));
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 
   /// [lowLevel]
-
-  static Future<void> refresh(WidgetTester tester) async {
-    await tester.drag(find.byKey(Key('listView')).last, Offset(0, 200));
-    await tester.pumpAndSettle();
+  static Future<void> refresh(WidgetTester tester,
+      {int seconds = 5, String listViewName = 'listView'}) async {
+    await drag(tester,
+        offset: 200.0, seconds: seconds, listViewName: listViewName);
   }
 
   static Future<void> enterText(

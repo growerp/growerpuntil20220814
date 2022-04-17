@@ -220,12 +220,16 @@ class _MyFinDocState extends State<FinDocPage> {
                 itemAsString: (User? u) =>
                     "${u!.companyName},\n${u.firstName ?? ''} ${u.lastName ?? ''}",
                 onFind: (String? filter) async {
-                  ApiResult<List<User>> result = await repos.getUser(
-                      userGroups: [UserGroup.Customer, UserGroup.Supplier],
-                      filter: _userSearchBoxController.text);
-                  return result.when(
-                      success: (data) => data,
-                      failure: (_) => [User(lastName: 'get data error!')]);
+                  final finDocBloc = context.read<FinDocBloc>();
+                  finDocBloc.add(FinDocGetUsers(
+                      userGroups: finDocUpdated.sales == true
+                          ? [UserGroup.Customer]
+                          : [UserGroup.Supplier],
+                      filter: _userSearchBoxController.text));
+                  int times = 0;
+                  while (finDocBloc.state.users.isEmpty && times++ < 10)
+                    await Future.delayed(Duration(milliseconds: 500));
+                  return finDocBloc.state.users;
                 },
                 onChanged: (User? newValue) {
                   setState(() {
@@ -517,6 +521,7 @@ Future addAnotherItemDialog(
                         key: Key('price'),
                         decoration: InputDecoration(labelText: 'Price/Amount'),
                         controller: _priceController,
+                        keyboardType: TextInputType.number,
                         validator: (value) {
                           if (value!.isEmpty) return 'Enter Price or Amount?';
                           return null;
@@ -527,6 +532,7 @@ Future addAnotherItemDialog(
                         key: Key('quantity'),
                         decoration: InputDecoration(labelText: 'Quantity'),
                         controller: _quantityController,
+                        keyboardType: TextInputType.number,
                       ),
                     ])))),
         actions: <Widget>[

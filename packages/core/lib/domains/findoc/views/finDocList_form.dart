@@ -143,7 +143,6 @@ extension DateOnlyCompare on DateTime {
 
 class FinDocListState extends State<FinDocList> {
   final _scrollController = ScrollController();
-  List<FinDoc> finDocsAll = <FinDoc>[];
   List<FinDoc> finDocs = <FinDoc>[];
   int? tab;
   int limit = 12;
@@ -280,11 +279,12 @@ class FinDocListState extends State<FinDocList> {
         if (state.status == FinDocStatus.success ||
             state.status == FinDocStatus.failure) {
           search = state.search;
-          finDocsAll = state.finDocs;
+          finDocs = state.finDocs;
+          hasReachedMax = state.hasReachedMax;
           // if rental (hotelroom) need to show checkin/out orders
           if (widget.onlyRental && widget.status != null) {
             if (widget.status == FinDocStatusVal.Created) // = checkin
-              finDocs = finDocsAll
+              finDocs = finDocs
                   .where((el) =>
                       el.items[0].rentalFromDate != null &&
                       el.status == widget.status &&
@@ -292,7 +292,7 @@ class FinDocListState extends State<FinDocList> {
                           .isSameDate(CustomizableDateTime.current))
                   .toList();
             if (widget.status == FinDocStatusVal.Approved) // = checkout
-              finDocs = finDocsAll
+              finDocs = finDocs
                   .where((el) =>
                       el.items[0].rentalThruDate != null &&
                       el.status == widget.status &&
@@ -300,12 +300,10 @@ class FinDocListState extends State<FinDocList> {
                           .isSameDate(CustomizableDateTime.current))
                   .toList();
           } else if (widget.onlyRental == true) {
-            finDocs = finDocsAll
+            finDocs = finDocs
                 .where((el) => el.items[0].rentalFromDate != null)
                 .toList();
-          } else
-            finDocs = finDocsAll;
-          hasReachedMax = state.hasReachedMax;
+          }
 
           return Scaffold(
               floatingActionButton: [

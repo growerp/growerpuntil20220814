@@ -44,36 +44,7 @@ class APIRepository {
     print('Production config url: $databaseUrl');
     print('Using base backend url: $_baseUrl');
 
-    List<Interceptor> interceptors = [];
-    interceptors.add(InterceptorsWrapper(onRequest: (options, handler) async {
-      // print("====interceptor apiKey: ${this.apiKey}");
-      if (restRequestLogs) {
-        print(
-            '===Outgoing dio request ${options.method} path: ${options.baseUrl}${options.path}');
-        print('===Outgoing dio request headers: ${options.headers}');
-        print('===Outgoing dio request data: ${options.data}');
-      }
-      return handler.next(options); //continue
-    }, onResponse: (response, handler) async {
-      if (restResponseLogs) {
-        print('===incoming response: $response');
-      }
-      return handler.next(response); // continue
-    }, onError: (DioError e, handler) async {
-      // Do something with response error
-      if (e.response != null) {
-        print('=== e.response.data: ${e.response!.data}');
-        print('=== e.response.headers: ${e.response!.headers}');
-        print('=== e.response.request: ${e.response!.requestOptions}');
-      } else {
-        // Something happened in setting up or sending the request that triggered an Error
-        print('=== e.request: ${e.requestOptions}');
-        print('=== e.message: ${e.message}');
-      }
-      return handler.next(e); //continue
-    }));
-
-    dioClient = DioClient(_baseUrl, dio, interceptors: interceptors);
+    dioClient = DioClient(_baseUrl, dio, interceptors: []);
   }
 
   /// Json model List decoding
@@ -153,7 +124,7 @@ class APIRepository {
     }
   }
 
-  Future<ApiResult<List<ItemType>>> getItemTypes({bool sales = true}) async {
+  Future<ApiResult<List<ItemType>>> getItemTypes({required bool sales}) async {
     try {
       final response = await dioClient.get(
           'rest/s1/growerp/100/ItemTypes', apiKey!,

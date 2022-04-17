@@ -34,8 +34,8 @@ class PaymentTest {
   static Future<void> addPayments(WidgetTester tester, List<FinDoc> payments,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-    // test = test.copyWith(payments: []); //======= remove
-    // await PersistFunctions.persistTest(test); //=====remove
+    //test = test.copyWith(payments: []); //======= remove
+    //await PersistFunctions.persistTest(test); //=====remove
     if (test.payments.isEmpty) {
       // not yet created
       await PersistFunctions.persistTest(
@@ -55,6 +55,7 @@ class PaymentTest {
         payments[x] =
             payments[x].copyWith(paymentId: test.payments[x].paymentId);
       }
+
       test = test.copyWith(payments: await enterPaymentData(tester, payments));
       await PersistFunctions.persistTest(test);
     }
@@ -66,8 +67,11 @@ class PaymentTest {
     await CommonTest.refresh(tester);
     await CommonTest.tapByKey(tester, 'edit${count - 1}');
     await CommonTest.tapByKey(tester, 'cancelFinDoc', seconds: 5);
+    expect(CommonTest.getTextField('status${count - 1}'),
+        equals(finDocStatusValues[FinDocStatusVal.Cancelled.toString()]));
     await CommonTest.refresh(tester);
     expect(find.byKey(Key('finDocItem')), findsNWidgets(count - 1));
+
     SaveTest test = await PersistFunctions.getTest();
     await PersistFunctions.persistTest(test.copyWith(
         payments: test.payments.sublist(0, test.payments.length - 1)));
@@ -112,11 +116,16 @@ class PaymentTest {
       await CommonTest.drag(tester, listViewName: 'listView2');
       await CommonTest.enterDropDown(
           tester, 'itemType', payment.items[0].itemTypeName!);
-      await CommonTest.tapByKey(tester, 'update', seconds: 8);
-      newPayments
-          .add(payment.copyWith(paymentId: CommonTest.getTextField('id0')));
-      await tester.pumpAndSettle(); // for the message to disappear
+      await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      if (payment.paymentId == null)
+        payment = payment.copyWith(paymentId: CommonTest.getTextField('id0'));
+      newPayments.add(payment);
+      await tester
+          .pumpAndSettle(Duration(seconds: 1)); // for the message to disappear
+      await tester
+          .pumpAndSettle(Duration(seconds: 1)); // for the message to disappear
     }
+    await CommonTest.closeSearch(tester);
     return newPayments;
   }
 
@@ -124,7 +133,7 @@ class PaymentTest {
       WidgetTester tester, List<FinDoc> payments) async {
     for (FinDoc payment in payments) {
       await CommonTest.doSearch(tester,
-          searchString: payment.paymentId!, seconds: 8);
+          searchString: payment.paymentId!, seconds: 5);
       expect(CommonTest.getTextField('otherUser0'),
           contains(payment.otherUser?.companyName));
       expect(CommonTest.getTextField('status0'),
