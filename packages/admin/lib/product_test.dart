@@ -16,7 +16,7 @@ void main() {
   testWidgets('''GrowERP product test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
-        clear: false); // use data of previous run, when none, same as true
+        clear: true); // use data of previous run, when none, same as true
     await CompanyTest.createCompany(tester);
     await CategoryTest.selectCategories(tester);
     await CategoryTest.addCategories(tester, categories.sublist(0, 2),
