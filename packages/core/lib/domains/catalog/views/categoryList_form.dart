@@ -11,6 +11,8 @@
  * along with this software (see the LICENSE.md file). If not, see
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../api_repository.dart';
@@ -81,9 +83,9 @@ class _CategoriesState extends State<CategoryList> {
                     tooltip: 'Add New',
                     child: Icon(Icons.add)),
                 body: RefreshIndicator(
-                    onRefresh: (() async {
-                      _categoryBloc.add(CategoryFetch(refresh: true));
-                    }),
+                    onRefresh: () async => context
+                        .read<CategoryBloc>()
+                        .add(const CategoryFetch(refresh: true)),
                     child: ListView.builder(
                       key: Key('listView'),
                       physics: AlwaysScrollableScrollPhysics(),

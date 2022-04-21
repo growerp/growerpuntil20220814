@@ -12,6 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'dart:async';
 import 'dart:io';
 import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/widgets/observer.dart';
@@ -31,6 +32,7 @@ class CommonTest {
       {bool clear = false}) async {
     SaveTest test = await PersistFunctions.getTest();
     int seq = test.sequence + 100;
+    print("====startapp seq: $seq");
     if (clear == true) {
       await PersistFunctions.persistTest(SaveTest(sequence: seq));
     } else {
@@ -94,10 +96,8 @@ class CommonTest {
 
   static Future<void> doSearch(WidgetTester tester,
       {required String searchString, int seconds = 5}) async {
-    if (find
-        .byKey(Key('searchButton'))
-        .toString()
-        .startsWith('zero widgets with key')) {
+    final found = tester.any(find.byKey(Key('searchButton')));
+    if (found == false) {
       await tapByKey(tester, 'search');
     }
     await enterText(tester, 'searchField', searchString);
@@ -105,11 +105,10 @@ class CommonTest {
   }
 
   static Future<void> closeSearch(WidgetTester tester) async {
-    if (!find
-        .byKey(Key('searchButton'))
-        .toString()
-        .startsWith('zero widgets with key')) {
-      await tapByKey(tester, 'search'); // cancel search
+    final found = tester.any(find.byKey(Key('searchButton')));
+    if (found == true) {
+      await tester.tap(find.byKey(Key('search'))); // cancel search
+      await tester.pumpAndSettle();
     }
   }
 
@@ -134,6 +133,31 @@ class CommonTest {
 
   // low level ------------------------------------------------------------
 
+  Future<void> waitFor(WidgetTester tester, Finder finder) async {
+    do {
+      await tester.pumpAndSettle();
+      await Future.delayed(const Duration(milliseconds: 100));
+    } while (finder.evaluate().isEmpty);
+  }
+
+  static Future<void> pumpUntilKeyFound(
+    WidgetTester tester,
+    String keyName, {
+    Duration timeout = const Duration(seconds: 30),
+  }) async {
+    bool timerDone = false;
+    final timer = Timer(
+        timeout, () => throw TimeoutException("Pump until has timed out"));
+    while (timerDone != true) {
+      await tester.pump();
+      final found = tester.any(find.byKey(Key(keyName), skipOffstage: false));
+      if (found) {
+        timerDone = true;
+      }
+    }
+    timer.cancel();
+  }
+
   static Future<void> checkWidgetKey(WidgetTester tester, String widgetKey,
       [int count = 1]) async {
     expect(find.byKey(Key(widgetKey)), findsNWidgets(count));
@@ -155,18 +179,17 @@ class CommonTest {
 
   /// [lowLevel]
   static Future<void> drag(WidgetTester tester,
-      {int seconds = 1,
-      String listViewName = 'listView',
-      offset = -200.0}) async {
-    await tester.drag(find.byKey(Key(listViewName)).last, Offset(0.0, offset));
+      {int seconds = 1, String listViewName = 'listView'}) async {
+    await tester.drag(find.byKey(Key(listViewName)).last, Offset(0, -200));
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 
   /// [lowLevel]
   static Future<void> refresh(WidgetTester tester,
       {int seconds = 5, String listViewName = 'listView'}) async {
-    await drag(tester,
-        offset: 200.0, seconds: seconds, listViewName: listViewName);
+    await tester.timedDrag(
+        find.byKey(Key(listViewName)), Offset(0, 400), Duration(seconds: 1));
+    await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 
   static Future<void> enterText(
@@ -175,10 +198,6 @@ class CommonTest {
     await tester.pump(Duration(seconds: 1));
     await tester.enterText(find.byKey(Key(key)), value);
     await tester.pump();
-  }
-
-  static Future<void> pump(WidgetTester tester, [int times = 3]) async {
-    while (--times > 0) await tester.pump();
   }
 
   static Future<void> enterDropDownSearch(

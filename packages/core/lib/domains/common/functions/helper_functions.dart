@@ -24,16 +24,23 @@ import 'package:core/domains/domains.dart';
 class HelperFunctions {
   static showMessage(BuildContext context, String? message, dynamic colors) {
     if (message != null && message != "null")
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 2),
-          content: Container(
-              padding: const EdgeInsets.all(16.0),
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: Text('$message')),
-          backgroundColor: colors,
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        duration: const Duration(milliseconds: 2000),
+        content: Container(
+            padding: const EdgeInsets.all(16.0),
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: Text('$message')),
+        backgroundColor: colors,
+        action: SnackBarAction(
+          key: Key('dismiss'),
+          label: 'Dismiss',
+          textColor: Colors.red,
+          onPressed: () {
+            // Hide the snackbar before its duration ends
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
         ),
-      );
+      ));
   }
 
   static showTopMessage(dynamic _scaffoldKey, String? message,

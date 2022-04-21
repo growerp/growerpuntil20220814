@@ -75,9 +75,8 @@ class _LocationsState extends State<LocationList> {
                     tooltip: 'Add New',
                     child: Icon(Icons.add)),
                 body: RefreshIndicator(
-                    onRefresh: (() async {
-                      _locationBloc.add(LocationFetch(refresh: true));
-                    }),
+                    onRefresh: (() async =>
+                        _locationBloc.add(LocationFetch(refresh: true))),
                     child: ListView.builder(
                       key: Key('listView'),
                       physics: AlwaysScrollableScrollPhysics(),

@@ -251,7 +251,6 @@ class _ProductState extends State<ProductDialog> {
                             SizedBox(height: 10),
                             DropdownSearch<Category>(
                               key: Key('categoryDropDown'),
-                              label: 'Category',
                               dialogMaxWidth: 300,
                               searchFieldProps: TextFieldProps(
                                 autofocus: true,

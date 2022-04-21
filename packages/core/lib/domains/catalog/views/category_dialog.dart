@@ -83,6 +83,8 @@ class _CategoryState extends State<CategoryDialog> {
         listener: (context, state) async {
           switch (state.status) {
             case CategoryStatus.success:
+              HelperFunctions.showMessage(
+                  context, 'Error: ${state.message}', Colors.green);
               Navigator.of(context).pop();
               break;
             case CategoryStatus.failure:
@@ -170,6 +172,7 @@ class _CategoryState extends State<CategoryDialog> {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return Center(
         child: Container(
+            width: 400,
             padding: EdgeInsets.all(20),
             child: Form(
                 key: _formKey,
@@ -213,7 +216,7 @@ class _CategoryState extends State<CategoryDialog> {
                     key: Key('description'),
                     decoration: InputDecoration(labelText: 'Description'),
                     controller: _descrController,
-                    maxLines: 5,
+                    maxLines: 3,
                     validator: (value) {
                       if (value!.isEmpty)
                         return 'Please enter a category description?';

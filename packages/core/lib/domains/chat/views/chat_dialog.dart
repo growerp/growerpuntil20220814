@@ -100,10 +100,8 @@ class _ChatState extends State<ChatDialog> {
               "#${widget.chatRoom.chatRoomId}")),
       Expanded(
           child: RefreshIndicator(
-              onRefresh: (() async {
-                BlocProvider.of<ChatRoomBloc>(context)
-                    .add(ChatRoomFetch(refresh: true, limit: limit));
-              }),
+              onRefresh: (() async => BlocProvider.of<ChatRoomBloc>(context)
+                  .add(ChatRoomFetch(refresh: true, limit: limit))),
               child: ListView.builder(
                   physics: AlwaysScrollableScrollPhysics(),
                   key: Key('listView'),

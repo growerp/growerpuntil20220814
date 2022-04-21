@@ -90,9 +90,8 @@ class _ProductsState extends State<ProductList> {
                     tooltip: 'Add New',
                     child: Icon(Icons.add)),
                 body: RefreshIndicator(
-                    onRefresh: (() async {
-                      _productBloc.add(ProductFetch(refresh: true));
-                    }),
+                    onRefresh: (() async =>
+                        _productBloc.add(ProductFetch(refresh: true))),
                     child: ListView.builder(
                         key: Key('listView'),
                         physics: AlwaysScrollableScrollPhysics(),

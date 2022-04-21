@@ -71,9 +71,8 @@ class _TasksListState extends State<TasksList> {
                     tooltip: 'Add New',
                     child: Icon(Icons.add)),
                 body: RefreshIndicator(
-                    onRefresh: (() async {
-                      _taskBloc.add(TaskFetch(refresh: true));
-                    }),
+                    onRefresh: (() async =>
+                        _taskBloc.add(TaskFetch(refresh: true))),
                     child: ListView.builder(
                       physics: AlwaysScrollableScrollPhysics(),
                       itemCount: state.hasReachedMax

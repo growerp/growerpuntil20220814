@@ -53,7 +53,7 @@ class OpportunityState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [opportunities, hasReachedMax, search];
+  List<Object?> get props => [message, opportunities, hasReachedMax, search];
 
   @override
   String toString() => '$status { #opportunities: ${opportunities.length}, '

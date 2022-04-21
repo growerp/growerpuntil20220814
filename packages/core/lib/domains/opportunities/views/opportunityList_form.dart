@@ -73,9 +73,8 @@ class _OpportunitiesState extends State<OpportunityList> {
                     tooltip: 'Add New',
                     child: Icon(Icons.add)),
                 body: RefreshIndicator(
-                    onRefresh: (() async {
-                      _opportunityBloc.add(OpportunityFetch(refresh: true));
-                    }),
+                    onRefresh: (() async =>
+                        _opportunityBloc.add(OpportunityFetch(refresh: true))),
                     child: ListView.builder(
                         key: Key('listView'),
                         physics: AlwaysScrollableScrollPhysics(),

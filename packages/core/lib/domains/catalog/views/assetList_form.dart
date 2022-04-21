@@ -77,9 +77,8 @@ class _AssetsState extends State<AssetList> {
                     tooltip: 'Add New',
                     child: Icon(Icons.add)),
                 body: RefreshIndicator(
-                    onRefresh: (() async {
-                      _assetBloc.add(AssetFetch(refresh: true));
-                    }),
+                    onRefresh: (() async =>
+                        _assetBloc.add(AssetFetch(refresh: true))),
                     child: ListView.builder(
                       key: Key('listView'),
                       physics: AlwaysScrollableScrollPhysics(),

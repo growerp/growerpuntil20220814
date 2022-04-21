@@ -202,9 +202,7 @@ class FinDocListState extends State<FinDocList> {
     Widget finDocsPage() {
       bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
       return RefreshIndicator(
-          onRefresh: (() async {
-            _finDocBloc.add(FinDocFetch(refresh: true));
-          }),
+          onRefresh: (() async => _finDocBloc.add(FinDocFetch(refresh: true))),
           child: ListView.builder(
               key: Key('listView'),
               physics: AlwaysScrollableScrollPhysics(),

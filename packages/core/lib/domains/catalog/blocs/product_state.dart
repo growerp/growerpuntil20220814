@@ -53,7 +53,7 @@ class ProductState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [products, hasReachedMax, search];
+  List<Object?> get props => [message, products, hasReachedMax, search];
 
   @override
   String toString() => '$status { #products: ${products.length}, '

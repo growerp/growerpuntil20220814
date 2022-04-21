@@ -13,27 +13,19 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
 
-  testWidgets('''GrowERP sales Invoice test''', (tester) async {
+  testWidgets('''GrowERP payment sales test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
-    // prepare
     await CompanyTest.createCompany(tester);
-    await CommonTest.login(tester);
-    await CategoryTest.selectCategories(tester);
-    await CategoryTest.addCategories(tester, categories.sublist(0, 2),
-        check: false);
-    await ProductTest.selectProducts(tester);
-    await ProductTest.addProducts(tester, products.sublist(0, 3), check: false);
     await UserTest.selectCustomers(tester);
     await UserTest.addCustomers(tester, customers.sublist(0, 2), check: false);
-    await InvoiceTest.selectSalesInvoices(tester);
-    await InvoiceTest.addInvoices(tester, salesInvoices.sublist(0, 1));
-    await InvoiceTest.updateInvoices(tester, salesInvoices.sublist(1, 2));
-    await InvoiceTest.sendOrApproveInvoices(tester);
     await PaymentTest.selectSalesPayments(tester);
+    await PaymentTest.addPayments(tester, salesPayments.sublist(0, 2));
+    await PaymentTest.updatePayments(tester, salesPayments.sublist(2, 4));
+    await PaymentTest.deleteLastPayment(tester);
     await PaymentTest.sendReceivePayment(tester);
-    await PaymentTest.checkPayments(tester);
+    await PaymentTest.checkPaymentComplete(tester);
     await TransactionTest.selectTransactions(tester);
     await TransactionTest.checkTransactionComplete(tester);
   });

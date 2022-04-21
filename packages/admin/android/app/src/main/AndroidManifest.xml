@@ -3,7 +3,8 @@
    <application
         android:label="admin"
         android:name="${applicationName}"
-        android:icon="@mipmap/launcher_icon">
+        android:icon="@mipmap/launcher_icon"
+        android:restoreAnyVersion="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

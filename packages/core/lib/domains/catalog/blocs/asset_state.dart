@@ -53,7 +53,7 @@ class AssetState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [assets, hasReachedMax, search];
+  List<Object?> get props => [message, assets, hasReachedMax, search];
 
   @override
   String toString() => '$status { #assets: ${assets.length}, '

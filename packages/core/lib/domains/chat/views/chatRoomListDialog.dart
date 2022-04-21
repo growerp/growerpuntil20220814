@@ -107,9 +107,8 @@ class _ChatRoomsState extends State<ChatRoomListDialog> {
 
   Widget roomList(state) {
     return RefreshIndicator(
-        onRefresh: (() async {
-          _chatRoomBloc.add(ChatRoomFetch(refresh: true, limit: limit));
-        }),
+        onRefresh: (() async =>
+            _chatRoomBloc.add(ChatRoomFetch(refresh: true, limit: limit))),
         child: ListView.builder(
           key: Key('listView'),
           physics: AlwaysScrollableScrollPhysics(),

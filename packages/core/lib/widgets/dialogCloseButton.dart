@@ -17,10 +17,10 @@ import 'package:flutter/material.dart';
 class DialogCloseButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
-        child: InkWell(
+        child: GestureDetector(
+            key: Key('cancel'),
             onTap: () => Navigator.of(context).pop(),
             child: Container(
-                key: Key('cancel'),
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(12),

@@ -34,20 +34,16 @@ class CategoryTest {
       WidgetTester tester, List<Category> categories,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-    int seq = test.sequence;
+    test = test.copyWith(categories: []); // delete just for test only-------
     if (test.categories.isEmpty) {
       // not yet created
-      test = test.copyWith(categories: categories);
       await enterCategoryData(tester, categories);
-      await PersistFunctions.persistTest(
-          test.copyWith(categories: categories, sequence: seq));
+      await PersistFunctions.persistTest(test.copyWith(categories: categories));
     }
     if (check) {
       await checkCategoryList(tester, categories);
       await PersistFunctions.persistTest(test.copyWith(
-        categories: await checkCategoryDetail(tester, test.categories),
-        sequence: seq,
-      ));
+          categories: await checkCategoryDetail(tester, categories)));
     }
   }
 
@@ -55,9 +51,9 @@ class CategoryTest {
       WidgetTester tester, List<Category> categories) async {
     int index = 0;
     for (Category category in categories) {
-      if (category.categoryId.isEmpty)
+      if (category.categoryId.isEmpty) {
         await CommonTest.tapByKey(tester, 'addNew');
-      else {
+      } else {
         await CommonTest.tapByKey(tester, 'name$index');
         expect(CommonTest.getTextField('header').split('#')[1],
             category.categoryId);
@@ -68,51 +64,55 @@ class CategoryTest {
       await CommonTest.enterText(tester, 'name', category.categoryName!);
       await CommonTest.enterText(tester, 'description', category.description!);
       await CommonTest.drag(tester);
-      await CommonTest.tapByKey(tester, 'update', seconds: 5);
-      await tester.pump(); // for the message to disappear
-      await tester.pumpAndSettle(); // for the message to disappear
+      await CommonTest.tapByKey(tester, 'update');
       index++;
+      await CommonTest.pumpUntilKeyFound(tester, 'dismiss');
+      await CommonTest.tapByKey(tester, 'dismiss');
     }
   }
 
   static Future<void> checkCategoryList(
       WidgetTester tester, List<Category> categories) async {
     await CommonTest.refresh(tester);
-    categories.forEachIndexed((index, category) {
+    categories.forEachIndexed((index, category) async {
       expect(CommonTest.getTextField('name$index'),
           equals(category.categoryName!));
+      expect(CommonTest.getTextField('products$index'), equals('0'));
     });
   }
 
   static Future<List<Category>> checkCategoryDetail(
       WidgetTester tester, List<Category> categories) async {
-    int index = 0;
     List<Category> newCategories = [];
     for (Category category in categories) {
-      await CommonTest.tapByKey(tester, 'name${index}');
-      var id = CommonTest.getTextField('header').split('#')[1];
+      await CommonTest.doSearch(tester,
+          searchString: category.categoryName!, seconds: 5);
+      await CommonTest.tapByKey(tester, 'name0');
       expect(find.byKey(Key('CategoryDialog')), findsOneWidget);
       expect(
           CommonTest.getTextFormField('name'), equals(category.categoryName!));
       expect(CommonTest.getTextFormField('description'),
           equals(category.description!));
+      var id = CommonTest.getTextField('header').split('#')[1];
       newCategories.add(category.copyWith(categoryId: id));
-      index++;
       await CommonTest.tapByKey(tester, 'cancel');
     }
+    await CommonTest.closeSearch(tester);
     return newCategories;
   }
 
-  static Future<void> deleteCategories(WidgetTester tester) async {
+  static Future<void> deleteLastCategory(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     int count = test.categories.length;
-    if (count != categories.length) return;
-    expect(
+    if (count != test.categories.length) return;
+    await CommonTest.refresh(tester);
+    await expectLater(
         find.byKey(Key('categoryItem')), findsNWidgets(count)); // initial admin
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
+    await CommonTest.refresh(tester);
     expect(find.byKey(Key('categoryItem')), findsNWidgets(count - 1));
-    test.categories.removeAt(count - 1);
-    PersistFunctions.persistTest(test);
+    await PersistFunctions.persistTest(test.copyWith(
+        categories: test.categories.sublist(0, test.categories.length - 1)));
   }
 
   static Future<void> updateCategories(WidgetTester tester) async {
@@ -126,9 +126,10 @@ class CategoryTest {
         description: category.description! + 'u',
       ));
     }
-    test = test.copyWith(categories: updCategories);
-    await enterCategoryData(tester, test.categories);
-    await checkCategoryDetail(tester, test.categories);
-    await PersistFunctions.persistTest(test);
+    await enterCategoryData(tester, updCategories);
+    await checkCategoryList(tester, updCategories);
+    await checkCategoryDetail(tester, updCategories);
+    await PersistFunctions.persistTest(
+        test.copyWith(categories: updCategories));
   }
 }

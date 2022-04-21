@@ -64,6 +64,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
                   products: data,
                   hasReachedMax: data.length < _productLimit ? true : false,
                   searchString: '',
+                  message: event.refresh == true ? 'List refreshed...' : null,
                 ),
             failure: (NetworkExceptions error) => state.copyWith(
                 status: ProductStatus.failure, message: error.toString())));

@@ -59,7 +59,8 @@ class ProductListItem extends StatelessWidget {
                           key: Key('categoryName$index'),
                           textAlign: TextAlign.center)),
                 Expanded(
-                    child: Text("${product.assetCount}",
+                    child: Text(
+                        "${product.assetCount != null ? product.assetCount.toString() : '0'}",
                         key: Key('assetCount$index'),
                         textAlign: TextAlign.center)),
               ],

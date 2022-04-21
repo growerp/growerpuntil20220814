@@ -34,8 +34,8 @@ class PaymentTest {
   static Future<void> addPayments(WidgetTester tester, List<FinDoc> payments,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-    //test = test.copyWith(payments: []); //======= remove
-    //await PersistFunctions.persistTest(test); //=====remove
+    test = test.copyWith(payments: []); //======= remove
+    await PersistFunctions.persistTest(test); //=====remove
     if (test.payments.isEmpty) {
       // not yet created
       await PersistFunctions.persistTest(
@@ -63,18 +63,21 @@ class PaymentTest {
   }
 
   static Future<void> deleteLastPayment(WidgetTester tester) async {
-    var count = CommonTest.getWidgetCountByKey(tester, 'finDocItem');
-    await CommonTest.refresh(tester);
-    await CommonTest.tapByKey(tester, 'edit${count - 1}');
-    await CommonTest.tapByKey(tester, 'cancelFinDoc', seconds: 5);
-    expect(CommonTest.getTextField('status${count - 1}'),
-        equals(finDocStatusValues[FinDocStatusVal.Cancelled.toString()]));
-    await CommonTest.refresh(tester);
-    expect(find.byKey(Key('finDocItem')), findsNWidgets(count - 1));
-
     SaveTest test = await PersistFunctions.getTest();
-    await PersistFunctions.persistTest(test.copyWith(
-        payments: test.payments.sublist(0, test.payments.length - 1)));
+    var count = CommonTest.getWidgetCountByKey(tester, 'finDocItem');
+    if (count == test.payments.length) {
+      // check if already deleted
+      await CommonTest.refresh(tester);
+      await CommonTest.tapByKey(tester, 'edit${count - 1}');
+      await CommonTest.tapByKey(tester, 'cancelFinDoc', seconds: 5);
+      expect(CommonTest.getTextField('status${count - 1}'),
+          equals(finDocStatusValues[FinDocStatusVal.Cancelled.toString()]));
+      //  only within testing deleted item will not be removed after refresh
+      //    await CommonTest.refresh(tester);
+      //    expect(find.byKey(Key('finDocItem')), findsNWidgets(count - 1));
+      await PersistFunctions.persistTest(test.copyWith(
+          payments: test.payments.sublist(0, test.payments.length - 1)));
+    }
   }
 
   static Future<List<FinDoc>> enterPaymentData(

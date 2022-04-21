@@ -116,7 +116,7 @@ class AssetTest {
   static Future<void> deleteAssets(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     int count = test.assets.length;
-    if (count != assets.length) return;
+    if (count != test.assets.length) return;
     expect(find.byKey(Key('assetItem')), findsNWidgets(count)); // initial admin
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
     expect(find.byKey(Key('assetItem')), findsNWidgets(count - 1));
@@ -127,7 +127,7 @@ class AssetTest {
   static Future<void> updateAssets(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     // check if already modified then skip
-    if (test.assets[0].assetName != assets[0].assetName) return;
+    if (test.assets[0].assetName != test.assets[0].assetName) return;
     List<Asset> updAssets = [];
     for (Asset asset in test.assets) {
       updAssets.add(asset.copyWith(

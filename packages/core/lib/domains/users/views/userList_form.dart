@@ -125,9 +125,7 @@ class _UsersState extends State<UsersList> {
 
       Widget showForm(state) {
         return RefreshIndicator(
-            onRefresh: (() async {
-              _userBloc.add(UserFetch(refresh: true));
-            }),
+            onRefresh: (() async => _userBloc.add(UserFetch(refresh: true))),
             child: ListView.builder(
               key: Key('listView'),
               physics: AlwaysScrollableScrollPhysics(),

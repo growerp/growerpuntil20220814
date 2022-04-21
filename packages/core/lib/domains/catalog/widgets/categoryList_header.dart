@@ -43,6 +43,7 @@ class CategoryListHeader extends StatelessWidget {
                 ? Row(children: <Widget>[
                     Expanded(
                         child: TextField(
+                      key: Key('searchField'),
                       autofocus: true,
                       decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
