@@ -57,14 +57,11 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     try {
       // start from record zero for initial and refresh
       if (state.status == CategoryStatus.initial || event.refresh) {
-        print(
-            "========category fetch with status ${state.status} refresh: ${event.refresh}");
         ApiResult<List<Category>> compResult = await repos.getCategory(
             companyPartyId: event.companyPartyId,
             searchString: event.searchString);
         return emit(compResult.when(
             success: (data) {
-              print("=====api success: records ${data.length}");
               return state.copyWith(
                 status: CategoryStatus.success,
                 categories: data,

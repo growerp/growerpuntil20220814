@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:async';
 import 'dart:io';
 import 'package:core/domains/common/functions/functions.dart';
 import 'package:core/widgets/observer.dart';
@@ -133,29 +132,32 @@ class CommonTest {
 
   // low level ------------------------------------------------------------
 
-  Future<void> waitFor(WidgetTester tester, Finder finder) async {
-    do {
-      await tester.pumpAndSettle();
-      await Future.delayed(const Duration(milliseconds: 100));
-    } while (finder.evaluate().isEmpty);
+  static Future<bool> waitForKey(WidgetTester tester, String keyName) async {
+    int times = 0;
+    bool found = false;
+    while (times++ < 20 && found == false) {
+      found = tester.any(find.byKey(Key(keyName), skipOffstage: true));
+      print("==$times==wait until $found = true ");
+      await tester.pump(Duration(milliseconds: 300));
+    }
+    expect(found, true,
+        reason: 'key $keyName not found even after 6 seconds wait!');
+    await tester.pumpAndSettle();
+    return found;
   }
 
-  static Future<void> pumpUntilKeyFound(
-    WidgetTester tester,
-    String keyName, {
-    Duration timeout = const Duration(seconds: 30),
-  }) async {
-    bool timerDone = false;
-    final timer = Timer(
-        timeout, () => throw TimeoutException("Pump until has timed out"));
-    while (timerDone != true) {
-      await tester.pump();
-      final found = tester.any(find.byKey(Key(keyName), skipOffstage: false));
-      if (found) {
-        timerDone = true;
-      }
+  static Future<bool> waitForSnackbarToGo(WidgetTester tester) async {
+    int times = 0;
+    bool found = true;
+    while (times++ < 20 && found == true) {
+      found = tester.any(find.byType(SnackBar));
+      print("==$times==wait until $found = false");
+      await tester.pump(Duration(milliseconds: 300));
     }
-    timer.cancel();
+    expect(found, false,
+        reason: 'Snackbar still found, even after 6 seconds wait!');
+    await tester.pumpAndSettle();
+    return found;
   }
 
   static Future<void> checkWidgetKey(WidgetTester tester, String widgetKey,
@@ -180,16 +182,15 @@ class CommonTest {
   /// [lowLevel]
   static Future<void> drag(WidgetTester tester,
       {int seconds = 1, String listViewName = 'listView'}) async {
-    await tester.drag(find.byKey(Key(listViewName)).last, Offset(0, -200));
+    await tester.drag(find.byKey(Key(listViewName)).last, Offset(0, -400));
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 
   /// [lowLevel]
   static Future<void> refresh(WidgetTester tester,
       {int seconds = 5, String listViewName = 'listView'}) async {
-    await tester.timedDrag(
-        find.byKey(Key(listViewName)), Offset(0, 400), Duration(seconds: 1));
-    await tester.pumpAndSettle(Duration(seconds: seconds));
+    await tester.drag(find.byKey(Key(listViewName)).last, Offset(0, 400));
+    await tester.pump(Duration(seconds: seconds));
   }
 
   static Future<void> enterText(
@@ -284,7 +285,8 @@ class CommonTest {
 
   static Future<void> tapByKey(WidgetTester tester, String key,
       {int seconds = 1}) async {
-    await tester.tap(find.byKey(Key(key)).last);
+    await tester.tap(find.byKey(Key(key)).last,
+        warnIfMissed: key == 'cancel' ? false : true);
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 

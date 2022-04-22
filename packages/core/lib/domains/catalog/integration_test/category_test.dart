@@ -17,7 +17,6 @@ import 'package:core/domains/integration_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/domains/domains.dart';
-import 'package:collection/collection.dart';
 
 class CategoryTest {
   static Future<void> selectCategories(WidgetTester tester) async {
@@ -34,14 +33,13 @@ class CategoryTest {
       WidgetTester tester, List<Category> categories,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-    test = test.copyWith(categories: []); // delete just for test only-------
+    // test = test.copyWith(categories: []); // delete just for test only-------
     if (test.categories.isEmpty) {
       // not yet created
       await enterCategoryData(tester, categories);
       await PersistFunctions.persistTest(test.copyWith(categories: categories));
     }
     if (check) {
-      await checkCategoryList(tester, categories);
       await PersistFunctions.persistTest(test.copyWith(
           categories: await checkCategoryDetail(tester, categories)));
     }
@@ -65,20 +63,10 @@ class CategoryTest {
       await CommonTest.enterText(tester, 'description', category.description!);
       await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'update');
+      await CommonTest.waitForKey(tester, 'dismiss');
+      await CommonTest.waitForSnackbarToGo(tester);
       index++;
-      await CommonTest.pumpUntilKeyFound(tester, 'dismiss');
-      await CommonTest.tapByKey(tester, 'dismiss');
     }
-  }
-
-  static Future<void> checkCategoryList(
-      WidgetTester tester, List<Category> categories) async {
-    await CommonTest.refresh(tester);
-    categories.forEachIndexed((index, category) async {
-      expect(CommonTest.getTextField('name$index'),
-          equals(category.categoryName!));
-      expect(CommonTest.getTextField('products$index'), equals('0'));
-    });
   }
 
   static Future<List<Category>> checkCategoryDetail(
@@ -87,6 +75,8 @@ class CategoryTest {
     for (Category category in categories) {
       await CommonTest.doSearch(tester,
           searchString: category.categoryName!, seconds: 5);
+      expect(CommonTest.getTextField('name0'), equals(category.categoryName!));
+      expect(CommonTest.getTextField('products0'), equals('0'));
       await CommonTest.tapByKey(tester, 'name0');
       expect(find.byKey(Key('CategoryDialog')), findsOneWidget);
       expect(
@@ -127,7 +117,6 @@ class CategoryTest {
       ));
     }
     await enterCategoryData(tester, updCategories);
-    await checkCategoryList(tester, updCategories);
     await checkCategoryDetail(tester, updCategories);
     await PersistFunctions.persistTest(
         test.copyWith(categories: updCategories));

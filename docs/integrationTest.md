@@ -7,9 +7,11 @@ If you cloned the growerp from git, it is required to run the freezed build proc
 if one of the tests fail, you can copy the test file inside the lib directory and test from there using the debugging facility in your favorite IDE. you can also use the hot-restart function there to speed up the testing which is not available in the integration_test directory.
 
 
-Initial data is stored in [data.dart](https://raw.githubusercontent.com/growerp/growerp/master/packages/core/lib/domains/common/integration_test/data.dart) When data is created by the tests the resulting ID with the initial data is stored using the 'shared_preferences' package via the [persist_functions.dart](https://raw.githubusercontent.com/growerp/growerp/master/packages/core/lib/domains/common/functions/persist_functions.dart) file under the name 'test'. This data can be used in later tests when you need a customer name for an order.
+Initial data is stored in [data.dart](https://raw.githubusercontent.com/growerp/growerp/master/packages/core/lib/domains/common/integration_test/data.dart) When data is created by the tests the resulting ID with the initial data is stored using the 'shared_preferences' package via the [persist_functions.dart](https://raw.githubusercontent.com/growerp/growerp/master/packages/core/lib/domains/common/functions/persist_functions.dart) file under the name 'test'. This data can be used in later tests when you need a customer name for an order. 
 
-In this [test structure](https://raw.githubusercontent.com/growerp/growerp/master/packages/core/lib/domains/common/models/save_test_model.dart) is a sequence variable which is incremented every time an email is created to avoid duplicates which are rejected by the backend system..
+In this [test structure](https://raw.githubusercontent.com/growerp/growerp/master/packages/core/lib/domains/common/models/save_test_model.dart) is a sequence variable which is incremented every time an email is created to avoid duplicates which are rejected by the backend system.  In order to avoid email duplicated make sure to add android:restoreAnyVersion="true" to the android manifest so the sequence number is not reset when re-running your test. 
+
+Several challenges exist making the test results consistent. Refreshing the lists and the overlaying of the snackbar message over the floating button key are two examples. Check the testing code how it was solved in this system. 
 
 
 ## The tests are divided into three levels of detail.

@@ -42,9 +42,8 @@ class ProductTest {
       await PersistFunctions.persistTest(test.copyWith(products: products));
     }
     if (check) {
-      await checkProductList(tester, products);
       await PersistFunctions.persistTest(
-          test.copyWith(products: await checkProductDetail(tester, products)));
+          test.copyWith(products: await checkProduct(tester, products)));
     }
   }
 
@@ -52,9 +51,10 @@ class ProductTest {
       WidgetTester tester, List<Product> products) async {
     int index = 0;
     for (Product product in products) {
-      if (product.productId.isEmpty)
+      if (product.productId.isEmpty) {
+        await CommonTest.waitForSnackbarToGo(tester);
         await CommonTest.tapByKey(tester, 'addNew');
-      else {
+      } else {
         await CommonTest.tapByKey(tester, 'name$index');
         expect(
             CommonTest.getTextField('header').split('#')[1], product.productId);
@@ -70,35 +70,24 @@ class ProductTest {
       await CommonTest.enterDropDown(
           tester, 'productTypeDropDown', product.productTypeId!);
       await CommonTest.drag(tester);
-      await CommonTest.tapByKey(tester, 'update');
-      await CommonTest.pumpUntilKeyFound(tester, 'dismiss');
-      await CommonTest.tapByKey(tester, 'dismiss');
+      await CommonTest.tapByKey(tester, 'update', seconds: 5);
       index++;
     }
   }
 
-  static Future<void> checkProductList(
-      WidgetTester tester, List<Product> products) async {
-    await CommonTest.refresh(tester);
-    expectLater(find.byKey(Key('productItem')), findsNWidgets(products.length));
-    products.forEachIndexed((index, product) async {
-      expect(
-          CommonTest.getTextField('name$index'), equals(product.productName));
-      expect(CommonTest.getTextField('price$index'),
-          equals(product.price.toString()));
-      expect(CommonTest.getTextField('categoryName$index'),
-          equals(product.category?.categoryName));
-      if (!CommonTest.isPhone())
-        expect(CommonTest.getTextField('description$index'),
-            equals(product.description));
-    });
-  }
-
-  static Future<List<Product>> checkProductDetail(
+  static Future<List<Product>> checkProduct(
       WidgetTester tester, List<Product> products) async {
     List<Product> newProducts = [];
     for (Product product in products) {
       await CommonTest.doSearch(tester, searchString: product.productName!);
+      expect(CommonTest.getTextField('name0'), equals(product.productName));
+      expect(
+          CommonTest.getTextField('price0'), equals(product.price.toString()));
+      expect(CommonTest.getTextField('categoryName0'),
+          equals(product.category?.categoryName));
+      if (!CommonTest.isPhone())
+        expect(CommonTest.getTextField('description0'),
+            equals(product.description));
       await CommonTest.tapByKey(tester, 'name0');
       var id = CommonTest.getTextField('header').split('#')[1];
       expect(find.byKey(Key('ProductDialog')), findsOneWidget);
@@ -112,7 +101,7 @@ class ProductTest {
       newProducts.add(product.copyWith(productId: id));
       await CommonTest.tapByKey(tester, 'cancel');
     }
-    CommonTest.closeSearch(tester);
+    await CommonTest.closeSearch(tester);
     return newProducts;
   }
 
@@ -146,7 +135,6 @@ class ProductTest {
       await PersistFunctions.persistTest(test.copyWith(products: updProducts));
     }
     test = await PersistFunctions.getTest();
-    await checkProductList(tester, test.products);
-    await checkProductDetail(tester, test.products);
+    await checkProduct(tester, test.products);
   }
 }
