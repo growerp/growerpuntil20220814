@@ -44,7 +44,6 @@ class AssetTest {
           test.copyWith(assets: assets, sequence: seq));
     }
     if (check && test.assets[0].assetId.isEmpty) {
-      await checkAssetList(tester, assets);
       await PersistFunctions.persistTest(test.copyWith(
         assets: await checkAssetDetail(tester, test.assets),
         sequence: seq,
@@ -78,27 +77,20 @@ class AssetTest {
     }
   }
 
-  static Future<void> checkAssetList(
-      WidgetTester tester, List<Asset> assets) async {
-    await CommonTest.refresh(tester);
-    assets.forEachIndexed((index, asset) {
-      expect(CommonTest.getTextField('name$index'), equals(asset.assetName));
-      if (!CommonTest.isPhone()) {
-        expect(
-            CommonTest.getTextField('statusId$index'), equals(asset.statusId));
-      }
-      expect(CommonTest.getTextField('product$index'),
-          equals(asset.product!.productName!));
-    });
-  }
-
   static Future<List<Asset>> checkAssetDetail(
       WidgetTester tester, List<Asset> assets) async {
-    int index = 0;
     List<Asset> newAssets = [];
     for (Asset asset in assets) {
-      await CommonTest.tapByKey(tester, 'name${index}');
-      var id = CommonTest.getTextField('header').split('#')[1];
+      await CommonTest.doSearch(tester, searchString: asset.assetName!);
+      // list
+      expect(CommonTest.getTextField('name0'), equals(asset.assetName));
+      if (!CommonTest.isPhone()) {
+        expect(CommonTest.getTextField('statusId0'), equals(asset.statusId));
+      }
+      expect(CommonTest.getTextField('product0'),
+          equals(asset.product!.productName!));
+      // detail
+      await CommonTest.tapByKey(tester, 'name0');
       expect(find.byKey(Key('AssetDialog')), findsOneWidget);
       expect(CommonTest.getTextFormField('name'), equals(asset.assetName!));
       expect(CommonTest.getTextFormField('quantityOnHand'),
@@ -106,10 +98,11 @@ class AssetTest {
       expect(CommonTest.getDropdownSearch('productDropDown'),
           asset.product!.productName!);
       expect(CommonTest.getDropdown('statusDropDown'), asset.statusId);
+      var id = CommonTest.getTextField('header').split('#')[1];
       newAssets.add(asset.copyWith(assetId: id));
-      index++;
       await CommonTest.tapByKey(tester, 'cancel');
     }
+    await CommonTest.closeSearch(tester);
     return newAssets;
   }
 

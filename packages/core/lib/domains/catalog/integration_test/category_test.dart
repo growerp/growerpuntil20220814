@@ -75,8 +75,10 @@ class CategoryTest {
     for (Category category in categories) {
       await CommonTest.doSearch(tester,
           searchString: category.categoryName!, seconds: 5);
+      // list
       expect(CommonTest.getTextField('name0'), equals(category.categoryName!));
       expect(CommonTest.getTextField('products0'), equals('0'));
+      // detail
       await CommonTest.tapByKey(tester, 'name0');
       expect(find.byKey(Key('CategoryDialog')), findsOneWidget);
       expect(

@@ -19,12 +19,10 @@ void main() {
         clear: true);
     await CompanyTest.createCompany(tester);
     await CategoryTest.selectCategories(tester);
-    await CategoryTest.addCategories(tester, [categories[0], categories[1]],
+    await CategoryTest.addCategories(tester, categories.sublist(0, 2),
         check: false);
     await ProductTest.selectProducts(tester);
-    await ProductTest.addProducts(
-        tester, [products[0], products[1], products[2]],
-        check: false);
+    await ProductTest.addProducts(tester, products.sublist(0, 3), check: false);
     await AssetTest.selectAsset(tester);
     await AssetTest.addAssets(tester, assets);
     await AssetTest.updateAssets(tester);
