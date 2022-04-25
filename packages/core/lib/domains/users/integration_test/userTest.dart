@@ -185,6 +185,7 @@ class UserTest {
         await CommonTest.updatePaymentMethod(
             tester, user.companyPaymentMethod!);
       }
+      await CommonTest.waitForSnackbarToGo(tester);
       newUsers.add(user.copyWith(email: email, loginName: email));
       index++;
     }
