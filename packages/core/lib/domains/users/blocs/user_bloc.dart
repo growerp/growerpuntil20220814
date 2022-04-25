@@ -73,6 +73,7 @@ class UserBloc extends Bloc<UserEvent, UserState>
                   users: data,
                   hasReachedMax: data.length < _userLimit ? true : false,
                   searchString: '',
+                  message: event.refresh == true ? 'List refreshed' : null,
                 ),
             failure: (NetworkExceptions error) => state.copyWith(
                 status: UserStatus.failure, message: error.toString())));

@@ -63,9 +63,8 @@ class UserTest {
     }
     if (check) {
       test = await PersistFunctions.getTest(backup: false);
-      await checkUserList(tester, test.administrators);
       await PersistFunctions.persistTest(test.copyWith(
-          administrators: await checkUserDetail(tester, test.administrators)));
+          administrators: await CheckUser(tester, test.administrators)));
     }
   }
 
@@ -79,9 +78,8 @@ class UserTest {
     }
     if (check) {
       test = await PersistFunctions.getTest(backup: false);
-      await checkUserList(tester, test.employees);
-      await PersistFunctions.persistTest(test.copyWith(
-          employees: await checkUserDetail(tester, test.employees)));
+      await PersistFunctions.persistTest(
+          test.copyWith(employees: await CheckUser(tester, test.employees)));
     }
   }
 
@@ -95,9 +93,8 @@ class UserTest {
     }
     if (check) {
       test = await PersistFunctions.getTest(backup: false);
-      await checkUserList(tester, test.leads);
       await PersistFunctions.persistTest(
-          test.copyWith(leads: await checkUserDetail(tester, test.leads)));
+          test.copyWith(leads: await CheckUser(tester, test.leads)));
     }
   }
 
@@ -112,9 +109,8 @@ class UserTest {
     }
     if (check) {
       test = await PersistFunctions.getTest(backup: false);
-      await checkUserList(tester, test.customers);
-      await PersistFunctions.persistTest(test.copyWith(
-          customers: await checkUserDetail(tester, test.customers)));
+      await PersistFunctions.persistTest(
+          test.copyWith(customers: await CheckUser(tester, test.customers)));
     }
   }
 
@@ -129,9 +125,8 @@ class UserTest {
     }
     if (check) {
       test = await PersistFunctions.getTest(backup: false);
-      await checkUserList(tester, test.suppliers);
-      await PersistFunctions.persistTest(test.copyWith(
-          suppliers: await checkUserDetail(tester, test.suppliers)));
+      await PersistFunctions.persistTest(
+          test.copyWith(suppliers: await CheckUser(tester, test.suppliers)));
     }
   }
 
@@ -141,9 +136,10 @@ class UserTest {
     if (users[0].userGroup == UserGroup.Admin) index++;
     List<User> newUsers = [];
     for (User user in users) {
-      if (user.partyId == null)
+      if (user.partyId == null) {
+        await CommonTest.waitForSnackbarToGo(tester);
         await CommonTest.tapByKey(tester, 'addNew');
-      else {
+      } else {
         await CommonTest.tapByKey(tester, 'name$index');
         expect(CommonTest.getTextField('header').split('#')[1], user.partyId);
       }
@@ -156,7 +152,6 @@ class UserTest {
       await CommonTest.drag(tester);
       await CommonTest.enterText(tester, 'email', email);
       await CommonTest.enterText(tester, 'telephoneNr', user.telephoneNr!);
-      await CommonTest.drag(tester);
       // changing to new company will clear paymentMethod and address
       if (user.userGroup != UserGroup.Admin &&
           user.userGroup != UserGroup.Employee) {
@@ -173,15 +168,15 @@ class UserTest {
         await CommonTest.enterDropDown(
             tester, 'userGroup', user.userGroup.toString());
       }
-      await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'updateUser', seconds: 5);
-      await CommonTest.refresh(tester);
       if (user.companyAddress != null) {
-        await CommonTest.tapByKey(tester, 'name$index');
+        await CommonTest.doSearch(tester, searchString: user.companyName!);
+        await CommonTest.tapByKey(tester, 'name0');
         await CommonTest.updateAddress(tester, user.companyAddress!);
       }
       if (user.companyPaymentMethod != null) {
-        await CommonTest.tapByKey(tester, 'name$index');
+        await CommonTest.doSearch(tester, searchString: user.companyName!);
+        await CommonTest.tapByKey(tester, 'name0');
         await CommonTest.updatePaymentMethod(
             tester, user.companyPaymentMethod!);
       }
@@ -192,24 +187,16 @@ class UserTest {
     return (newUsers);
   }
 
-  static Future<void> checkUserList(
+  static Future<List<User>> CheckUser(
       WidgetTester tester, List<User> users) async {
-    await CommonTest.refresh(tester);
-    int corr = 0;
-    if (users[0].userGroup == UserGroup.Admin) corr++;
-    users.forEachIndexed((index, user) {
-      expect(CommonTest.getTextField('name${index + corr}'),
-          equals('${user.firstName} ${user.lastName}'));
-    });
-  }
-
-  static Future<List<User>> checkUserDetail(
-      WidgetTester tester, List<User> users) async {
-    int index = 0;
-    if (users[0].userGroup == UserGroup.Admin) index++;
     List<User> newUsers = [];
     for (User user in users) {
-      await CommonTest.tapByKey(tester, 'name${index}');
+      await CommonTest.doSearch(tester, searchString: user.firstName!);
+      // check list
+      expect(CommonTest.getTextField('name0'),
+          equals('${user.firstName} ${user.lastName}'));
+      // check detail
+      await CommonTest.tapByKey(tester, 'name0');
       var id = CommonTest.getTextField('header').split('#')[1];
       expect(find.byKey(Key('UserDialog${user.userGroup.toString()}')),
           findsOneWidget);
@@ -223,7 +210,6 @@ class UserTest {
       expect(CommonTest.getDropdown('userGroup'),
           equals(user.userGroup.toString()));
       newUsers.add(user.copyWith(partyId: id));
-      index++;
 
       if (user.userGroup != UserGroup.Admin &&
           user.userGroup != UserGroup.Employee) {
@@ -242,6 +228,7 @@ class UserTest {
       }
       await CommonTest.tapByKey(tester, 'cancel');
     }
+    await CommonTest.closeSearch(tester);
     return newUsers;
   }
 
@@ -310,7 +297,7 @@ class UserTest {
               await enterUserData(tester, administrators, test.sequence),
           sequence: test.sequence + 10));
     }
-    await checkUserDetail(tester, test.administrators);
+    await CheckUser(tester, test.administrators);
   }
 
   static Future<void> updateEmployees(
@@ -322,7 +309,7 @@ class UserTest {
           employees: await enterUserData(tester, employees, test.sequence),
           sequence: test.sequence + 10));
     }
-    await checkUserDetail(tester, test.employees);
+    await CheckUser(tester, test.employees);
   }
 
   static Future<void> updateCustomers(
@@ -334,7 +321,7 @@ class UserTest {
           customers: await enterUserData(tester, customers, test.sequence),
           sequence: test.sequence + 10));
     }
-    await checkUserDetail(tester, test.customers);
+    await CheckUser(tester, test.customers);
   }
 
   static Future<void> updateSuppliers(
@@ -346,7 +333,7 @@ class UserTest {
           suppliers: await enterUserData(tester, suppliers, test.sequence),
           sequence: test.sequence + 10));
     }
-    await checkUserDetail(tester, test.suppliers);
+    await CheckUser(tester, test.suppliers);
   }
 
   static Future<void> updateLeads(WidgetTester tester, List<User> leads) async {
@@ -357,6 +344,6 @@ class UserTest {
           leads: await enterUserData(tester, leads, test.sequence),
           sequence: test.sequence + 10));
     }
-    await checkUserDetail(tester, test.leads);
+    await CheckUser(tester, test.leads);
   }
 }

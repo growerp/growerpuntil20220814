@@ -33,14 +33,12 @@ void main() {
     await UserTest.updateLeads(tester, leads.sublist(3, 6));
     await UserTest.deleteLeads(tester);
     await UserTest.selectCustomers(tester);
-    await UserTest.addCustomers(tester, customers.sublist(0, 3));
-    await UserTest.updateCustomers(tester, customers.sublist(3, 6));
+    await UserTest.addCustomers(tester, customers.sublist(0, 1));
+    await UserTest.updateCustomers(tester, customers.sublist(1, 2));
     await UserTest.deleteCustomers(tester);
     await UserTest.selectSuppliers(tester);
-    await UserTest.addSuppliers(tester, suppliers.sublist(0, 3));
-    await UserTest.updateSuppliers(tester, suppliers.sublist(3, 6));
+    await UserTest.addSuppliers(tester, suppliers.sublist(0, 2));
+    await UserTest.updateSuppliers(tester, suppliers.sublist(2, 4));
     await UserTest.deleteSuppliers(tester);
-    await CompanyTest.updateAddress(tester);
-    await CommonTest.logout(tester);
   });
 }
