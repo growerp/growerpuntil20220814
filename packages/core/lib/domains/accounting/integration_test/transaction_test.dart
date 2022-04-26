@@ -32,9 +32,10 @@ class TransactionTest {
             ? test.invoices
             : test.payments;
     for (FinDoc finDoc in finDocs) {
-      await CommonTest.doSearch(tester, searchString: finDoc.id() ?? '');
+      await CommonTest.doSearch(tester, searchString: finDoc.shipmentId!);
       await tester.pumpAndSettle();
-      expect(CommonTest.getTextField('status0'), 'Completed');
+      expect(CommonTest.getTextField('status0'), 'Completed',
+          reason: 'transaction status field check');
     }
   }
 }

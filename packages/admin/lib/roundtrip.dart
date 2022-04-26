@@ -21,17 +21,15 @@ void main() {
   testWidgets('''GrowERP roundtrip Purchase test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
-        clear: true);
+        clear: false);
     await CompanyTest.createCompany(tester);
     await CategoryTest.selectCategories(tester);
-    await CategoryTest.addCategories(tester, [categories[0], categories[1]],
+    await CategoryTest.addCategories(tester, categories.sublist(0, 2),
         check: false);
     await ProductTest.selectProducts(tester);
-    await ProductTest.addProducts(tester, [products[0], products[1]],
-        check: false);
+    await ProductTest.addProducts(tester, products.sublist(0, 2), check: false);
     await UserTest.selectSuppliers(tester);
-    await UserTest.addSuppliers(tester, [suppliers[0], suppliers[1]],
-        check: false);
+    await UserTest.addSuppliers(tester, suppliers.sublist(0, 2), check: false);
     await OrderTest.selectPurchaseOrders(tester);
     await OrderTest.createPurchaseOrder(tester, purchaseOrders);
     await OrderTest.checkPurchaseOrder(tester);
@@ -62,15 +60,15 @@ void main() {
     // check purchase orders complete
     await OrderTest.selectPurchaseOrders(tester);
     await OrderTest.checkPurchaseOrdersComplete(tester);
-  });
+  }, skip: true);
 
   testWidgets('''GrowERP roundtrip sales test''', (tester) async {
     // no clear because dependend on purchase test
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()));
-    await CommonTest.login(tester);
-    await UserTest.selectCustomers(tester);
+/*    await UserTest.selectCustomers(tester);
     await UserTest.addCustomers(tester, [customers[0]], check: false);
+*/
     await OrderTest.selectSalesOrders(tester);
     await OrderTest.createSalesOrder(tester, salesOrders);
     await OrderTest.checkSalesOrder(tester);

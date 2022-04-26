@@ -44,10 +44,9 @@ class WarehouseTest {
       finDocs.add(order.copyWith(shipmentId: CommonTest.getTextField('id0')));
       // check list
       await CommonTest.tapByKey(tester, 'id0'); // open items
-      expect(
-          order.items[0].productId ==
-              CommonTest.getTextField('itemLine0').split(' ')[1],
-          true);
+      expect(CommonTest.getTextField('itemLine0').split(' ')[1],
+          equals(order.items[0].productId),
+          reason: "checkin productId");
       await CommonTest.tapByKey(tester, 'id0'); // close items
     }
     await PersistFunctions.persistTest(test.copyWith(orders: finDocs));
