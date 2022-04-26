@@ -142,7 +142,8 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
       List<FinDoc> finDocs = List.from(state.finDocs);
       // need sort because were loaded at the top of the list:better seen by the user
       List<FinDocItem> items = List.from(event.finDoc.items);
-      items.sort((a, b) => a.itemSeqId!.compareTo(b.itemSeqId!));
+      if (docType != FinDocType.shipment) // shipment has no seqId
+        items.sort((a, b) => a.itemSeqId!.compareTo(b.itemSeqId!));
       if (event.finDoc.idIsNull()) {
         // create
         ApiResult<FinDoc> compResult = await repos.createFinDoc(event.finDoc

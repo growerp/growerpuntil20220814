@@ -258,8 +258,10 @@ class FinDocListItem extends StatelessWidget {
                               ? "Type: ${e.itemTypeId?.substring(3)}\n"
                                   "GlAccount: ${e.glAccountId} "
                                   "Amount: ${e.price} "
-                              : "ProductId: ${e.productId} " // shipment
-                                  "Quantity: ${e.quantity.toString()} ",
+                              : finDoc.docType == FinDocType.shipment
+                                  ? "ProductId: ${e.productId} "
+                                      "Quantity: ${e.quantity.toString()} "
+                                  : '', // payment
                       key: Key('itemLine$index'))))
         ])));
   }
