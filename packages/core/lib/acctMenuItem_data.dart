@@ -32,7 +32,7 @@ List<MenuItem> acctMenuItems = [
   MenuItem(
       image: "assets/images/orderGrey.png",
       selectedImage: "assets/images/order.png",
-      title: "Accounting Sales\n",
+      title: "Accounting Sales",
       route: '/acctSales',
       readGroups: [
         UserGroup.Admin,
@@ -44,7 +44,7 @@ List<MenuItem> acctMenuItems = [
               key: Key("SalesInvoice"),
               sales: true,
               docType: FinDocType.invoice),
-          label: "Invoices",
+          label: "\nOutgoing Invoices",
           icon: Icon(Icons.home),
         ),
         TabItem(
@@ -52,14 +52,14 @@ List<MenuItem> acctMenuItems = [
               key: Key("SalesPayment"),
               sales: true,
               docType: FinDocType.payment),
-          label: "Incoming Payments",
+          label: "\nIncoming Payments",
           icon: Icon(Icons.home),
         ),
       ]),
   MenuItem(
       image: "assets/images/supplierGrey.png",
       selectedImage: "assets/images/supplier.png",
-      title: "Accounting Purchase\n",
+      title: "Accounting Purchasing",
       route: '/acctPurchase',
       readGroups: [
         UserGroup.Admin,
@@ -74,7 +74,7 @@ List<MenuItem> acctMenuItems = [
               key: Key("PurchaseInvoice"),
               sales: false,
               docType: FinDocType.invoice),
-          label: "Invoices",
+          label: "\nIncoming Invoices",
           icon: Icon(Icons.home),
         ),
         TabItem(
@@ -82,7 +82,7 @@ List<MenuItem> acctMenuItems = [
               key: Key("PurchasePayment"),
               sales: false,
               docType: FinDocType.payment),
-          label: "Payments",
+          label: "\nOutgoing Payments",
           icon: Icon(Icons.home),
         ),
       ]),

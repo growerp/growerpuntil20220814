@@ -123,10 +123,8 @@ class PaymentTest {
       if (payment.paymentId == null)
         payment = payment.copyWith(paymentId: CommonTest.getTextField('id0'));
       newPayments.add(payment);
-      await tester
-          .pumpAndSettle(Duration(seconds: 1)); // for the message to disappear
-      await tester
-          .pumpAndSettle(Duration(seconds: 1)); // for the message to disappear
+      await CommonTest.waitForKey(tester, 'dismiss');
+      await CommonTest.waitForSnackbarToGo(tester);
     }
     await CommonTest.closeSearch(tester);
     return newPayments;
