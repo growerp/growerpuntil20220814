@@ -60,15 +60,14 @@ void main() {
     // check purchase orders complete
     await OrderTest.selectPurchaseOrders(tester);
     await OrderTest.checkPurchaseOrdersComplete(tester);
-  }, skip: true);
+  });
 
   testWidgets('''GrowERP roundtrip sales test''', (tester) async {
     // no clear because dependend on purchase test
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()));
-/*    await UserTest.selectCustomers(tester);
+    await UserTest.selectCustomers(tester);
     await UserTest.addCustomers(tester, [customers[0]], check: false);
-*/
     await OrderTest.selectSalesOrders(tester);
     await OrderTest.createSalesOrder(tester, salesOrders);
     await OrderTest.checkSalesOrder(tester);
