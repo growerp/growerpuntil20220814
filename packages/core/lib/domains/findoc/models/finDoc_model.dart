@@ -52,6 +52,7 @@ class FinDoc with _$FinDoc {
   bool idIsNull() => (invoiceId == null &&
           orderId == null &&
           shipmentId == null &&
+          invoiceId == null &&
           paymentId == null &&
           transactionId == null)
       ? true
@@ -59,19 +60,29 @@ class FinDoc with _$FinDoc {
 
   String salesString() => sales == true ? 'Sales' : 'Purchase';
 
-  String? id() => idIsNull()
-      ? 'New'
-      : docType == FinDocType.order
-          ? orderId
-          : docType == FinDocType.shipment
-              ? shipmentId
-              : docType == FinDocType.payment
-                  ? paymentId
-                  : docType == FinDocType.invoice
-                      ? invoiceId
-                      : docType == FinDocType.transaction
-                          ? transactionId
-                          : null;
+  String? id() => docType == FinDocType.transaction
+      ? transactionId
+      : docType == FinDocType.payment
+          ? paymentId
+          : docType == FinDocType.invoice
+              ? invoiceId
+              : docType == FinDocType.shipment
+                  ? shipmentId
+                  : docType == FinDocType.order
+                      ? orderId
+                      : null;
+
+  String? chainId() => shipmentId != null
+      ? shipmentId
+      : invoiceId != null
+          ? invoiceId
+          : paymentId != null
+              ? paymentId
+              : orderId != null
+                  ? orderId
+                  : transactionId != null
+                      ? transactionId
+                      : null;
 
   List<String?> otherIds() => docType == FinDocType.order
       ? ['shipment', shipmentId, 'invoice', invoiceId, 'payment', paymentId]

@@ -21,7 +21,7 @@ void main() {
   testWidgets('''GrowERP roundtrip Purchase test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
-        clear: false);
+        clear: true);
     await CompanyTest.createCompany(tester);
     await CategoryTest.selectCategories(tester);
     await CategoryTest.addCategories(tester, categories.sublist(0, 2),

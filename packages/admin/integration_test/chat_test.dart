@@ -28,5 +28,5 @@ void main() {
     // needchat echo running
 //    await ChatTest.sendDirectMessage(tester);
 //    await ChatTest.sendRoomMessage(tester);
-  }, skip: true);
+  });
 }
