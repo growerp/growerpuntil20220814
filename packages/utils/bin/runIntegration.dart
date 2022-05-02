@@ -100,6 +100,8 @@ void main(List<String> arguments) async {
         workingDirectory: '$home/growerpMoqui/runtime/component/@growerp');
   }
 
+  process = await Process.runSync('./gradlew', ['cleandb'],
+      workingDirectory: '$home/growerpMoqui');
   process = await Process.runSync(
       'java', ['-jar', 'moqui.war', 'load', 'types=seed,seed-initial,install'],
       workingDirectory: '$home/growerpMoqui');
