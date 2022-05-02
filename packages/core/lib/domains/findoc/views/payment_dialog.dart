@@ -32,6 +32,7 @@ class PaymentDialog extends StatefulWidget {
 }
 
 class _PaymentState extends State<PaymentDialog> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FinDoc finDoc; // incoming finDoc
   late APIRepository repos;
   late FinDoc finDocUpdated;
@@ -40,7 +41,7 @@ class _PaymentState extends State<PaymentDialog> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   late bool isPhone;
-  PaymentInstrument? _paymentInstrument;
+  late PaymentInstrument _paymentInstrument;
   final _userSearchBoxController = TextEditingController();
   final _amountController = TextEditingController();
   _PaymentState(this.finDoc);
@@ -58,7 +59,7 @@ class _PaymentState extends State<PaymentDialog> {
             itemTypeId: finDocUpdated.items[0].itemTypeId!, itemTypeName: '')
         : null;
     _paymentInstrument = finDocUpdated.paymentInstrument == null
-        ? null
+        ? PaymentInstrument.cash
         : finDocUpdated.paymentInstrument!;
   }
 
@@ -96,7 +97,7 @@ class _PaymentState extends State<PaymentDialog> {
                                 Container(
                                     width: 400,
                                     height: 750,
-                                    child: paymentForm(state)),
+                                    child: paymentForm(state, _formKey)),
                                 Positioned(
                                     top: -10,
                                     right: -10,
@@ -107,7 +108,7 @@ class _PaymentState extends State<PaymentDialog> {
         ));
   }
 
-  Widget paymentForm(FinDocState state) {
+  Widget paymentForm(FinDocState state, GlobalKey<FormState> _formKey) {
     if (_selectedItemType != null) {
       _selectedItemType = state.itemTypes
           .firstWhere((el) => _selectedItemType!.itemTypeId == el.itemTypeId);
@@ -129,215 +130,221 @@ class _PaymentState extends State<PaymentDialog> {
 
     return Padding(
         padding: EdgeInsets.all(10),
-        child: Column(children: [
-          SizedBox(height: 20),
-          Center(
-              child: Text(
-                  "${finDoc.sales ? 'Sales/incoming' : 'Purchase/outgoing'} "
-                  "Payment #${finDoc.paymentId ?? 'new'}",
-                  style: TextStyle(
-                      fontSize: isPhone ? 10 : 20,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                  key: Key('header'))),
-          SizedBox(height: 30),
-          DropdownSearch<User>(
-            dialogMaxWidth: 300,
-            searchFieldProps: TextFieldProps(
-              autofocus: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25.0)),
-              ),
-              controller: _userSearchBoxController,
-            ),
-            selectedItem: _selectedUser,
-            popupShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-            dropdownSearchDecoration: InputDecoration(
-              labelText: finDocUpdated.sales ? 'Customer' : 'Supplier',
-              border:
-                  OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
-            ),
-            showSearchBox: true,
-            isFilteredOnline: true,
-            key: Key(finDocUpdated.sales ? 'customer' : 'supplier'),
-            itemAsString: (User? u) =>
-                "${u!.companyName},\n${u.firstName ?? ''} ${u.lastName ?? ''}",
-            onFind: (String? filter) async {
-              ApiResult<List<User>> result = await repos.getUser(
-                  userGroups: [UserGroup.Customer, UserGroup.Supplier],
-                  filter: _userSearchBoxController.text);
-              return result.when(
-                  success: (data) => data,
-                  failure: (_) => [User(lastName: 'get data error!')]);
-            },
-            onChanged: (User? newValue) {
-              setState(() {
-                _selectedUser = newValue;
-              });
-            },
-            validator: (value) => value == null
-                ? "Select ${finDocUpdated.sales ? 'Customer' : 'Supplier'}!"
-                : null,
-          ),
-          SizedBox(height: 20),
-          TextFormField(
-            key: Key('amount'),
-            decoration: InputDecoration(
-                contentPadding:
-                    new EdgeInsets.symmetric(vertical: 35.0, horizontal: 10.0),
-                labelText: 'Amount'),
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value!.isEmpty) return 'Enter Price or Amount?';
-              return null;
-            },
-          ),
-          SizedBox(height: 20),
-          Container(
-            child: InputDecorator(
-              decoration: InputDecoration(
-                labelText: 'PaymentMethods',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
+        child: Form(
+            key: _formKey,
+            child: Column(children: <Widget>[
+              SizedBox(height: 20),
+              Center(
+                  child: Text(
+                      "${finDoc.sales ? 'Sales/incoming' : 'Purchase/outgoing'} "
+                      "Payment #${finDoc.paymentId ?? 'new'}",
+                      style: TextStyle(
+                          fontSize: isPhone ? 10 : 20,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                      key: Key('header'))),
+              SizedBox(height: 30),
+              DropdownSearch<User>(
+                dialogMaxWidth: 300,
+                searchFieldProps: TextFieldProps(
+                  autofocus: true,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25.0)),
+                  ),
+                  controller: _userSearchBoxController,
                 ),
+                selectedItem: _selectedUser,
+                popupShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0)),
+                dropdownSearchDecoration: InputDecoration(
+                  labelText: finDocUpdated.sales ? 'Customer' : 'Supplier',
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(25.0)),
+                ),
+                showSearchBox: true,
+                isFilteredOnline: true,
+                key: Key(finDocUpdated.sales ? 'customer' : 'supplier'),
+                itemAsString: (User? u) =>
+                    "${u!.companyName},\n${u.firstName ?? ''} ${u.lastName ?? ''}",
+                onFind: (String? filter) async {
+                  ApiResult<List<User>> result = await repos.getUser(
+                      userGroups: [UserGroup.Customer, UserGroup.Supplier],
+                      filter: _userSearchBoxController.text);
+                  return result.when(
+                      success: (data) => data,
+                      failure: (_) => [User(lastName: 'get data error!')]);
+                },
+                onChanged: (User? newValue) {
+                  setState(() {
+                    _selectedUser = newValue;
+                  });
+                },
+                validator: (value) => value == null
+                    ? "Select ${finDocUpdated.sales ? 'Customer' : 'Supplier'}!"
+                    : null,
               ),
-              child: Column(
-                children: [
-                  Visibility(
-                      visible: (finDoc.sales == true &&
-                              _selectedUser
-                                      ?.companyPaymentMethod?.ccDescription !=
-                                  null) ||
-                          (finDoc.sales == false &&
-                              authBloc.state.authenticate?.company
-                                      ?.paymentMethod?.ccDescription !=
-                                  null),
-                      child: Row(children: [
+              SizedBox(height: 20),
+              TextFormField(
+                  key: Key('amount'),
+                  decoration: InputDecoration(
+                      contentPadding: new EdgeInsets.symmetric(
+                          vertical: 35.0, horizontal: 10.0),
+                      labelText: 'Amount'),
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  validator: (value) =>
+                      value!.isEmpty ? "Enter Price or Amount?" : null),
+              SizedBox(height: 20),
+              Container(
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: 'PaymentMethods',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Visibility(
+                          visible: (finDoc.sales == true &&
+                                  _selectedUser?.companyPaymentMethod
+                                          ?.ccDescription !=
+                                      null) ||
+                              (finDoc.sales == false &&
+                                  authBloc.state.authenticate?.company
+                                          ?.paymentMethod?.ccDescription !=
+                                      null),
+                          child: Row(children: [
+                            Checkbox(
+                                key: Key('creditCard'),
+                                checkColor: Colors.white,
+                                fillColor:
+                                    MaterialStateProperty.resolveWith(getColor),
+                                value: _paymentInstrument ==
+                                    PaymentInstrument.creditcard,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    if (value == true)
+                                      _paymentInstrument =
+                                          PaymentInstrument.creditcard;
+                                  });
+                                }),
+                            Expanded(
+                                child: Text("Credit Card " +
+                                    (finDoc.sales == false
+                                        ? "${authBloc.state.authenticate?.company?.paymentMethod?.ccDescription}"
+                                        : "${_selectedUser?.companyPaymentMethod?.ccDescription}"))),
+                          ])),
+                      Row(children: [
                         Checkbox(
-                            key: Key('creditCard'),
+                            key: Key('cash'),
                             checkColor: Colors.white,
                             fillColor:
                                 MaterialStateProperty.resolveWith(getColor),
-                            value: _paymentInstrument ==
-                                PaymentInstrument.creditcard,
+                            value: _paymentInstrument == PaymentInstrument.cash,
                             onChanged: (bool? value) {
                               setState(() {
                                 if (value == true)
-                                  _paymentInstrument =
-                                      PaymentInstrument.creditcard;
+                                  _paymentInstrument = PaymentInstrument.cash;
                               });
                             }),
                         Expanded(
-                            child: Text("Credit Card " +
-                                (finDoc.sales == false
-                                    ? "${authBloc.state.authenticate?.company?.paymentMethod?.ccDescription}"
-                                    : "${_selectedUser?.companyPaymentMethod?.ccDescription}"))),
-                      ])),
-                  Row(children: [
-                    Checkbox(
-                        key: Key('cash'),
-                        checkColor: Colors.white,
-                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: _paymentInstrument == PaymentInstrument.cash,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (value == true)
-                              _paymentInstrument = PaymentInstrument.cash;
-                          });
-                        }),
-                    Expanded(
+                            child: Text(
+                          "Cash",
+                        )),
+                      ]),
+                      Row(children: [
+                        Checkbox(
+                            key: Key('check'),
+                            checkColor: Colors.white,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value:
+                                _paymentInstrument == PaymentInstrument.check,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value == true)
+                                  _paymentInstrument = PaymentInstrument.check;
+                              });
+                            }),
+                        Expanded(
+                            child: Text(
+                          "Check",
+                        )),
+                      ]),
+                      Row(children: [
+                        Checkbox(
+                            key: Key('bank'),
+                            checkColor: Colors.white,
+                            fillColor:
+                                MaterialStateProperty.resolveWith(getColor),
+                            value: _paymentInstrument == PaymentInstrument.bank,
+                            onChanged: (bool? value) {
+                              setState(() {
+                                if (value == true)
+                                  _paymentInstrument = PaymentInstrument.bank;
+                              });
+                            }),
+                        Expanded(
+                            child: Text(
+                          "Bank ${finDoc.otherUser?.companyPaymentMethod?.creditCardNumber ?? ''}",
+                        )),
+                      ]),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              DropdownButtonFormField<ItemType>(
+                key: Key('itemType'),
+                decoration: InputDecoration(labelText: 'Item Type'),
+                hint: Text('ItemType'),
+                value: _selectedItemType,
+                validator: (value) =>
+                    value == null ? 'Enter a item type for posting?' : null,
+                items: state.itemTypes.map((item) {
+                  return DropdownMenuItem<ItemType>(
+                      child: Text(item.itemTypeName), value: item);
+                }).toList(),
+                onChanged: (ItemType? newValue) {
+                  _selectedItemType = newValue;
+                },
+                isExpanded: true,
+              ),
+              SizedBox(height: 20),
+              Row(
+                children: [
+                  ElevatedButton(
+                      key: Key('cancelFinDoc'),
+                      child: Text('Cancel Payment'),
+                      onPressed: () {
+                        finDocBloc.add(FinDocUpdate(finDocUpdated.copyWith(
+                          status: FinDocStatusVal.Cancelled,
+                        )));
+                      }),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: ElevatedButton(
+                        key: Key('update'),
                         child: Text(
-                      "Cash",
-                    )),
-                  ]),
-                  Row(children: [
-                    Checkbox(
-                        key: Key('check'),
-                        checkColor: Colors.white,
-                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: _paymentInstrument == PaymentInstrument.check,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (value == true)
-                              _paymentInstrument = PaymentInstrument.check;
-                          });
+                            (finDoc.idIsNull() ? 'Create ' : 'Update ') +
+                                '${finDocUpdated.docType}'),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate())
+                            finDocBloc.add(FinDocUpdate(finDocUpdated.copyWith(
+                              otherUser: _selectedUser,
+                              grandTotal: Decimal.parse(_amountController.text),
+                              paymentInstrument: _paymentInstrument,
+                              items: [
+                                FinDocItem(
+                                    itemTypeId: _selectedItemType?.itemTypeId)
+                              ],
+                            )));
                         }),
-                    Expanded(
-                        child: Text(
-                      "Check",
-                    )),
-                  ]),
-                  Row(children: [
-                    Checkbox(
-                        key: Key('bank'),
-                        checkColor: Colors.white,
-                        fillColor: MaterialStateProperty.resolveWith(getColor),
-                        value: _paymentInstrument == PaymentInstrument.bank,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (value == true)
-                              _paymentInstrument = PaymentInstrument.bank;
-                          });
-                        }),
-                    Expanded(
-                        child: Text(
-                      "Bank ${finDoc.otherUser?.companyPaymentMethod?.creditCardNumber ?? ''}",
-                    )),
-                  ]),
+                  ),
                 ],
               ),
-            ),
-          ),
-          SizedBox(height: 20),
-          DropdownButtonFormField<ItemType>(
-            key: Key('itemType'),
-            decoration: InputDecoration(labelText: 'Item Type'),
-            hint: Text('ItemType'),
-            value: _selectedItemType,
-            validator: (value) =>
-                value == null ? 'Enter a item type for posting?' : null,
-            items: state.itemTypes.map((item) {
-              return DropdownMenuItem<ItemType>(
-                  child: Text(item.itemTypeName), value: item);
-            }).toList(),
-            onChanged: (ItemType? newValue) {
-              _selectedItemType = newValue;
-            },
-            isExpanded: true,
-          ),
-          SizedBox(height: 20),
-          Row(
-            children: [
-              ElevatedButton(
-                  key: Key('cancelFinDoc'),
-                  child: Text('Cancel Payment'),
-                  onPressed: () {
-                    finDocBloc.add(FinDocUpdate(finDocUpdated.copyWith(
-                      status: FinDocStatusVal.Cancelled,
-                    )));
-                  }),
-              SizedBox(width: 20),
-              Expanded(
-                child: ElevatedButton(
-                    key: Key('update'),
-                    child: Text((finDoc.idIsNull() ? 'Create ' : 'Update ') +
-                        '${finDocUpdated.docType}'),
-                    onPressed: () {
-                      finDocBloc.add(FinDocUpdate(finDocUpdated.copyWith(
-                        otherUser: _selectedUser,
-                        grandTotal: Decimal.parse(_amountController.text),
-                        paymentInstrument: _paymentInstrument,
-                        items: [
-                          FinDocItem(itemTypeId: _selectedItemType?.itemTypeId)
-                        ],
-                      )));
-                    }),
-              ),
-            ],
-          ),
-        ]));
+            ])));
   }
 }
