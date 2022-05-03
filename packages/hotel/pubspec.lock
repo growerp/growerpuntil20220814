@@ -162,34 +162,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
-  connectivity:
-    dependency: transitive
-    description:
-      name: connectivity
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.6"
-  connectivity_for_web:
-    dependency: transitive
-    description:
-      name: connectivity_for_web
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.0+1"
-  connectivity_macos:
-    dependency: transitive
-    description:
-      name: connectivity_macos
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.1+2"
-  connectivity_platform_interface:
-    dependency: transitive
-    description:
-      name: connectivity_platform_interface
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   convert:
     dependency: transitive
     description:
@@ -211,6 +183,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.3"
+  credit_card_type_detector:
+    dependency: transitive
+    description:
+      name: credit_card_type_detector
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
+  credit_card_validator:
+    dependency: transitive
+    description:
+      name: credit_card_validator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   cross_file:
     dependency: transitive
     description:
@@ -245,7 +231,7 @@ packages:
       name: decimal
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.5.0"
+    version: "2.2.0"
   diff_match_patch:
     dependency: transitive
     description:
@@ -266,7 +252,7 @@ packages:
       name: dropdown_search
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.3"
+    version: "2.0.1"
   equatable:
     dependency: "direct main"
     description:
@@ -686,7 +672,7 @@ packages:
       name: rational
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.1"
+    version: "2.2.0"
   responsive_framework:
     dependency: "direct main"
     description:
@@ -700,7 +686,7 @@ packages:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.26.0"
+    version: "0.27.3"
   shared_preferences:
     dependency: "direct main"
     description:
