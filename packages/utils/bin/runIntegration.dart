@@ -96,6 +96,8 @@ void main(List<String> arguments) async {
         workingDirectory: '$home/growerpMoqui');
     print('moqui build: ${process.stdout}');
   } else {
+    process = await Process.runSync('./gradlew', ['gitp'],
+        workingDirectory: '$home/growerpMoqui');
     process = await Process.runSync('git', ['pull'],
         workingDirectory: '$home/growerpMoqui/runtime/component/@growerp');
   }
