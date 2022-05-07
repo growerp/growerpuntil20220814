@@ -24,8 +24,8 @@ void main() {
     await UserTest.selectSuppliers(tester);
     await UserTest.addSuppliers(tester, suppliers.sublist(0, 2), check: false);
     await PaymentTest.selectPurchasePayments(tester);
-    await PaymentTest.addPayments(tester, purchasePayments.sublist(0, 2));
-    await PaymentTest.updatePayments(tester, purchasePayments.sublist(2, 4));
+    await PaymentTest.addPayments(tester, purchasePayments.sublist(0, 4));
+    await PaymentTest.updatePayments(tester, purchasePayments.sublist(4, 8));
     await PaymentTest.deleteLastPayment(tester);
     await PaymentTest.sendReceivePayment(tester);
     await PaymentTest.checkPaymentComplete(tester);
