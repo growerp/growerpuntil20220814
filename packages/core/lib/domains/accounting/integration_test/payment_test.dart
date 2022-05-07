@@ -34,8 +34,8 @@ class PaymentTest {
   static Future<void> addPayments(WidgetTester tester, List<FinDoc> payments,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-    test = test.copyWith(payments: []); //======= remove
-    await PersistFunctions.persistTest(test); //=====remove
+    // test = test.copyWith(payments: []); //======= remove
+    // await PersistFunctions.persistTest(test); //=====remove
     if (test.payments.isEmpty) {
       // not yet created
       await PersistFunctions.persistTest(
@@ -50,16 +50,16 @@ class PaymentTest {
       WidgetTester tester, List<FinDoc> payments) async {
     SaveTest test = await PersistFunctions.getTest();
     if (test.payments[0].grandTotal != payments[0].grandTotal) {
-      // copy paymentId
-      for (int x = 0; x < payments.length; x++) {
-        payments[x] =
+      // copy new payment data with paymentId
+      for (int x = 0; x < test.payments.length; x++) {
+        test.payments[x] =
             payments[x].copyWith(paymentId: test.payments[x].paymentId);
       }
-
-      test = test.copyWith(payments: await enterPaymentData(tester, payments));
+      // update existing records, no need to use return data
+      await enterPaymentData(tester, test.payments);
+      await checkPayment(tester, test.payments);
       await PersistFunctions.persistTest(test);
     }
-    await checkPayment(tester, test.payments);
   }
 
   static Future<void> deleteLastPayment(WidgetTester tester) async {
@@ -116,15 +116,15 @@ class PaymentTest {
           await CommonTest.tapByKey(tester, 'cash');
           break;
       }
-      await CommonTest.drag(tester, listViewName: 'listView2');
       await CommonTest.enterDropDown(
           tester, 'itemType', payment.items[0].itemTypeName!);
+      await CommonTest.drag(tester, listViewName: 'listView2');
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      await CommonTest.waitForKey(tester, 'dismiss');
+      await CommonTest.waitForSnackbarToGo(tester);
       if (payment.paymentId == null)
         payment = payment.copyWith(paymentId: CommonTest.getTextField('id0'));
       newPayments.add(payment);
-      await CommonTest.waitForKey(tester, 'dismiss');
-      await CommonTest.waitForSnackbarToGo(tester);
     }
     await CommonTest.closeSearch(tester);
     return newPayments;
@@ -167,6 +167,7 @@ class PaymentTest {
     await CommonTest.closeSearch(tester);
   }
 
+  // not used locally...need replacement
   static Future<void> checkPayments(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     List<FinDoc> payments = test.orders.isNotEmpty

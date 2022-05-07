@@ -137,7 +137,6 @@ class CommonTest {
     bool found = false;
     while (times++ < 20 && found == false) {
       found = tester.any(find.byKey(Key(keyName), skipOffstage: true));
-      print("==$times==wait until $found = true ");
       await tester.pump(Duration(milliseconds: 300));
     }
     expect(found, true,
@@ -151,7 +150,6 @@ class CommonTest {
     bool found = true;
     while (times++ < 20 && found == true) {
       found = tester.any(find.byType(SnackBar));
-      print("==$times==wait until $found = false");
       await tester.pump(Duration(milliseconds: 300));
     }
     expect(found, false,
