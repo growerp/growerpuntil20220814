@@ -55,6 +55,14 @@ List<MenuItem> acctMenuItems = [
           label: "\nIncoming Payments",
           icon: Icon(Icons.home),
         ),
+        TabItem(
+          form: const UserListForm(
+            key: Key('Customer'),
+            userGroup: UserGroup.Customer,
+          ),
+          label: '\nCustomers',
+          icon: const Icon(Icons.school),
+        ),
       ]),
   MenuItem(
       image: "assets/images/supplierGrey.png",
@@ -84,6 +92,14 @@ List<MenuItem> acctMenuItems = [
               docType: FinDocType.payment),
           label: "\nOutgoing Payments",
           icon: Icon(Icons.home),
+        ),
+        TabItem(
+          form: const UserListForm(
+            key: Key('Supplier'),
+            userGroup: UserGroup.Supplier,
+          ),
+          label: '\nSuppliers',
+          icon: const Icon(Icons.business),
         ),
       ]),
   MenuItem(

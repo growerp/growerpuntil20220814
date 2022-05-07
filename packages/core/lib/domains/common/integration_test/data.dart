@@ -272,7 +272,7 @@ List<User> customers = [
     firstName: 'customer1',
     lastName: 'lastName1',
     userGroup: UserGroup.Customer,
-    companyName: 'customer company5',
+    companyName: 'customer company1',
     email: 'emailXXX@example.org',
     telephoneNr: '111111111111',
     companyAddress: Address(
@@ -292,9 +292,21 @@ List<User> customers = [
     firstName: 'customer2',
     lastName: 'lastName2',
     userGroup: UserGroup.Customer,
-    companyName: companies[6].name,
+    companyName: 'customer company2',
     email: 'emailXXX@example.org',
     telephoneNr: '12121212121212',
+    companyAddress: Address(
+        address1: 'test street 44',
+        address2: 'office 23',
+        postalCode: '444444',
+        city: 'Trang',
+        province: 'Trang',
+        country: countries[12].name),
+    companyPaymentMethod: PaymentMethod(
+        creditCardNumber: '2223003122003222',
+        creditCardType: CreditCardType.mc,
+        expireMonth: '4',
+        expireYear: '2029'),
   )
 ];
 

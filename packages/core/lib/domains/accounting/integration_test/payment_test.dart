@@ -57,9 +57,9 @@ class PaymentTest {
       }
       // update existing records, no need to use return data
       await enterPaymentData(tester, test.payments);
-      await checkPayment(tester, test.payments);
       await PersistFunctions.persistTest(test);
     }
+    await checkPayment(tester, test.payments);
   }
 
   static Future<void> deleteLastPayment(WidgetTester tester) async {
@@ -90,7 +90,8 @@ class PaymentTest {
         await CommonTest.doSearch(tester, searchString: payment.paymentId!);
         await CommonTest.tapByKey(tester, 'edit0');
         expect(
-            CommonTest.getTextField('header').split('#')[1], payment.paymentId);
+            CommonTest.getTextField('header').split('#')[1], payment.paymentId,
+            reason: 'found different detail than was searched for');
       }
       await CommonTest.checkWidgetKey(
           tester, "PaymentDialog${payment.sales ? 'Sales' : 'Purchase'}");
@@ -118,7 +119,7 @@ class PaymentTest {
       }
       await CommonTest.enterDropDown(
           tester, 'itemType', payment.items[0].itemTypeName!);
-      await CommonTest.drag(tester, listViewName: 'listView2');
+      await CommonTest.drag(tester, listViewName: 'listView2', seconds: 2);
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
       await CommonTest.waitForKey(tester, 'dismiss');
       await CommonTest.waitForSnackbarToGo(tester);
