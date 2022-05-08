@@ -30,6 +30,12 @@ void main(List<String> arguments) async {
 
   var home = Platform.environment['HOME']!;
 
+  // growerp already cloned or pulled
+  process = await Process.runSync(
+      'flutter', ['pub', 'run', 'build_runner', 'build'],
+      workingDirectory: '$home/growerp/packages/core');
+
+  // growerp-chat
   if (await Directory('$home/growerpChat').existsSync() == false) {
     process = await Process.runSync('git', [
       'clone',
@@ -44,6 +50,7 @@ void main(List<String> arguments) async {
   process = await Process.runSync('./gradlew', ['appRun'],
       workingDirectory: '$home/growerpChat');
 
+  // growerp-moqui
   if (await Directory('$home/growerpMoqui').existsSync() == false) {
     process = await Process.runSync('git', [
       'clone',

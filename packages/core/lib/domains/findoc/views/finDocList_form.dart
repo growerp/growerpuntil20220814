@@ -146,7 +146,6 @@ class FinDocListState extends State<FinDocList> {
   List<FinDoc> finDocs = <FinDoc>[];
   int? tab;
   int limit = 12;
-  late bool search;
   String classificationId = GlobalConfiguration().getValue("classificationId");
   late String entityName;
   bool isLoading = true;
@@ -156,7 +155,6 @@ class FinDocListState extends State<FinDocList> {
   @override
   void initState() {
     super.initState();
-    search = false;
     entityName =
         classificationId == 'AppHotel' && widget.docType == FinDocType.order
             ? 'Reservation'
@@ -276,7 +274,6 @@ class FinDocListState extends State<FinDocList> {
       dynamic builder = (context, state) {
         if (state.status == FinDocStatus.success ||
             state.status == FinDocStatus.failure) {
-          search = state.search;
           finDocs = state.finDocs;
           hasReachedMax = state.hasReachedMax;
           // if rental (hotelroom) need to show checkin/out orders

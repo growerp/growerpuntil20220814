@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import '../findoc.dart';
 
-class FinDocListHeader extends StatelessWidget {
+class FinDocListHeader extends StatefulWidget {
   const FinDocListHeader({
     Key? key,
     required this.sales,
@@ -30,25 +30,26 @@ class FinDocListHeader extends StatelessWidget {
   final FinDocBloc finDocBloc;
 
   @override
+  State<FinDocListHeader> createState() => _FinDocListHeaderState();
+}
+
+class _FinDocListHeaderState extends State<FinDocListHeader> {
+  String searchString = '';
+  bool search = false;
+  @override
   Widget build(BuildContext context) {
     String classificationId = GlobalConfiguration().get("classificationId");
-    String searchString = '';
     return Material(
         child: ListTile(
             leading: GestureDetector(
                 key: Key('search'),
-                onTap: (() {
-                  if (finDocBloc.state.search) {
-                    finDocBloc.add(FinDocSearchOff());
-                    finDocBloc.add(FinDocFetch(refresh: true));
-                  } else
-                    finDocBloc.add(FinDocSearchOn());
-                }),
+                onTap: (() =>
+                    setState(() => search ? search = false : search = true)),
                 child: Image.asset(
                   'assets/images/search.png',
                   height: 30,
                 )),
-            title: finDocBloc.state.search
+            title: search
                 ? Row(children: <Widget>[
                     Expanded(
                         child: TextField(
@@ -59,26 +60,25 @@ class FinDocListHeader extends StatelessWidget {
                             borderSide: BorderSide(color: Colors.transparent),
                           ),
                           hintText: 'search with ID'),
-                      onChanged: ((value) {
-                        searchString = value;
-                      }),
+                      onChanged: ((value) => setState(() {
+                            searchString = value;
+                          })),
                     )),
                     ElevatedButton(
                         key: Key('searchButton'),
                         child: Text('search'),
                         onPressed: () {
-                          finDocBloc
+                          widget.finDocBloc
                               .add(FinDocFetch(searchString: searchString));
-                          searchString = '';
                         })
                   ])
                 : Row(children: <Widget>[
-                    SizedBox(width: 80, child: Text(docType.toString())),
+                    SizedBox(width: 80, child: Text(widget.docType.toString())),
                     SizedBox(width: 10),
                     Expanded(
-                        child: Text((sales ? "Customer" : "Supplier") +
+                        child: Text((widget.sales ? "Customer" : "Supplier") +
                             ' name & Company')),
-                    if (!isPhone && docType != FinDocType.payment)
+                    if (!widget.isPhone && widget.docType != FinDocType.payment)
                       SizedBox(
                           width: 80,
                           child: Text("#items", textAlign: TextAlign.left)),
@@ -91,9 +91,10 @@ class FinDocListHeader extends StatelessWidget {
                       : 'Creation Date')),
               SizedBox(width: 76, child: Text("Total")),
               SizedBox(width: 90, child: Text("Status")),
-              if (!isPhone) Expanded(child: Text("Email Address")),
-              if (!isPhone) Expanded(child: Text("$docType description")),
+              if (!widget.isPhone) Expanded(child: Text("Email Address")),
+              if (!widget.isPhone)
+                Expanded(child: Text("${widget.docType} description")),
             ]),
-            trailing: SizedBox(width: isPhone ? 40 : 195)));
+            trailing: SizedBox(width: widget.isPhone ? 40 : 195)));
   }
 }

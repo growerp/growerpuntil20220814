@@ -95,10 +95,8 @@ class CommonTest {
 
   static Future<void> doSearch(WidgetTester tester,
       {required String searchString, int seconds = 5}) async {
-    final found = tester.any(find.byKey(Key('searchButton')));
-    if (found == false) {
+    if (tester.any(find.byKey(Key('searchButton'))) == false)
       await tapByKey(tester, 'search');
-    }
     await enterText(tester, 'searchField', searchString);
     await tapByKey(tester, 'searchButton', seconds: seconds);
   }

@@ -26,7 +26,6 @@ class FinDocState extends Equatable {
     this.message,
     this.hasReachedMax = false,
     this.searchString = '',
-    this.search = false,
   });
 
   final FinDocStatus status;
@@ -37,7 +36,6 @@ class FinDocState extends Equatable {
   final List<User> users;
   final bool hasReachedMax;
   final String searchString;
-  final bool search;
 
   FinDocState copyWith({
     FinDocStatus? status,
@@ -48,7 +46,6 @@ class FinDocState extends Equatable {
     List<PaymentType>? paymentTypes,
     bool? hasReachedMax,
     String? searchString,
-    bool? search,
   }) {
     return FinDocState(
       status: status ?? this.status,
@@ -59,13 +56,12 @@ class FinDocState extends Equatable {
       message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
-      search: search ?? this.search,
     );
   }
 
   @override
   List<Object?> get props =>
-      [status, message, finDocs, itemTypes, paymentTypes, users, search];
+      [status, message, finDocs, itemTypes, paymentTypes, users];
 
   @override
   String toString() => '$status { #finDocs: ${finDocs.length}, '

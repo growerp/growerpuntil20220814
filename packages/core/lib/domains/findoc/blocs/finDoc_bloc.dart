@@ -59,8 +59,6 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
       : super(const FinDocState()) {
     on<FinDocFetch>(_onFinDocFetch,
         transformer: finDocDroppable(Duration(milliseconds: 100)));
-    on<FinDocSearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<FinDocSearchOff>(((event, emit) => emit(state.copyWith(search: false))));
     on<FinDocUpdate>(_onFinDocUpdate);
     on<FinDocShipmentReceive>(_onFinDocShipmentReceive);
     on<FinDocConfirmPayment>(_onFinDocConfirmPayment);
