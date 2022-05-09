@@ -17,6 +17,7 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:core/domains/domains.dart';
 
 import '../../../api_repository.dart';
+import '../../common/functions/helper_functions.dart';
 
 class AssetListForm extends StatelessWidget {
   @override
@@ -54,7 +55,15 @@ class _AssetsState extends State<AssetList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AssetBloc, AssetState>(
+    return BlocConsumer<AssetBloc, AssetState>(
+      listener: (context, state) {
+        if (state.status == AssetStatus.failure)
+          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+        if (state.status == AssetStatus.success) {
+          HelperFunctions.showMessage(
+              context, '${state.message}', Colors.green);
+        }
+      },
       builder: (context, state) {
         switch (state.status) {
           case AssetStatus.failure:

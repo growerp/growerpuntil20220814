@@ -102,11 +102,8 @@ class CommonTest {
   }
 
   static Future<void> closeSearch(WidgetTester tester) async {
-    final found = tester.any(find.byKey(Key('searchButton')));
-    if (found == true) {
-      await tester.tap(find.byKey(Key('search'))); // cancel search
-      await tester.pumpAndSettle();
-    }
+    if (tester.any(find.byKey(Key('searchButton'))) == true)
+      await tapByKey(tester, 'search'); // cancel search
   }
 
   static Future<void> pressLoginWithExistingId(WidgetTester tester) async {
@@ -137,6 +134,7 @@ class CommonTest {
       found = tester.any(find.byKey(Key(keyName), skipOffstage: true));
       await tester.pump(Duration(milliseconds: 300));
     }
+    if (!found) print("=== waited for message to show: ${times * 0.3} seconds");
     expect(found, true,
         reason: 'key $keyName not found even after 6 seconds wait!');
     await tester.pumpAndSettle();
@@ -150,6 +148,8 @@ class CommonTest {
       found = tester.any(find.byType(SnackBar));
       await tester.pump(Duration(milliseconds: 300));
     }
+    if (found)
+      print("=== waited for message to disappear: ${times * 0.3} seconds");
     expect(found, false,
         reason: 'Snackbar still found, even after 6 seconds wait!');
     await tester.pumpAndSettle();

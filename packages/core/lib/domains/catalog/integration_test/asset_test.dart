@@ -70,7 +70,7 @@ class AssetTest {
           tester, 'productDropDown', asset.product!.productName!);
       await CommonTest.enterDropDown(tester, 'statusDropDown', asset.statusId!);
       await CommonTest.drag(tester);
-      await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      await CommonTest.tapByKey(tester, 'update');
       await CommonTest.waitForKey(tester, 'dismiss');
       await CommonTest.waitForSnackbarToGo(tester);
     }

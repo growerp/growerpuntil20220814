@@ -97,7 +97,7 @@ class CategoryTest {
     int count = test.categories.length;
     if (count != test.categories.length) return;
     await CommonTest.refresh(tester);
-    await expectLater(
+    expect(
         find.byKey(Key('categoryItem')), findsNWidgets(count)); // initial admin
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
     await CommonTest.refresh(tester);
