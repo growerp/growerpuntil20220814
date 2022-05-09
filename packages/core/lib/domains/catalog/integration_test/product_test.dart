@@ -48,13 +48,12 @@ class ProductTest {
 
   static Future<void> enterProductData(
       WidgetTester tester, List<Product> products) async {
-    int index = 0;
     for (Product product in products) {
       if (product.productId.isEmpty) {
-        await CommonTest.waitForSnackbarToGo(tester);
         await CommonTest.tapByKey(tester, 'addNew');
       } else {
-        await CommonTest.tapByKey(tester, 'name$index');
+        await CommonTest.doSearch(tester, searchString: product.productId);
+        await CommonTest.tapByKey(tester, 'name0');
         expect(
             CommonTest.getTextField('header').split('#')[1], product.productId);
       }
@@ -70,7 +69,8 @@ class ProductTest {
           tester, 'productTypeDropDown', product.productTypeId!);
       await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'update', seconds: 5);
-      index++;
+      await CommonTest.waitForKey(tester, 'dismiss');
+      await CommonTest.waitForSnackbarToGo(tester);
     }
   }
 

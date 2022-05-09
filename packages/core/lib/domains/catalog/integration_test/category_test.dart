@@ -47,12 +47,12 @@ class CategoryTest {
 
   static Future<void> enterCategoryData(
       WidgetTester tester, List<Category> categories) async {
-    int index = 0;
     for (Category category in categories) {
       if (category.categoryId.isEmpty) {
         await CommonTest.tapByKey(tester, 'addNew');
       } else {
-        await CommonTest.tapByKey(tester, 'name$index');
+        await CommonTest.doSearch(tester, searchString: category.categoryId);
+        await CommonTest.tapByKey(tester, 'name0');
         expect(CommonTest.getTextField('header').split('#')[1],
             category.categoryId);
       }
@@ -65,7 +65,6 @@ class CategoryTest {
       await CommonTest.tapByKey(tester, 'update');
       await CommonTest.waitForKey(tester, 'dismiss');
       await CommonTest.waitForSnackbarToGo(tester);
-      index++;
     }
   }
 

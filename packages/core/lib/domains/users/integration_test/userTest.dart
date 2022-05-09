@@ -131,15 +131,13 @@ class UserTest {
 
   static Future<List<User>> enterUserData(
       WidgetTester tester, List<User> users, int seq) async {
-    int index = 0;
-    if (users[0].userGroup == UserGroup.Admin) index++;
     List<User> newUsers = [];
     for (User user in users) {
       if (user.partyId == null) {
-        await CommonTest.waitForSnackbarToGo(tester);
         await CommonTest.tapByKey(tester, 'addNew');
       } else {
-        await CommonTest.tapByKey(tester, 'name$index');
+        await CommonTest.doSearch(tester, searchString: user.partyId!);
+        await CommonTest.tapByKey(tester, 'lastName0');
         expect(CommonTest.getTextField('header').split('#')[1], user.partyId);
       }
       expect(find.byKey(Key('UserDialog${user.userGroup.toString()}')),
@@ -179,9 +177,9 @@ class UserTest {
         await CommonTest.updatePaymentMethod(
             tester, user.companyPaymentMethod!);
       }
+      await CommonTest.waitForKey(tester, 'dismiss');
       await CommonTest.waitForSnackbarToGo(tester);
       newUsers.add(user.copyWith(email: email, loginName: email));
-      index++;
     }
     return (newUsers);
   }
