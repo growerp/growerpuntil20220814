@@ -48,7 +48,7 @@ class _AssetsState extends State<AssetList> {
   void initState() {
     super.initState();
     entityName = classificationId == 'AppHotel' ? 'Room' : 'Asset';
-    _assetBloc = BlocProvider.of<AssetBloc>(context);
+    _assetBloc = context.read<AssetBloc>();
     _scrollController.addListener(_onScroll);
   }
 
@@ -61,7 +61,6 @@ class _AssetsState extends State<AssetList> {
             return Center(
                 child: Text('failed to fetch assets: ${state.message}'));
           case AssetStatus.success:
-            search = state.search;
             return Scaffold(
                 floatingActionButton: FloatingActionButton(
                     key: Key("addNew"),

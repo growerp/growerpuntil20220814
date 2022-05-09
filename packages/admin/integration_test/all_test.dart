@@ -24,6 +24,7 @@ import 'invoice_purchase_test.dart' as purchase_invoice;
 import 'roundtrip.dart' as purchase_sales;
 import 'room_rental_test.dart' as room_rental;
 import 'chat_test.dart' as chat;
+import 'opportunity_test.dart' as opportunity;
 
 void main() {
   company.main();
@@ -31,6 +32,7 @@ void main() {
   product.main();
   asset.main();
   user.main();
+  opportunity.main();
   sales_payment.main();
   purchase_payment.main();
   sales_invoice.main();

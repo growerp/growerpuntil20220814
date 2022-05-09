@@ -66,7 +66,6 @@ class PaymentTest {
     SaveTest test = await PersistFunctions.getTest();
     var count = CommonTest.getWidgetCountByKey(tester, 'finDocItem');
     if (count == test.payments.length) {
-      // check if already deleted
       await CommonTest.refresh(tester);
       await CommonTest.tapByKey(tester, 'edit${count - 1}');
       await CommonTest.tapByKey(tester, 'cancelFinDoc', seconds: 5);

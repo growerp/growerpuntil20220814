@@ -28,10 +28,6 @@ class CompanyFetch extends CompanyEvent {
   List<Object> get props => [refresh, searchString];
 }
 
-class CompanySearchOn extends CompanyEvent {}
-
-class CompanySearchOff extends CompanyEvent {}
-
 class CompanyUpdate extends CompanyEvent {
   final Company company;
   CompanyUpdate(this.company);

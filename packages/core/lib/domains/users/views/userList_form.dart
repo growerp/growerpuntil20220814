@@ -38,31 +38,31 @@ class UserListForm extends StatelessWidget {
       case UserGroup.Lead:
         return BlocProvider<LeadBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroup, BlocProvider.of<AuthBloc>(context))
+                userGroup, context.read<AuthBloc>())
               ..add(UserFetch()),
             child: userList);
       case UserGroup.Customer:
         return BlocProvider<CustomerBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroup, BlocProvider.of<AuthBloc>(context))
+                userGroup, context.read<AuthBloc>())
               ..add(UserFetch()),
             child: userList);
       case UserGroup.Supplier:
         return BlocProvider<SupplierBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroup, BlocProvider.of<AuthBloc>(context))
+                userGroup, context.read<AuthBloc>())
               ..add(UserFetch()),
             child: userList);
       case UserGroup.Employee:
         return BlocProvider<EmployeeBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroup, BlocProvider.of<AuthBloc>(context))
+                userGroup, context.read<AuthBloc>())
               ..add(UserFetch()),
             child: userList);
       case UserGroup.Admin:
         return BlocProvider<AdminBloc>(
             create: (context) => UserBloc(context.read<APIRepository>(),
-                userGroup, BlocProvider.of<AuthBloc>(context))
+                userGroup, context.read<AuthBloc>())
               ..add(UserFetch()),
             child: userList);
       default:
@@ -99,19 +99,19 @@ class _UsersState extends State<UsersList> {
     _scrollController.addListener(_onScroll);
     switch (widget.userGroup) {
       case UserGroup.Admin:
-        _userBloc = BlocProvider.of<AdminBloc>(context) as UserBloc;
+        _userBloc = context.read<AdminBloc>() as UserBloc;
         break;
       case UserGroup.Employee:
-        _userBloc = BlocProvider.of<EmployeeBloc>(context) as UserBloc;
+        _userBloc = context.read<EmployeeBloc>() as UserBloc;
         break;
       case UserGroup.Supplier:
-        _userBloc = BlocProvider.of<SupplierBloc>(context) as UserBloc;
+        _userBloc = context.read<SupplierBloc>() as UserBloc;
         break;
       case UserGroup.Customer:
-        _userBloc = BlocProvider.of<CustomerBloc>(context) as UserBloc;
+        _userBloc = context.read<CustomerBloc>() as UserBloc;
         break;
       case UserGroup.Lead:
-        _userBloc = BlocProvider.of<LeadBloc>(context) as UserBloc;
+        _userBloc = context.read<LeadBloc>() as UserBloc;
         break;
     }
   }

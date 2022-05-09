@@ -18,13 +18,20 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 
-class ProductListHeader extends StatelessWidget {
+class ProductListHeader extends StatefulWidget {
   const ProductListHeader({Key? key}) : super(key: key);
 
   @override
+  State<ProductListHeader> createState() => _ProductListHeaderState();
+}
+
+class _ProductListHeaderState extends State<ProductListHeader> {
+  String searchString = '';
+  bool search = false;
+  @override
   Widget build(BuildContext context) {
     final _searchController = TextEditingController();
-    final productBloc = BlocProvider.of<ProductBloc>(context);
+    final productBloc = context.read<ProductBloc>();
     late Authenticate authenticate;
     String classificationId = GlobalConfiguration().get("classificationId");
     String searchString = '';
@@ -35,18 +42,10 @@ class ProductListHeader extends StatelessWidget {
           child: ListTile(
               leading: GestureDetector(
                   key: Key('search'),
-                  onTap: (() {
-                    if (productBloc.state.search) {
-                      productBloc.add(ProductSearchOff());
-                      productBloc.add(ProductFetch(refresh: true));
-                    } else
-                      productBloc.add(ProductSearchOn());
-                    productBloc.add(productBloc.state.search
-                        ? ProductSearchOff()
-                        : ProductSearchOn());
-                  }),
+                  onTap: (() =>
+                      setState(() => search ? search = false : search = true)),
                   child: Image.asset('assets/images/search.png', height: 30)),
-              title: productBloc.state.search
+              title: search
                   ? Row(children: <Widget>[
                       Expanded(
                           child: TextField(

@@ -28,7 +28,7 @@ class ProductListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String classificationId = GlobalConfiguration().get("classificationId");
-    final _productBloc = BlocProvider.of<ProductBloc>(context);
+    final _productBloc = context.read<ProductBloc>();
     return Material(
         child: ListTile(
             leading: CircleAvatar(

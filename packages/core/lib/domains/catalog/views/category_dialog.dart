@@ -243,10 +243,9 @@ class _CategoryState extends State<CategoryDialog> {
                                 "Image upload error or larger than 200K",
                                 Colors.red);
                           else
-                            BlocProvider.of<CategoryBloc>(context)
-                                .add(CategoryUpdate(
-                              updatedCategory,
-                            ));
+                            context.read<CategoryBloc>().add(CategoryUpdate(
+                                  updatedCategory,
+                                ));
                         }
                       }),
                 ]))));

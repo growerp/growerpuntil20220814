@@ -32,10 +32,6 @@ class CategoryFetch extends CategoryEvent {
   List<Object> get props => [companyPartyId, searchString, refresh];
 }
 
-class CategorySearchOn extends CategoryEvent {}
-
-class CategorySearchOff extends CategoryEvent {}
-
 class CategoryDelete extends CategoryEvent {
   const CategoryDelete(this.category);
   final Category category;

@@ -50,7 +50,7 @@ class _LedgerTreeFormState extends State<LedgerTreeListForm> {
   void initState() {
     super.initState();
     _controller = TreeController(allNodesExpanded: false);
-    BlocProvider.of<GlAccountBloc>(context).add(const GlAccountFetch());
+    context.read<GlAccountBloc>().add(const GlAccountFetch());
   }
 
   @override

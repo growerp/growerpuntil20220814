@@ -31,7 +31,6 @@ class TimeEntryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final taskBloc = BlocProvider.of<TaskBloc>(context);
     return Material(
         child: ListTile(
       title: Row(
@@ -56,14 +55,15 @@ class TimeEntryListItem extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return BlocProvider.value(
-                  value: taskBloc, child: TimeEntryDialog(timeEntry));
+                  value: context.read<TaskBloc>(),
+                  child: TimeEntryDialog(timeEntry));
             });
       },
       trailing: IconButton(
         key: Key('delete$index'),
         icon: Icon(Icons.delete_forever),
         onPressed: () {
-          taskBloc.add(TaskTimeEntryDelete(timeEntry));
+          context.read<TaskBloc>().add(TaskTimeEntryDelete(timeEntry));
         },
       ),
     ));

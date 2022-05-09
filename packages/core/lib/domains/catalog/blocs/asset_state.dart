@@ -23,7 +23,6 @@ class AssetState extends Equatable {
     this.message,
     this.hasReachedMax = false,
     this.searchString = '',
-    this.search = false,
   });
 
   final AssetStatus status;
@@ -31,7 +30,6 @@ class AssetState extends Equatable {
   final List<Asset> assets;
   final bool hasReachedMax;
   final String searchString;
-  final bool search;
 
   AssetState copyWith({
     AssetStatus? status,
@@ -40,7 +38,6 @@ class AssetState extends Equatable {
     bool error = false,
     bool? hasReachedMax,
     String? searchString,
-    bool? search,
   }) {
     return AssetState(
       status: status ?? this.status,
@@ -48,12 +45,11 @@ class AssetState extends Equatable {
       message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
-      search: search ?? this.search,
     );
   }
 
   @override
-  List<Object?> get props => [message, assets, hasReachedMax, search];
+  List<Object?> get props => [message, assets, hasReachedMax];
 
   @override
   String toString() => '$status { #assets: ${assets.length}, '

@@ -64,13 +64,13 @@ class ChatApp extends StatelessWidget {
                   AuthBloc(dbServer, chatServer)..add(AuthLoad()),
               lazy: false),
           BlocProvider<ChatRoomBloc>(
-            create: (context) => ChatRoomBloc(
-                dbServer, chatServer, BlocProvider.of<AuthBloc>(context))
-              ..add(ChatRoomFetch()),
+            create: (context) =>
+                ChatRoomBloc(dbServer, chatServer, context.read<AuthBloc>())
+                  ..add(ChatRoomFetch()),
           ),
           BlocProvider<ChatMessageBloc>(
-            create: (context) => ChatMessageBloc(
-                dbServer, chatServer, BlocProvider.of<AuthBloc>(context)),
+            create: (context) =>
+                ChatMessageBloc(dbServer, chatServer, context.read<AuthBloc>()),
             lazy: false,
           ),
         ],
@@ -176,7 +176,7 @@ class _ChatRoomsState extends State<ChatRooms> {
   void initState() {
     super.initState();
     entityName = classificationId == 'AppHotel' ? 'Room' : 'ChatRoom';
-    _chatRoomBloc = BlocProvider.of<ChatRoomBloc>(context);
+    _chatRoomBloc = context.read<ChatRoomBloc>();
     search = false;
     limit = 20;
   }
@@ -200,7 +200,7 @@ class _ChatRoomsState extends State<ChatRooms> {
                           key: Key('empty'), textAlign: TextAlign.center));
                 }
                 // receive chat message (caused chatroom added on the list)
-                _chatMessageBloc = BlocProvider.of<ChatMessageBloc>(context)
+                _chatMessageBloc = context.read<ChatMessageBloc>()
                   ..add(ChatMessageFetch(
                       chatRoomId: chatRooms[0].chatRoomId, limit: limit));
                 return BlocBuilder<ChatMessageBloc, ChatMessageState>(

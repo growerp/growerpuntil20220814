@@ -38,8 +38,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   TaskBloc(this.repos) : super(const TaskState()) {
     on<TaskFetch>(_onTaskFetch,
         transformer: taskDroppable(Duration(milliseconds: 100)));
-    on<TaskSearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<TaskSearchOff>(((event, emit) => emit(state.copyWith(search: false))));
     on<TaskUpdate>(_onTaskUpdate);
     on<TaskTimeEntryUpdate>(_onTimeEntryUpdate); //add,delete
     on<TaskTimeEntryDelete>(_onTimeEntryDelete);

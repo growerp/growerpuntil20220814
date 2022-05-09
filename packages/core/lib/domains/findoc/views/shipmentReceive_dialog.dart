@@ -87,7 +87,7 @@ class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
   }
 
   Widget shipmentItemList() {
-    FinDocBloc finDocBloc = BlocProvider.of<FinDocBloc>(context);
+    FinDocBloc finDocBloc = context.read<FinDocBloc>();
     String nowDate = DateTime.now().toString().substring(0, 10);
     return Column(children: [
       Expanded(

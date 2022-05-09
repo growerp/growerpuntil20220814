@@ -23,7 +23,6 @@ class TaskState extends Equatable {
     this.tasks = const <Task>[],
     this.hasReachedMax = false,
     this.searchString = '',
-    this.search = false,
   });
 
   final TaskStatus status;
@@ -31,7 +30,6 @@ class TaskState extends Equatable {
   final List<Task> tasks;
   final bool hasReachedMax; // all records retrieved
   final String searchString; // check to see if search string first or changed
-  final bool search; // if search active
 
   TaskState copyWith({
     TaskStatus? status,
@@ -47,7 +45,6 @@ class TaskState extends Equatable {
       tasks: tasks ?? this.tasks,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
-      search: search ?? this.search,
     );
   }
 
@@ -58,6 +55,5 @@ class TaskState extends Equatable {
   }
 
   @override
-  List<Object> get props =>
-      [status, tasks, hasReachedMax, searchString, search];
+  List<Object> get props => [status, tasks, hasReachedMax, searchString];
 }

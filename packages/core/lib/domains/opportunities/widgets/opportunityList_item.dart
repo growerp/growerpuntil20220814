@@ -27,7 +27,7 @@ class OpportunityListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _opportunityBloc = BlocProvider.of<OpportunityBloc>(context);
+    final _opportunityBloc = context.read<OpportunityBloc>();
     return Material(
         child: ListTile(
             leading: CircleAvatar(

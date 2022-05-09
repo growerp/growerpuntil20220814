@@ -38,9 +38,6 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ProductBloc(this.repos) : super(const ProductState()) {
     on<ProductFetch>(_onProductFetch,
         transformer: productDroppable(Duration(milliseconds: 100)));
-    on<ProductSearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<ProductSearchOff>(
-        ((event, emit) => emit(state.copyWith(search: false))));
     on<ProductUpdate>(_onProductUpdate);
     on<ProductDelete>(_onProductDelete);
   }

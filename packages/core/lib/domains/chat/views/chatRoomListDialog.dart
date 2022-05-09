@@ -44,7 +44,7 @@ class _ChatRoomsState extends State<ChatRoomListDialog> {
     super.initState();
     entityName = classificationId == 'AppHotel' ? 'Room' : 'ChatRoom';
     _scrollController.addListener(_onScroll);
-    _chatRoomBloc = BlocProvider.of<ChatRoomBloc>(context);
+    _chatRoomBloc = context.read<ChatRoomBloc>();
     search = false;
     limit = 20;
   }
@@ -265,8 +265,7 @@ class ListDetail extends StatelessWidget {
           key: Key('delete$index'),
           icon: Icon(Icons.close),
           onPressed: () {
-            BlocProvider.of<ChatRoomBloc>(context)
-                .add(ChatRoomDelete(chatRooms[index]));
+            context.read<ChatRoomBloc>().add(ChatRoomDelete(chatRooms[index]));
           },
         ));
   }

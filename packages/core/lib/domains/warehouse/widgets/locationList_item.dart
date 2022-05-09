@@ -31,7 +31,7 @@ class LocationListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _locationBloc = BlocProvider.of<LocationBloc>(context);
+    final _locationBloc = context.read<LocationBloc>();
     final d = (String s) => Decimal.parse(s);
     Decimal qohTotal = d('0');
     for (Asset asset in location.assets!) {

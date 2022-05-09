@@ -28,10 +28,6 @@ class GlAccountFetch extends GlAccountEvent {
   List<Object> get props => [searchString, refresh];
 }
 
-class GlAccountSearchOn extends GlAccountEvent {}
-
-class GlAccountSearchOff extends GlAccountEvent {}
-
 class GlAccountUpdate extends GlAccountEvent {
   const GlAccountUpdate(this.opportunity);
   final GlAccount opportunity;

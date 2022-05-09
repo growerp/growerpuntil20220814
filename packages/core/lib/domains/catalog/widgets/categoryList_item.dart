@@ -27,7 +27,7 @@ class CategoryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _categoryBloc = BlocProvider.of<CategoryBloc>(context);
+    final _categoryBloc = context.read<CategoryBloc>();
     return Material(
         child: ListTile(
             leading: CircleAvatar(

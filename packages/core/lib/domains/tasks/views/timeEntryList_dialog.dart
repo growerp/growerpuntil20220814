@@ -32,12 +32,10 @@ class _TimeEntryListState extends State<TimeEntryListDialog> {
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
   _TimeEntryListState(this.timeEntries);
-  late TaskBloc _taskBloc;
 
   @override
   void initState() {
     super.initState();
-    _taskBloc = BlocProvider.of<TaskBloc>(context);
   }
 
   @override
@@ -76,7 +74,7 @@ class _TimeEntryListState extends State<TimeEntryListDialog> {
                   context: context,
                   builder: (BuildContext context) {
                     return BlocProvider.value(
-                        value: _taskBloc,
+                        value: context.read<TaskBloc>(),
                         child:
                             TimeEntryDialog(TimeEntry(taskId: widget.taskId)));
                   });
@@ -117,7 +115,7 @@ class _TimeEntryListState extends State<TimeEntryListDialog> {
                             key: Key('empty'), textAlign: TextAlign.center));
                   if (index == 0)
                     return TimeEntryListHeader(
-                      taskBloc: _taskBloc,
+                      taskBloc: context.read<TaskBloc>(),
                     );
                   index--;
                   return TimeEntryListItem(

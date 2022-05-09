@@ -127,13 +127,12 @@ class _LocationState extends State<LocationDialog> {
                           location.locationId == null ? 'Create' : 'Update'),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          BlocProvider.of<LocationBloc>(context)
-                              .add(LocationUpdate(
-                            Location(
-                              locationId: location.locationId,
-                              locationName: _nameController.text,
-                            ),
-                          ));
+                          context.read<LocationBloc>().add(LocationUpdate(
+                                Location(
+                                  locationId: location.locationId,
+                                  locationName: _nameController.text,
+                                ),
+                              ));
                         }
                       }),
                 ]))));

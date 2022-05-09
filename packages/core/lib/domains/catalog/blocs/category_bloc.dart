@@ -38,9 +38,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   CategoryBloc(this.repos) : super(const CategoryState()) {
     on<CategoryFetch>(_onCategoryFetch,
         transformer: categoryDroppable(Duration(milliseconds: 100)));
-    on<CategorySearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<CategorySearchOff>(
-        ((event, emit) => emit(state.copyWith(search: false))));
     on<CategoryUpdate>(_onCategoryUpdate);
     on<CategoryDelete>(_onCategoryDelete);
   }

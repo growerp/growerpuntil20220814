@@ -38,13 +38,12 @@ class _LocationsState extends State<LocationList> {
   late LocationBloc _locationBloc;
   Authenticate authenticate = Authenticate();
   int limit = 20;
-  late bool search;
   String? searchString;
 
   @override
   void initState() {
     super.initState();
-    _locationBloc = BlocProvider.of<LocationBloc>(context);
+    _locationBloc = context.read<LocationBloc>();
     _scrollController.addListener(_onScroll);
   }
 
@@ -58,7 +57,6 @@ class _LocationsState extends State<LocationList> {
             return Center(
                 child: Text('failed to fetch locations: ${state.message}'));
           case LocationStatus.success:
-            search = state.search;
             return Scaffold(
                 floatingActionButton: FloatingActionButton(
                     key: Key("addNew"),
@@ -87,8 +85,7 @@ class _LocationsState extends State<LocationList> {
                       itemBuilder: (BuildContext context, int index) {
                         if (index == 0)
                           return Column(children: [
-                            LocationListHeader(
-                                search: search, locationBloc: _locationBloc),
+                            LocationListHeader(locationBloc: _locationBloc),
                             Divider(color: Colors.black),
                             Visibility(
                                 visible: state.locations.isEmpty,

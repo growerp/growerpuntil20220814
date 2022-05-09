@@ -32,7 +32,6 @@ class _TaskState extends State<TaskDialog> {
   TextEditingController _nameController = TextEditingController();
 
   String _status = 'In Planning';
-  late TaskBloc _taskBloc;
 
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
@@ -43,7 +42,6 @@ class _TaskState extends State<TaskDialog> {
     super.initState();
     _status = task.status!;
     _nameController.text = task.taskName ?? '';
-    _taskBloc = BlocProvider.of<TaskBloc>(context);
   }
 
   @override
@@ -156,7 +154,7 @@ class _TaskState extends State<TaskDialog> {
                                   context: context,
                                   builder: (BuildContext context) {
                                     return BlocProvider.value(
-                                        value: _taskBloc,
+                                        value: context.read<TaskBloc>(),
                                         child: TimeEntryListDialog(
                                             task.taskId!, task.timeEntries));
                                   });
@@ -169,14 +167,13 @@ class _TaskState extends State<TaskDialog> {
                                 Text(task.taskId == null ? 'Create' : 'Update'),
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                BlocProvider.of<TaskBloc>(context)
-                                    .add(TaskUpdate(
-                                  Task(
-                                    taskId: task.taskId,
-                                    taskName: _nameController.text,
-                                    status: _status,
-                                  ),
-                                ));
+                                context.read<TaskBloc>().add(TaskUpdate(
+                                      Task(
+                                        taskId: task.taskId,
+                                        taskName: _nameController.text,
+                                        status: _status,
+                                      ),
+                                    ));
                               }
                             }))
                   ]),

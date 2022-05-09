@@ -17,22 +17,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import '../opportunities.dart';
 
-class OpportunityListHeader extends StatelessWidget {
-  const OpportunityListHeader({Key? key, required this.search})
-      : super(key: key);
-  final bool search;
+class OpportunityListHeader extends StatefulWidget {
+  const OpportunityListHeader({Key? key}) : super(key: key);
 
   @override
+  State<OpportunityListHeader> createState() => _OpportunityListHeaderState();
+}
+
+class _OpportunityListHeaderState extends State<OpportunityListHeader> {
+  String searchString = '';
+  bool search = false;
+  @override
   Widget build(BuildContext context) {
-    final _opportunityBloc = BlocProvider.of<OpportunityBloc>(context);
-    String searchString = '';
     return Material(
         child: ListTile(
-            onTap: (() {
-              _opportunityBloc
-                  .add(search ? OpportunitySearchOff() : OpportunitySearchOn());
-            }),
-            leading: Image.asset('assets/images/search.png', height: 30),
+            leading: GestureDetector(
+                key: Key('search'),
+                onTap: (() =>
+                    setState(() => search ? search = false : search = true)),
+                child: Image.asset(
+                  'assets/images/search.png',
+                  height: 30,
+                )),
             title: search
                 ? Row(children: <Widget>[
                     SizedBox(
@@ -41,6 +47,7 @@ class OpportunityListHeader extends StatelessWidget {
                                 ? MediaQuery.of(context).size.width - 250
                                 : MediaQuery.of(context).size.width - 350,
                         child: TextField(
+                          key: Key('searchField'),
                           autofocus: true,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -48,21 +55,15 @@ class OpportunityListHeader extends StatelessWidget {
                             ),
                             hintText: "search in ID, name and lead...",
                           ),
-                          onChanged: ((value) {
-                            searchString = value;
-                          }),
-                          onSubmitted: ((value) {
-                            _opportunityBloc
-                                .add(OpportunityFetch(searchString: value));
-                            _opportunityBloc.add(search
-                                ? OpportunitySearchOff()
-                                : OpportunitySearchOn());
-                          }),
+                          onChanged: ((value) => setState(() {
+                                searchString = value;
+                              })),
                         )),
                     ElevatedButton(
+                        key: Key('searchButton'),
                         child: Text('Search'),
                         onPressed: () {
-                          _opportunityBloc.add(
+                          context.read<OpportunityBloc>().add(
                               OpportunityFetch(searchString: searchString));
                         })
                   ])

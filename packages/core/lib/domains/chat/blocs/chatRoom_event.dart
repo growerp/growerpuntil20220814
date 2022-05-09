@@ -30,10 +30,6 @@ class ChatRoomFetch extends ChatRoomEvent {
       "FetchChatRoom refresh: $refresh limit: $limit, search: $searchString";
 }
 
-class ChatRoomSearchOn extends ChatRoomEvent {}
-
-class ChatRoomSearchOff extends ChatRoomEvent {}
-
 class ChatRoomUpdate extends ChatRoomEvent {
   final ChatRoom chatRoom;
   ChatRoomUpdate(this.chatRoom);

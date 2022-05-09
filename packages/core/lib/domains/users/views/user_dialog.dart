@@ -405,7 +405,7 @@ class _UserState extends State<UserPage> {
                                   address: updatedUser.companyAddress);
                             });
                         if (result is Address)
-                          BlocProvider.of<UserBloc>(context).add(UserUpdate(
+                          context.read<UserBloc>().add(UserUpdate(
                               updatedUser.copyWith(companyAddress: result)));
                       },
                       child: Text(updatedUser.companyAddress != null
@@ -439,9 +439,8 @@ class _UserState extends State<UserPage> {
                                         updatedUser.companyPaymentMethod);
                               });
                           if (result is PaymentMethod)
-                            BlocProvider.of<UserBloc>(context).add(UserUpdate(
-                                updatedUser.copyWith(
-                                    companyPaymentMethod: result)));
+                            context.read<UserBloc>().add(UserUpdate(updatedUser
+                                .copyWith(companyPaymentMethod: result)));
                         },
                         child: Text((updatedUser.companyPaymentMethod != null
                                 ? 'Update'
@@ -481,8 +480,7 @@ class _UserState extends State<UserPage> {
                               "Image upload error or larger than 200K",
                               Colors.red);
                         else
-                          BlocProvider.of<UserBloc>(context)
-                              .add(UserUpdate(updatedUser));
+                          context.read<UserBloc>().add(UserUpdate(updatedUser));
                       }
                     }))
           ])

@@ -57,7 +57,7 @@ class ChangeIpForm extends StatelessWidget {
           ElevatedButton(
             child: Text('Cancel'),
             onPressed: () {
-              BlocProvider.of<AuthBloc>(context).add(AuthLoad());
+              context.read<AuthBloc>().add(AuthLoad());
             },
           ),
           ElevatedButton(
@@ -79,7 +79,7 @@ class ChangeIpForm extends StatelessWidget {
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 await prefs.setString('companyPartyId', companyPartyId);
               }
-              BlocProvider.of<AuthBloc>(context).add(AuthLoad());
+              context.read<AuthBloc>().add(AuthLoad());
             },
           ),
         ],

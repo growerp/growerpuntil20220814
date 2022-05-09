@@ -34,7 +34,7 @@ class FinDocDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    FinDocBloc finDocBloc = BlocProvider.of<FinDocBloc>(context);
+    FinDocBloc finDocBloc = context.read<FinDocBloc>();
     if (finDoc.sales)
       return BlocProvider<SalesCartBloc>(
           create: (context) => CartBloc(
@@ -83,9 +83,9 @@ class _MyFinDocState extends State<FinDocPage> {
     _selectedUser = finDocUpdated.otherUser;
     _descriptionController.text = finDocUpdated.description ?? "";
     if (finDoc.sales) {
-      _cartBloc = BlocProvider.of<SalesCartBloc>(context) as CartBloc;
+      _cartBloc = context.read<SalesCartBloc>() as CartBloc;
     } else {
-      _cartBloc = BlocProvider.of<PurchaseCartBloc>(context) as CartBloc;
+      _cartBloc = context.read<PurchaseCartBloc>() as CartBloc;
     }
     repos = context.read<APIRepository>();
   }

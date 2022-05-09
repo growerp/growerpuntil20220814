@@ -41,10 +41,6 @@ class ChatMessageBloc extends Bloc<ChatMessageEvent, ChatMessageState> {
       : super(const ChatMessageState()) {
     on<ChatMessageFetch>(_onChatMessageFetch,
         transformer: chatMessageDroppable(Duration(milliseconds: 100)));
-    on<ChatMessageSearchOn>(
-        ((event, emit) => emit(state.copyWith(search: true))));
-    on<ChatMessageSearchOff>(
-        ((event, emit) => emit(state.copyWith(search: false))));
     on<ChatMessageReceiveWs>(_onChatMessageReceiveWs);
     on<ChatMessageSendWs>(_onChatMessageSendWs);
   }

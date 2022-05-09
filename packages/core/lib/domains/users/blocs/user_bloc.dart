@@ -46,8 +46,6 @@ class UserBloc extends Bloc<UserEvent, UserState>
       : super(const UserState()) {
     on<UserFetch>(_onUserFetch,
         transformer: userDroppable(Duration(milliseconds: 100)));
-    on<UserSearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<UserSearchOff>(((event, emit) => emit(state.copyWith(search: false))));
     on<UserUpdate>(_onUserUpdate);
     on<UserDelete>(_onUserDelete);
   }

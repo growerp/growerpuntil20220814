@@ -44,7 +44,7 @@ class _CategoriesState extends State<CategoryList> {
   void initState() {
     super.initState();
     search = false;
-    _categoryBloc = BlocProvider.of<CategoryBloc>(context);
+    _categoryBloc = context.read<CategoryBloc>();
     _scrollController.addListener(_onScroll);
   }
 
@@ -65,7 +65,6 @@ class _CategoriesState extends State<CategoryList> {
             return Center(
                 child: Text('failed to fetch categories: ${state.message}'));
           case CategoryStatus.success:
-            search = state.search;
             return Scaffold(
                 floatingActionButton: FloatingActionButton(
                     key: Key("addNew"),

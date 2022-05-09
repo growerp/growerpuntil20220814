@@ -335,8 +335,8 @@ class _CompanyState extends State<CompanyPage> {
                                                     address: company.address);
                                               });
                                           if (result is Address)
-                                            BlocProvider.of<AuthBloc>(context)
-                                                .add(AuthUpdateCompany(
+                                            context.read<AuthBloc>().add(
+                                                AuthUpdateCompany(
                                                     company.copyWith(
                                                         address: result)));
                                         }
@@ -370,8 +370,8 @@ class _CompanyState extends State<CompanyPage> {
                                                           .paymentMethod);
                                                 });
                                             if (result is PaymentMethod) {
-                                              BlocProvider.of<AuthBloc>(context)
-                                                  .add(AuthUpdateCompany(
+                                              context.read<AuthBloc>().add(
+                                                  AuthUpdateCompany(
                                                       company.copyWith(
                                                           paymentMethod:
                                                               result)));
@@ -435,8 +435,8 @@ class _CompanyState extends State<CompanyPage> {
                                                         "Image upload error or larger than 200K",
                                                         Colors.red);
                                                   else
-                                                    BlocProvider.of<AuthBloc>(
-                                                            context)
+                                                    context
+                                                        .read<AuthBloc>()
                                                         .add(AuthUpdateCompany(
                                                             company));
                                                 }

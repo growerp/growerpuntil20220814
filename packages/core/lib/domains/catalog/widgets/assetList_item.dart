@@ -26,7 +26,7 @@ class AssetListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _assetBloc = BlocProvider.of<AssetBloc>(context);
+    final _assetBloc = context.read<AssetBloc>();
     return Material(
         child: ListTile(
             leading: CircleAvatar(

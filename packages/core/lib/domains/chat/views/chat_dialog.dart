@@ -33,7 +33,7 @@ class _ChatState extends State<ChatDialog> {
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
-    _chatMessageBloc = BlocProvider.of<ChatMessageBloc>(context)
+    _chatMessageBloc = context.read<ChatMessageBloc>()
       ..add(ChatMessageFetch(
           chatRoomId: widget.chatRoom.chatRoomId, limit: limit));
     Timer(
@@ -100,7 +100,8 @@ class _ChatState extends State<ChatDialog> {
               "#${widget.chatRoom.chatRoomId}")),
       Expanded(
           child: RefreshIndicator(
-              onRefresh: (() async => BlocProvider.of<ChatRoomBloc>(context)
+              onRefresh: (() async => context
+                  .read<ChatRoomBloc>()
                   .add(ChatRoomFetch(refresh: true, limit: limit))),
               child: ListView.builder(
                   physics: AlwaysScrollableScrollPhysics(),

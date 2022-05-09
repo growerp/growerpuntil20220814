@@ -34,10 +34,6 @@ class ProductFetch extends ProductEvent {
   List<Object> get props => [categoryId, companyPartyId, searchString, refresh];
 }
 
-class ProductSearchOn extends ProductEvent {}
-
-class ProductSearchOff extends ProductEvent {}
-
 class ProductDelete extends ProductEvent {
   const ProductDelete(this.product);
   final Product product;

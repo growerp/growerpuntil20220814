@@ -26,7 +26,6 @@ class TaskListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final taskBloc = BlocProvider.of<TaskBloc>(context);
     return Material(
         child: ListTile(
             leading: CircleAvatar(
@@ -58,14 +57,17 @@ class TaskListItem extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return BlocProvider.value(
-                        value: taskBloc, child: TaskDialog(task));
+                        value: context.read<TaskBloc>(),
+                        child: TaskDialog(task));
                   });
             },
             trailing: IconButton(
                 key: Key('delete$index'),
                 icon: Icon(Icons.delete_forever),
                 onPressed: () {
-                  taskBloc.add(TaskUpdate(task.copyWith(status: 'Closed')));
+                  context
+                      .read<TaskBloc>()
+                      .add(TaskUpdate(task.copyWith(status: 'Closed')));
                 })));
   }
 }

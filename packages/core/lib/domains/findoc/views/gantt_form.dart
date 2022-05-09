@@ -60,7 +60,7 @@ class GanttPageState extends State<GanttPage> {
   void initState() {
     super.initState();
     columnPeriod = DAY;
-    _finDocBloc = BlocProvider.of<FinDocBloc>(context);
+    _finDocBloc = context.read<FinDocBloc>();
   }
 
   @override
@@ -146,9 +146,9 @@ class GanttPageState extends State<GanttPage> {
                 ),
                 SizedBox(width: 10),
                 ElevatedButton(
-                  onPressed: () => setState(() =>
-                      BlocProvider.of<FinDocBloc>(context)
-                          .add(FinDocFetch(refresh: true))),
+                  onPressed: () => setState(() => context
+                      .read<FinDocBloc>()
+                      .add(FinDocFetch(refresh: true))),
                   child: Text('Refresh'),
                 ),
                 SizedBox(width: 10),
@@ -363,7 +363,7 @@ class GanttChart extends StatelessWidget {
 
   List<Widget> buildAssetReservations(BuildContext context, int startIndex,
       double screenWidth, List<FinDoc> reservations, List<FinDoc> finDocs) {
-    FinDocBloc _finDocBloc = BlocProvider.of<FinDocBloc>(context);
+    FinDocBloc _finDocBloc = context.read<FinDocBloc>();
     if (reservations[startIndex].items[0].rentalFromDate == null)
       return []; // no reservations for this asset
     DateTime lastDate = ganttFromDate.subtract(Duration(days: 1));

@@ -23,7 +23,6 @@ class LocationState extends Equatable {
     this.message,
     this.hasReachedMax = false,
     this.searchString = '',
-    this.search = false,
   });
 
   final LocationStatus status;
@@ -31,7 +30,6 @@ class LocationState extends Equatable {
   final List<Location> locations;
   final bool hasReachedMax;
   final String searchString;
-  final bool search;
 
   LocationState copyWith({
     LocationStatus? status,
@@ -40,7 +38,6 @@ class LocationState extends Equatable {
     bool error = false,
     bool? hasReachedMax,
     String? searchString,
-    bool? search,
   }) {
     return LocationState(
       status: status ?? this.status,
@@ -48,12 +45,11 @@ class LocationState extends Equatable {
       message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
-      search: search ?? this.search,
     );
   }
 
   @override
-  List<Object?> get props => [locations, hasReachedMax, search];
+  List<Object?> get props => [locations, hasReachedMax];
 
   @override
   String toString() => '$status { #locations: ${locations.length}, '

@@ -15,7 +15,7 @@
 import 'package:core/domains/domains.dart';
 import 'package:flutter/material.dart';
 
-class UserListHeader extends StatelessWidget {
+class UserListHeader extends StatefulWidget {
   const UserListHeader({
     Key? key,
     required this.userGroup,
@@ -27,24 +27,25 @@ class UserListHeader extends StatelessWidget {
   final UserBloc userBloc;
 
   @override
+  State<UserListHeader> createState() => _UserListHeaderState();
+}
+
+class _UserListHeaderState extends State<UserListHeader> {
+  String searchString = '';
+  bool search = false;
+  @override
   Widget build(BuildContext context) {
-    String searchString = '';
     return Material(
         child: ListTile(
             leading: GestureDetector(
                 key: Key('search'),
-                onTap: (() {
-                  if (userBloc.state.search) {
-                    userBloc.add(UserSearchOff());
-                    userBloc.add(UserFetch(refresh: true));
-                  } else
-                    userBloc.add(UserSearchOn());
-                }),
+                onTap: (() =>
+                    setState(() => search ? search = false : search = true)),
                 child: Image.asset(
                   'assets/images/search.png',
                   height: 30,
                 )),
-            title: userBloc.state.search
+            title: search
                 ? Row(children: <Widget>[
                     Expanded(
                         child: TextField(
@@ -63,25 +64,26 @@ class UserListHeader extends StatelessWidget {
                         key: Key('searchButton'),
                         child: Text('search'),
                         onPressed: () {
-                          userBloc.add(UserFetch(searchString: searchString));
+                          widget.userBloc
+                              .add(UserFetch(searchString: searchString));
                           searchString = '';
                         })
                   ])
                 : Row(
                     children: <Widget>[
                       Expanded(child: Text("Name")),
-                      if (!isPhone) Expanded(child: Text("login name")),
-                      if (!isPhone) Expanded(child: Text("Email")),
-                      if (!isPhone) Expanded(child: Text("Language")),
-                      if (!isPhone &&
-                          userGroup != UserGroup.Employee &&
-                          userGroup != UserGroup.Admin)
+                      if (!widget.isPhone) Expanded(child: Text("login name")),
+                      if (!widget.isPhone) Expanded(child: Text("Email")),
+                      if (!widget.isPhone) Expanded(child: Text("Language")),
+                      if (!widget.isPhone &&
+                          widget.userGroup != UserGroup.Employee &&
+                          widget.userGroup != UserGroup.Admin)
                         Expanded(
                             child:
                                 Text("Company", textAlign: TextAlign.center)),
-                      if (isPhone &&
-                          userGroup != UserGroup.Employee &&
-                          userGroup != UserGroup.Admin)
+                      if (widget.isPhone &&
+                          widget.userGroup != UserGroup.Employee &&
+                          widget.userGroup != UserGroup.Admin)
                         Expanded(child: Text("Company"))
                     ],
                   ),

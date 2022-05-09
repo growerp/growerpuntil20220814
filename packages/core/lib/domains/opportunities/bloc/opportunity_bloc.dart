@@ -38,10 +38,6 @@ class OpportunityBloc extends Bloc<OpportunityEvent, OpportunityState> {
   OpportunityBloc(this.repos) : super(const OpportunityState()) {
     on<OpportunityFetch>(_onOpportunityFetch,
         transformer: opportunityDroppable(Duration(milliseconds: 100)));
-    on<OpportunitySearchOn>(
-        ((event, emit) => emit(state.copyWith(search: true))));
-    on<OpportunitySearchOff>(
-        ((event, emit) => emit(state.copyWith(search: false))));
     on<OpportunityUpdate>(_onOpportunityUpdate);
     on<OpportunityDelete>(_onOpportunityDelete);
   }
@@ -108,7 +104,7 @@ class OpportunityBloc extends Bloc<OpportunityEvent, OpportunityState> {
   ) async {
     try {
       List<Opportunity> opportunities = List.from(state.opportunities);
-      if (event.opportunity.opportunityId != null) {
+      if (event.opportunity.opportunityId.isNotEmpty) {
         ApiResult<Opportunity> compResult =
             await repos.updateOpportunity(event.opportunity);
         return emit(compResult.when(
@@ -118,7 +114,9 @@ class OpportunityBloc extends Bloc<OpportunityEvent, OpportunityState> {
               opportunities[index] = data;
               return state.copyWith(
                   status: OpportunityStatus.success,
-                  opportunities: opportunities);
+                  opportunities: opportunities,
+                  message:
+                      "opportunity ${event.opportunity.opportunityName} updated");
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: OpportunityStatus.failure, message: error.toString())));
@@ -131,7 +129,9 @@ class OpportunityBloc extends Bloc<OpportunityEvent, OpportunityState> {
               opportunities.insert(0, data);
               return state.copyWith(
                   status: OpportunityStatus.success,
-                  opportunities: opportunities);
+                  opportunities: opportunities,
+                  message:
+                      "opportunity ${event.opportunity.opportunityName} added");
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: OpportunityStatus.failure, message: error.toString())));
@@ -157,7 +157,9 @@ class OpportunityBloc extends Bloc<OpportunityEvent, OpportunityState> {
             opportunities.removeAt(index);
             return state.copyWith(
                 status: OpportunityStatus.success,
-                opportunities: opportunities);
+                opportunities: opportunities,
+                message:
+                    "opportunity ${event.opportunity.opportunityName} deleted");
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: OpportunityStatus.failure, message: error.toString())));

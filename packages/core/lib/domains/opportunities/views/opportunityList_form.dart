@@ -15,6 +15,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../api_repository.dart';
+import '../../common/functions/helper_functions.dart';
 import '../../domains.dart';
 
 class OpportunityListForm extends StatelessWidget {
@@ -36,27 +37,32 @@ class OpportunityList extends StatefulWidget {
 
 class _OpportunitiesState extends State<OpportunityList> {
   ScrollController _scrollController = ScrollController();
-  late bool search;
   late OpportunityBloc _opportunityBloc;
 
   @override
   void initState() {
     super.initState();
-    search = false;
-    _opportunityBloc = BlocProvider.of<OpportunityBloc>(context);
+    _opportunityBloc = context.read<OpportunityBloc>();
     _scrollController.addListener(_onScroll);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<OpportunityBloc, OpportunityState>(
+    return BlocConsumer<OpportunityBloc, OpportunityState>(
+      listener: (context, state) {
+        if (state.status == OpportunityStatus.failure)
+          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+        if (state.status == OpportunityStatus.success) {
+          HelperFunctions.showMessage(
+              context, '${state.message}', Colors.green);
+        }
+      },
       builder: (context, state) {
         switch (state.status) {
           case OpportunityStatus.failure:
             return Center(
                 child: Text('failed to fetch opportunities: ${state.message}'));
           case OpportunityStatus.success:
-            search = state.search;
             return Scaffold(
                 floatingActionButton: FloatingActionButton(
                     key: Key("addNew"),
@@ -85,7 +91,7 @@ class _OpportunitiesState extends State<OpportunityList> {
                         itemBuilder: (BuildContext context, int index) {
                           if (index == 0)
                             return Column(children: [
-                              OpportunityListHeader(search: search),
+                              OpportunityListHeader(),
                               Visibility(
                                   visible: state.opportunities.isEmpty,
                                   child: const Center(

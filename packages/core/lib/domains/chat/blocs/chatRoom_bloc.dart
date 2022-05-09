@@ -45,9 +45,6 @@ class ChatRoomBloc extends Bloc<ChatRoomEvent, ChatRoomState> {
       : super(const ChatRoomState()) {
     on<ChatRoomFetch>(_onChatRoomFetch,
         transformer: chatRoomDroppable(Duration(milliseconds: 100)));
-    on<ChatRoomSearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<ChatRoomSearchOff>(
-        ((event, emit) => emit(state.copyWith(search: false))));
     on<ChatRoomUpdate>(_onChatRoomUpdate);
     on<ChatRoomDelete>(_onChatRoomDelete);
     on<ChatRoomReceiveWsChatMessage>(_onChatRoomReceiveWsChatMessage);

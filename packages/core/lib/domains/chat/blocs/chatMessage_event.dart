@@ -34,10 +34,6 @@ class ChatMessageFetch extends ChatMessageEvent {
       "ChatMessageFetch refresh: $refresh limit: $limit, search: $searchString";
 }
 
-class ChatMessageSearchOn extends ChatMessageEvent {}
-
-class ChatMessageSearchOff extends ChatMessageEvent {}
-
 class ChatMessageReceiveWs extends ChatMessageEvent {
   final WsChatMessage chatMessage;
   ChatMessageReceiveWs(this.chatMessage);

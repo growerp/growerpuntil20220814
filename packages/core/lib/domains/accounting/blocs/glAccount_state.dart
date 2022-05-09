@@ -23,7 +23,6 @@ class GlAccountState extends Equatable {
     this.message,
     this.hasReachedMax = false,
     this.searchString = '',
-    this.search = false,
   });
 
   final GlAccountStatus status;
@@ -31,7 +30,6 @@ class GlAccountState extends Equatable {
   final List<GlAccount> glAccounts;
   final bool hasReachedMax;
   final String searchString;
-  final bool search;
 
   GlAccountState copyWith({
     GlAccountStatus? status,
@@ -48,12 +46,11 @@ class GlAccountState extends Equatable {
       message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
-      search: search ?? this.search,
     );
   }
 
   @override
-  List<Object?> get props => [glAccounts, hasReachedMax, search];
+  List<Object?> get props => [glAccounts, hasReachedMax];
 
   @override
   String toString() => '$status { #glAccounts: ${glAccounts.length}, '

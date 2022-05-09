@@ -168,17 +168,19 @@ class _TimeEntryState extends State<TimeEntryDialog> {
                       child: Text(
                           timeEntry.timeEntryId == null ? 'Create' : 'Update'),
                       onPressed: () async {
-                        BlocProvider.of<TaskBloc>(context)
+                        context
+                            .read<TaskBloc>()
                             .add(TaskTimeEntryUpdate(TimeEntry(
-                          date: _selectedDate,
-                          hours: Decimal.parse(_hoursController.text),
-                          taskId: widget.timeEntry.taskId,
-                          partyId: BlocProvider.of<AuthBloc>(context)
-                              .state
-                              .authenticate!
-                              .user!
-                              .partyId!,
-                        )));
+                              date: _selectedDate,
+                              hours: Decimal.parse(_hoursController.text),
+                              taskId: widget.timeEntry.taskId,
+                              partyId: context
+                                  .read<AuthBloc>()
+                                  .state
+                                  .authenticate!
+                                  .user!
+                                  .partyId!,
+                            )));
                         Navigator.of(context).pop();
                       })
                 ]))));

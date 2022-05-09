@@ -52,7 +52,7 @@ class _ProductsState extends State<ProductList> {
     super.initState();
     entityName = classificationId == 'AppHotel' ? 'Room Type' : 'Product';
     _scrollController.addListener(_onScroll);
-    _productBloc = BlocProvider.of<ProductBloc>(context);
+    _productBloc = context.read<ProductBloc>();
     search = false;
   }
 
@@ -73,7 +73,6 @@ class _ProductsState extends State<ProductList> {
             return Center(
                 child: Text('failed to fetch products: ${state.message}'));
           case ProductStatus.success:
-            search = state.search;
             return Scaffold(
                 floatingActionButton: FloatingActionButton(
                     key: Key("addNew"),

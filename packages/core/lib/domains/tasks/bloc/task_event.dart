@@ -28,10 +28,6 @@ class TaskFetch extends TaskEvent {
   List<Object> get props => [searchString, refresh];
 }
 
-class TaskSearchOn extends TaskEvent {}
-
-class TaskSearchOff extends TaskEvent {}
-
 class TaskUpdate extends TaskEvent {
   const TaskUpdate(this.task);
   final Task task;

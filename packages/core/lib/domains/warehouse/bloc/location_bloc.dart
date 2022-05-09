@@ -38,9 +38,6 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   LocationBloc(this.repos) : super(const LocationState()) {
     on<LocationFetch>(_onLocationFetch,
         transformer: locationDroppable(Duration(milliseconds: 100)));
-    on<LocationSearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<LocationSearchOff>(
-        ((event, emit) => emit(state.copyWith(search: false))));
     on<LocationUpdate>(_onLocationUpdate);
     on<LocationDelete>(_onLocationDelete);
   }

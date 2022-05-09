@@ -23,7 +23,6 @@ class OpportunityState extends Equatable {
     this.message,
     this.hasReachedMax = false,
     this.searchString = '',
-    this.search = false,
   });
 
   final OpportunityStatus status;
@@ -31,7 +30,6 @@ class OpportunityState extends Equatable {
   final List<Opportunity> opportunities;
   final bool hasReachedMax;
   final String searchString;
-  final bool search;
 
   OpportunityState copyWith({
     OpportunityStatus? status,
@@ -40,7 +38,6 @@ class OpportunityState extends Equatable {
     bool error = false,
     bool? hasReachedMax,
     String? searchString,
-    bool? search,
   }) {
     return OpportunityState(
       status: status ?? this.status,
@@ -48,12 +45,11 @@ class OpportunityState extends Equatable {
       message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
-      search: search ?? this.search,
     );
   }
 
   @override
-  List<Object?> get props => [message, opportunities, hasReachedMax, search];
+  List<Object?> get props => [message, opportunities, hasReachedMax];
 
   @override
   String toString() => '$status { #opportunities: ${opportunities.length}, '

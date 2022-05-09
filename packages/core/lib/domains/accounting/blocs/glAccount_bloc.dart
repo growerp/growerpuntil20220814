@@ -36,9 +36,6 @@ class GlAccountBloc extends Bloc<GlAccountEvent, GlAccountState> {
   GlAccountBloc(this.repos) : super(const GlAccountState()) {
     on<GlAccountFetch>(_onGlAccountFetch,
         transformer: accntDroppable(const Duration(milliseconds: 100)));
-    on<GlAccountSearchOn>((event, emit) => emit(state.copyWith(search: true)));
-    on<GlAccountSearchOff>(
-        (event, emit) => emit(state.copyWith(search: false)));
   }
 
   final APIRepository repos;

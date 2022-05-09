@@ -37,9 +37,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   CompanyBloc(this.repos) : super(const CompanyState()) {
     on<CompanyFetch>(_onCompanyFetch,
         transformer: companyDroppable(Duration(milliseconds: 100)));
-    on<CompanySearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<CompanySearchOff>(
-        ((event, emit) => emit(state.copyWith(search: false))));
     on<CompanyUpdate>(_onCompanyUpdate);
   }
 

@@ -57,7 +57,7 @@ class _OpportunityState extends State<OpportunityDialog> {
   void initState() {
     super.initState();
     repos = context.read<APIRepository>();
-    _opportunityBloc = BlocProvider.of<OpportunityBloc>(context);
+    _opportunityBloc = context.read<OpportunityBloc>();
     _nameController.text = opportunity.opportunityName ?? '';
     _descriptionController.text = opportunity.description ?? '';
     _estAmountController.text =
@@ -99,7 +99,7 @@ class _OpportunityState extends State<OpportunityDialog> {
                                 case OpportunityStatus.success:
                                   HelperFunctions.showMessage(
                                       context,
-                                      '${opportunity.opportunityId == null ? "Add" : "Update"} successfull',
+                                      '${opportunity.opportunityId.isEmpty ? "Add" : "Update"} successfull',
                                       Colors.green);
                                   await Future.delayed(
                                       Duration(milliseconds: 500));
@@ -216,7 +216,7 @@ class _OpportunityState extends State<OpportunityDialog> {
         isFilteredOnline: true,
         showClearButton: true,
         key: Key('lead'),
-        itemAsString: (User? u) => "${u?.firstName}, ${u?.lastName} "
+        itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
             "${u?.companyName}",
         onFind: (String? filter) =>
             getData([UserGroup.Lead], _leadSearchBoxController.text),
@@ -224,43 +224,41 @@ class _OpportunityState extends State<OpportunityDialog> {
           _selectedLead = newValue;
         },
       ),
-      Visibility(
-          visible: opportunity.opportunityId == null,
-          child: DropdownSearch<User>(
-              dialogMaxWidth: 300,
-              searchFieldProps: TextFieldProps(
-                autofocus: true,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(25.0)),
-                ),
-                controller: _accountSearchBoxController,
-              ),
-              selectedItem: _selectedAccount,
-              dropdownSearchDecoration: InputDecoration(
-                labelText: 'Account Employee',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25.0)),
-              ),
-              showSearchBox: true,
-              isFilteredOnline: true,
-              showClearButton: true,
-              key: Key('employee'),
-              itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
-                  "${u?.companyName}",
-              onFind: (String? filter) => getData(
-                  [UserGroup.Employee, UserGroup.Admin],
-                  _accountSearchBoxController.text),
-              onChanged: (User? newValue) {
-                _selectedAccount = newValue;
-              })),
+      DropdownSearch<User>(
+          dialogMaxWidth: 300,
+          searchFieldProps: TextFieldProps(
+            autofocus: true,
+            decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
+            ),
+            controller: _accountSearchBoxController,
+          ),
+          selectedItem: _selectedAccount,
+          dropdownSearchDecoration: InputDecoration(
+            labelText: 'Account Employee',
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
+          ),
+          showSearchBox: true,
+          isFilteredOnline: true,
+          showClearButton: true,
+          key: Key('employee'),
+          itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
+              "${u?.companyName}",
+          onFind: (String? filter) => getData(
+              [UserGroup.Employee, UserGroup.Admin],
+              _accountSearchBoxController.text),
+          onChanged: (User? newValue) {
+            _selectedAccount = newValue;
+          }),
       Row(
         children: [
           Expanded(
               child: ElevatedButton(
                   key: Key('update'),
                   child: Text(
-                      opportunity.opportunityId == null ? 'Create' : 'Update'),
+                      opportunity.opportunityId.isEmpty ? 'Create' : 'Update'),
                   onPressed: () {
                     if (_formKeyOpportunity.currentState!.validate()) {
                       _opportunityBloc.add(OpportunityUpdate(Opportunity(
@@ -306,6 +304,23 @@ class _OpportunityState extends State<OpportunityDialog> {
         child: SingleChildScrollView(
             key: Key('listView'),
             padding: EdgeInsets.all(20),
-            child: Column(children: (rows.isEmpty ? column : rows))));
+            child: Column(
+              children: [
+                Center(
+                    child: Text(
+                  'Opportunity #${opportunity.opportunityId.isEmpty ? " New" : opportunity.opportunityId}',
+                  style: TextStyle(
+                      fontSize:
+                          ResponsiveWrapper.of(context).isSmallerThan(TABLET)
+                              ? 10
+                              : 20,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
+                  key: Key('header'),
+                )),
+                SizedBox(height: 10),
+                Column(children: (rows.isEmpty ? column : rows)),
+              ],
+            )));
   }
 }

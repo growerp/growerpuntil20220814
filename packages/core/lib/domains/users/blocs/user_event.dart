@@ -31,10 +31,6 @@ class UserFetch extends UserEvent {
   List<Object> get props => [searchString, refresh];
 }
 
-class UserSearchOn extends UserEvent {}
-
-class UserSearchOff extends UserEvent {}
-
 class UserUpdate extends UserEvent {
   final User user;
   const UserUpdate(this.user);

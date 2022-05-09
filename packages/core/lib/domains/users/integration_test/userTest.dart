@@ -17,7 +17,6 @@ import 'package:core/domains/integration_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:core/domains/domains.dart';
-import 'package:collection/collection.dart';
 
 class UserTest {
   static Future<void> selectAdministrators(WidgetTester tester) async {

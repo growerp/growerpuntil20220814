@@ -28,10 +28,6 @@ class OpportunityFetch extends OpportunityEvent {
   List<Object> get props => [searchString, refresh];
 }
 
-class OpportunitySearchOn extends OpportunityEvent {}
-
-class OpportunitySearchOff extends OpportunityEvent {}
-
 class OpportunityUpdate extends OpportunityEvent {
   const OpportunityUpdate(this.opportunity);
   final Opportunity opportunity;

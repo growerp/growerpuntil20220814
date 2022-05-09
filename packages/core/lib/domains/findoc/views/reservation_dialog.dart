@@ -222,8 +222,8 @@ class _ReservationState extends State<ReservationDialog> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return BlocProvider.value(
-                                          value: BlocProvider.of<CustomerBloc>(
-                                              context) as UserBloc,
+                                          value: context.read<CustomerBloc>()
+                                              as UserBloc,
                                           child: UserDialog(
                                               user: User(
                                                   userGroup:
@@ -384,7 +384,8 @@ class _ReservationState extends State<ReservationDialog> {
                                       newItemList[index] = newItem;
                                       newFinDoc.copyWith(items: newItemList);
                                     }
-                                    BlocProvider.of<FinDocBloc>(context)
+                                    context
+                                        .read<FinDocBloc>()
                                         .add(FinDocUpdate(newFinDoc));
                                   }
                                 }))

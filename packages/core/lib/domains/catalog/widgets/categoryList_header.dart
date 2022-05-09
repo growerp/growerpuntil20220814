@@ -17,29 +17,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import '../catalog.dart';
 
-class CategoryListHeader extends StatelessWidget {
+class CategoryListHeader extends StatefulWidget {
   const CategoryListHeader({Key? key}) : super(key: key);
 
   @override
+  State<CategoryListHeader> createState() => _CategoryListHeaderState();
+}
+
+class _CategoryListHeaderState extends State<CategoryListHeader> {
+  String searchString = '';
+  bool search = false;
+  @override
   Widget build(BuildContext context) {
-    final categoryBloc = BlocProvider.of<CategoryBloc>(context);
-    String searchString = '';
     return Material(
         child: ListTile(
             leading: GestureDetector(
                 key: Key('search'),
-                onTap: (() {
-                  if (categoryBloc.state.search) {
-                    categoryBloc.add(CategorySearchOff());
-                    categoryBloc.add(CategoryFetch(refresh: true));
-                  } else
-                    categoryBloc.add(CategorySearchOn());
-                }),
+                onTap: (() =>
+                    setState(() => search ? search = false : search = true)),
                 child: Image.asset(
                   'assets/images/search.png',
                   height: 30,
                 )),
-            title: categoryBloc.state.search
+            title: search
                 ? Row(children: <Widget>[
                     Expanded(
                         child: TextField(
@@ -51,21 +51,15 @@ class CategoryListHeader extends StatelessWidget {
                         ),
                         hintText: "search in ID, name and description...",
                       ),
-                      onChanged: ((value) {
-                        searchString = value;
-                      }),
-                      onSubmitted: ((value) {
-                        categoryBloc.add(CategoryFetch(searchString: value));
-                        categoryBloc.add(categoryBloc.state.search
-                            ? CategorySearchOff()
-                            : CategorySearchOn());
-                      }),
+                      onChanged: ((value) =>
+                          setState(() => searchString = value)),
                     )),
                     ElevatedButton(
                         key: Key('searchButton'),
                         child: Text('Search'),
                         onPressed: () {
-                          categoryBloc
+                          context
+                              .read<CategoryBloc>()
                               .add(CategoryFetch(searchString: searchString));
                           searchString = '';
                         })

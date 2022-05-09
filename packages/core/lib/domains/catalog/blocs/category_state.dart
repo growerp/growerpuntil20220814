@@ -24,7 +24,6 @@ class CategoryState extends Equatable {
     this.message,
     this.hasReachedMax = false,
     this.searchString = '',
-    this.search = false,
   });
 
   final CategoryStatus status;
@@ -33,7 +32,6 @@ class CategoryState extends Equatable {
   final String? companyPartyId;
   final bool hasReachedMax;
   final String searchString;
-  final bool search;
 
   CategoryState copyWith({
     CategoryStatus? status,
@@ -43,7 +41,6 @@ class CategoryState extends Equatable {
     bool error = false,
     bool? hasReachedMax,
     String? searchString,
-    bool? search,
   }) {
     return CategoryState(
       status: status ?? this.status,
@@ -52,13 +49,12 @@ class CategoryState extends Equatable {
       message: message,
       hasReachedMax: hasReachedMax ?? this.hasReachedMax,
       searchString: searchString ?? this.searchString,
-      search: search ?? this.search,
     );
   }
 
   @override
   List<Object?> get props =>
-      [status, message, categories, companyPartyId, hasReachedMax, search];
+      [status, message, categories, companyPartyId, hasReachedMax];
 
   @override
   String toString() => '$status { #categories: ${categories.length}, '

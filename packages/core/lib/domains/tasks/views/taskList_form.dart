@@ -35,14 +35,10 @@ class TasksList extends StatefulWidget {
 
 class _TasksListState extends State<TasksList> {
   final _scrollController = ScrollController();
-  late bool search;
-  late TaskBloc _taskBloc;
 
   @override
   void initState() {
     super.initState();
-    search = false;
-    _taskBloc = BlocProvider.of<TaskBloc>(context);
     _scrollController.addListener(_onScroll);
   }
 
@@ -55,7 +51,6 @@ class _TasksListState extends State<TasksList> {
             return Center(
                 child: Text('failed to fetch tasks: ${state.message}'));
           case TaskStatus.success:
-            search = state.search;
             return Scaffold(
                 floatingActionButton: FloatingActionButton(
                     key: Key("addNew"),
@@ -65,14 +60,15 @@ class _TasksListState extends State<TasksList> {
                           context: context,
                           builder: (BuildContext context) {
                             return BlocProvider.value(
-                                value: _taskBloc, child: TaskDialog(Task()));
+                                value: context.read<TaskBloc>(),
+                                child: TaskDialog(Task()));
                           });
                     },
                     tooltip: 'Add New',
                     child: Icon(Icons.add)),
                 body: RefreshIndicator(
                     onRefresh: (() async =>
-                        _taskBloc.add(TaskFetch(refresh: true))),
+                        context.read<TaskBloc>().add(TaskFetch(refresh: true))),
                     child: ListView.builder(
                       physics: AlwaysScrollableScrollPhysics(),
                       itemCount: state.hasReachedMax
@@ -86,10 +82,7 @@ class _TasksListState extends State<TasksList> {
                               child: Text('No active tasks found',
                                   key: Key('empty'),
                                   textAlign: TextAlign.center));
-                        if (index == 0)
-                          return TaskListHeader(
-                            search: search,
-                          );
+                        if (index == 0) return TaskListHeader();
                         index--;
                         return index >= state.tasks.length
                             ? BottomLoader()

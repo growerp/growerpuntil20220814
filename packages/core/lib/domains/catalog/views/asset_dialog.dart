@@ -235,20 +235,20 @@ class _AssetState extends State<AssetDialog> {
                       child: Text(asset.assetId.isEmpty ? 'Create' : 'Update'),
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          BlocProvider.of<AssetBloc>(context).add(AssetUpdate(
-                            Asset(
-                              assetId: asset.assetId,
-                              assetName: _nameController.text,
-                              quantityOnHand:
-                                  _quantityOnHandController.text != ""
-                                      ? Decimal.parse(
-                                          _quantityOnHandController.text)
-                                      : Decimal.parse('1'),
-                              product: _selectedProduct,
-                              statusId: _statusId,
-                              assetClassId: 'Hotel Room',
-                            ),
-                          ));
+                          context.read<AssetBloc>().add(AssetUpdate(
+                                Asset(
+                                  assetId: asset.assetId,
+                                  assetName: _nameController.text,
+                                  quantityOnHand:
+                                      _quantityOnHandController.text != ""
+                                          ? Decimal.parse(
+                                              _quantityOnHandController.text)
+                                          : Decimal.parse('1'),
+                                  product: _selectedProduct,
+                                  statusId: _statusId,
+                                  assetClassId: 'Hotel Room',
+                                ),
+                              ));
                         }
                       }),
                 ]))));

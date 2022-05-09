@@ -17,29 +17,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import '../catalog.dart';
 
-class AssetListHeader extends StatelessWidget {
+class AssetListHeader extends StatefulWidget {
   const AssetListHeader({Key? key}) : super(key: key);
 
   @override
+  State<AssetListHeader> createState() => _AssetListHeaderState();
+}
+
+class _AssetListHeaderState extends State<AssetListHeader> {
+  String searchString = '';
+  bool search = false;
+  @override
   Widget build(BuildContext context) {
-    final _assetBloc = BlocProvider.of<AssetBloc>(context);
-    String searchString = '';
+    final _assetBloc = context.read<AssetBloc>();
     return Material(
         child: ListTile(
             leading: GestureDetector(
                 key: Key('search'),
-                onTap: (() {
-                  if (_assetBloc.state.search) {
-                    _assetBloc.add(AssetSearchOff());
-                    _assetBloc.add(AssetFetch(refresh: true));
-                  } else
-                    _assetBloc.add(AssetSearchOn());
-                }),
+                onTap: (() =>
+                    setState(() => search ? search = false : search = true)),
                 child: Image.asset(
                   'assets/images/search.png',
                   height: 30,
                 )),
-            title: _assetBloc.state.search
+            title: search
                 ? Row(children: <Widget>[
                     Expanded(
                         child: TextField(
@@ -52,15 +53,9 @@ class AssetListHeader extends StatelessWidget {
                         ),
                         hintText: "search in ID, name and description...",
                       ),
-                      onChanged: ((value) {
-                        searchString = value;
-                      }),
-                      onSubmitted: ((value) {
-                        _assetBloc.add(AssetFetch(searchString: value));
-                        _assetBloc.add(_assetBloc.state.search
-                            ? AssetSearchOff()
-                            : AssetSearchOn());
-                      }),
+                      onChanged: ((value) => setState(() {
+                            searchString = value;
+                          })),
                     )),
                     ElevatedButton(
                         key: Key('searchButton'),

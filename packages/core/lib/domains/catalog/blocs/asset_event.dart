@@ -28,10 +28,6 @@ class AssetFetch extends AssetEvent {
   List<Object> get props => [searchString, refresh];
 }
 
-class AssetSearchOn extends AssetEvent {}
-
-class AssetSearchOff extends AssetEvent {}
-
 class AssetDelete extends AssetEvent {
   const AssetDelete(this.asset);
   final Asset asset;

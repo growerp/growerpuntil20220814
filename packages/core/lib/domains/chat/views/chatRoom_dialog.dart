@@ -152,16 +152,16 @@ class _ChatRoomState extends State<ChatRoomDialog> {
                           chatRoom.chatRoomId.isEmpty ? 'Create' : 'Update'),
                       onPressed: () async {
                         if (_formKey.currentState!.validate() && !loading) {
-                          BlocProvider.of<ChatRoomBloc>(context).add(
-                              ChatRoomUpdate(chatRoom.copyWith(
-                                  chatRoomName: _nameController.text.isEmpty
-                                      ? null
-                                      : _nameController.text,
-                                  isPrivate: true,
-                                  members: [
-                                ChatRoomMember(
-                                    member: _selectedUser!, isActive: true)
-                              ])));
+                          context.read<ChatRoomBloc>().add(ChatRoomUpdate(
+                                  chatRoom.copyWith(
+                                      chatRoomName: _nameController.text.isEmpty
+                                          ? null
+                                          : _nameController.text,
+                                      isPrivate: true,
+                                      members: [
+                                    ChatRoomMember(
+                                        member: _selectedUser!, isActive: true)
+                                  ])));
                         }
                       }),
                 ]))));

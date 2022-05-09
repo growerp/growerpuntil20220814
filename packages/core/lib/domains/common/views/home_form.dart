@@ -60,8 +60,7 @@ class _HomeFormState extends State<HomeForm> {
                     icon: Icon(Icons.do_not_disturb, key: Key('HomeFormAuth')),
                     tooltip: 'Logout',
                     onPressed: () => {
-                          BlocProvider.of<AuthBloc>(context)
-                              .add(AuthLoggedOut()),
+                          context.read<AuthBloc>().add(AuthLoggedOut()),
                         }),
             ],
           );
@@ -82,8 +81,7 @@ class _HomeFormState extends State<HomeForm> {
                     SizedBox(height: 100),
                     InkWell(
                         onLongPress: () {
-                          BlocProvider.of<AuthBloc>(context)
-                              .add(AuthChangedIp());
+                          context.read<AuthBloc>().add(AuthChangedIp());
                         },
                         child: Text(widget.title,
                             style: TextStyle(

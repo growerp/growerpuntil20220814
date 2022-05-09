@@ -17,34 +17,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import '../warehouse.dart';
 
-class LocationListHeader extends StatelessWidget {
-  const LocationListHeader(
-      {Key? key, required this.search, required this.locationBloc})
+class LocationListHeader extends StatefulWidget {
+  const LocationListHeader({Key? key, required this.locationBloc})
       : super(key: key);
-  final bool search;
   final LocationBloc locationBloc;
 
   @override
+  State<LocationListHeader> createState() => _LocationListHeaderState();
+}
+
+class _LocationListHeaderState extends State<LocationListHeader> {
+  bool search = false;
+  String searchString = '';
+  @override
   Widget build(BuildContext context) {
-    final _locationBloc = BlocProvider.of<LocationBloc>(context);
-    String searchString = '';
+    final _locationBloc = context.read<LocationBloc>();
     return Material(
         child: Column(children: [
       ListTile(
           leading: GestureDetector(
               key: Key('search'),
-              onTap: (() {
-                if (locationBloc.state.search) {
-                  locationBloc.add(LocationSearchOff());
-                  locationBloc.add(LocationFetch(refresh: true));
-                } else
-                  locationBloc.add(LocationSearchOn());
-              }),
+              onTap: (() =>
+                  setState(() => search ? search = false : search = true)),
               child: Image.asset(
                 'assets/images/search.png',
                 height: 30,
               )),
-          title: locationBloc.state.search
+          title: search
               ? Row(children: <Widget>[
                   SizedBox(
                       width: ResponsiveWrapper.of(context).isSmallerThan(TABLET)
@@ -59,15 +58,8 @@ class LocationListHeader extends StatelessWidget {
                           ),
                           hintText: "search in name loc/asset/product Id",
                         ),
-                        onChanged: ((value) {
-                          searchString = value;
-                        }),
-                        onSubmitted: ((value) {
-                          _locationBloc.add(LocationFetch(searchString: value));
-                          _locationBloc.add(search
-                              ? LocationSearchOff()
-                              : LocationSearchOn());
-                        }),
+                        onChanged: ((value) =>
+                            setState(() => searchString = value)),
                       )),
                   ElevatedButton(
                       key: Key('searchButton'),

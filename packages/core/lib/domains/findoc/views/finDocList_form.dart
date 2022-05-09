@@ -163,34 +163,26 @@ class FinDocListState extends State<FinDocList> {
     switch (widget.docType) {
       case FinDocType.order:
         widget.sales
-            ? _finDocBloc =
-                BlocProvider.of<SalesOrderBloc>(context) as FinDocBloc
-            : _finDocBloc =
-                BlocProvider.of<PurchaseOrderBloc>(context) as FinDocBloc;
+            ? _finDocBloc = context.read<SalesOrderBloc>() as FinDocBloc
+            : _finDocBloc = context.read<PurchaseOrderBloc>() as FinDocBloc;
         break;
       case FinDocType.invoice:
         widget.sales
-            ? _finDocBloc =
-                BlocProvider.of<SalesInvoiceBloc>(context) as FinDocBloc
-            : _finDocBloc =
-                BlocProvider.of<PurchaseInvoiceBloc>(context) as FinDocBloc;
+            ? _finDocBloc = context.read<SalesInvoiceBloc>() as FinDocBloc
+            : _finDocBloc = context.read<PurchaseInvoiceBloc>() as FinDocBloc;
         break;
       case FinDocType.payment:
         widget.sales
-            ? _finDocBloc =
-                BlocProvider.of<SalesPaymentBloc>(context) as FinDocBloc
-            : _finDocBloc =
-                BlocProvider.of<PurchasePaymentBloc>(context) as FinDocBloc;
+            ? _finDocBloc = context.read<SalesPaymentBloc>() as FinDocBloc
+            : _finDocBloc = context.read<PurchasePaymentBloc>() as FinDocBloc;
         break;
       case FinDocType.shipment:
         widget.sales
-            ? _finDocBloc =
-                BlocProvider.of<OutgoingShipmentBloc>(context) as FinDocBloc
-            : _finDocBloc =
-                BlocProvider.of<IncomingShipmentBloc>(context) as FinDocBloc;
+            ? _finDocBloc = context.read<OutgoingShipmentBloc>() as FinDocBloc
+            : _finDocBloc = context.read<IncomingShipmentBloc>() as FinDocBloc;
         break;
       case FinDocType.transaction:
-        _finDocBloc = BlocProvider.of<TransactionBloc>(context) as FinDocBloc;
+        _finDocBloc = context.read<TransactionBloc>() as FinDocBloc;
     }
   }
 

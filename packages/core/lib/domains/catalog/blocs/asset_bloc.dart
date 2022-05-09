@@ -38,8 +38,6 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
   AssetBloc(this.repos) : super(const AssetState()) {
     on<AssetFetch>(_onAssetFetch,
         transformer: assetDroppable(Duration(milliseconds: 100)));
-    on<AssetSearchOn>(((event, emit) => emit(state.copyWith(search: true))));
-    on<AssetSearchOff>(((event, emit) => emit(state.copyWith(search: false))));
     on<AssetUpdate>(_onAssetUpdate);
     on<AssetDelete>(_onAssetDelete);
   }

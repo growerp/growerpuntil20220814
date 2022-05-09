@@ -128,13 +128,13 @@ class _ChangePwEntryState extends State<ChangePwForm> {
                           child: Text('Submit new Password'),
                           onPressed: () {
                             if (_formKey.currentState!.validate())
-                              BlocProvider.of<AuthBloc>(context).add(
-                                AuthChangePassword(
-                                  username!,
-                                  oldPassword!,
-                                  _password1Controller.text,
-                                ),
-                              );
+                              context.read<AuthBloc>().add(
+                                    AuthChangePassword(
+                                      username!,
+                                      oldPassword!,
+                                      _password1Controller.text,
+                                    ),
+                                  );
                           }),
                     ]),
                   ))));

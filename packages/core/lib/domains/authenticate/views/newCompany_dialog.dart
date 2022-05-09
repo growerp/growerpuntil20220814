@@ -185,15 +185,16 @@ class _NewCompanyHeaderState extends State<NewCompanyHeader> {
                               child: Text('Register as a customer'),
                               onPressed: () {
                                 if (_formKey.currentState!.validate())
-                                  BlocProvider.of<AuthBloc>(context)
+                                  context
+                                      .read<AuthBloc>()
                                       .add(AuthRegisterUserEcommerce(
-                                    User(
-                                      companyName: _companyController.text,
-                                      firstName: _firstNameController.text,
-                                      lastName: _lastNameController.text,
-                                      email: _emailController.text,
-                                    ),
-                                  ));
+                                        User(
+                                          companyName: _companyController.text,
+                                          firstName: _firstNameController.text,
+                                          lastName: _lastNameController.text,
+                                          email: _emailController.text,
+                                        ),
+                                      ));
                               })),
                     ])
                   ])),
@@ -246,7 +247,8 @@ class _NewCompanyHeaderState extends State<NewCompanyHeader> {
                               child: Text('Register AND create a new Company'),
                               onPressed: () {
                                 if (_formKey.currentState!.validate())
-                                  BlocProvider.of<AuthBloc>(context)
+                                  context
+                                      .read<AuthBloc>()
                                       .add(AuthRegisterCompanyAndAdmin(
                                           User(
                                             companyName:

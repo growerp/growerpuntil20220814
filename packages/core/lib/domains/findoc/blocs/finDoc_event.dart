@@ -37,10 +37,6 @@ class FinDocFetch extends FinDocEvent {
       [finDocId, docType, customerCompanyPartyId, searchString, refresh];
 }
 
-class FinDocSearchOn extends FinDocEvent {}
-
-class FinDocSearchOff extends FinDocEvent {}
-
 class FinDocUpdate extends FinDocEvent {
   const FinDocUpdate(this.finDoc);
   final FinDoc finDoc;

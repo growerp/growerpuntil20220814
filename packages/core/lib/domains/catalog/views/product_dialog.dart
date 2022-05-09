@@ -352,7 +352,7 @@ class _ProductState extends State<ProductDialog> {
                                           "Image upload error or larger than 200K",
                                           Colors.red);
                                     else
-                                      BlocProvider.of<ProductBloc>(context).add(
+                                      context.read<ProductBloc>().add(
                                           ProductUpdate(Product(
                                               productId: product.productId,
                                               productName: _nameController.text,

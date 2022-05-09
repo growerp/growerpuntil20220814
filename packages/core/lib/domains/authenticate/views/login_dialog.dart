@@ -113,8 +113,7 @@ class _LoginHeaderState extends State<LoginDialog> {
                 );
               }).toList(),
               onChanged: (Company? newValue) {
-                BlocProvider.of<AuthBloc>(context)
-                    .add(AuthUpdateCompany(newValue!));
+                context.read<AuthBloc>().add(AuthUpdateCompany(newValue!));
                 Navigator.pushNamedAndRemoveUntil(
                     context, '/', ModalRoute.withName('/'),
                     arguments:
@@ -186,7 +185,7 @@ class _LoginHeaderState extends State<LoginDialog> {
                           child: Text('Login'),
                           onPressed: () {
                             if (_formKey.currentState!.validate())
-                              BlocProvider.of<AuthBloc>(context).add(AuthLogin(
+                              context.read<AuthBloc>().add(AuthLogin(
                                   authenticate.company,
                                   _usernameController.text,
                                   _passwordController.text));
@@ -202,7 +201,8 @@ class _LoginHeaderState extends State<LoginDialog> {
                           username =
                               await _sendResetPasswordDialog(context, username);
                           if (username.isNotEmpty) {
-                            BlocProvider.of<AuthBloc>(context)
+                            context
+                                .read<AuthBloc>()
                                 .add(AuthResetPassword(username: username));
                             HelperFunctions.showMessage(
                                 context,

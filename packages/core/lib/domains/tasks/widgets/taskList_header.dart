@@ -17,19 +17,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 
-class TaskListHeader extends StatelessWidget {
-  const TaskListHeader({Key? key, required this.search}) : super(key: key);
-  final bool search;
+class TaskListHeader extends StatefulWidget {
+  const TaskListHeader({Key? key}) : super(key: key);
 
   @override
+  State<TaskListHeader> createState() => _TaskListHeaderState();
+}
+
+class _TaskListHeaderState extends State<TaskListHeader> {
+  String searchString = '';
+  bool search = false;
+  @override
   Widget build(BuildContext context) {
-    final taskBloc = BlocProvider.of<TaskBloc>(context);
-    String searchString = '';
     return Material(
       child: ListTile(
-          onTap: (() {
-            taskBloc.add(search ? TaskSearchOff() : TaskSearchOn());
-          }),
+          onTap: (() =>
+              setState(() => search ? search = false : search = true)),
           leading: Image.asset('assets/images/search.png', height: 30),
           title: search
               ? Row(children: <Widget>[
@@ -46,19 +49,15 @@ class TaskListHeader extends StatelessWidget {
                           ),
                           hintText: "search in name and description...",
                         ),
-                        onChanged: ((value) {
-                          searchString = value;
-                        }),
-                        onSubmitted: ((value) {
-                          taskBloc.add(TaskFetch(searchString: value));
-                          taskBloc
-                              .add(search ? TaskSearchOff() : TaskSearchOn());
-                        }),
+                        onChanged: ((value) =>
+                            setState(() => searchString = value)),
                       )),
                   ElevatedButton(
                       child: Text('Search'),
                       onPressed: () {
-                        taskBloc.add(TaskFetch(searchString: searchString));
+                        context
+                            .read<TaskBloc>()
+                            .add(TaskFetch(searchString: searchString));
                       })
                 ])
               : Column(children: [

@@ -28,10 +28,6 @@ class LocationFetch extends LocationEvent {
   List<Object> get props => [searchString, refresh];
 }
 
-class LocationSearchOn extends LocationEvent {}
-
-class LocationSearchOff extends LocationEvent {}
-
 class LocationUpdate extends LocationEvent {
   const LocationUpdate(this.location);
   final Location location;
