@@ -68,7 +68,8 @@ class OpportunityTest {
     if (count == test.opportunities.length) {
       await CommonTest.refresh(tester);
       await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
-      await CommonTest.refresh(tester);
+      await CommonTest.gotoMainMenu(tester);
+      await OpportunityTest.selectOpportunities(tester);
       expect(find.byKey(Key('opportunityItem')), findsNWidgets(count - 1));
       await PersistFunctions.persistTest(test.copyWith(
           opportunities:

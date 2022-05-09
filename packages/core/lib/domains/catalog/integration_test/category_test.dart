@@ -100,7 +100,9 @@ class CategoryTest {
     expect(
         find.byKey(Key('categoryItem')), findsNWidgets(count)); // initial admin
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
-    await CommonTest.refresh(tester);
+    // replacement for refresh...
+    await CommonTest.gotoMainMenu(tester);
+    await CategoryTest.selectCategories(tester);
     expect(find.byKey(Key('categoryItem')), findsNWidgets(count - 1));
     await PersistFunctions.persistTest(test.copyWith(
         categories: test.categories.sublist(0, test.categories.length - 1)));

@@ -110,7 +110,8 @@ class ProductTest {
     if (count != test.products.length) return;
     expect(find.byKey(Key('productItem')), findsNWidgets(count));
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
-    await CommonTest.refresh(tester);
+    await CommonTest.gotoMainMenu(tester);
+    await ProductTest.selectProducts(tester);
     expect(find.byKey(Key('productItem')), findsNWidgets(count - 1));
     await PersistFunctions.persistTest(test.copyWith(
         products: test.products.sublist(0, test.products.length - 1)));

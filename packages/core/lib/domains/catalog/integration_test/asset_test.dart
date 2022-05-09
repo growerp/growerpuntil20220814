@@ -111,6 +111,8 @@ class AssetTest {
     if (count != test.assets.length) return;
     expect(find.byKey(Key('assetItem')), findsNWidgets(count)); // initial admin
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
+    await CommonTest.gotoMainMenu(tester);
+    await AssetTest.selectAsset(tester);
     expect(find.byKey(Key('assetItem')), findsNWidgets(count - 1));
     test.assets.removeAt(count - 1);
     PersistFunctions.persistTest(test);

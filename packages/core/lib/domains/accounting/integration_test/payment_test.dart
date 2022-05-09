@@ -66,14 +66,14 @@ class PaymentTest {
     SaveTest test = await PersistFunctions.getTest();
     var count = CommonTest.getWidgetCountByKey(tester, 'finDocItem');
     if (count == test.payments.length) {
-      await CommonTest.refresh(tester);
+      await CommonTest.refresh(tester); // does not work
       await CommonTest.tapByKey(tester, 'edit${count - 1}');
       await CommonTest.tapByKey(tester, 'cancelFinDoc', seconds: 5);
       expect(CommonTest.getTextField('status${count - 1}'),
           equals(finDocStatusValues[FinDocStatusVal.Cancelled.toString()]));
       //  only within testing deleted item will not be removed after refresh
       //    await CommonTest.refresh(tester);
-      //    expect(find.byKey(Key('finDocItem')), findsNWidgets(count - 1));
+      expect(find.byKey(Key('finDocItem')), findsNWidgets(count - 1));
       await PersistFunctions.persistTest(test.copyWith(
           payments: test.payments.sublist(0, test.payments.length - 1)));
     }
