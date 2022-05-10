@@ -108,8 +108,9 @@ class AssetTest {
   static Future<void> deleteAssets(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     int count = test.assets.length;
-    if (count != test.assets.length) return;
-    expect(find.byKey(Key('assetItem')), findsNWidgets(count)); // initial admin
+    await CommonTest.gotoMainMenu(tester);
+    await AssetTest.selectAsset(tester);
+    expect(find.byKey(Key('assetItem')), findsNWidgets(count));
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
     await CommonTest.gotoMainMenu(tester);
     await AssetTest.selectAsset(tester);

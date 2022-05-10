@@ -132,9 +132,9 @@ class CommonTest {
     bool found = false;
     while (times++ < 20 && found == false) {
       found = tester.any(find.byKey(Key(keyName), skipOffstage: true));
-      await tester.pump(Duration(milliseconds: 300));
+      await tester.pump(Duration(milliseconds: 500));
     }
-    if (!found) print("=== waited for message to show: ${times * 0.3} seconds");
+    if (found) print("=== waited for message to show: ${times * 0.3} seconds");
     expect(found, true,
         reason: 'key $keyName not found even after 6 seconds wait!');
     await tester.pumpAndSettle();
@@ -146,9 +146,9 @@ class CommonTest {
     bool found = true;
     while (times++ < 20 && found == true) {
       found = tester.any(find.byType(SnackBar));
-      await tester.pump(Duration(milliseconds: 300));
+      await tester.pump(Duration(milliseconds: 500));
     }
-    if (found)
+    if (!found)
       print("=== waited for message to disappear: ${times * 0.3} seconds");
     expect(found, false,
         reason: 'Snackbar still found, even after 6 seconds wait!');

@@ -98,7 +98,7 @@ class _ChatRoomState extends State<ChatRoomDialog> {
                 child: ListView(key: Key('listView'), children: <Widget>[
                   Center(
                       child: Text(
-                          "Chat# " +
+                          "Chat #" +
                               (chatRoom.chatRoomId.isEmpty
                                   ? "New"
                                   : "${chatRoom.chatRoomId}"),

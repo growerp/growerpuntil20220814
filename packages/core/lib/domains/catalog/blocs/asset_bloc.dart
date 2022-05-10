@@ -112,7 +112,9 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
                   (element) => element.assetId == event.asset.assetId);
               assets[index] = data;
               return state.copyWith(
-                  status: AssetStatus.success, assets: assets);
+                  status: AssetStatus.success,
+                  assets: assets,
+                  message: "Asset ${event.asset.assetName} updated");
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: AssetStatus.failure, message: error.toString())));
@@ -123,7 +125,9 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
             success: (data) {
               assets.insert(0, data);
               return state.copyWith(
-                  status: AssetStatus.success, assets: assets);
+                  status: AssetStatus.success,
+                  assets: assets,
+                  message: "Asset ${event.asset.assetName} added");
             },
             failure: (NetworkExceptions error) => state.copyWith(
                 status: AssetStatus.failure, message: error.toString())));
@@ -146,7 +150,10 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
             int index = assets.indexWhere(
                 (element) => element.assetId == event.asset.assetId);
             assets.removeAt(index);
-            return state.copyWith(status: AssetStatus.success, assets: assets);
+            return state.copyWith(
+                status: AssetStatus.success,
+                assets: assets,
+                message: "Asset ${event.asset.assetName} deleted");
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: AssetStatus.failure, message: error.toString())));

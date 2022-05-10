@@ -95,8 +95,8 @@ class CategoryTest {
   static Future<void> deleteLastCategory(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     int count = test.categories.length;
-    if (count != test.categories.length) return;
-    await CommonTest.refresh(tester);
+    await CommonTest.gotoMainMenu(tester);
+    await CategoryTest.selectCategories(tester);
     expect(
         find.byKey(Key('categoryItem')), findsNWidgets(count)); // initial admin
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);

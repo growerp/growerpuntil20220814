@@ -121,8 +121,8 @@ class _AssetState extends State<AssetDialog> {
                   Center(
                       child: Text(
                           (classificationId == 'AppHotel'
-                                  ? "Room# "
-                                  : "Asset# ") +
+                                  ? "Room #"
+                                  : "Asset #") +
                               (asset.assetId.isEmpty
                                   ? "New"
                                   : "${asset.assetId}"),

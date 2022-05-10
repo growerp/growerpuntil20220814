@@ -107,7 +107,8 @@ class ProductTest {
   static Future<void> deleteLastProduct(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
     int count = test.products.length;
-    if (count != test.products.length) return;
+    await CommonTest.gotoMainMenu(tester);
+    await ProductTest.selectProducts(tester);
     expect(find.byKey(Key('productItem')), findsNWidgets(count));
     await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
     await CommonTest.gotoMainMenu(tester);
