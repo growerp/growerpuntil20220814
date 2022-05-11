@@ -62,7 +62,6 @@ class _UserState extends State<UserPage> {
   dynamic _pickImageError;
   String? _retrieveDataError;
   late User updatedUser;
-  late Authenticate authenticate;
   late APIRepository repos;
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -135,30 +134,24 @@ class _UserState extends State<UserPage> {
                 padding: EdgeInsets.all(20),
                 width: 400,
                 height: 1020,
-                child: BlocListener<UserBloc, UserState>(listener:
-                    (context, state) {
-                  if (state.status == UserStatus.failure) {
-                    loading = false;
-                    HelperFunctions.showMessage(
-                        context, '${state.message}', Colors.red);
-                  }
-                  if (state.status == UserStatus.success) {
-                    Navigator.of(context).pop(updatedUser);
-                  }
-                }, child:
-                    BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-                  authenticate = state.authenticate!;
-                  if (widget.user.userGroup == UserGroup.Admin ||
-                      widget.user.userGroup == UserGroup.Employee)
-                    _selectedCompany = authenticate.company;
-                  return ScaffoldMessenger(
-                      key: scaffoldMessengerKey,
-                      child: Scaffold(
-                          backgroundColor: Colors.transparent,
-                          floatingActionButton:
-                              imageButtons(context, _onImageButtonPressed),
-                          body: listChild()));
-                }))),
+                child: BlocListener<UserBloc, UserState>(
+                    listener: (context, state) {
+                      if (state.status == UserStatus.failure) {
+                        loading = false;
+                        HelperFunctions.showMessage(
+                            context, '${state.message}', Colors.red);
+                      }
+                      if (state.status == UserStatus.success) {
+                        Navigator.of(context).pop(updatedUser);
+                      }
+                    },
+                    child: ScaffoldMessenger(
+                        key: scaffoldMessengerKey,
+                        child: Scaffold(
+                            backgroundColor: Colors.transparent,
+                            floatingActionButton:
+                                imageButtons(context, _onImageButtonPressed),
+                            body: listChild())))),
           ),
           Positioned(top: -10, right: -10, child: DialogCloseButton())
         ]));
@@ -206,8 +199,12 @@ class _UserState extends State<UserPage> {
   }
 
   Widget _userDialog() {
+    Authenticate authenticate = context.read<AuthBloc>().state.authenticate!;
     String? companyName = authenticate.company!.name;
     User? currentUser = authenticate.user;
+    if (widget.user.userGroup == UserGroup.Admin ||
+        widget.user.userGroup == UserGroup.Employee)
+      _selectedCompany = authenticate.company;
 
     Future<List<Company>> getOwnedCompanies(filter) async {
       ApiResult<List<Company>> result = await repos.getCompanies(

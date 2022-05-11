@@ -85,7 +85,6 @@ class _UsersState extends State<UsersList> {
   ScrollController _scrollController = ScrollController();
   double _scrollThreshold = 200.0;
   late UserBloc _userBloc;
-  Authenticate authenticate = Authenticate();
   List<User> users = const <User>[];
   bool showSearchField = false;
   String searchString = '';
@@ -119,10 +118,7 @@ class _UsersState extends State<UsersList> {
   @override
   Widget build(BuildContext context) {
     isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
-      if (state.status == AuthStatus.authenticated)
-        authenticate = state.authenticate!;
-
+    return Builder(builder: (BuildContext context) {
       Widget showForm(state) {
         return RefreshIndicator(
             onRefresh: (() async => _userBloc.add(UserFetch(refresh: true))),
