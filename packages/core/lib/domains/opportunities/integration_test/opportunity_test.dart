@@ -66,7 +66,8 @@ class OpportunityTest {
     SaveTest test = await PersistFunctions.getTest();
     var count = CommonTest.getWidgetCountByKey(tester, 'opportunityItem');
     if (count == test.opportunities.length) {
-      await CommonTest.refresh(tester);
+      await CommonTest.gotoMainMenu(tester);
+      await OpportunityTest.selectOpportunities(tester);
       await CommonTest.tapByKey(tester, 'delete${count - 1}', seconds: 5);
       await CommonTest.gotoMainMenu(tester);
       await OpportunityTest.selectOpportunities(tester);
@@ -109,7 +110,7 @@ class OpportunityTest {
           tester, 'employee', "${opportunity.employeeUser!.firstName!}",
           seconds: 5);
       await CommonTest.drag(tester, seconds: 5);
-      await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      await CommonTest.tapByKey(tester, 'update');
       await CommonTest.waitForKey(tester, 'dismiss');
       await CommonTest.waitForSnackbarToGo(tester);
     }

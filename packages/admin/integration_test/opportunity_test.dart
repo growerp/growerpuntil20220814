@@ -13,7 +13,7 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
 
-  testWidgets('''GrowERP category test''', (tester) async {
+  testWidgets('''GrowERP opportunity test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true); // use data from previous run, ifnone same as true

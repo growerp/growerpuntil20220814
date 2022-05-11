@@ -165,7 +165,9 @@ class UserTest {
         await CommonTest.enterDropDown(
             tester, 'userGroup', user.userGroup.toString());
       }
-      await CommonTest.tapByKey(tester, 'updateUser', seconds: 5);
+      await CommonTest.tapByKey(tester, 'updateUser');
+      await CommonTest.waitForKey(tester, 'dismiss');
+      await CommonTest.waitForSnackbarToGo(tester);
       if (user.companyAddress != null) {
         await CommonTest.doSearch(tester, searchString: user.companyName!);
         await CommonTest.tapByKey(tester, 'name0');
@@ -177,8 +179,6 @@ class UserTest {
         await CommonTest.updatePaymentMethod(
             tester, user.companyPaymentMethod!);
       }
-      await CommonTest.waitForKey(tester, 'dismiss');
-      await CommonTest.waitForSnackbarToGo(tester);
       newUsers.add(user.copyWith(email: email, loginName: email));
     }
     return (newUsers);

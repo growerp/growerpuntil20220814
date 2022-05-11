@@ -17,6 +17,7 @@ import 'category_test.dart' as category;
 import 'product_test.dart' as product;
 import 'asset_test.dart' as asset;
 import 'user_test.dart' as user;
+import 'opportunity_test.dart' as opportunity;
 import 'payment_sales_test.dart' as sales_payment;
 import 'payment_purchase_test.dart' as purchase_payment;
 import 'invoice_sales_test.dart' as sales_invoice;
@@ -24,7 +25,6 @@ import 'invoice_purchase_test.dart' as purchase_invoice;
 import 'roundtrip.dart' as purchase_sales;
 import 'room_rental_test.dart' as room_rental;
 import 'chat_test.dart' as chat;
-import 'opportunity_test.dart' as opportunity;
 
 void main() {
   company.main();

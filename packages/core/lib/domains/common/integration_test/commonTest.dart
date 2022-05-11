@@ -130,29 +130,27 @@ class CommonTest {
   static Future<bool> waitForKey(WidgetTester tester, String keyName) async {
     int times = 0;
     bool found = false;
-    while (times++ < 20 && found == false) {
+    while (times++ < 10 && found == false) {
       found = tester.any(find.byKey(Key(keyName), skipOffstage: true));
       await tester.pump(Duration(milliseconds: 500));
     }
-    if (found) print("=== waited for message to show: ${times * 0.3} seconds");
-    expect(found, true,
-        reason: 'key $keyName not found even after 6 seconds wait!');
-    await tester.pumpAndSettle();
+    if (found) print("=== waited for message to show: ${times * 0.5} seconds");
+    //expect(found, true,
+    //    reason: 'key $keyName not found even after 6 seconds wait!');
     return found;
   }
 
   static Future<bool> waitForSnackbarToGo(WidgetTester tester) async {
     int times = 0;
     bool found = true;
-    while (times++ < 20 && found == true) {
+    while (times++ < 10 && found == true) {
       found = tester.any(find.byType(SnackBar));
       await tester.pump(Duration(milliseconds: 500));
     }
     if (!found)
-      print("=== waited for message to disappear: ${times * 0.3} seconds");
-    expect(found, false,
-        reason: 'Snackbar still found, even after 6 seconds wait!');
-    await tester.pumpAndSettle();
+      print("=== waited for message to disappear: ${times * 0.5} seconds");
+//    expect(found, false,
+//        reason: 'Snackbar still found, even after 6 seconds wait!');
     return found;
   }
 
@@ -329,7 +327,9 @@ class CommonTest {
     await drag(tester);
     await enterDropDownSearch(tester, 'country', address.country!);
     await drag(tester);
-    await tapByKey(tester, 'updateAddress', seconds: 5);
+    await tapByKey(tester, 'updateAddress');
+    await CommonTest.waitForKey(tester, 'dismiss');
+    await CommonTest.waitForSnackbarToGo(tester);
   }
 
   static Future<void> checkAddress(WidgetTester tester, Address address) async {
@@ -354,8 +354,9 @@ class CommonTest {
         tester, 'creditCardNumber', paymentMethod.creditCardNumber!);
     await enterText(tester, 'expireMonth', paymentMethod.expireMonth!);
     await enterText(tester, 'expireYear', paymentMethod.expireYear!);
-    await tapByKey(tester, 'updatePaymentMethod', seconds: 5);
-    await tester.pumpAndSettle(Duration(seconds: 5));
+    await tapByKey(tester, 'updatePaymentMethod');
+    await CommonTest.waitForKey(tester, 'dismiss');
+    await CommonTest.waitForSnackbarToGo(tester);
   }
 
   static Future<void> checkPaymentMethod(
