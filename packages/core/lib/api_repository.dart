@@ -196,7 +196,6 @@ class APIRepository {
           .post('rest/s1/growerp/100/Login', null, data: <String, dynamic>{
         'username': username,
         'password': password,
-        'classificationId': classificationId,
         'moquiSessionToken': this.sessionToken
       });
       return getResponse<Authenticate>(
