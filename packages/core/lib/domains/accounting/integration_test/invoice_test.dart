@@ -35,8 +35,8 @@ class InvoiceTest {
   static Future<void> addInvoices(WidgetTester tester, List<FinDoc> invoices,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-    //test = test.copyWith(invoices: []); //======= remove
-    //await PersistFunctions.persistTest(test); //=====remove
+    // test = test.copyWith(invoices: []); //======= remove
+    // await PersistFunctions.persistTest(test); //=====remove
     if (test.invoices.isEmpty) {
       await PersistFunctions.persistTest(
           test.copyWith(invoices: await enterInvoiceData(tester, invoices)));
@@ -117,7 +117,9 @@ class InvoiceTest {
         await CommonTest.tapByKey(tester, 'ok');
       }
       await CommonTest.drag(tester, seconds: 2);
-      await CommonTest.tapByKey(tester, 'update', seconds: 5);
+      await CommonTest.tapByKey(tester, 'update');
+      await CommonTest.waitForKey(tester, 'dismiss');
+      await CommonTest.waitForSnackbarToGo(tester);
       // create new findoc with invoiceId
       FinDoc newFinDoc =
           invoice.copyWith(invoiceId: CommonTest.getTextField('id0'));

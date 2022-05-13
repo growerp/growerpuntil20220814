@@ -55,6 +55,8 @@ void main(List<String> arguments) async {
     process = await Process.runSync('git', [
       'clone',
       'https://github.com/growerp/moqui-framework',
+      '-b',
+      'growerp',
       '$home/growerpMoqui'
     ]);
     process = await Process.runSync('git', [
@@ -121,10 +123,6 @@ void main(List<String> arguments) async {
 
   print('======start emulator.....');
   process = await Process.start('flutter', ['emulators', '--launch', emulator]);
-
-  process =
-      await Process.runSync('git', ['pull'], workingDirectory: '$home/growerp');
-  print('========update growerp git: ${process.stdout}');
 
   print(' wait for emulator to start');
   await Future.delayed(Duration(seconds: 60));
