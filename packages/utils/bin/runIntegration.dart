@@ -31,6 +31,8 @@ void main(List<String> arguments) async {
   var home = Platform.environment['HOME']!;
 
   // growerp already cloned or pulled
+  process = await Process.runSync('flutter', ['pub', 'get'],
+      workingDirectory: '$home/growerp/packages/core');
   process = await Process.runSync(
       'flutter', ['pub', 'run', 'build_runner', 'build'],
       workingDirectory: '$home/growerp/packages/core');
