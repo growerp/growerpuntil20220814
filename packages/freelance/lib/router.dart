@@ -18,7 +18,7 @@ import 'package:core/templates/@templates.dart';
 import 'package:flutter/material.dart';
 import 'package:core/domains/common/common.dart';
 
-import 'menuItem_data.dart';
+import 'menuOption_data.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   print(">>>NavigateTo { ${settings.name} " +
@@ -26,35 +26,35 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case '/':
       return MaterialPageRoute(
-          builder: (context) => HomeForm(menuItems: menuItems));
+          builder: (context) => HomeForm(menuOptions: menuOptions));
     case '/company':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 1, tabIndex: 0));
     case '/tasks':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 1, tabIndex: 0));
     case '/catalog':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 3, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 3, tabIndex: 0));
     case '/sales':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 4, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 4, tabIndex: 0));
     case '/purchase':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 5, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 5, tabIndex: 0));
     case '/finDoc':
       return MaterialPageRoute(
           builder: (context) =>
               FinDocDialog(finDoc: settings.arguments as FinDoc));
     case '/crm':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 2, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 2, tabIndex: 0));
     default:
       return coreRoute(settings);
   }

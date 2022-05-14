@@ -115,11 +115,15 @@ class MyChatApp extends StatelessWidget {
             }
             if (state.status == AuthStatus.authenticated) {
               return HomeForm(
-                  message: state.message, menuItems: menuItems, title: title);
+                  message: state.message,
+                  menuOptions: menuOptions,
+                  title: title);
             }
             if (state.status == AuthStatus.unAuthenticated) {
               return HomeForm(
-                  message: state.message, menuItems: menuItems, title: title);
+                  message: state.message,
+                  menuOptions: menuOptions,
+                  title: title);
             }
             if (state.status == AuthStatus.changeIp) {
               return ChangeIpForm();
@@ -130,8 +134,8 @@ class MyChatApp extends StatelessWidget {
   }
 }
 
-List<MenuItem> menuItems = [
-  MenuItem(
+List<MenuOption> menuOptions = [
+  MenuOption(
     image: 'assets/images/dashBoardGrey.png',
     selectedImage: 'assets/images/dashBoard.png',
     title: 'Main',
@@ -140,7 +144,7 @@ List<MenuItem> menuItems = [
     writeGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
     child: const ChatRooms(),
   ),
-  MenuItem(
+  MenuOption(
     image: 'assets/images/dashBoardGrey.png',
     selectedImage: 'assets/images/dashBoard.png',
     title: 'Main',

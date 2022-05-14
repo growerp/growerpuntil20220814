@@ -15,8 +15,8 @@
 import 'package:flutter/material.dart';
 import 'package:core/domains/domains.dart';
 
-List<MenuItem> menuItems = [
-  MenuItem(
+List<MenuOption> menuOptions = [
+  MenuOption(
     image: "assets/images/dashBoardGrey.png",
     selectedImage: "assets/images/dashBoard.png",
     title: "Main",
@@ -25,7 +25,7 @@ List<MenuItem> menuItems = [
     writeGroups: [UserGroup.Admin],
     child: GanttForm(),
   ),
-  MenuItem(
+  MenuOption(
     image: "assets/images/companyGrey.png",
     selectedImage: "assets/images/company.png",
     title: "Hotel",
@@ -56,7 +56,7 @@ List<MenuItem> menuItems = [
       ),
     ],
   ),
-  MenuItem(
+  MenuOption(
     image: "assets/images/single-bedGrey.png",
     selectedImage: "assets/images/single-bed.png",
     title: "Rooms",
@@ -76,7 +76,7 @@ List<MenuItem> menuItems = [
       ),
     ],
   ),
-  MenuItem(
+  MenuOption(
       image: "assets/images/reservationGrey.png",
       selectedImage: "assets/images/reservation.png",
       title: "Reservations",
@@ -107,7 +107,7 @@ List<MenuItem> menuItems = [
           icon: Icon(Icons.business),
         ),
       ]),
-  MenuItem(
+  MenuOption(
       image: "assets/images/check-in-outGrey.png",
       selectedImage: "assets/images/check-in-out.png",
       title: "check-In-Out",
@@ -141,7 +141,7 @@ List<MenuItem> menuItems = [
           icon: Icon(Icons.home),
         ),
       ]),
-  MenuItem(
+  MenuOption(
       image: "assets/images/accountingGrey.png",
       selectedImage: "assets/images/accounting.png",
       title: "Accounting",

@@ -14,7 +14,7 @@
 
 import 'package:core/api_repository.dart';
 import 'package:core/services/chat_server.dart';
-import 'menuItem_data.dart';
+import 'menuOption_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -138,13 +138,13 @@ class MyApp extends StatelessWidget {
                 if (state.status == AuthStatus.authenticated) {
                   return HomeForm(
                       message: state.message,
-                      menuItems: menuItems,
+                      menuOptions: menuOptions,
                       title: title);
                 }
                 if (state.status == AuthStatus.unAuthenticated) {
                   return HomeForm(
                       message: state.message,
-                      menuItems: menuItems,
+                      menuOptions: menuOptions,
                       title: title);
                 }
                 if (state.status == AuthStatus.changeIp) return ChangeIpForm();

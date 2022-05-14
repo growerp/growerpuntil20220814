@@ -237,9 +237,6 @@ class _ReservationState extends State<ReservationDialog> {
                       ]),
                       SizedBox(height: 20),
                       DropdownSearch<Product>(
-                        label: classificationId == 'AppHotel'
-                            ? 'Room Type'
-                            : 'Product',
                         dialogMaxWidth: 300,
                         searchFieldProps: TextFieldProps(
                           autofocus: true,

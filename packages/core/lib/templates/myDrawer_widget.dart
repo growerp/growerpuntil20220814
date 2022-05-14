@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:core/domains/domains.dart';
 
 Widget? myDrawer(BuildContext context, Authenticate authenticate, bool isPhone,
-    List<MenuItem>? menu) {
+    List<MenuOption>? menu) {
   UserGroup? groupId = authenticate.user?.userGroup;
   List options = [];
   menu?.forEach((option) => {

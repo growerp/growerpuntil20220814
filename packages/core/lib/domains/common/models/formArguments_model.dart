@@ -16,7 +16,7 @@ import '../common.dart';
 
 class FormArguments {
   final String? message;
-  final List<MenuItem>? menuName;
+  final List<MenuOption>? menuName;
   final int? menuIndex;
   final int? tabIndex;
   final Object? object;

@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import '../domains/common/common.dart';
 
-Card makeDashboardItem(String key, BuildContext context, MenuItem menuItem,
+Card makeDashboardItem(String key, BuildContext context, MenuOption menuOption,
     String subTitle, String subTitle1, String subTitle2, String subTitle3) {
   bool phone = ResponsiveWrapper.of(context).isSmallerThan(DESKTOP);
   return Card(
@@ -27,7 +27,7 @@ Card makeDashboardItem(String key, BuildContext context, MenuItem menuItem,
         child: new InkWell(
           key: Key(key),
           onTap: () {
-            Navigator.pushNamed(context, menuItem.route,
+            Navigator.pushNamed(context, menuOption.route,
                 arguments: FormArguments());
           },
           child: Column(
@@ -36,9 +36,10 @@ Card makeDashboardItem(String key, BuildContext context, MenuItem menuItem,
             verticalDirection: VerticalDirection.down,
             children: <Widget>[
               SizedBox(height: 2.0),
-              Center(child: Image.asset(menuItem.selectedImage, height: 80.0)),
               Center(
-                child: Text("${menuItem.title}",
+                  child: Image.asset(menuOption.selectedImage, height: 80.0)),
+              Center(
+                child: Text("${menuOption.title}",
                     style: TextStyle(
                         fontSize: phone ? 15 : 25,
                         color: Colors.black,

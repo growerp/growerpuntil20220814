@@ -17,7 +17,7 @@ import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 
 Widget myNavigationRail(BuildContext context, Authenticate authenticate,
-    Widget widget, int? menuIndex, List<MenuItem>? menu) {
+    Widget widget, int? menuIndex, List<MenuOption>? menu) {
   List<NavigationRailDestination> items = [];
   menu?.forEach((option) => {
         if (option.readGroups.contains(authenticate.user?.userGroup))

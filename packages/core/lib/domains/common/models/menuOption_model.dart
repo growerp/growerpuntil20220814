@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:core/domains/domains.dart';
 
 /// item on the main menu, containing tabitems on a lower level.
-class MenuItem {
+class MenuOption {
   // main menu item shown on the left or in drawer
   final String image; // image when not seleced
   final String selectedImage; // image when selected
@@ -29,7 +29,7 @@ class MenuItem {
   final List<UserGroup>? writeGroups; // user groups who can add/update/delete
   final Widget? floatButtonForm; // for dialogs which use navigator internally
 
-  MenuItem({
+  MenuOption({
     required this.image,
     required this.selectedImage,
     required this.title,
@@ -43,6 +43,6 @@ class MenuItem {
   });
 
   @override
-  String toString() => 'MenuItem name: $title route: $route '
+  String toString() => 'MenuOption name: $title route: $route '
       'tabItems# ${tabItems != null ? tabItems!.length : "0"}';
 }

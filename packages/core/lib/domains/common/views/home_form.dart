@@ -22,11 +22,14 @@ import 'package:global_configuration/global_configuration.dart';
 
 class HomeForm extends StatefulWidget {
   final String? message;
-  final List<MenuItem> menuItems;
+  final List<MenuOption> menuOptions;
   final String title;
 
   const HomeForm(
-      {Key? key, this.message, required this.menuItems, this.title = "GrowERP"})
+      {Key? key,
+      this.message,
+      required this.menuOptions,
+      this.title = "GrowERP"})
       : super(key: key);
   @override
   _HomeFormState createState() => _HomeFormState(message);
@@ -49,9 +52,9 @@ class _HomeFormState extends State<HomeForm> {
       switch (state.status) {
         case AuthStatus.authenticated:
           Authenticate authenticate = state.authenticate!;
-          return DisplayMenuItem(
+          return DisplayMenuOption(
             scaffoldMessengerKey: scaffoldMessengerKey,
-            menuList: widget.menuItems,
+            menuList: widget.menuOptions,
             menuIndex: 0,
             actions: <Widget>[
               if (authenticate.apiKey != null)

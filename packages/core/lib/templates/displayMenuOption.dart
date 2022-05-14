@@ -18,18 +18,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/domains/domains.dart';
 
-class DisplayMenuItem extends StatefulWidget {
+class DisplayMenuOption extends StatefulWidget {
   final scaffoldMessengerKey;
-  final MenuItem? menuItem; // display not an item from the list like chat
-  final List<MenuItem> menuList; // menu list to be used
+  final MenuOption? menuOption; // display not an item from the list like chat
+  final List<MenuOption> menuList; // menu list to be used
   final int menuIndex; // navigator rail menu selected
   final int? tabIndex; // tab selected, if none create new
   final TabItem? tabItem; // create new tab if tabIndex null
   final List<Widget>? actions; // actions at the appBar
-  DisplayMenuItem({
+  DisplayMenuOption({
     this.scaffoldMessengerKey,
     Key? key,
-    this.menuItem,
+    this.menuOption,
     required this.menuList,
     required this.menuIndex,
     this.tabIndex,
@@ -38,10 +38,10 @@ class DisplayMenuItem extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _MenuItemState createState() => _MenuItemState();
+  _MenuOptionState createState() => _MenuOptionState();
 }
 
-class _MenuItemState extends State<DisplayMenuItem>
+class _MenuOptionState extends State<DisplayMenuOption>
     with SingleTickerProviderStateMixin {
   late int tabIndex;
   List<TabItem> tabItems = [];
@@ -61,14 +61,15 @@ class _MenuItemState extends State<DisplayMenuItem>
   @override
   void initState() {
     super.initState();
-    MenuItem menuItem = widget.menuItem ?? widget.menuList[widget.menuIndex];
-    tabItems = menuItem.tabItems ?? [];
-    title = menuItem.title;
-    route = menuItem.route; // used also for key
-    child = menuItem.child;
-    leadAction = menuItem.leadAction;
+    MenuOption menuOption =
+        widget.menuOption ?? widget.menuList[widget.menuIndex];
+    tabItems = menuOption.tabItems ?? [];
+    title = menuOption.title;
+    route = menuOption.route; // used also for key
+    child = menuOption.child;
+    leadAction = menuOption.leadAction;
     tabIndex = widget.tabIndex ?? 0;
-    if (menuItem.floatButtonForm != null) {
+    if (menuOption.floatButtonForm != null) {
       floatingActionButton = FloatingActionButton(
           key: Key("addNew"),
           onPressed: () async {
@@ -76,7 +77,7 @@ class _MenuItemState extends State<DisplayMenuItem>
                 barrierDismissible: true,
                 context: context,
                 builder: (BuildContext context) {
-                  return menuItem.floatButtonForm!;
+                  return menuOption.floatButtonForm!;
                 });
           },
           tooltip: 'Add New',

@@ -16,7 +16,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/widgets/@widgets.dart';
 import 'package:core/templates/@templates.dart';
-import 'package:core/acctMenuItem_data.dart';
+import 'package:core/acctMenuOption_data.dart';
 import 'package:core/domains/domains.dart';
 
 class AccountingForm extends StatelessWidget {
@@ -25,8 +25,8 @@ class AccountingForm extends StatelessWidget {
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       if (state.status == AuthStatus.authenticated) {
 //        Authenticate authenticate = state.authenticate;
-        return DisplayMenuItem(
-          menuList: acctMenuItems,
+        return DisplayMenuOption(
+          menuList: acctMenuOptions,
           menuIndex: 0,
         );
       }
@@ -46,7 +46,7 @@ class AcctDashBoard extends StatelessWidget {
             makeDashboardItem(
               'accntSales',
               context,
-              acctMenuItems[1],
+              acctMenuOptions[1],
               "Sls open inv: "
                   "${authenticate.company!.currency!.description} "
                   "${authenticate.stats?.salesInvoicesNotPaidAmount ?? '0.00'} "
@@ -58,7 +58,7 @@ class AcctDashBoard extends StatelessWidget {
             makeDashboardItem(
               'accntPurchase',
               context,
-              acctMenuItems[2],
+              acctMenuOptions[2],
               "Pur unp inv: "
                   "${authenticate.company!.currency!.description} "
                   "${authenticate.stats?.purchInvoicesNotPaidAmount ?? '0.00'} "
@@ -70,7 +70,7 @@ class AcctDashBoard extends StatelessWidget {
             makeDashboardItem(
               'accntLedger',
               context,
-              acctMenuItems[3],
+              acctMenuOptions[3],
               "Accounts",
               "Transactions",
               "",
@@ -79,7 +79,7 @@ class AcctDashBoard extends StatelessWidget {
             makeDashboardItem(
               'Main dashboard',
               context,
-              acctMenuItems[4],
+              acctMenuOptions[4],
               "",
               "",
               "",

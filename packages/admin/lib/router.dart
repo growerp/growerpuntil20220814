@@ -18,7 +18,7 @@ import 'package:core/templates/@templates.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'menuItem_data.dart';
+import 'menuOption_data.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   if (kDebugMode) {
@@ -28,27 +28,27 @@ Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case '/':
       return MaterialPageRoute(
-          builder: (context) => HomeForm(menuItems: menuItems));
+          builder: (context) => HomeForm(menuOptions: menuOptions));
     case '/company':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 1, tabIndex: 0));
     case '/crm':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 2, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 2, tabIndex: 0));
     case '/catalog':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 3, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 3, tabIndex: 0));
     case '/orders':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 4, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 4, tabIndex: 0));
     case '/warehouse':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 5, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 5, tabIndex: 0));
     default:
       return coreRoute(settings);
   }

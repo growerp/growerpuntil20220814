@@ -20,8 +20,8 @@ const MENU_ACCTSALES = 1;
 const MENU_ACCTPURCHASE = 2;
 const MENU_ACCTLEDGER = 3;
 
-List<MenuItem> acctMenuItems = [
-  MenuItem(
+List<MenuOption> acctMenuOptions = [
+  MenuOption(
     image: "assets/images/accountingGrey.png",
     selectedImage: "assets/images/accounting.png",
     title: "Accounting DashBoard",
@@ -29,7 +29,7 @@ List<MenuItem> acctMenuItems = [
     readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
     child: AcctDashBoard(),
   ),
-  MenuItem(
+  MenuOption(
       image: "assets/images/orderGrey.png",
       selectedImage: "assets/images/order.png",
       title: "Accounting Sales",
@@ -64,7 +64,7 @@ List<MenuItem> acctMenuItems = [
           icon: const Icon(Icons.school),
         ),
       ]),
-  MenuItem(
+  MenuOption(
       image: "assets/images/supplierGrey.png",
       selectedImage: "assets/images/supplier.png",
       title: "Accounting Purchasing",
@@ -102,7 +102,7 @@ List<MenuItem> acctMenuItems = [
           icon: const Icon(Icons.business),
         ),
       ]),
-  MenuItem(
+  MenuOption(
       image: "assets/images/accountingGrey.png",
       selectedImage: "assets/images/accounting.png",
       title: "Accounting Ledger\n",
@@ -129,7 +129,7 @@ List<MenuItem> acctMenuItems = [
           icon: Icon(Icons.home),
         ),
       ]),
-/*  MenuItem(
+/*  MenuOption(
       image: "assets/images/accountingGrey.png",
       selectedImage: "assets/images/accounting.png",
       title: "Reports",
@@ -137,7 +137,7 @@ List<MenuItem> acctMenuItems = [
       readGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
       writeGroups: [UserGroup.Admin]),
 */
-  MenuItem(
+  MenuOption(
     image: "assets/images/dashBoardGrey.png",
     selectedImage: "assets/images/dashBoard.png",
     title: "Main dashboard",

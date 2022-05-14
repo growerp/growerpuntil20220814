@@ -27,8 +27,8 @@ const MENU_ACCTSALES = 1;
 const MENU_ACCTPURCHASE = 2;
 const MENU_ACCTLEDGER = 3;
 
-List<MenuItem> menuItems = [
-  MenuItem(
+List<MenuOption> menuOptions = [
+  MenuOption(
     image: "assets/images/dashBoardGrey.png",
     selectedImage: "assets/images/dashBoard.png",
     title: "Main",
@@ -37,7 +37,7 @@ List<MenuItem> menuItems = [
     writeGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
     child: local.FreelanceDbForm(),
   ),
-  MenuItem(
+  MenuOption(
       image: "assets/images/tasksGrey.png",
       selectedImage: "assets/images/tasks.png",
       title: "Tasks",
@@ -45,7 +45,7 @@ List<MenuItem> menuItems = [
       readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
       writeGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
       child: TaskListForm()),
-  MenuItem(
+  MenuOption(
     image: "assets/images/crmGrey.png",
     selectedImage: "assets/images/crm.png",
     title: "CRM",
@@ -75,7 +75,7 @@ List<MenuItem> menuItems = [
       ),
     ],
   ),
-  MenuItem(
+  MenuOption(
       image: "assets/images/productsGrey.png",
       selectedImage: "assets/images/products.png",
       title: "Catalog",
@@ -105,7 +105,7 @@ List<MenuItem> menuItems = [
           icon: Icon(Icons.business),
         ),
       ]),
-  MenuItem(
+  MenuOption(
     image: "assets/images/orderGrey.png",
     selectedImage: "assets/images/order.png",
     title: "Sales",
@@ -129,7 +129,7 @@ List<MenuItem> menuItems = [
       )
     ],
   ),
-  MenuItem(
+  MenuOption(
     image: "assets/images/supplierGrey.png",
     selectedImage: "assets/images/supplier.png",
     title: "Purchase",
@@ -152,47 +152,47 @@ List<MenuItem> menuItems = [
       )
     ],
   ),
-  MenuItem(
+  MenuOption(
       image: "assets/images/accountingGrey.png",
       selectedImage: "assets/images/accounting.png",
       title: "Accounting",
       route: '/accounting',
       readGroups: [UserGroup.Admin, UserGroup.SuperAdmin]),
-  MenuItem(
+  MenuOption(
       image: "packages/core/images/infoGrey.png",
       selectedImage: "packages/core/images/info.png",
       title: "About",
       route: '/about',
       readGroups: [UserGroup.Admin, UserGroup.SuperAdmin]),
 ];
-List<MenuItem> acctMenuItems = [
-  MenuItem(
+List<MenuOption> acctMenuOptions = [
+  MenuOption(
       image: "assets/images/accountingGrey.png",
       selectedImage: "assets/images/accounting.png",
       title: "     Acct\nDashBoard",
       route: '/accounting',
       readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin]),
-  MenuItem(
+  MenuOption(
       image: "assets/images/orderGrey.png",
       selectedImage: "assets/images/order.png",
       title: " Acct\nSales",
       route: '/acctSales',
       readGroups: [UserGroup.Admin, UserGroup.SuperAdmin]),
-  MenuItem(
+  MenuOption(
       image: "assets/images/supplierGrey.png",
       selectedImage: "assets/images/supplier.png",
       title: "    Acct\nPurchase",
       route: '/acctPurchase',
       readGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
       writeGroups: [UserGroup.Admin]),
-  MenuItem(
+  MenuOption(
       image: "assets/images/accountingGrey.png",
       selectedImage: "assets/images/accounting.png",
       title: "Ledger",
       route: '/ledger',
       readGroups: [UserGroup.Admin, UserGroup.SuperAdmin],
       writeGroups: [UserGroup.Admin]),
-  MenuItem(
+  MenuOption(
       image: "assets/images/dashBoardGrey.png",
       selectedImage: "assets/images/dashBoard.png",
       title: "Main",

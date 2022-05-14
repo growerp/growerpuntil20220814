@@ -15,7 +15,7 @@
 import 'package:core/coreRouter.dart';
 import 'package:core/domains/domains.dart';
 import 'package:flutter/material.dart';
-import 'menuItem_data.dart';
+import 'menuOption_data.dart';
 import 'package:core/templates/@templates.dart';
 
 // https://medium.com/flutter-community/flutter-navigation-cheatsheet-a-guide-to-named-routing-dc642702b98c
@@ -26,32 +26,32 @@ Route<dynamic> generateRoute(RouteSettings settings) {
     case '/':
       return MaterialPageRoute(
           builder: (context) => HomeForm(
-                menuItems: menuItems,
+                menuOptions: menuOptions,
               ));
     case '/company':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 1, tabIndex: 0));
     case '/admins':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 1));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 1, tabIndex: 1));
     case '/employees':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 1, tabIndex: 2));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 1, tabIndex: 2));
     case '/catalog':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 2, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 2, tabIndex: 0));
     case '/sales':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 3, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 3, tabIndex: 0));
     case '/checkInOut':
       return MaterialPageRoute(
-          builder: (context) =>
-              DisplayMenuItem(menuList: menuItems, menuIndex: 4, tabIndex: 0));
+          builder: (context) => DisplayMenuOption(
+              menuList: menuOptions, menuIndex: 4, tabIndex: 0));
     default:
       return coreRoute(settings);
   }

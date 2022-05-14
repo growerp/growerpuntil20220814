@@ -266,14 +266,14 @@ class CommonTest {
   }
 
   static Future<void> selectMainMenu(
-      WidgetTester tester, String menuItem) async {
+      WidgetTester tester, String menuOption) async {
     if (!hasKey('HomeFormAuth')) {
       if (isPhone()) {
         await tester.tap(find.byTooltip('Open navigation menu'));
         await tester.pump();
         await tester.pumpAndSettle(Duration(seconds: 5));
       }
-      await tapByKey(tester, menuItem);
+      await tapByKey(tester, menuOption);
     }
   }
 
