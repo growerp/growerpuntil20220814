@@ -69,12 +69,7 @@ void main(List<String> arguments) async {
     process = await Process.runSync('git', [
       'clone',
       'https://github.com/growerp/growerp-moqui',
-      '$home/growerpMoqui/runtime/component/@growerp'
-    ]);
-    process = await Process.runSync('git', [
-      'clone',
-      'https://github.com/growerp/PopCommerce.git',
-      '$home/growerpMoqui/runtime/component/PopCommerce'
+      '$home/growerpMoqui/runtime/component/growerp'
     ]);
     process = await Process.runSync('git', [
       'clone',
