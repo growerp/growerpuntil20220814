@@ -105,7 +105,7 @@ void main(List<String> arguments) async {
     process = await Process.runSync('./gradlew', ['gitp'],
         workingDirectory: '$home/growerpMoqui');
     process = await Process.runSync('git', ['pull'],
-        workingDirectory: '$home/growerpMoqui/runtime/component/@growerp');
+        workingDirectory: '$home/growerpMoqui/runtime/component/growerp');
   }
 
   process = await Process.runSync('./gradlew', ['cleandb'],
