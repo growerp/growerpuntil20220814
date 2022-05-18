@@ -145,29 +145,44 @@ class _PaymentState extends State<PaymentDialog> {
                       key: Key('header'))),
               SizedBox(height: 30),
               DropdownSearch<User>(
-                dialogMaxWidth: 300,
-                searchFieldProps: TextFieldProps(
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
-                  ),
-                  controller: _userSearchBoxController,
-                ),
                 selectedItem: _selectedUser,
-                popupShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
+                popupProps: PopupProps.menu(
+                  showSearchBox: true,
+                  searchFieldProps: TextFieldProps(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0)),
+                    ),
+                    controller: _userSearchBoxController,
+                  ),
+                  menuProps:
+                      MenuProps(borderRadius: BorderRadius.circular(20.0)),
+                  title: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColorDark,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          )),
+                      child: Center(
+                          child: Text('Select customer',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              )))),
+                ),
                 dropdownSearchDecoration: InputDecoration(
                   labelText: finDocUpdated.sales ? 'Customer' : 'Supplier',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25.0)),
                 ),
-                showSearchBox: true,
-                isFilteredOnline: true,
                 key: Key(finDocUpdated.sales ? 'customer' : 'supplier'),
                 itemAsString: (User? u) =>
                     "${u!.companyName},\n${u.firstName ?? ''} ${u.lastName ?? ''}",
-                onFind: (String? filter) async {
+                asyncItems: (String? filter) async {
                   ApiResult<List<User>> result = await repos.getUser(
                       userGroups: [UserGroup.Customer, UserGroup.Supplier],
                       filter: _userSearchBoxController.text);

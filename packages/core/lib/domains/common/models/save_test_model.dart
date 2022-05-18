@@ -40,6 +40,7 @@ class SaveTest with _$SaveTest {
     @Default([]) List<FinDoc> orders,
     @Default([]) List<FinDoc> payments,
     @Default([]) List<FinDoc> invoices,
+    @Default([]) List<ChatRoom> chatRooms,
   }) = _SaveTest;
   SaveTest._();
 

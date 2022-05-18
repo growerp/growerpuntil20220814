@@ -55,6 +55,14 @@ List<MenuOption> menuOptions = [
         label: 'Employees',
         icon: const Icon(Icons.school),
       ),
+      TabItem(
+        form: const WebsiteForm(
+          key: Key('Website'),
+          userGroup: UserGroup.Employee,
+        ),
+        label: 'Website',
+        icon: const Icon(Icons.webhook),
+      ),
     ],
   ),
   MenuOption(

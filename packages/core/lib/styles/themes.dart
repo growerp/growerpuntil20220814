@@ -29,8 +29,9 @@ class Themes {
         borderSide: BorderSide(color: Color(0xFFce5310)),
       ),
     ),
+    primaryColorDark: Color.fromARGB(255, 11, 70, 61),
     errorColor: Colors.red,
-    cardColor: Colors.black,
+    cardColor: Colors.white,
     canvasColor: Colors.white, // modal popup background
     scaffoldBackgroundColor: Colors.white,
 //    iconTheme: IconThemeData(color: Colors.black),

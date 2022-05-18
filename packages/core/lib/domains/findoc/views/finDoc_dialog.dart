@@ -197,29 +197,44 @@ class _MyFinDocState extends State<FinDocPage> {
           child: Padding(
               padding: EdgeInsets.all(10),
               child: DropdownSearch<User>(
-                dialogMaxWidth: 300,
-                searchFieldProps: TextFieldProps(
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
-                  ),
-                  controller: _userSearchBoxController,
-                ),
                 selectedItem: _selectedUser,
-                popupShape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0)),
+                popupProps: PopupProps.menu(
+                  showSearchBox: true,
+                  searchFieldProps: TextFieldProps(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25.0)),
+                    ),
+                    controller: _userSearchBoxController,
+                  ),
+                  menuProps:
+                      MenuProps(borderRadius: BorderRadius.circular(20.0)),
+                  title: Container(
+                      height: 50,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColorDark,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          )),
+                      child: Center(
+                          child: Text('Select customer',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              )))),
+                ),
                 dropdownSearchDecoration: InputDecoration(
                   labelText: finDocUpdated.sales ? 'Customer' : 'Supplier',
                   border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25.0)),
                 ),
-                showSearchBox: true,
-                isFilteredOnline: true,
                 key: Key(finDocUpdated.sales == true ? 'customer' : 'supplier'),
                 itemAsString: (User? u) =>
                     "${u!.companyName},\n${u.firstName ?? ''} ${u.lastName ?? ''}",
-                onFind: (String? filter) async {
+                asyncItems: (String? filter) async {
                   final finDocBloc = context.read<FinDocBloc>();
                   finDocBloc.add(FinDocGetUsers(
                       userGroups: finDocUpdated.sales == true
@@ -591,30 +606,46 @@ Future addProductItemDialog(BuildContext context, repos) async {
                           key: Key('listView3'),
                           child: Column(children: <Widget>[
                             DropdownSearch<Product>(
-                              dialogMaxWidth: 300,
-                              searchFieldProps: TextFieldProps(
-                                autofocus: true,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(25.0)),
-                                ),
-                                controller: _productSearchBoxController,
-                              ),
                               selectedItem: _selectedProduct,
-                              popupShape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0)),
+                              popupProps: PopupProps.menu(
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  autofocus: true,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0)),
+                                  ),
+                                  controller: _productSearchBoxController,
+                                ),
+                                menuProps: MenuProps(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                title: Container(
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color:
+                                            Theme.of(context).primaryColorDark,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        )),
+                                    child: Center(
+                                        child: Text('Select product',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            )))),
+                              ),
                               dropdownSearchDecoration: InputDecoration(
                                 labelText: 'Product',
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25.0)),
                               ),
-                              showSearchBox: true,
-                              isFilteredOnline: true,
                               key: Key('product'),
                               itemAsString: (Product? u) =>
                                   "${u!.pseudoId}\n${u.productName}",
-                              onFind: (String? filter) async {
+                              asyncItems: (String? filter) async {
                                 ApiResult<List<Product>> result =
                                     await repos.getProduct(
                                         filter:
@@ -763,30 +794,22 @@ Future addRentalItemDialog(BuildContext context, repos) async {
                             children: <Widget>[
                               DropdownSearch<Product>(
                                 key: Key('product'),
-                                dialogMaxWidth: 300,
-                                searchFieldProps: TextFieldProps(
-                                  autofocus: true,
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(25.0)),
-                                  ),
-                                  controller: _productSearchBoxController,
-                                ),
                                 selectedItem: _selectedProduct,
-                                popupShape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0)),
-                                dropdownSearchDecoration: InputDecoration(
-                                  labelText: 'Product',
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(25.0)),
+                                popupProps: PopupProps.menu(
+                                  showSearchBox: true,
+                                  searchFieldProps: TextFieldProps(
+                                    autofocus: true,
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(25.0)),
+                                    ),
+                                    controller: _productSearchBoxController,
+                                  ),
                                 ),
-                                showSearchBox: true,
-                                isFilteredOnline: true,
                                 itemAsString: (Product? u) =>
                                     "${u!.productName}",
-                                onFind: (String? filter) async {
+                                asyncItems: (String? filter) async {
                                   ApiResult<List<Product>> result =
                                       await repos.getProduct(
                                           filter:

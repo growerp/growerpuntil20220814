@@ -321,27 +321,42 @@ class _UserState extends State<UserPage> {
                 SizedBox(height: 10),
                 DropdownSearch<Company>(
                   key: Key('companyName'),
-                  dialogMaxWidth: 300,
-                  searchFieldProps: TextFieldProps(
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
-                    ),
-                    controller: _companySearchBoxController,
-                  ),
                   selectedItem: _selectedCompany,
-                  popupShape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0)),
+                  popupProps: PopupProps.menu(
+                    showSearchBox: true,
+                    searchFieldProps: TextFieldProps(
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25.0)),
+                      ),
+                      controller: _companySearchBoxController,
+                    ),
+                    menuProps:
+                        MenuProps(borderRadius: BorderRadius.circular(20.0)),
+                    title: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColorDark,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            )),
+                        child: Center(
+                            child: Text('Select company',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                )))),
+                  ),
                   dropdownSearchDecoration: InputDecoration(
                     labelText: 'Existing Company',
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(25.0)),
                   ),
-                  showSearchBox: true,
-                  isFilteredOnline: true,
                   itemAsString: (Company? u) => "${u!.name}",
-                  onFind: (String? filter) =>
+                  asyncItems: (String? filter) =>
                       getOwnedCompanies(_companySearchBoxController.text),
                   onChanged: (Company? newValue) {
                     setState(() {

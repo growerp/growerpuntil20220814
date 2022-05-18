@@ -251,30 +251,46 @@ class _ProductState extends State<ProductDialog> {
                             SizedBox(height: 10),
                             DropdownSearch<Category>(
                               key: Key('categoryDropDown'),
-                              dialogMaxWidth: 300,
-                              searchFieldProps: TextFieldProps(
-                                autofocus: true,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(25.0)),
-                                ),
-                                controller: _categorySearchBoxController,
-                              ),
                               selectedItem: _selectedCategory,
-                              popupShape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0)),
+                              popupProps: PopupProps.menu(
+                                showSearchBox: true,
+                                searchFieldProps: TextFieldProps(
+                                  autofocus: true,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0)),
+                                  ),
+                                  controller: _categorySearchBoxController,
+                                ),
+                                menuProps: MenuProps(
+                                    borderRadius: BorderRadius.circular(20.0)),
+                                title: Container(
+                                    height: 50,
+                                    decoration: BoxDecoration(
+                                        color:
+                                            Theme.of(context).primaryColorDark,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        )),
+                                    child: Center(
+                                        child: Text('Select category',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            )))),
+                              ),
                               dropdownSearchDecoration: InputDecoration(
                                 labelText: 'Category',
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(25.0)),
                               ),
-                              showSearchBox: true,
-                              isFilteredOnline: true,
                               showClearButton: false,
                               itemAsString: (Category? u) =>
                                   "${u?.categoryName}",
-                              onFind: (String? filter) async {
+                              asyncItems: (String? filter) async {
                                 ApiResult<List<Category>> result =
                                     await repos.getCategory(
                                         filter:

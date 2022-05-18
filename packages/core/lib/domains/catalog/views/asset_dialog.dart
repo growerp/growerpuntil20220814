@@ -168,18 +168,35 @@ class _AssetState extends State<AssetDialog> {
                   SizedBox(height: 20),
                   DropdownSearch<Product>(
                     key: Key('productDropDown'),
-                    popupShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)),
-                    dialogMaxWidth: 300,
-                    searchFieldProps: TextFieldProps(
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
-                      ),
-                      controller: _productSearchBoxController,
-                    ),
                     selectedItem: _selectedProduct,
+                    popupProps: PopupProps.menu(
+                      showSearchBox: true,
+                      searchFieldProps: TextFieldProps(
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0)),
+                        ),
+                        controller: _productSearchBoxController,
+                      ),
+                      menuProps:
+                          MenuProps(borderRadius: BorderRadius.circular(20.0)),
+                      title: Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColorDark,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              )),
+                          child: Center(
+                              child: Text('Select product',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  )))),
+                    ),
                     dropdownSearchDecoration: InputDecoration(
                       labelText: classificationId == 'AppHotel'
                           ? 'Room Type'
@@ -187,11 +204,9 @@ class _AssetState extends State<AssetDialog> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0)),
                     ),
-                    showSearchBox: true,
-                    isFilteredOnline: true,
                     showClearButton: false,
                     itemAsString: (Product? u) => "${u!.productName}",
-                    onFind: (String? filter) async {
+                    asyncItems: (String? filter) async {
                       ApiResult<List<Product>> result = await repos.getProduct(
                           filter: _productSearchBoxController.text,
                           assetClassId: classificationId == 'AppHotel'

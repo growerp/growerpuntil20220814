@@ -198,55 +198,90 @@ class _OpportunityState extends State<OpportunityDialog> {
         isExpanded: true,
       ),
       DropdownSearch<User>(
-        dialogMaxWidth: 300,
-        searchFieldProps: TextFieldProps(
-          autofocus: true,
-          decoration: InputDecoration(
-            border:
-                OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
-          ),
-          controller: _leadSearchBoxController,
-        ),
         selectedItem: _selectedLead,
-        dropdownSearchDecoration: InputDecoration(
-          labelText: 'Lead',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
-        ),
-        showSearchBox: true,
-        isFilteredOnline: true,
-        showClearButton: true,
-        key: Key('lead'),
-        itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
-            "${u?.companyName}",
-        onFind: (String? filter) =>
-            getData([UserGroup.Lead], _leadSearchBoxController.text),
-        onChanged: (User? newValue) {
-          _selectedLead = newValue;
-        },
-      ),
-      DropdownSearch<User>(
-          dialogMaxWidth: 300,
+        popupProps: PopupProps.menu(
+          showSearchBox: true,
           searchFieldProps: TextFieldProps(
             autofocus: true,
             decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
             ),
-            controller: _accountSearchBoxController,
+            controller: _leadSearchBoxController,
           ),
+          menuProps: MenuProps(borderRadius: BorderRadius.circular(20.0)),
+          title: Container(
+              height: 50,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColorDark,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  )),
+              child: Center(
+                  child: Text('Select lead',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      )))),
+        ),
+        dropdownSearchDecoration: InputDecoration(
+          labelText: 'Lead',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
+        ),
+        showClearButton: true,
+        key: Key('lead'),
+        itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
+            "${u?.companyName}",
+        asyncItems: (String? filter) =>
+            getData([UserGroup.Lead], _leadSearchBoxController.text),
+        onChanged: (User? newValue) {
+          _selectedLead = newValue;
+        },
+      ),
+      DropdownSearch<User>(
           selectedItem: _selectedAccount,
+          popupProps: PopupProps.menu(
+              showSearchBox: true,
+              searchFieldProps: TextFieldProps(
+                autofocus: true,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0)),
+                ),
+                controller: _accountSearchBoxController,
+              ),
+              menuProps: MenuProps(borderRadius: BorderRadius.circular(20.0)),
+              title: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColorDark,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    )),
+                child: Center(
+                  child: Text(
+                    'Select employee',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              )),
           dropdownSearchDecoration: InputDecoration(
             labelText: 'Account Employee',
             border:
                 OutlineInputBorder(borderRadius: BorderRadius.circular(25.0)),
           ),
-          showSearchBox: true,
-          isFilteredOnline: true,
           showClearButton: true,
           key: Key('employee'),
           itemAsString: (User? u) => "${u?.firstName} ${u?.lastName} "
               "${u?.companyName}",
-          onFind: (String? filter) => getData(
+          asyncItems: (String? filter) => getData(
               [UserGroup.Employee, UserGroup.Admin],
               _accountSearchBoxController.text),
           onChanged: (User? newValue) {

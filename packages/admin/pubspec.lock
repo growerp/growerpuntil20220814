@@ -217,7 +217,7 @@ packages:
       name: dropdown_search
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.1"
+    version: "4.0.1"
   equatable:
     dependency: transitive
     description:
@@ -959,5 +959,5 @@ packages:
     source: hosted
     version: "3.1.0"
 sdks:
-  dart: ">=2.17.0-0 <3.0.0"
+  dart: ">=2.17.0 <3.0.0"
   flutter: ">=2.10.0"

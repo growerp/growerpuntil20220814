@@ -171,29 +171,44 @@ class _ReservationState extends State<ReservationDialog> {
                       Row(children: [
                         Expanded(
                             child: DropdownSearch<User>(
-                          dialogMaxWidth: 300,
-                          searchFieldProps: TextFieldProps(
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0)),
-                            ),
-                            controller: _userSearchBoxController,
-                          ),
                           selectedItem: _selectedUser,
-                          popupShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0)),
+                          popupProps: PopupProps.menu(
+                            showSearchBox: true,
+                            searchFieldProps: TextFieldProps(
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25.0)),
+                              ),
+                              controller: _userSearchBoxController,
+                            ),
+                            menuProps: MenuProps(
+                                borderRadius: BorderRadius.circular(20.0)),
+                            title: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColorDark,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                    )),
+                                child: Center(
+                                    child: Text('Select customer',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        )))),
+                          ),
                           dropdownSearchDecoration: InputDecoration(
                             labelText: 'Customer',
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0)),
                           ),
-                          showSearchBox: true,
-                          isFilteredOnline: true,
                           key: Key('customer'),
                           itemAsString: (User? u) =>
                               "${u!.firstName} ${u.lastName}, ${u.companyName}",
-                          onFind: (String? filter) async {
+                          asyncItems: (String? filter) async {
                             ApiResult<List<User>> result = await repos.getUser(
                                 userGroups: [UserGroup.Customer],
                                 filter: _userSearchBoxController.text);
@@ -237,18 +252,36 @@ class _ReservationState extends State<ReservationDialog> {
                       ]),
                       SizedBox(height: 20),
                       DropdownSearch<Product>(
-                        dialogMaxWidth: 300,
-                        searchFieldProps: TextFieldProps(
-                          autofocus: true,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(25.0)),
-                          ),
-                          controller: _productSearchBoxController,
-                        ),
                         selectedItem: _selectedProduct,
-                        popupShape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
+                        popupProps: PopupProps.menu(
+                          showSearchBox: true,
+                          searchFieldProps: TextFieldProps(
+                            autofocus: true,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(25.0)),
+                            ),
+                            controller: _productSearchBoxController,
+                          ),
+                          menuProps: MenuProps(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          title: Container(
+                              height: 50,
+                              decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColorDark,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  )),
+                              child: Center(
+                                  child: Text(
+                                      "Select ${classificationId == 'AppHotel' ? 'room type' : 'product'}",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      )))),
+                        ),
                         dropdownSearchDecoration: InputDecoration(
                           labelText: classificationId == 'AppHotel'
                               ? 'Room Type'
@@ -256,11 +289,9 @@ class _ReservationState extends State<ReservationDialog> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(25.0)),
                         ),
-                        showSearchBox: true,
-                        isFilteredOnline: true,
                         key: Key('product'),
                         itemAsString: (Product? u) => "${u!.productName}",
-                        onFind: (String? filter) async {
+                        asyncItems: (String? filter) async {
                           ApiResult<List<Product>> result =
                               await repos.getProduct(
                                   filter: _productSearchBoxController.text,

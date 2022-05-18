@@ -109,16 +109,33 @@ class _ChatRoomState extends State<ChatRoomDialog> {
                   SizedBox(height: 30),
                   DropdownSearch<User>(
                     key: Key('userDropDown'),
-                    popupShape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)),
-                    dialogMaxWidth: 300,
-                    searchFieldProps: TextFieldProps(
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(25.0)),
+                    popupProps: PopupProps.menu(
+                      showSearchBox: true,
+                      searchFieldProps: TextFieldProps(
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0)),
+                        ),
+                        controller: _userSearchBoxController,
                       ),
-                      controller: _userSearchBoxController,
+                      menuProps:
+                          MenuProps(borderRadius: BorderRadius.circular(20.0)),
+                      title: Container(
+                          height: 50,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColorDark,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              )),
+                          child: Center(
+                              child: Text('Select chat partner',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  )))),
                     ),
                     selectedItem: _selectedUser,
                     dropdownSearchDecoration: InputDecoration(
@@ -126,11 +143,9 @@ class _ChatRoomState extends State<ChatRoomDialog> {
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(25.0)),
                     ),
-                    showSearchBox: true,
-                    isFilteredOnline: true,
                     showClearButton: false,
                     itemAsString: (User? u) => "${u!.firstName} ${u.lastName}",
-                    onFind: (String? filter) async {
+                    asyncItems: (String? filter) async {
                       ApiResult<List<User>> result = await repos.getUser(
                           filter: _chatRoomSearchBoxController.text);
                       return result.when(

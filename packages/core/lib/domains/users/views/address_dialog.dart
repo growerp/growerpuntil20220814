@@ -155,24 +155,40 @@ class _AddressState extends State<AddressDialog> {
                         SizedBox(height: 20),
                         DropdownSearch<Country>(
                           key: Key('country'),
-                          popupShape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(25.0)),
-                          dialogMaxWidth: 300,
-                          searchFieldProps: TextFieldProps(
-                            autofocus: true,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(25.0)),
-                            ),
-                            controller: _countrySearchBoxController,
-                          ),
                           selectedItem: _selectedCountry,
+                          popupProps: PopupProps.menu(
+                            showSearchBox: true,
+                            searchFieldProps: TextFieldProps(
+                              autofocus: true,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(25.0)),
+                              ),
+                              controller: _countrySearchBoxController,
+                            ),
+                            menuProps: MenuProps(
+                                borderRadius: BorderRadius.circular(20.0)),
+                            title: Container(
+                                height: 50,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColorDark,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      topRight: Radius.circular(20),
+                                    )),
+                                child: Center(
+                                    child: Text('Select country',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        )))),
+                          ),
                           dropdownSearchDecoration: InputDecoration(
                             labelText: 'Country',
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(25.0)),
                           ),
-                          showSearchBox: true,
                           itemAsString: (Country? u) => "${u!.name}",
                           items: countries,
                           validator: (value) {

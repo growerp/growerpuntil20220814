@@ -1028,4 +1028,29 @@ class APIRepository {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }
   }
+
+  Future<ApiResult<Website>> getWebsite() async {
+    try {
+      final response =
+          await dioClient.get('rest/s1/growerp/100/Website', apiKey!);
+      return getResponse<Website>(
+          "website", response, (json) => Website.fromJson(json));
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Website>> updateWebsite(Website website) async {
+    try {
+      final response = await dioClient.patch(
+          'rest/s1/growerp/100/Website', apiKey!, data: <String, dynamic>{
+        'website': jsonEncode(website.toJson()),
+        'moquiSessionToken': sessionToken
+      });
+      return getResponse<Website>(
+          "website", response, (json) => Website.fromJson(json));
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
 }
