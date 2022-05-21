@@ -118,14 +118,23 @@ class _MyFinDocState extends State<FinDocPage> {
         case CartStatus.inProcess:
           finDocUpdated = state.finDoc;
           return Column(children: [
-            SizedBox(height: isPhone ? 10 : 20),
             Center(
-                child: Text('${finDoc.docType} #${finDoc.id()}',
-                    key: Key('header'),
-                    style: TextStyle(
-                        fontSize: isPhone ? 10 : 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold))),
+                child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColorDark,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        )),
+                    child: Center(
+                        child: Text(
+                            '${finDoc.docType} #${finDoc.id() ?? ' new'}',
+                            key: Key('header'),
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold))))),
             SizedBox(height: isPhone ? 10 : 20),
             headerEntry(repos),
             SizedBox(
@@ -219,7 +228,8 @@ class _MyFinDocState extends State<FinDocPage> {
                             topRight: Radius.circular(20),
                           )),
                       child: Center(
-                          child: Text('Select customer',
+                          child: Text(
+                              "Select ${finDocUpdated.sales ? 'Customer' : 'Supplier'}",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

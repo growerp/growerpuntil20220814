@@ -22,18 +22,6 @@ import 'package:core/domains/domains.dart';
 part 'product_model.freezed.dart';
 part 'product_model.g.dart';
 
-Product productFromJson(String str) =>
-    Product.fromJson(json.decode(str)["product"]);
-String productToJson(Product data) =>
-    '{"product":' + json.encode(data.toJson()) + "}";
-
-List<Product> productsFromJson(String str) => List<Product>.from(
-    json.decode(str)["products"].map((x) => Product.fromJson(x)));
-String productsToJson(List<Product> data) =>
-    '{"products":' +
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson()))) +
-    "}";
-
 @freezed
 class Product with _$Product {
   Product._();
@@ -45,7 +33,7 @@ class Product with _$Product {
     String? productName,
     String? description,
     @DecimalConverter() Decimal? price,
-    Category? category,
+    @Default([]) List<Category> categories,
     @Default(false) bool useWarehouse,
     int? assetCount,
     @Uint8ListConverter() Uint8List? image,
