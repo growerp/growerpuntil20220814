@@ -34,7 +34,7 @@ class HelperFunctions {
         action: SnackBarAction(
           key: Key('dismiss'),
           label: 'Dismiss',
-          textColor: Colors.red,
+          textColor: Colors.yellow,
           onPressed: () {
             // Hide the snackbar before its duration ends
             ScaffoldMessenger.of(context).hideCurrentSnackBar();

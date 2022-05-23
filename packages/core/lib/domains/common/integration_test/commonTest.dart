@@ -250,6 +250,12 @@ class CommonTest {
     return tff.value ?? false;
   }
 
+  static bool getCheckboxListTile(String text) {
+    CheckboxListTile tff =
+        find.text(text).evaluate().single.widget as CheckboxListTile;
+    return tff.value ?? false;
+  }
+
   static bool isPhone() {
     try {
       expect(find.byTooltip('Open navigation menu'), findsOneWidget);
@@ -281,6 +287,18 @@ class CommonTest {
       {int seconds = 1}) async {
     await tester.tap(find.byKey(Key(key)).last,
         warnIfMissed: key == 'cancel' ? false : true);
+    await tester.pumpAndSettle(Duration(seconds: seconds));
+  }
+
+  static Future<void> tapByWidget(WidgetTester tester, Widget widget,
+      {int seconds = 1}) async {
+    await tester.tap(find.byWidget(widget).first);
+    await tester.pumpAndSettle(Duration(seconds: seconds));
+  }
+
+  static Future<void> tapByType(WidgetTester tester, Type type,
+      {int seconds = 1}) async {
+    await tester.tap(find.byType(type).first);
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 

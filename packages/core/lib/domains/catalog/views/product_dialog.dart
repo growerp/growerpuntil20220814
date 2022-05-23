@@ -68,7 +68,7 @@ class _ProductState extends State<ProductDialogFull> {
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  List<Category> _selectedCategories = [];
+  late List<Category> _selectedCategories;
 
   @override
   void initState() {
@@ -77,7 +77,7 @@ class _ProductState extends State<ProductDialogFull> {
     _descriptionController.text = product.description ?? '';
     _priceController.text =
         product.price == null ? '' : product.price.toString();
-    _selectedCategories = product.categories;
+    _selectedCategories = List.of(product.categories);
     _selectedTypeId = product.productTypeId ?? null;
     classificationId = GlobalConfiguration().get("classificationId");
     useWarehouse = product.useWarehouse;
@@ -293,6 +293,7 @@ class _ProductState extends State<ProductDialogFull> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         ElevatedButton(
+                                          key: Key('addCategories'),
                                           onPressed: () async {
                                             var result = await showDialog(
                                                 context: context,
@@ -310,13 +311,10 @@ class _ProductState extends State<ProductDialogFull> {
                                               setState(() {
                                                 _selectedCategories = result;
                                               });
-                                              context.read<ProductBloc>().add(
-                                                  ProductUpdate(product.copyWith(
-                                                      categories:
-                                                          _selectedCategories)));
                                             }
                                           },
-                                          child: const Text('Add Categories'),
+                                          child: const Text(
+                                              'Assign to at least ONE Category'),
                                         ),
 
                                         // display selected items
@@ -324,21 +322,33 @@ class _ProductState extends State<ProductDialogFull> {
                                           spacing: 10.0,
                                           children: _selectedCategories
                                               .map((Category e) => Chip(
-                                                    label:
-                                                        Text(e.categoryName!),
+                                                    label: Text(
+                                                      e.categoryName!,
+                                                      key: Key(e.categoryName!),
+                                                    ),
                                                     deleteIcon: const Icon(
-                                                        Icons.cancel),
-                                                    onDeleted: () {
-                                                      setState(() {
-                                                        _selectedCategories
-                                                            .remove(e);
-                                                      });
-                                                      context
-                                                          .read<ProductBloc>()
-                                                          .add(ProductUpdate(
-                                                              product.copyWith(
-                                                                  categories:
-                                                                      _selectedCategories)));
+                                                      Icons.cancel,
+                                                      key: Key("deleteChip"),
+                                                    ),
+                                                    onDeleted: () async {
+                                                      if (_selectedCategories
+                                                              .length >
+                                                          1)
+                                                        setState(() {
+                                                          _selectedCategories
+                                                              .remove(e);
+                                                        });
+                                                      else {
+                                                        var result =
+                                                            await needOneCategory(
+                                                                context, state);
+                                                        if (result != null) {
+                                                          setState(() {
+                                                            _selectedCategories =
+                                                                result;
+                                                          });
+                                                        }
+                                                      }
                                                     },
                                                   ))
                                               .toList(),
@@ -411,7 +421,16 @@ class _ProductState extends State<ProductDialogFull> {
                                                 context,
                                                 "Image upload error or larger than 200K",
                                                 Colors.red);
-                                          else
+                                          else if (_selectedCategories
+                                              .isEmpty) {
+                                            var result = await needOneCategory(
+                                                context, state);
+                                            if (result != null) {
+                                              setState(() {
+                                                _selectedCategories = result;
+                                              });
+                                            }
+                                          } else
                                             context.read<ProductBloc>().add(
                                                 ProductUpdate(Product(
                                                     productId:
@@ -428,8 +447,8 @@ class _ProductState extends State<ProductDialogFull> {
                                                             .text,
                                                     price: Decimal.parse(
                                                         _priceController.text),
-                                                    //          categories:
-                                                    //              _selectedCategories,
+                                                    categories:
+                                                        _selectedCategories,
                                                     productTypeId:
                                                         _selectedTypeId,
                                                     useWarehouse: useWarehouse,
@@ -442,5 +461,18 @@ class _ProductState extends State<ProductDialogFull> {
         return CircularProgressIndicator();
       },
     );
+  }
+
+  Future<dynamic> needOneCategory(
+      BuildContext context, CategoryState state) async {
+    return await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return MultiSelect<Category>(
+            title: 'Need at least one category?',
+            items: state.categories,
+            selectedItems: [],
+          );
+        });
   }
 }

@@ -62,12 +62,23 @@ class ProductTest {
       await CommonTest.enterText(tester, 'description', product.description!);
       await CommonTest.drag(tester);
       await CommonTest.enterText(tester, 'price', product.price.toString());
-      await CommonTest.enterDropDownSearch(
-          tester, 'categoryDropDown', product.category!.categoryName!);
+      if (product.productId.isEmpty)
+        await CommonTest.tapByKey(tester, "addCategories");
+      else
+        // remove all categories will open dialog
+        do {
+          await CommonTest.tapByKey(tester, "deleteChip");
+        } while (!tester.any(find.byKey(Key("multiSelect"))));
+      for (Category category in product.categories) {
+        await CommonTest.tapByText(tester, category.categoryName!);
+      }
+      await CommonTest.tapByKey(tester, 'ok');
       await CommonTest.drag(tester);
       await CommonTest.enterDropDown(
           tester, 'productTypeDropDown', product.productTypeId!);
       await CommonTest.drag(tester);
+      if (product.useWarehouse == true)
+        await CommonTest.tapByKey(tester, 'useWarehouse');
       await CommonTest.tapByKey(tester, 'update');
       await CommonTest.waitForKey(tester, 'dismiss');
       await CommonTest.waitForSnackbarToGo(tester);
@@ -79,24 +90,39 @@ class ProductTest {
     List<Product> newProducts = [];
     for (Product product in products) {
       await CommonTest.doSearch(tester, searchString: product.productName!);
+      // list
       expect(CommonTest.getTextField('name0'), equals(product.productName));
       expect(
           CommonTest.getTextField('price0'), equals(product.price.toString()));
-      expect(CommonTest.getTextField('categoryName0'),
-          equals(product.category?.categoryName));
+      if (product.categories.length == 1)
+        expect(CommonTest.getTextField('categoryName0'),
+            equals(product.categories[0].categoryName));
+      else
+        expect(CommonTest.getTextField('categoryName0'),
+            equals(product.categories.length.toString()));
       if (!CommonTest.isPhone())
         expect(CommonTest.getTextField('description0'),
             equals(product.description));
+      // detail screen
       await CommonTest.tapByKey(tester, 'name0');
       var id = CommonTest.getTextField('header').split('#')[1];
       expect(find.byKey(Key('ProductDialog')), findsOneWidget);
       expect(CommonTest.getTextFormField('name'), product.productName);
       expect(CommonTest.getTextFormField('description'), product.description);
       expect(CommonTest.getTextFormField('price'), product.price.toString());
-      expect(CommonTest.getDropdownSearch('categoryDropDown'),
-          contains(product.category!.categoryName!));
+      for (Category category in product.categories) {
+        expect(find.byKey(Key(category.categoryName!)), findsOneWidget);
+      }
+      // not sure how to test checked list
+//      await CommonTest.tapByKey(tester, 'addCategories');
+//      for (Category category in product.categories) {
+//        expect(
+//            CommonTest.getCheckboxListTile("${category.categoryName!}["), true);
+//      }
       expect(
           CommonTest.getDropdown('productTypeDropDown'), product.productTypeId);
+//      expect(
+//          CommonTest.getCheckboxListTile('useWarehouse'), product.useWarehouse);
       newProducts.add(product.copyWith(productId: id));
       await CommonTest.tapByKey(tester, 'cancel');
     }
@@ -127,7 +153,7 @@ class ProductTest {
         updProducts.add(product.copyWith(
           productName: product.productName! + 'u',
           description: product.description! + 'u',
-          category: test.categories[0],
+          categories: [product.categories[0]],
           productTypeId: productTypes[0],
           price: product.price! + Decimal.parse('0.10'),
         ));

@@ -31,44 +31,64 @@ class MultiSelect<T> extends StatefulWidget {
 }
 
 class MultiSelectState<T> extends State<MultiSelect> {
+  late List<T> selectedItems;
+  String message = '';
+
 // This function is triggered when a checkbox is checked or unchecked
   void _itemChange(itemValue, bool isSelected) {
     setState(() {
       if (isSelected) {
-        widget.selectedItems.add(itemValue);
+        selectedItems.add(itemValue);
       } else {
-        widget.selectedItems.remove(itemValue);
+        selectedItems.remove(itemValue);
       }
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    selectedItems = List.of(widget.selectedItems as List<T>);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      key: Key('multiSelect'),
+      scrollable: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      title: Text(widget.title),
-      content: SingleChildScrollView(
-        child: ListBody(
-          children: widget.items
-              .map((item) => CheckboxListTile(
-                    value: widget.selectedItems.contains(item),
-                    title: Text(item.toString()),
-                    controlAffinity: ListTileControlAffinity.leading,
-                    onChanged: (isChecked) => _itemChange(item, isChecked!),
-                  ))
-              .toList(),
-        ),
+      title: Column(children: [
+        Text(widget.title),
+        Text(message, style: TextStyle(color: Colors.red)),
+      ]),
+      content: ListBody(
+        children: widget.items
+            .map((item) => CheckboxListTile(
+                  value: selectedItems.contains(item),
+                  title: Text(item.toString()),
+                  controlAffinity: ListTileControlAffinity.leading,
+                  onChanged: (isChecked) => _itemChange(item, isChecked!),
+                ))
+            .toList(),
       ),
       actions: [
         TextButton(
+          key: Key('cancel'),
           onPressed: (() => Navigator.pop(context)),
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: (() => Navigator.pop(context, widget.selectedItems)),
-          child: const Text('Submit'),
+          key: Key('ok'),
+          onPressed: (() {
+            if (selectedItems.isNotEmpty)
+              return Navigator.pop(context, selectedItems);
+            setState(() {
+              message = "Select at least one!";
+            });
+          }),
+          child: const Text('OK'),
         ),
       ],
     );
