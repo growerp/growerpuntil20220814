@@ -25,7 +25,7 @@ class HelperFunctions {
   static showMessage(BuildContext context, String? message, dynamic colors) {
     if (message != null && message != "null")
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        duration: const Duration(milliseconds: 2000),
+        duration: Duration(milliseconds: colors == Colors.red ? 5000 : 2000),
         content: Container(
             padding: const EdgeInsets.all(16.0),
             width: MediaQuery.of(context).size.width * 0.8,

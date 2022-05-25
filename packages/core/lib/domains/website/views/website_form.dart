@@ -108,7 +108,7 @@ class _WebsiteState extends State<WebsitePage> {
                           SizedBox(height: 10),
                           Center(
                               child: Text(
-                            "url: ${state.website?.hostName}/store/${state.website?.id}",
+                            "url: ${state.website?.hostName}",
                             style: TextStyle(
                                 fontSize: isPhone ? 20 : 30,
                                 color: Colors.black,

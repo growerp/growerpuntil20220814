@@ -58,74 +58,65 @@ class _ProductsState extends State<ProductList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<ProductBloc, ProductState>(
-      listener: (context, state) {
-        if (state.status == ProductStatus.failure)
-          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
-        if (state.status == ProductStatus.success) {
-          HelperFunctions.showMessage(
-              context, '${state.message}', Colors.green);
-        }
-      },
-      builder: (context, state) {
-        switch (state.status) {
-          case ProductStatus.failure:
-            return Center(
-                child: Text('failed to fetch products: ${state.message}'));
-          case ProductStatus.success:
-            return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                    key: Key("addNew"),
-                    onPressed: () async {
-                      await showDialog(
-                          barrierDismissible: true,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return BlocProvider.value(
-                                value: _productBloc,
-                                child: ProductDialog(Product()));
-                          });
-                    },
-                    tooltip: 'Add New',
-                    child: Icon(Icons.add)),
-                body: RefreshIndicator(
-                    onRefresh: () async => context
-                        .read<ProductBloc>()
-                        .add(const ProductFetch(refresh: true)),
-                    child: ListView.builder(
-                        key: Key('listView'),
-                        physics: AlwaysScrollableScrollPhysics(),
-                        itemCount: state.hasReachedMax
-                            ? state.products.length + 1
-                            : state.products.length + 2,
-                        controller: _scrollController,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index == 0)
-                            return Column(children: [
-                              ProductListHeader(),
-                              Visibility(
-                                  visible: state.products.isEmpty,
-                                  child: const Center(
-                                      heightFactor: 20,
-                                      child: Text('No products found',
-                                          key: Key('empty'),
-                                          textAlign: TextAlign.center)))
-                            ]);
-                          index--;
-                          return index >= state.products.length
-                              ? BottomLoader()
-                              : Dismissible(
-                                  key: Key('productItem'),
-                                  direction: DismissDirection.startToEnd,
-                                  child: ProductListItem(
-                                      product: state.products[index],
-                                      index: index));
-                        })));
-          default:
-            return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+    return BlocConsumer<ProductBloc, ProductState>(listener: (context, state) {
+      if (state.status == ProductStatus.failure)
+        HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+      if (state.status == ProductStatus.success) {
+        HelperFunctions.showMessage(context, '${state.message}', Colors.green);
+      }
+    }, builder: (context, state) {
+      if (state.status == ProductStatus.success)
+        return Scaffold(
+            floatingActionButton: FloatingActionButton(
+                key: Key("addNew"),
+                onPressed: () async {
+                  await showDialog(
+                      barrierDismissible: true,
+                      context: context,
+                      builder: (BuildContext context) {
+                        return BlocProvider.value(
+                            value: _productBloc,
+                            child: ProductDialog(Product()));
+                      });
+                },
+                tooltip: 'Add New',
+                child: Icon(Icons.add)),
+            body: RefreshIndicator(
+                onRefresh: () async => context
+                    .read<ProductBloc>()
+                    .add(const ProductFetch(refresh: true)),
+                child: ListView.builder(
+                    key: Key('listView'),
+                    physics: AlwaysScrollableScrollPhysics(),
+                    itemCount: state.hasReachedMax
+                        ? state.products.length + 1
+                        : state.products.length + 2,
+                    controller: _scrollController,
+                    itemBuilder: (BuildContext context, int index) {
+                      if (index == 0)
+                        return Column(children: [
+                          ProductListHeader(),
+                          Visibility(
+                              visible: state.products.isEmpty,
+                              child: const Center(
+                                  heightFactor: 20,
+                                  child: Text('No products found',
+                                      key: Key('empty'),
+                                      textAlign: TextAlign.center)))
+                        ]);
+                      index--;
+                      return index >= state.products.length
+                          ? BottomLoader()
+                          : Dismissible(
+                              key: Key('productItem'),
+                              direction: DismissDirection.startToEnd,
+                              child: ProductListItem(
+                                  product: state.products[index],
+                                  index: index));
+                    })));
+      else
+        return LoadingIndicator();
+    });
   }
 
   @override

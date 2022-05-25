@@ -31,13 +31,20 @@ void main(List<String> arguments) async {
   var home = Platform.environment['HOME']!;
 
   // growerp already cloned or pulled
+  // update growerp itself
+  print("update growerp itself");
+  process = await Process.runSync('git', ['stash'],
+      workingDirectory: '$home/growerp');
+  process =
+      await Process.runSync('git', ['pull'], workingDirectory: '$home/growerp');
   process = await Process.runSync('flutter', ['pub', 'get'],
       workingDirectory: '$home/growerp/packages/core');
-  process = await Process.runSync(
-      'flutter', ['pub', 'run', 'build_runner', 'build'],
+  process = await Process.runSync('flutter',
+      ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-0outputs'],
       workingDirectory: '$home/growerp/packages/core');
 
   // growerp-chat
+  print("update chat");
   if (await Directory('$home/growerpChat').existsSync() == false) {
     process = await Process.runSync('git', [
       'clone',
@@ -54,6 +61,7 @@ void main(List<String> arguments) async {
 
   // growerp-moqui
   if (await Directory('$home/growerpMoqui').existsSync() == false) {
+    print("create growerpMoqui backend system");
     process = await Process.runSync('git', [
       'clone',
       'https://github.com/growerp/moqui-framework',
@@ -97,13 +105,15 @@ void main(List<String> arguments) async {
     ]);
     process = await Process.runSync('./gradlew', ['downloadElasticSearch'],
         workingDirectory: '$home/growerpMoqui');
-    print('elastic search: ${process.stdout}');
+    print("build system");
     process = await Process.runSync('./gradlew', ['build'],
         workingDirectory: '$home/growerpMoqui');
     print('moqui build: ${process.stdout}');
   } else {
     process = await Process.runSync('./gradlew', ['gitp'],
         workingDirectory: '$home/growerpMoqui');
+    process = await Process.runSync('git', ['stash'],
+        workingDirectory: '$home/growerpMoqui/runtime/component/growerp');
     process = await Process.runSync('git', ['pull'],
         workingDirectory: '$home/growerpMoqui/runtime/component/growerp');
   }
