@@ -100,6 +100,11 @@ void main(List<String> arguments) async {
     ]);
     process = await Process.runSync('git', [
       'clone',
+      'https://github.com/growerp/PopRestStore.git',
+      '$home/growerpMoqui/runtime/component/PopRestStore'
+    ]);
+    process = await Process.runSync('git', [
+      'clone',
       'https://github.com/growerp/moqui-fop.git',
       '$home/growerpMoqui/runtime/component/moqui-fop'
     ]);
