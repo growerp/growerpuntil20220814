@@ -1031,8 +1031,11 @@ class APIRepository {
 
   Future<ApiResult<Website>> getWebsite() async {
     try {
-      final response =
-          await dioClient.get('rest/s1/growerp/100/Website', apiKey!);
+      final response = await dioClient.get(
+          'rest/s1/growerp/100/Website', apiKey!,
+          queryParameters: <String, dynamic>{
+            'classificationId': classificationId
+          });
       return getResponse<Website>(
           "website", response, (json) => Website.fromJson(json));
     } on Exception catch (e) {

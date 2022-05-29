@@ -45,9 +45,9 @@ class WebsiteBloc extends Bloc<WebsiteEvent, WebsiteState> {
     return emit(result.when(
         success: (data) {
           return state.copyWith(
-              status: WebsiteStatus.success,
-              website: data,
-              message: 'website data loaded...');
+            status: WebsiteStatus.success,
+            website: data,
+          );
         },
         failure: (NetworkExceptions error) => state.copyWith(
             status: WebsiteStatus.failure, message: error.toString())));

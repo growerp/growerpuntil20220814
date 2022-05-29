@@ -48,5 +48,5 @@ class WebsiteState extends Equatable {
   List<Object?> get props => [status, website, message];
 
   @override
-  String toString() => "$status { website: ${website?.title}";
+  String toString() => "$status { website: ${website?.content?.title ?? '??'}";
 }

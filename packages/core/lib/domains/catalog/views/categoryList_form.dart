@@ -30,7 +30,6 @@ class CategoryListForm extends StatelessWidget {
 }
 
 class CategoryList extends StatefulWidget {
-  const CategoryList();
   @override
   _CategoriesState createState() => _CategoriesState();
 }

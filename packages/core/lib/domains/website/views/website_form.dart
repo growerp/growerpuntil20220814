@@ -47,10 +47,15 @@ class _WebsiteState extends State<WebsitePage> {
   TextEditingController _titleController = TextEditingController();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
+  String updatedHelp = '';
+  String updatedContact = '';
+  String updatedAbout = '';
+  late WebsiteBloc _websiteBloc;
 
   @override
   void initState() {
     super.initState();
+    _websiteBloc = context.read<WebsiteBloc>();
   }
 
   @override
@@ -73,7 +78,16 @@ class _WebsiteState extends State<WebsitePage> {
               child: Text('failed to fetch website info ${state.message}'));
         case WebsiteStatus.success:
           _titleController.text.isEmpty
-              ? _titleController.text = state.website?.title ?? ''
+              ? _titleController.text = state.website?.content!.title ?? ''
+              : '';
+          updatedHelp.isEmpty
+              ? updatedHelp = state.website?.content!.help ?? ''
+              : '';
+          updatedContact.isEmpty
+              ? updatedContact = state.website?.content!.contact ?? ''
+              : '';
+          updatedAbout.isEmpty
+              ? updatedAbout = state.website?.content!.about ?? ''
               : '';
           return ScaffoldMessenger(
               key: scaffoldMessengerKey,
@@ -129,15 +143,89 @@ class _WebsiteState extends State<WebsitePage> {
                           ),
                           SizedBox(height: 10),
                           ElevatedButton(
+                              key: Key('help'),
+                              child: Text(
+                                'Help Text',
+                              ),
+                              onPressed: () async {
+                                var result = await showDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return BlocProvider.value(
+                                          value: _websiteBloc,
+                                          child: EditorDialog(
+                                              state.website!.content!.help
+                                                      .isEmpty
+                                                  ? "# enter 'Markdown format text here"
+                                                  : state
+                                                      .website!.content!.help,
+                                              'Help'));
+                                    });
+                                if (result != null) updatedHelp = result;
+                              }),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                              key: Key('contact'),
+                              child: Text(
+                                'Contact Text',
+                              ),
+                              onPressed: () async {
+                                var result = await showDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return BlocProvider.value(
+                                          value: _websiteBloc,
+                                          child: EditorDialog(
+                                              state.website!.content!.contact
+                                                      .isEmpty
+                                                  ? "# enter 'Markdown format text here"
+                                                  : state.website!.content!
+                                                      .contact,
+                                              'Contact'));
+                                    });
+                                if (result != null) updatedHelp = result;
+                              }),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                              key: Key('about'),
+                              child: Text(
+                                'About Text',
+                              ),
+                              onPressed: () async {
+                                var result = await showDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return BlocProvider.value(
+                                          value: _websiteBloc,
+                                          child: EditorDialog(
+                                              state.website!.content!.about
+                                                      .isEmpty
+                                                  ? "# enter 'Markdown format text here"
+                                                  : state
+                                                      .website!.content!.about,
+                                              'About'));
+                                    });
+                                if (result != null) updatedAbout = result;
+                              }),
+                          SizedBox(height: 10),
+                          ElevatedButton(
                               key: Key('update'),
                               child: Text(
                                 'Update',
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
-                                  context.read<WebsiteBloc>().add(WebsiteUpdate(
-                                      state.website!.copyWith(
-                                          title: _titleController.text)));
+                                  context.read<WebsiteBloc>().add(
+                                          WebsiteUpdate(state.website!.copyWith(
+                                              content: WebsiteContent(
+                                        help: updatedHelp,
+                                        contact: updatedContact,
+                                        about: updatedAbout,
+                                        title: _titleController.text,
+                                      ))));
                                 }
                               })
                         ]))))));

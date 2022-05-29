@@ -13,20 +13,20 @@
  */
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'websiteContent_model.dart';
 
-part 'website_model.freezed.dart';
-part 'website_model.g.dart';
+part 'websiteContent_model.freezed.dart';
+part 'websiteContent_model.g.dart';
 
 @freezed
-class Website with _$Website {
-  Website._();
-  factory Website({
-    @Default('') String id,
-    @Default('') String hostName,
-    WebsiteContent? content,
-  }) = _Website;
+class WebsiteContent with _$WebsiteContent {
+  WebsiteContent._();
+  factory WebsiteContent({
+    @Default('') String title,
+    @Default('') String help,
+    @Default('') String contact,
+    @Default('') String about,
+  }) = _WebsiteContent;
 
-  factory Website.fromJson(Map<String, dynamic> json) =>
-      _$WebsiteFromJson(json);
+  factory WebsiteContent.fromJson(Map<String, dynamic> json) =>
+      _$WebsiteContentFromJson(json);
 }

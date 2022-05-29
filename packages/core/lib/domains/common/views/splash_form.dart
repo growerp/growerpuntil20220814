@@ -21,24 +21,22 @@ class SplashForm extends StatelessWidget {
     SystemChannels.textInput.invokeMethod('TextInput.hide'); // dismiss keyboard
     return Scaffold(
       body: Center(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Image.asset(
-                'assets/images/growerp.jpg',
-                height: 595,
-                width: 452,
-              ),
-              SizedBox(height: 20),
-              SizedBox(
-                  width: 300,
-                  child: LinearProgressIndicator(
-                    minHeight: 20,
-                    color: Color(0xFF4baa9b),
-                    backgroundColor: Colors.lightGreen,
-                  )),
-            ]),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          SizedBox(height: 100),
+          Image.asset(
+            'assets/images/growerp.jpg',
+            height: 595,
+            width: 452,
+          ),
+          SizedBox(height: 20),
+          SizedBox(
+              width: 300,
+              child: LinearProgressIndicator(
+                minHeight: 20,
+                color: Color(0xFF4baa9b),
+                backgroundColor: Colors.lightGreen,
+              )),
+        ]),
       ),
     );
   }
