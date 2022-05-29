@@ -7,7 +7,7 @@ packages:
       name: _fe_analyzer_shared
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "38.0.0"
+    version: "40.0.0"
   about:
     dependency: "direct main"
     description:
@@ -21,7 +21,7 @@ packages:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.4.1"
+    version: "4.1.0"
   archive:
     dependency: transitive
     description:
@@ -105,7 +105,7 @@ packages:
       name: build_resolvers
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.8"
+    version: "2.0.9"
   build_runner:
     dependency: "direct dev"
     description:
@@ -133,7 +133,7 @@ packages:
       name: built_value
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "8.3.0"
+    version: "8.3.2"
   characters:
     dependency: transitive
     description:
@@ -210,7 +210,7 @@ packages:
       name: cross_file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.3"
+    version: "0.3.3+1"
   crypto:
     dependency: transitive
     description:
@@ -246,6 +246,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  dependency_validator:
+    dependency: "direct dev"
+    description:
+      name: dependency_validator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.2.0"
   diff_match_patch:
     dependency: transitive
     description:
@@ -665,7 +672,7 @@ packages:
       name: path_provider_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.6"
+    version: "2.1.7"
   path_provider_platform_interface:
     dependency: transitive
     description:
@@ -679,7 +686,7 @@ packages:
       name: path_provider_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.6"
+    version: "2.0.7"
   pdf:
     dependency: "direct main"
     description:
@@ -735,7 +742,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.2"
+    version: "6.0.3"
   pub_semver:
     dependency: transitive
     description:
@@ -771,13 +778,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.9"
-  rxdart:
-    dependency: "direct main"
-    description:
-      name: rxdart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.27.3"
   scrollable_positioned_list:
     dependency: transitive
     description:
@@ -1153,7 +1153,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.1"
+    version: "6.1.0"
   yaml:
     dependency: transitive
     description:

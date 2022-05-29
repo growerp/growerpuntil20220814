@@ -28,7 +28,6 @@ dependencies:
   printing: ^5.9.0
   pdf: ^3.3.0
   about: ^2.1.1
-  rxdart: ^0.27.3
   flutter_phoenix: ^1.0.0
   web_socket_channel: ^2.1.0
   shared_preferences: ^2.0.13
@@ -58,6 +57,8 @@ dev_dependencies:
   build_runner: ^2.1.11
   mobx_codegen: ^2.0.4
   json_serializable: ^6.2.0
+  dependency_validator: ^3.2.0
+# run dependency validator: flutter pub run dependency_validator
 
 
 flutter:

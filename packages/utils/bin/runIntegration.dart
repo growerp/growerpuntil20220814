@@ -39,6 +39,8 @@ void main(List<String> arguments) async {
       await Process.runSync('git', ['pull'], workingDirectory: '$home/growerp');
   process = await Process.runSync('flutter', ['pub', 'get'],
       workingDirectory: '$home/growerp/packages/core');
+  process = await Process.runSync('flutter', ['pub', 'get'],
+      workingDirectory: '$home/growerp/packages/admin');
   process = await Process.runSync('flutter',
       ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-0outputs'],
       workingDirectory: '$home/growerp/packages/core');
@@ -101,6 +103,8 @@ void main(List<String> arguments) async {
     process = await Process.runSync('git', [
       'clone',
       'https://github.com/growerp/PopRestStore.git',
+      '-b',
+      'growerp',
       '$home/growerpMoqui/runtime/component/PopRestStore'
     ]);
     process = await Process.runSync('git', [
