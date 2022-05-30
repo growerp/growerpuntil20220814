@@ -29,7 +29,7 @@ dependencies:
   about: ^2.1.1
   flutter_phoenix: ^1.0.0
   web_socket_channel: ^2.1.0
-  shared_preferences: ^2.0.13
+  shared_preferences: ^2.0.15
   date_utils: ^0.2.0
 
   #NETWORK

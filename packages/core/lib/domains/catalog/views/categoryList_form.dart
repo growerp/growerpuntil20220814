@@ -23,7 +23,14 @@ class CategoryListForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context) =>
-          CategoryBloc(context.read<APIRepository>())..add(CategoryFetch()),
+          CategoryBloc(context.read<APIRepository>())
+            ..add(CategoryFetch(
+                companyPartyId: context
+                    .read<AuthBloc>()
+                    .state
+                    .authenticate!
+                    .company!
+                    .partyId!)),
       child: CategoryList(),
     );
   }
