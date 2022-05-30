@@ -20,7 +20,8 @@ class SplashForm extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChannels.textInput.invokeMethod('TextInput.hide'); // dismiss keyboard
     return Scaffold(
-      body: Center(
+        body: SingleChildScrollView(
+      child: Center(
         child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           SizedBox(height: 100),
           Image.asset(
@@ -38,6 +39,6 @@ class SplashForm extends StatelessWidget {
               )),
         ]),
       ),
-    );
+    ));
   }
 }

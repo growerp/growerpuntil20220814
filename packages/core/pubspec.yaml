@@ -24,7 +24,6 @@ dependencies:
   responsive_framework: ^0.1.8
   flutter_simple_treeview: ^3.0.0-nullsafety.1
   dropdown_search: ^4.0.1
-  multiselect_formfield: ^0.1.7
   printing: ^5.9.0
   pdf: ^3.3.0
   about: ^2.1.1

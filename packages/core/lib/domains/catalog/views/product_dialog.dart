@@ -27,7 +27,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 import 'package:core/templates/@templates.dart';
-import 'package:multiselect_formfield/multiselect_formfield.dart';
 import '../../../api_repository.dart';
 
 class ProductDialog extends StatelessWidget {

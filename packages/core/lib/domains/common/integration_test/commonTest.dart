@@ -199,7 +199,7 @@ class CommonTest {
       WidgetTester tester, String key, String value,
       {int seconds = 1}) async {
     await tapByKey(tester, key);
-    await tester.enterText(find.byType(TextField).first, value);
+    await tester.enterText(find.byType(TextField).last, value);
     await tester.pumpAndSettle(Duration(seconds: 5)); // wait for search result
     await tester
         .tap(find.textContaining(RegExp(value, caseSensitive: false)).last);

@@ -18,5 +18,11 @@
             "request": "launch",
             "program": "lib/category_test.dart"
         },
+        {
+            "name": "Flutter (lib/company_test.dart)",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/company_test.dart"
+        }
     ]
 }

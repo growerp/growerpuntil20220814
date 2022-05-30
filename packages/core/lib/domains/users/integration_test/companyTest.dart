@@ -110,7 +110,6 @@ class CompanyTest {
   static Future<void> updateAddress(WidgetTester tester,
       {bool check = true}) async {
     SaveTest test = await PersistFunctions.getTest();
-    if (test.company?.address == null) return;
     await CommonTest.updateAddress(tester, company.address!);
     if (check == true) {
       await CommonTest.checkAddress(tester, company.address!);
