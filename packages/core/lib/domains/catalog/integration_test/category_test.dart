@@ -59,8 +59,8 @@ class CategoryTest {
       await CommonTest.checkWidgetKey(tester, 'CategoryDialog');
       await CommonTest.tapByKey(
           tester, 'name'); // required because keyboard come up
-      await CommonTest.enterText(tester, 'name', category.categoryName!);
-      await CommonTest.enterText(tester, 'description', category.description!);
+      await CommonTest.enterText(tester, 'name', category.categoryName);
+      await CommonTest.enterText(tester, 'description', category.description);
       await CommonTest.drag(tester);
       await CommonTest.tapByKey(tester, 'update');
       await CommonTest.waitForKey(tester, 'dismiss');
@@ -73,17 +73,17 @@ class CategoryTest {
     List<Category> newCategories = [];
     for (Category category in categories) {
       await CommonTest.doSearch(tester,
-          searchString: category.categoryName!, seconds: 5);
+          searchString: category.categoryName, seconds: 5);
       // list
-      expect(CommonTest.getTextField('name0'), equals(category.categoryName!));
+      expect(CommonTest.getTextField('name0'), equals(category.categoryName));
       expect(CommonTest.getTextField('products0'), equals('0'));
       // detail
       await CommonTest.tapByKey(tester, 'name0');
       expect(find.byKey(Key('CategoryDialog')), findsOneWidget);
       expect(
-          CommonTest.getTextFormField('name'), equals(category.categoryName!));
+          CommonTest.getTextFormField('name'), equals(category.categoryName));
       expect(CommonTest.getTextFormField('description'),
-          equals(category.description!));
+          equals(category.description));
       var id = CommonTest.getTextField('header').split('#')[1];
       newCategories.add(category.copyWith(categoryId: id));
       await CommonTest.tapByKey(tester, 'cancel');
@@ -115,8 +115,8 @@ class CategoryTest {
     List<Category> updCategories = [];
     for (Category category in test.categories) {
       updCategories.add(category.copyWith(
-        categoryName: category.categoryName! + 'u',
-        description: category.description! + 'u',
+        categoryName: category.categoryName + 'u',
+        description: category.description + 'u',
       ));
     }
     await enterCategoryData(tester, updCategories);

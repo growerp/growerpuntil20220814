@@ -37,7 +37,8 @@ class CategoryListItem extends StatelessWidget {
                       category.image!,
                       height: 100,
                     )
-                  : Text("${category.categoryName![0]}"),
+                  : Text(
+                      "${category.categoryName.isEmpty ? '?' : category.categoryName[0]}"),
             ),
             title: Row(
               children: <Widget>[
@@ -50,7 +51,7 @@ class CategoryListItem extends StatelessWidget {
                           key: Key("description$index"),
                           textAlign: TextAlign.center)),
                 Expanded(
-                    child: Text("${category.nbrOfProducts}",
+                    child: Text("${category.products.length}",
                         key: Key("products$index"),
                         textAlign: TextAlign.center)),
               ],

@@ -12,7 +12,7 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-import 'dart:convert';
+import 'package:equatable/equatable.dart';
 import 'dart:typed_data';
 import 'package:decimal/decimal.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -23,7 +23,7 @@ part 'product_model.freezed.dart';
 part 'product_model.g.dart';
 
 @freezed
-class Product with _$Product {
+class Product extends Equatable with _$Product {
   Product._();
   factory Product({
     @Default("") String productId,
@@ -41,6 +41,12 @@ class Product with _$Product {
 
   factory Product.fromJson(Map<String, dynamic> json) =>
       _$ProductFromJson(json);
+
+  @override
+  List<Object?> get props => [productId];
+
+  @override
+  String toString() => '$productName[$productId]';
 }
 
 List<String> productTypes = ['Physical Good', 'Service', 'Rental'];

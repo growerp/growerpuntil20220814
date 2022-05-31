@@ -16,6 +16,7 @@ import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:core/services/jsonConverters.dart';
+import 'product_model.dart';
 
 part 'category_model.freezed.dart';
 part 'category_model.g.dart';
@@ -25,10 +26,10 @@ class Category extends Equatable with _$Category {
   Category._();
   factory Category({
     @Default("") String categoryId,
-    String? categoryName,
-    String? description,
+    @Default("") String categoryName,
+    @Default("") String description,
     @Uint8ListConverter() Uint8List? image,
-    int? nbrOfProducts,
+    @Default([]) List<Product> products,
   }) = _Category;
 
   factory Category.fromJson(Map<String, dynamic> json) =>

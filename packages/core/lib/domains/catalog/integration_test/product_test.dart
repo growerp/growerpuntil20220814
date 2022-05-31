@@ -70,7 +70,7 @@ class ProductTest {
           await CommonTest.tapByKey(tester, "deleteChip");
         } while (!tester.any(find.byKey(Key("multiSelect"))));
       for (Category category in product.categories) {
-        await CommonTest.tapByText(tester, category.categoryName!);
+        await CommonTest.tapByText(tester, category.categoryName);
       }
       await CommonTest.tapByKey(tester, 'ok');
       await CommonTest.drag(tester);
@@ -111,7 +111,7 @@ class ProductTest {
       expect(CommonTest.getTextFormField('description'), product.description);
       expect(CommonTest.getTextFormField('price'), product.price.toString());
       for (Category category in product.categories) {
-        expect(find.byKey(Key(category.categoryName!)), findsOneWidget);
+        expect(find.byKey(Key(category.categoryName)), findsOneWidget);
       }
       // not sure how to test checked list
 //      await CommonTest.tapByKey(tester, 'addCategories');

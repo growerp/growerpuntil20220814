@@ -322,8 +322,8 @@ class _ProductState extends State<ProductDialogFull> {
                                           children: _selectedCategories
                                               .map((Category e) => Chip(
                                                     label: Text(
-                                                      e.categoryName!,
-                                                      key: Key(e.categoryName!),
+                                                      e.categoryName,
+                                                      key: Key(e.categoryName),
                                                     ),
                                                     deleteIcon: const Icon(
                                                       Icons.cancel,

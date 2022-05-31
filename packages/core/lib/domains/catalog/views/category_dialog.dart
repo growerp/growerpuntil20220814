@@ -19,28 +19,48 @@ import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:global_configuration/global_configuration.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:core/domains/domains.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
-class CategoryDialog extends StatefulWidget {
+import '../../../api_repository.dart';
+
+class CategoryDialog extends StatelessWidget {
   final Category category;
-  CategoryDialog(this.category);
+  const CategoryDialog(this.category);
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (BuildContext context) =>
+          ProductBloc(context.read<APIRepository>())..add(ProductFetch()),
+      child: CategoryDialogFull(category),
+    );
+  }
+}
+
+class CategoryDialogFull extends StatefulWidget {
+  final Category category;
+  CategoryDialogFull(this.category);
   @override
   _CategoryState createState() => _CategoryState(category);
 }
 
-class _CategoryState extends State<CategoryDialog> {
+class _CategoryState extends State<CategoryDialogFull> {
   final Category category;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descrController = TextEditingController();
+  TextEditingController _productSearchBoxController = TextEditingController();
 
   bool loading = false;
   late Category updatedCategory;
   XFile? _imageFile;
   dynamic _pickImageError;
   String? _retrieveDataError;
+  Product? _selectedProduct;
+  List<Product> _selectedProducts = [];
+  late String classificationId;
 
   final ImagePicker _picker = ImagePicker();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
@@ -75,6 +95,15 @@ class _CategoryState extends State<CategoryDialog> {
     } else {
       _retrieveDataError = response.exception!.code;
     }
+  }
+
+  @override
+  void initState() {
+    classificationId = GlobalConfiguration().get("classificationId");
+    _nameController..text = category.categoryName;
+    _descrController..text = category.description;
+    _selectedProducts = List.of(category.products);
+    super.initState();
   }
 
   @override
@@ -153,12 +182,22 @@ class _CategoryState extends State<CategoryDialog> {
         textAlign: TextAlign.center,
       );
     }
-    return _categoryDialog();
+    return BlocConsumer<ProductBloc, ProductState>(
+        listener: (context, state) async {
+      switch (state.status) {
+        case ProductStatus.failure:
+          HelperFunctions.showMessage(context,
+              'Error getting categories: ${state.message}', Colors.red);
+          break;
+        default:
+      }
+    }, builder: (context, state) {
+      if (state.status == ProductStatus.success) return _categoryDialog(state);
+      return CircularProgressIndicator();
+    });
   }
 
-  Widget _categoryDialog() {
-    _nameController..text = category.categoryName ?? '';
-    _descrController..text = category.description ?? '';
+  Widget _categoryDialog(ProductState state) {
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
@@ -197,7 +236,9 @@ class _CategoryState extends State<CategoryDialog> {
                           : category.image != null
                               ? Image.memory(category.image!)
                               : Text(
-                                  category.categoryName?.substring(0, 1) ?? '',
+                                  category.categoryName.isEmpty
+                                      ? '?'
+                                      : category.categoryName.substring(0, 1),
                                   style: TextStyle(
                                       fontSize: 30, color: Colors.black))),
                   SizedBox(height: 30),
@@ -225,6 +266,48 @@ class _CategoryState extends State<CategoryDialog> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
+                    key: Key('addProducts'),
+                    onPressed: () async {
+                      var result = await showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return MultiSelect<Product>(
+                              title: 'Select one or more products',
+                              items: state.products,
+                              selectedItems: _selectedProducts,
+                            );
+                          });
+                      if (result != null) {
+                        setState(() {
+                          _selectedProducts = result;
+                        });
+                      }
+                    },
+                    child: const Text('Select one or more products '),
+                  ),
+                  Wrap(
+                    spacing: 10.0,
+                    children: _selectedProducts
+                        .map((Product e) => Chip(
+                            label: Text(
+                              e.productName!,
+                              key: Key(e.productId),
+                            ),
+                            deleteIcon: const Icon(
+                              Icons.cancel,
+                              key: Key("deleteChip"),
+                            ),
+                            onDeleted: () async {
+                              setState(() {
+                                _selectedProducts.remove(e);
+                              });
+                              context.read<CategoryBloc>().add(CategoryUpdate(
+                                  category.copyWith(
+                                      products: _selectedProducts)));
+                            }))
+                        .toList(),
+                  ),
+                  ElevatedButton(
                       key: Key('update'),
                       child: Text(
                           category.categoryId.isEmpty ? 'Create' : 'Update'),
@@ -234,6 +317,7 @@ class _CategoryState extends State<CategoryDialog> {
                               categoryId: category.categoryId,
                               categoryName: _nameController.text,
                               description: _descrController.text,
+                              products: _selectedProducts,
                               image: await HelperFunctions.getResizedImage(
                                   _imageFile?.path));
                           if (_imageFile?.path != null &&
