@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domains/domains.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:url_launcher/link.dart';
 import '../../../api_repository.dart';
 
 class WebsiteForm extends StatelessWidget {
@@ -44,13 +45,11 @@ class WebsitePage extends StatefulWidget {
 
 class _WebsiteState extends State<WebsitePage> {
   final _formKey = GlobalKey<FormState>();
-  TextEditingController _titleController = TextEditingController();
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
       GlobalKey<ScaffoldMessengerState>();
-  String updatedHelp = '';
-  String updatedContact = '';
-  String updatedAbout = '';
   late WebsiteBloc _websiteBloc;
+  List<Content>? _updatedContent;
+  List<Category>? _updatedCategories;
 
   @override
   void initState() {
@@ -77,18 +76,10 @@ class _WebsiteState extends State<WebsitePage> {
           return Center(
               child: Text('failed to fetch website info ${state.message}'));
         case WebsiteStatus.success:
-          _titleController.text.isEmpty
-              ? _titleController.text = state.website?.content!.title ?? ''
-              : '';
-          updatedHelp.isEmpty
-              ? updatedHelp = state.website?.content!.help ?? ''
-              : '';
-          updatedContact.isEmpty
-              ? updatedContact = state.website?.content!.contact ?? ''
-              : '';
-          updatedAbout.isEmpty
-              ? updatedAbout = state.website?.content!.about ?? ''
-              : '';
+          if (_updatedContent == null)
+            _updatedContent = List.of(state.website!.websiteContent);
+          if (_updatedCategories == null)
+            _updatedCategories = List.of(state.website!.websiteCategories);
           return ScaffoldMessenger(
               key: scaffoldMessengerKey,
               child: Scaffold(body: Center(child: _showForm(state))));
@@ -99,6 +90,48 @@ class _WebsiteState extends State<WebsitePage> {
   }
 
   Widget _showForm(WebsiteState state) {
+    // create content buttons
+    List<Widget> contentButtons = [];
+    state.website!.websiteContent.asMap().forEach((index, content) {
+      contentButtons.add(ElevatedButton(
+          key: Key(content.id),
+          child: Text(content.id),
+          onPressed: () async {
+            showDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return BlocProvider.value(
+                      value: _websiteBloc,
+                      child: EditorDialog(state.website!.id, content));
+                });
+          }));
+      contentButtons.add(SizedBox(width: 10));
+    });
+
+    // create category buttons
+    List<Widget> catButtons = [];
+    state.website!.websiteCategories.asMap().forEach((index, category) {
+      catButtons.add(ElevatedButton(
+          key: Key(category.categoryName),
+          child: Text(
+            category.categoryName,
+          ),
+          onPressed: () async {
+            await showDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return BlocProvider.value(
+                      value: _websiteBloc,
+                      child:
+                          WebsiteCategoryDialog(state.website!.id, category));
+                });
+          }));
+      catButtons.add(SizedBox(width: 10));
+    });
+    String title =
+        state.website!.websiteContent.firstWhere((e) => e.id == 'title').text;
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return Center(
         child: Container(
@@ -120,114 +153,45 @@ class _WebsiteState extends State<WebsitePage> {
                             key: Key('header'),
                           )),
                           SizedBox(height: 10),
+                          Link(
+                              uri: Uri.parse("http://192.168.1.31:8080/store"),
+                              builder: (context, followLink) {
+                                return InkWell(
+                                  onTap: followLink,
+                                  child: Text(
+                                    "${state.website?.hostName}",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.blue,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                );
+                              }),
+                          SizedBox(height: 30),
                           Center(
                               child: Text(
-                            "url: ${state.website?.hostName}",
+                            title,
                             style: TextStyle(
-                                fontSize: isPhone ? 20 : 30,
+                                fontSize: 20,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
-                            key: Key('header'),
+                            key: Key('titleText'),
                           )),
-                          SizedBox(height: 10),
-                          TextFormField(
-                            key: Key('websiteTitle'),
-                            decoration:
-                                InputDecoration(labelText: 'Website Title'),
-                            controller: _titleController,
-                            validator: (value) {
-                              if (value!.isEmpty)
-                                return 'Please enter the website Title?';
-                              return null;
-                            },
+                          SizedBox(height: 30),
+                          Text(
+                            'Text sections',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                              key: Key('help'),
-                              child: Text(
-                                'Help Text',
-                              ),
-                              onPressed: () async {
-                                var result = await showDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return BlocProvider.value(
-                                          value: _websiteBloc,
-                                          child: EditorDialog(
-                                              state.website!.content!.help
-                                                      .isEmpty
-                                                  ? "# enter 'Markdown format text here"
-                                                  : state
-                                                      .website!.content!.help,
-                                              'Help'));
-                                    });
-                                if (result != null) updatedHelp = result;
-                              }),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                              key: Key('contact'),
-                              child: Text(
-                                'Contact Text',
-                              ),
-                              onPressed: () async {
-                                var result = await showDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return BlocProvider.value(
-                                          value: _websiteBloc,
-                                          child: EditorDialog(
-                                              state.website!.content!.contact
-                                                      .isEmpty
-                                                  ? "# enter 'Markdown format text here"
-                                                  : state.website!.content!
-                                                      .contact,
-                                              'Contact'));
-                                    });
-                                if (result != null) updatedHelp = result;
-                              }),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                              key: Key('about'),
-                              child: Text(
-                                'About Text',
-                              ),
-                              onPressed: () async {
-                                var result = await showDialog(
-                                    barrierDismissible: true,
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return BlocProvider.value(
-                                          value: _websiteBloc,
-                                          child: EditorDialog(
-                                              state.website!.content!.about
-                                                      .isEmpty
-                                                  ? "# enter 'Markdown format text here"
-                                                  : state
-                                                      .website!.content!.about,
-                                              'About'));
-                                    });
-                                if (result != null) updatedAbout = result;
-                              }),
-                          SizedBox(height: 10),
-                          ElevatedButton(
-                              key: Key('update'),
-                              child: Text(
-                                'Update',
-                              ),
-                              onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  context.read<WebsiteBloc>().add(
-                                          WebsiteUpdate(state.website!.copyWith(
-                                              content: WebsiteContent(
-                                        help: updatedHelp,
-                                        contact: updatedContact,
-                                        about: updatedAbout,
-                                        title: _titleController.text,
-                                      ))));
-                                }
-                              })
+                          Wrap(children: contentButtons),
+                          SizedBox(height: 30),
+                          Text(
+                            'Product Categories',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          Wrap(children: catButtons),
                         ]))))));
   }
 }

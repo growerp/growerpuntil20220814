@@ -12,21 +12,26 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'websiteContent_model.freezed.dart';
-part 'websiteContent_model.g.dart';
+part 'content_model.freezed.dart';
+part 'content_model.g.dart';
 
 @freezed
-class WebsiteContent with _$WebsiteContent {
-  WebsiteContent._();
-  factory WebsiteContent({
-    @Default('') String title,
-    @Default('') String help,
-    @Default('') String contact,
-    @Default('') String about,
-  }) = _WebsiteContent;
+class Content extends Equatable with _$Content {
+  Content._();
+  factory Content({
+    @Default("") String id,
+    @Default("") String text,
+  }) = _Content;
 
-  factory WebsiteContent.fromJson(Map<String, dynamic> json) =>
-      _$WebsiteContentFromJson(json);
+  factory Content.fromJson(Map<String, dynamic> json) =>
+      _$ContentFromJson(json);
+
+  @override
+  List<Object?> get props => [id];
+
+  @override
+  String toString() => '$id';
 }

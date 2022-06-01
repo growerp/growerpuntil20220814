@@ -51,14 +51,11 @@ class _CategoryState extends State<CategoryDialogFull> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descrController = TextEditingController();
-  TextEditingController _productSearchBoxController = TextEditingController();
-
   bool loading = false;
   late Category updatedCategory;
   XFile? _imageFile;
   dynamic _pickImageError;
   String? _retrieveDataError;
-  Product? _selectedProduct;
   List<Product> _selectedProducts = [];
   late String classificationId;
 

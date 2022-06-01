@@ -1,2 +1,2 @@
 export 'website_model.dart';
-export 'websiteContent_model.dart';
+export 'content_model.dart';

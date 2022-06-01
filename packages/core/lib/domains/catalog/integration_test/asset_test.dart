@@ -115,8 +115,8 @@ class AssetTest {
     await CommonTest.gotoMainMenu(tester);
     await AssetTest.selectAsset(tester);
     expect(find.byKey(Key('assetItem')), findsNWidgets(count - 1));
-    test.assets.removeAt(count - 1);
-    PersistFunctions.persistTest(test);
+    PersistFunctions.persistTest(
+        test.copyWith(assets: test.assets.sublist(0, test.assets.length - 1)));
   }
 
   static Future<void> updateAssets(WidgetTester tester) async {

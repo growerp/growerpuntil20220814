@@ -67,8 +67,8 @@ class ChatTest {
     await CommonTest.gotoMainMenu(tester);
     await selectChatRoom(tester);
     expect(find.byKey(Key('chatRoomItem')), findsNWidgets(count - 1));
-    test.chatRooms.removeAt(count - 1);
-    PersistFunctions.persistTest(test);
+    PersistFunctions.persistTest(test.copyWith(
+        chatRooms: test.chatRooms.sublist(0, test.chatRooms.length - 1)));
   }
 
   static Future<void> sendDirectMessage(WidgetTester tester) async {}

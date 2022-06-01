@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_widget/markdown_widget.dart';
 import '../../../widgets/dialogCloseButton.dart';
+import '../../common/functions/helper_functions.dart';
+import '../../domains.dart';
 
 class EditorDialog extends StatefulWidget {
-  final String data;
-  final String title;
-  EditorDialog(this.data, this.title);
+  final String websiteId;
+  final Content content;
+  EditorDialog(this.websiteId, this.content);
   @override
   State<EditorDialog> createState() => _MarkdownPageState();
 }
@@ -14,7 +17,9 @@ class _MarkdownPageState extends State<EditorDialog> {
   late String data;
   @override
   void initState() {
-    data = widget.data;
+    data = widget.content.text.isEmpty
+        ? 'Enter ${widget.content.id} text here'
+        : widget.content.text;
     super.initState();
   }
 
@@ -23,10 +28,17 @@ class _MarkdownPageState extends State<EditorDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        margin: EdgeInsets.all(10),
-        child: buildMarkdown(),
+    return BlocListener<WebsiteBloc, WebsiteState>(
+      listener: (context, state) {
+        if (state.status == WebsiteStatus.success) Navigator.of(context).pop();
+        if (state.status == WebsiteStatus.failure)
+          HelperFunctions.showMessage(context, state.message, Colors.red);
+      },
+      child: Scaffold(
+        body: Container(
+          margin: EdgeInsets.all(10),
+          child: buildMarkdown(),
+        ),
       ),
     );
   }
@@ -50,7 +62,7 @@ class _MarkdownPageState extends State<EditorDialog> {
                       Expanded(
                           child: TextFormField(
                               decoration: InputDecoration(
-                                  labelText: '${widget.title} text'),
+                                  labelText: '${widget.content.id} text'),
                               expands: true,
                               maxLines: null,
                               textInputAction: TextInputAction.newline,
@@ -76,7 +88,15 @@ class _MarkdownPageState extends State<EditorDialog> {
                               key: Key('update'),
                               child: Text('Update'),
                               onPressed: () async {
-                                Navigator.of(context).pop(data);
+                                if (data != widget.content.text)
+                                  context.read<WebsiteBloc>().add(WebsiteUpdate(
+                                          Website(
+                                              id: widget.websiteId,
+                                              websiteContent: [
+                                            widget.content.copyWith(text: data)
+                                          ])));
+                                else
+                                  Navigator.of(context).pop(data);
                               }),
                         )
                       ]),

@@ -235,8 +235,9 @@ class UserTest {
     int count = test.administrators.length;
     if (count != administrators.length) return;
     await deleteUser(tester, count + 1);
-    test.administrators.removeAt(count - 1);
-    PersistFunctions.persistTest(test);
+    PersistFunctions.persistTest(test.copyWith(
+        administrators:
+            test.administrators.sublist(0, test.administrators.length - 1)));
   }
 
   static Future<void> deleteEmployees(WidgetTester tester) async {
@@ -245,8 +246,8 @@ class UserTest {
     int count = test.employees.length;
     if (count != employees.length) return;
     await deleteUser(tester, count);
-    test.employees.removeAt(count - 1);
-    PersistFunctions.persistTest(test);
+    PersistFunctions.persistTest(test.copyWith(
+        employees: test.employees.sublist(0, test.employees.length - 1)));
   }
 
   static Future<void> deleteLeads(WidgetTester tester) async {
@@ -255,8 +256,8 @@ class UserTest {
     int count = test.leads.length;
     if (count != leads.length) return;
     await deleteUser(tester, count);
-    test.leads.removeAt(count - 1);
-    PersistFunctions.persistTest(test);
+    PersistFunctions.persistTest(
+        test.copyWith(leads: test.leads.sublist(0, test.leads.length - 1)));
   }
 
   static Future<void> deleteCustomers(WidgetTester tester) async {
@@ -265,8 +266,8 @@ class UserTest {
     int count = test.customers.length;
     if (count != customers.length) return;
     await deleteUser(tester, count);
-    test.customers.removeAt(count - 1);
-    PersistFunctions.persistTest(test);
+    PersistFunctions.persistTest(test.copyWith(
+        customers: test.customers.sublist(0, test.customers.length - 1)));
   }
 
   static Future<void> deleteSuppliers(WidgetTester tester) async {
@@ -274,8 +275,8 @@ class UserTest {
     int count = test.suppliers.length;
     if (count != suppliers.length) return;
     await deleteUser(tester, count);
-    test.suppliers.removeAt(count - 1);
-    PersistFunctions.persistTest(test);
+    PersistFunctions.persistTest(test.copyWith(
+        suppliers: test.suppliers.sublist(0, test.suppliers.length - 1)));
   }
 
   static Future<void> deleteUser(WidgetTester tester, int count) async {

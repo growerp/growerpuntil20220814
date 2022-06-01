@@ -41,6 +41,7 @@ dependencies:
   freezed: ^2.0.3
   credit_card_validator: ^2.0.1
   markdown_widget: ^1.2.8
+  url_launcher: ^6.1.2
 
 dev_dependencies:
   flutter_test:

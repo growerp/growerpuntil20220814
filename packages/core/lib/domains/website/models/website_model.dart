@@ -13,7 +13,8 @@
  */
 
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'websiteContent_model.dart';
+import '../../catalog/models/category_model.dart';
+import 'content_model.dart';
 
 part 'website_model.freezed.dart';
 part 'website_model.g.dart';
@@ -24,7 +25,8 @@ class Website with _$Website {
   factory Website({
     @Default('') String id,
     @Default('') String hostName,
-    WebsiteContent? content,
+    @Default([]) List<Content> websiteContent,
+    @Default([]) List<Category> websiteCategories,
   }) = _Website;
 
   factory Website.fromJson(Map<String, dynamic> json) =>
