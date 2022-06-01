@@ -46,7 +46,6 @@ class WebsiteCategoryDialogFull extends StatefulWidget {
 class _CategoryState extends State<WebsiteCategoryDialogFull> {
   final Category category;
   final _formKey = GlobalKey<FormState>();
-  late Category updatedCategory;
   List<Product> _selectedProducts = [];
   late String classificationId;
 
@@ -83,6 +82,8 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
     return BlocListener<WebsiteBloc, WebsiteState>(
       listener: (context, state) {
         if (state.status == WebsiteStatus.success) Navigator.of(context).pop();
+        if (state.status == WebsiteStatus.failure)
+          HelperFunctions.showMessage(context, state.message, Colors.red);
       },
       child: BlocConsumer<ProductBloc, ProductState>(
           listener: (context, state) async {
@@ -179,9 +180,12 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
                           child: Text('Update'),
                           onPressed: () async {
                             context.read<WebsiteBloc>().add(WebsiteUpdate(
-                                Website(
-                                    id: widget.websiteId,
-                                    websiteCategories: [updatedCategory])));
+                                    Website(
+                                        id: widget.websiteId,
+                                        websiteCategories: [
+                                      widget.category
+                                          .copyWith(products: _selectedProducts)
+                                    ])));
                           }),
                     )
                   ]),
