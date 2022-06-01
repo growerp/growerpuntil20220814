@@ -13,6 +13,7 @@
  */
 
 import 'package:core/domains/common/functions/helper_functions.dart';
+import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domains/domains.dart';
@@ -154,7 +155,9 @@ class _WebsiteState extends State<WebsitePage> {
                           )),
                           SizedBox(height: 10),
                           Link(
-                              uri: Uri.parse("http://192.168.1.31:8080/store"),
+                              uri: Uri.parse(foundation.kReleaseMode
+                                  ? "https://${state.website?.hostName}"
+                                  : "http://10.0.2.2:8080/store"),
                               builder: (context, followLink) {
                                 return InkWell(
                                   onTap: followLink,

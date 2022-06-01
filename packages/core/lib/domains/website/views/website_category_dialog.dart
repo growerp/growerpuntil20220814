@@ -62,44 +62,41 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-        key: Key('WebsiteCategoryDialog'),
-        insetPadding: EdgeInsets.all(20),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: Stack(clipBehavior: Clip.none, children: [
-                  _showForm(),
-                  Positioned(top: -10, right: -10, child: DialogCloseButton()),
-                ]))));
-  }
-
-  Widget _showForm() {
     return BlocListener<WebsiteBloc, WebsiteState>(
-      listener: (context, state) {
-        if (state.status == WebsiteStatus.success) Navigator.of(context).pop();
-        if (state.status == WebsiteStatus.failure)
-          HelperFunctions.showMessage(context, state.message, Colors.red);
-      },
-      child: BlocConsumer<ProductBloc, ProductState>(
-          listener: (context, state) async {
-        switch (state.status) {
-          case ProductStatus.failure:
-            HelperFunctions.showMessage(context,
-                'Error getting categories: ${state.message}', Colors.red);
-            break;
-          default:
-        }
-      }, builder: (context, state) {
-        if (state.status == ProductStatus.success)
-          return _categoryDialog(state);
-        return CircularProgressIndicator();
-      }),
-    );
+        listener: (context, state) {
+          if (state.status == WebsiteStatus.success)
+            Navigator.of(context).pop();
+          if (state.status == WebsiteStatus.failure)
+            HelperFunctions.showMessage(context, state.message, Colors.red);
+        },
+        child: BlocConsumer<ProductBloc, ProductState>(
+            listener: (context, state) async {
+          switch (state.status) {
+            case ProductStatus.failure:
+              HelperFunctions.showMessage(context,
+                  'Error getting categories: ${state.message}', Colors.red);
+              break;
+            default:
+          }
+        }, builder: (context, state) {
+          if (state.status == ProductStatus.success)
+            return Dialog(
+                key: Key('WebsiteCategoryDialog'),
+                insetPadding: EdgeInsets.all(20),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: ScaffoldMessenger(
+                    key: scaffoldMessengerKey,
+                    child: Scaffold(
+                        backgroundColor: Colors.transparent,
+                        body: Stack(clipBehavior: Clip.none, children: [
+                          _categoryDialog(state),
+                          Positioned(
+                              top: -10, right: -10, child: DialogCloseButton()),
+                        ]))));
+          return LoadingIndicator();
+        }));
   }
 
   Widget _categoryDialog(ProductState state) {
@@ -166,29 +163,17 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
                             }))
                         .toList(),
                   ),
-                  Row(children: [
-                    ElevatedButton(
-                        key: Key('cancel'),
-                        child: Text('Cancel'),
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                        }),
-                    SizedBox(width: 20),
-                    Expanded(
-                      child: ElevatedButton(
-                          key: Key('update'),
-                          child: Text('Update'),
-                          onPressed: () async {
-                            context.read<WebsiteBloc>().add(WebsiteUpdate(
-                                    Website(
-                                        id: widget.websiteId,
-                                        websiteCategories: [
-                                      widget.category
-                                          .copyWith(products: _selectedProducts)
-                                    ])));
-                          }),
-                    )
-                  ]),
+                  ElevatedButton(
+                      key: Key('update'),
+                      child: Text('Update'),
+                      onPressed: () async {
+                        context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                                id: widget.websiteId,
+                                websiteCategories: [
+                                  widget.category
+                                      .copyWith(products: _selectedProducts)
+                                ])));
+                      }),
                 ]))));
   }
 }
