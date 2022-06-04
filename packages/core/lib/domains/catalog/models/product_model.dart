@@ -32,6 +32,7 @@ class Product extends Equatable with _$Product {
     String? assetClassId, // room, restaurant table
     String? productName,
     String? description,
+    @DecimalConverter() Decimal? listPrice,
     @DecimalConverter() Decimal? price,
     @Default([]) List<Category> categories,
     @Default(false) bool useWarehouse,

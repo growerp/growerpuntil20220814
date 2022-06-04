@@ -1,11 +1,13 @@
 <center><img src="https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/assets/images/growerp.jpg" height="100" alt="GrowERP" /></center>
 
 - Introduction
-  - [What is GrowERP?](whatIsGrowerp.md)
+  * [What is GrowERP?](whatIsGrowerp.md)
+  * [Getting started.](getStarted.md)
 
 - End User Documentation
   * [General business flow](userDoc/generalBusinessFlow.md)
   * [Authentication](userDoc/authentication.md)
+  * [Getting started.](userDoc/getStarted.md)
   - Chat
   - Catalog
   - Orders
@@ -15,6 +17,7 @@
     - POS Point Of Sale
     - Freelance
     - E-commerce
+    - HTML Website
   - Accounting
     - invoices/Payments
     - Ledger/transactions

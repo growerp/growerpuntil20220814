@@ -56,7 +56,7 @@ class ProductListItem extends StatelessWidget {
                 if (classificationId != 'AppHotel')
                   Expanded(
                       child: Text(
-                          "${product.categories.length > 1 ? product.categories.length : product.categories[0].categoryName}",
+                          "${product.categories.isEmpty ? '0' : product.categories.length > 1 ? product.categories.length : product.categories[0].categoryName}",
                           key: Key('categoryName$index'),
                           textAlign: TextAlign.center)),
                 Expanded(

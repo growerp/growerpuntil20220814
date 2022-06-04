@@ -57,6 +57,7 @@ class _ProductState extends State<ProductDialogFull> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
+  TextEditingController _listPriceController = TextEditingController();
 
   late bool useWarehouse;
   String? _selectedTypeId;
@@ -76,6 +77,8 @@ class _ProductState extends State<ProductDialogFull> {
     _descriptionController.text = product.description ?? '';
     _priceController.text =
         product.price == null ? '' : product.price.toString();
+    _listPriceController.text =
+        product.listPrice == null ? '' : product.listPrice.toString();
     _selectedCategories = List.of(product.categories);
     _selectedTypeId = product.productTypeId ?? null;
     classificationId = GlobalConfiguration().get("classificationId");
@@ -259,19 +262,39 @@ class _ProductState extends State<ProductDialogFull> {
                               controller: _descriptionController,
                             ),
                             SizedBox(height: 20),
-                            TextFormField(
-                              key: Key('price'),
-                              decoration: InputDecoration(labelText: 'Price'),
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[0-9.,]+'))
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    key: Key('listPrice'),
+                                    decoration: InputDecoration(
+                                        labelText: 'List Price'),
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp('[0-9.,]+'))
+                                    ],
+                                    controller: _listPriceController,
+                                    validator: (value) {
+                                      return value!.isEmpty
+                                          ? 'Please enter a list price?'
+                                          : null;
+                                    },
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: TextFormField(
+                                    key: Key('price'),
+                                    decoration: InputDecoration(
+                                        labelText: 'Current Price'),
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp('[0-9.,]+'))
+                                    ],
+                                    controller: _priceController,
+                                  ),
+                                )
                               ],
-                              controller: _priceController,
-                              validator: (value) {
-                                return value!.isEmpty
-                                    ? 'Please enter a price?'
-                                    : null;
-                              },
                             ),
                             Visibility(
                                 visible: classificationId != 'AppHotel',
@@ -312,8 +335,8 @@ class _ProductState extends State<ProductDialogFull> {
                                               });
                                             }
                                           },
-                                          child: const Text(
-                                              'Assign to at least ONE Category'),
+                                          child:
+                                              const Text('Assign to category'),
                                         ),
 
                                         // display selected items
@@ -330,24 +353,10 @@ class _ProductState extends State<ProductDialogFull> {
                                                       key: Key("deleteChip"),
                                                     ),
                                                     onDeleted: () async {
-                                                      if (_selectedCategories
-                                                              .length >
-                                                          1)
-                                                        setState(() {
-                                                          _selectedCategories
-                                                              .remove(e);
-                                                        });
-                                                      else {
-                                                        var result =
-                                                            await needOneCategory(
-                                                                context, state);
-                                                        if (result != null) {
-                                                          setState(() {
-                                                            _selectedCategories =
-                                                                result;
-                                                          });
-                                                        }
-                                                      }
+                                                      setState(() {
+                                                        _selectedCategories
+                                                            .remove(e);
+                                                      });
                                                     },
                                                   ))
                                               .toList(),
@@ -420,16 +429,7 @@ class _ProductState extends State<ProductDialogFull> {
                                                 context,
                                                 "Image upload error or larger than 200K",
                                                 Colors.red);
-                                          else if (_selectedCategories
-                                              .isEmpty) {
-                                            var result = await needOneCategory(
-                                                context, state);
-                                            if (result != null) {
-                                              setState(() {
-                                                _selectedCategories = result;
-                                              });
-                                            }
-                                          } else
+                                          else
                                             context.read<ProductBloc>().add(
                                                 ProductUpdate(Product(
                                                     productId:
@@ -444,6 +444,11 @@ class _ProductState extends State<ProductDialogFull> {
                                                     description:
                                                         _descriptionController
                                                             .text,
+                                                    listPrice:
+                                                        Decimal
+                                                            .parse(
+                                                                _listPriceController
+                                                                    .text),
                                                     price: Decimal.parse(
                                                         _priceController.text),
                                                     categories:
@@ -462,13 +467,13 @@ class _ProductState extends State<ProductDialogFull> {
     );
   }
 
-  Future<dynamic> needOneCategory(
+  Future<dynamic> _addCategory(
       BuildContext context, CategoryState state) async {
     return await showDialog(
         context: context,
         builder: (BuildContext context) {
           return MultiSelect<Category>(
-            title: 'Need at least one category?',
+            title: 'Add categories',
             items: state.categories,
             selectedItems: [],
           );

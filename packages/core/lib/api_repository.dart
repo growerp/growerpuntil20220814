@@ -708,9 +708,10 @@ class APIRepository {
 
   Future<ApiResult<Asset>> createAsset(Asset asset) async {
     try {
-      final response = await dioClient.post(
-          'rest/s1/growerp/100/Asset', apiKey!, data: <String, dynamic>{
+      final response = await dioClient
+          .post('rest/s1/growerp/100/Asset', apiKey!, data: <String, dynamic>{
         'asset': jsonEncode(asset.toJson()),
+        'classificationId': classificationId,
         'moquiSessionToken': sessionToken
       });
       return getResponse<Asset>(
