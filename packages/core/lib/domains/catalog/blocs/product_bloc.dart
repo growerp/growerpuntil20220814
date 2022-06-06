@@ -107,6 +107,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       List<Product> products = List.from(state.products);
       if (event.product.productId.isNotEmpty) {
+        // update
         ApiResult<Product> compResult =
             await repos.updateProduct(event.product);
         return emit(compResult.when(

@@ -63,16 +63,20 @@ class MultiSelectState<T> extends State<MultiSelect> {
         Text(widget.title),
         Text(message, style: TextStyle(color: Colors.red)),
       ]),
-      content: ListBody(
-        children: widget.items
-            .map((item) => CheckboxListTile(
-                  value: selectedItems.contains(item),
-                  title: Text(item.toString()),
-                  controlAffinity: ListTileControlAffinity.leading,
-                  onChanged: (isChecked) => _itemChange(item, isChecked!),
-                ))
-            .toList(),
-      ),
+      content: widget.items.isEmpty
+          ? Center(
+              child: Text('nothing found, add some?',
+                  style: TextStyle(color: Colors.red)))
+          : ListBody(
+              children: widget.items
+                  .map((item) => CheckboxListTile(
+                        value: selectedItems.contains(item),
+                        title: Text(item.toString()),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        onChanged: (isChecked) => _itemChange(item, isChecked!),
+                      ))
+                  .toList(),
+            ),
       actions: [
         TextButton(
           key: Key('cancel'),
@@ -84,9 +88,7 @@ class MultiSelectState<T> extends State<MultiSelect> {
           onPressed: (() {
             if (selectedItems.isNotEmpty)
               return Navigator.pop(context, selectedItems);
-            setState(() {
-              message = "Select at least one!";
-            });
+            return Navigator.pop(context);
           }),
           child: const Text('OK'),
         ),

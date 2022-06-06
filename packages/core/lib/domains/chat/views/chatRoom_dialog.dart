@@ -84,7 +84,7 @@ class _ChatRoomState extends State<ChatRoomDialog> {
                         backgroundColor: Colors.transparent,
                         body: _showForm(repos, isPhone),
                       ))),
-              Positioned(top: -10, right: -10, child: DialogCloseButton())
+              Positioned(top: 5, right: 5, child: DialogCloseButton())
             ]),
           ));
     });

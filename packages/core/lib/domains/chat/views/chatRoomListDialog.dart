@@ -96,8 +96,7 @@ class _ChatRoomsState extends State<ChatRoomListDialog> {
                                   backgroundColor: Colors.transparent,
                                   body: roomList(state),
                                 ))),
-                        Positioned(
-                            top: -10, right: -10, child: DialogCloseButton())
+                        Positioned(top: 5, right: 5, child: DialogCloseButton())
                       ]),
                     ))));
       }

@@ -41,7 +41,7 @@ class _MarkdownPageState extends State<EditorDialog> {
                 backgroundColor: Colors.transparent,
                 body: Stack(clipBehavior: Clip.none, children: [
                   _showForm(),
-                  Positioned(top: -10, right: -10, child: DialogCloseButton()),
+                  Positioned(top: 5, right: 5, child: DialogCloseButton()),
                 ]))));
   }
 

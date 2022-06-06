@@ -214,7 +214,7 @@ class _LoginHeaderState extends State<LoginDialog> {
               ],
             ),
           )),
-      Positioned(top: -10, right: -10, child: DialogCloseButton())
+      Positioned(top: 5, right: 5, child: DialogCloseButton())
     ]);
   }
 }

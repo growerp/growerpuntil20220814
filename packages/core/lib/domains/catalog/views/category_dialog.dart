@@ -121,26 +121,36 @@ class _CategoryState extends State<CategoryDialogFull> {
               Text("????");
           }
         },
-        child: Dialog(
-            key: Key('CategoryDialog'),
-            insetPadding: EdgeInsets.all(20),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: ScaffoldMessenger(
-                key: scaffoldMessengerKey,
-                child: Scaffold(
-                    backgroundColor: Colors.transparent,
-                    floatingActionButton:
-                        imageButtons(context, _onImageButtonPressed),
-                    body: Stack(clipBehavior: Clip.none, children: [
-                      listChild(),
-                      Positioned(
-                          top: -10, right: -10, child: DialogCloseButton()),
-                    ])))));
+        child: BlocConsumer<ProductBloc, ProductState>(
+            listener: (context, state) async {
+          switch (state.status) {
+            case ProductStatus.failure:
+              HelperFunctions.showMessage(context,
+                  'Error getting categories: ${state.message}', Colors.red);
+              break;
+            default:
+          }
+        }, builder: (context, state) {
+          if (state.status == ProductStatus.success)
+            return Scaffold(
+                backgroundColor: Colors.transparent,
+                floatingActionButton:
+                    imageButtons(context, _onImageButtonPressed),
+                body: Dialog(
+                    key: Key('CategoryDialog'),
+                    insetPadding: EdgeInsets.all(20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Stack(clipBehavior: Clip.none, children: [
+                      listChild(state),
+                      Positioned(top: 5, right: 5, child: DialogCloseButton()),
+                    ])));
+          return LoadingIndicator();
+        }));
   }
 
-  Widget listChild() {
+  Widget listChild(state) {
     return Builder(builder: (BuildContext context) {
       return !foundation.kIsWeb &&
               foundation.defaultTargetPlatform == TargetPlatform.android
@@ -153,9 +163,9 @@ class _CategoryState extends State<CategoryDialogFull> {
                     textAlign: TextAlign.center,
                   );
                 }
-                return _showForm();
+                return _showForm(state);
               })
-          : _showForm();
+          : _showForm(state);
     });
   }
 
@@ -168,7 +178,7 @@ class _CategoryState extends State<CategoryDialogFull> {
     return null;
   }
 
-  Widget _showForm() {
+  Widget _showForm(state) {
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
@@ -179,22 +189,10 @@ class _CategoryState extends State<CategoryDialogFull> {
         textAlign: TextAlign.center,
       );
     }
-    return BlocConsumer<ProductBloc, ProductState>(
-        listener: (context, state) async {
-      switch (state.status) {
-        case ProductStatus.failure:
-          HelperFunctions.showMessage(context,
-              'Error getting categories: ${state.message}', Colors.red);
-          break;
-        default:
-      }
-    }, builder: (context, state) {
-      if (state.status == ProductStatus.success) return _categoryDialog(state);
-      return CircularProgressIndicator();
-    });
+    return _categoryDialog(state);
   }
 
-  Widget _categoryDialog(ProductState state) {
+  Widget _categoryDialog(state) {
     final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
@@ -284,25 +282,27 @@ class _CategoryState extends State<CategoryDialogFull> {
                   ),
                   Wrap(
                     spacing: 10.0,
-                    children: _selectedProducts
-                        .map((Product e) => Chip(
-                            label: Text(
-                              e.productName!,
-                              key: Key(e.productId),
-                            ),
-                            deleteIcon: const Icon(
-                              Icons.cancel,
-                              key: Key("deleteChip"),
-                            ),
-                            onDeleted: () async {
-                              setState(() {
-                                _selectedProducts.remove(e);
-                              });
-                              context.read<CategoryBloc>().add(CategoryUpdate(
-                                  category.copyWith(
-                                      products: _selectedProducts)));
-                            }))
-                        .toList(),
+                    children: _selectedProducts.isNotEmpty
+                        ? _selectedProducts
+                            .map((Product e) => Chip(
+                                label: Text(
+                                  e.productName!,
+                                  key: Key(e.productId),
+                                ),
+                                deleteIcon: const Icon(
+                                  Icons.cancel,
+                                  key: Key("deleteChip"),
+                                ),
+                                onDeleted: () async {
+                                  setState(() {
+                                    _selectedProducts.remove(e);
+                                  });
+                                  context.read<CategoryBloc>().add(
+                                      CategoryUpdate(category.copyWith(
+                                          products: _selectedProducts)));
+                                }))
+                            .toList()
+                        : [],
                   ),
                   ElevatedButton(
                       key: Key('update'),

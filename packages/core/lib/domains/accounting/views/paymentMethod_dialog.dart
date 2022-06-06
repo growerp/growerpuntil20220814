@@ -64,7 +64,7 @@ class _PaymentMethodState extends State<PaymentMethodDialog> {
                       height: 500,
                       width: 350,
                       child: _editPaymentMethod(context)),
-                  Positioned(top: -10, right: -10, child: DialogCloseButton())
+                  Positioned(top: 5, right: 5, child: DialogCloseButton())
                 ]))));
   }
 

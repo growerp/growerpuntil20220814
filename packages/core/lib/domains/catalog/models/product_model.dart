@@ -28,7 +28,7 @@ class Product extends Equatable with _$Product {
   factory Product({
     @Default("") String productId,
     @Default("") String pseudoId,
-    String? productTypeId, // assetUse(rental)
+    String? productTypeId, // good, service, assetUse(rental)
     String? assetClassId, // room, restaurant table
     String? productName,
     String? description,

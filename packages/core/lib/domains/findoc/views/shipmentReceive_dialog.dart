@@ -82,7 +82,7 @@ class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
                                   : 600, // not increase height otherwise tests will fail
                               child: shipmentItemList()),
                           Positioned(
-                              top: -10, right: -10, child: DialogCloseButton())
+                              top: 5, right: 5, child: DialogCloseButton())
                         ]))))));
   }
 

@@ -134,7 +134,8 @@ class CommonTest {
       found = tester.any(find.byKey(Key(keyName), skipOffstage: true));
       await tester.pump(Duration(milliseconds: 500));
     }
-    if (found) print("=== waited for message to show: ${times * 0.5} seconds");
+    if (found)
+      print("=== waited for key $keyName to show: ${times * 0.5} seconds");
     //expect(found, true,
     //    reason: 'key $keyName not found even after 6 seconds wait!');
     return found;
@@ -180,6 +181,18 @@ class CommonTest {
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 
+  static Future<void> dragUntil(WidgetTester tester,
+      {String listViewName = 'listView', required String key}) async {
+    int times = 0;
+    bool found = false;
+    do {
+      await tester.drag(find.byKey(Key(listViewName)).last, Offset(0, -400));
+      await tester.pumpAndSettle(Duration(milliseconds: 1000));
+      found = tester.any(find.byKey(Key(key)));
+    } while (times++ < 10 && found == false);
+    print("======dragged $times times");
+  }
+
   /// [lowLevel]
   static Future<void> refresh(WidgetTester tester,
       {int seconds = 5, String listViewName = 'listView'}) async {
@@ -209,11 +222,10 @@ class CommonTest {
   static Future<void> enterDropDown(
       WidgetTester tester, String key, String value,
       {int seconds = 1}) async {
-    var location = find.byKey(Key(key));
-    await tester.tap(location);
+    await tester.tap(find.byKey(Key(key)));
     await tester.pumpAndSettle(Duration(seconds: seconds));
     await tester.tap(find.textContaining(value).last);
-    await tester.pump(Duration(seconds: 1));
+    await tester.pumpAndSettle(Duration(seconds: 1));
   }
 
   static String getDropdown(String key) {
@@ -285,8 +297,7 @@ class CommonTest {
 
   static Future<void> tapByKey(WidgetTester tester, String key,
       {int seconds = 1}) async {
-    await tester.tap(find.byKey(Key(key)).last,
-        warnIfMissed: key == 'cancel' ? false : true);
+    await tester.tap(find.byKey(Key(key)).last);
     await tester.pumpAndSettle(Duration(seconds: seconds));
   }
 

@@ -76,7 +76,7 @@ class _AddressState extends State<AddressDialog> {
                       height: 700,
                       width: 400,
                       child: _editAddress(context, repos)),
-                  Positioned(top: -10, right: -10, child: DialogCloseButton())
+                  Positioned(top: 5, right: 5, child: DialogCloseButton())
                 ]))));
   }
 

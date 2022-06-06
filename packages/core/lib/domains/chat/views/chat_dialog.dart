@@ -83,7 +83,7 @@ class _ChatState extends State<ChatDialog> {
                                     body: chatPage(context),
                                   ))),
                           Positioned(
-                              top: -10, right: -10, child: DialogCloseButton())
+                              top: 5, right: 5, child: DialogCloseButton())
                         ]),
                       ))));
         } else

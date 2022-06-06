@@ -62,21 +62,20 @@ class ProductTest {
       await CommonTest.enterText(tester, 'description', product.description!);
       await CommonTest.drag(tester);
       await CommonTest.enterText(tester, 'price', product.price.toString());
-      if (product.productId.isEmpty)
-        await CommonTest.tapByKey(tester, "addCategories");
-      else
-        // remove all categories will open dialog
-        do {
-          await CommonTest.tapByKey(tester, "deleteChip");
-        } while (!tester.any(find.byKey(Key("multiSelect"))));
+      await CommonTest.enterText(
+          tester, 'listPrice', product.listPrice.toString());
+      // remove existing categories
+      while (tester.any(find.byKey(Key("deleteChip")))) {
+        await CommonTest.tapByKey(tester, "deleteChip");
+      }
+      await CommonTest.tapByKey(tester, "addCategories");
       for (Category category in product.categories) {
         await CommonTest.tapByText(tester, category.categoryName);
       }
       await CommonTest.tapByKey(tester, 'ok');
-      await CommonTest.drag(tester);
+      await CommonTest.dragUntil(tester, key: 'productTypeDropDown');
       await CommonTest.enterDropDown(
           tester, 'productTypeDropDown', product.productTypeId!);
-      await CommonTest.drag(tester);
       if (product.useWarehouse == true)
         await CommonTest.tapByKey(tester, 'useWarehouse');
       await CommonTest.tapByKey(tester, 'update');
@@ -110,6 +109,8 @@ class ProductTest {
       expect(CommonTest.getTextFormField('name'), product.productName);
       expect(CommonTest.getTextFormField('description'), product.description);
       expect(CommonTest.getTextFormField('price'), product.price.toString());
+      expect(CommonTest.getTextFormField('listPrice'),
+          product.listPrice.toString());
       for (Category category in product.categories) {
         expect(find.byKey(Key(category.categoryName)), findsOneWidget);
       }
@@ -156,6 +157,7 @@ class ProductTest {
           categories: [product.categories[0]],
           productTypeId: productTypes[0],
           price: product.price! + Decimal.parse('0.10'),
+          listPrice: product.listPrice! + Decimal.parse('0.99'),
         ));
       }
       await enterProductData(tester, updProducts);

@@ -59,7 +59,7 @@ class _TimeEntryListState extends State<TimeEntryListDialog> {
                     child: Center(
                       child: _showList(isPhone),
                     )),
-                Positioned(top: -10, right: -10, child: DialogCloseButton())
+                Positioned(top: 5, right: 5, child: DialogCloseButton())
               ]))),
     );
   }

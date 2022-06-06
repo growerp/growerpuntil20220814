@@ -93,7 +93,7 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
                         body: Stack(clipBehavior: Clip.none, children: [
                           _categoryDialog(state),
                           Positioned(
-                              top: -10, right: -10, child: DialogCloseButton()),
+                              top: 5, right: 5, child: DialogCloseButton()),
                         ]))));
           return LoadingIndicator();
         }));
