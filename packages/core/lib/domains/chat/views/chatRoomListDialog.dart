@@ -36,8 +36,6 @@ class _ChatRoomsState extends State<ChatRoomListDialog> {
   String searchString = '';
   String classificationId = GlobalConfiguration().getValue("classificationId");
   late String entityName;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -68,19 +66,18 @@ class _ChatRoomsState extends State<ChatRoomListDialog> {
                 child: GestureDetector(
                     onTap: () {},
                     child: Dialog(
-                      key: Key('ChatRoomListDialog'),
-                      insetPadding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Stack(clipBehavior: Clip.none, children: <Widget>[
-                        Container(
-                            padding: EdgeInsets.all(20),
-                            width: 500,
-                            height: 600,
-                            child: ScaffoldMessenger(
-                                key: scaffoldMessengerKey,
-                                child: Scaffold(
+                        key: Key('ChatRoomListDialog'),
+                        insetPadding: EdgeInsets.all(10),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child:
+                            Stack(clipBehavior: Clip.none, children: <Widget>[
+                          Container(
+                              padding: EdgeInsets.all(20),
+                              width: 500,
+                              height: 600,
+                              child: Scaffold(
                                   floatingActionButton: FloatingActionButton(
                                       key: Key("addNew"),
                                       onPressed: () async {
@@ -94,11 +91,10 @@ class _ChatRoomsState extends State<ChatRoomListDialog> {
                                       tooltip: 'Add New',
                                       child: Icon(Icons.add)),
                                   backgroundColor: Colors.transparent,
-                                  body: roomList(state),
-                                ))),
-                        Positioned(top: 5, right: 5, child: DialogCloseButton())
-                      ]),
-                    ))));
+                                  body: roomList(state))),
+                          Positioned(
+                              top: 5, right: 5, child: DialogCloseButton())
+                        ])))));
       }
       return Center(child: CircularProgressIndicator());
     });

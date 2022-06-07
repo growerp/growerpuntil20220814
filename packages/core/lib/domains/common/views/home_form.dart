@@ -39,11 +39,7 @@ class _HomeFormState extends State<HomeForm> {
   final String? message;
   String singleCompany = GlobalConfiguration().get("singleCompany");
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-  _HomeFormState(this.message) {
-    HelperFunctions.showTopMessage(scaffoldMessengerKey, message, 4);
-  }
+  _HomeFormState(this.message);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +49,6 @@ class _HomeFormState extends State<HomeForm> {
         case AuthStatus.authenticated:
           Authenticate authenticate = state.authenticate!;
           return DisplayMenuOption(
-            scaffoldMessengerKey: scaffoldMessengerKey,
             menuList: widget.menuOptions,
             menuIndex: 0,
             actions: <Widget>[
@@ -69,60 +64,58 @@ class _HomeFormState extends State<HomeForm> {
           );
         case AuthStatus.unAuthenticated:
           Authenticate authenticate = state.authenticate!;
-          return ScaffoldMessenger(
-              key: scaffoldMessengerKey,
-              child: Scaffold(
-                  appBar: AppBar(
-                      key: Key('HomeFormUnAuth'),
-                      title: appBarTitle(
-                          context,
-                          authenticate,
-                          'Login' +
-                              (singleCompany.isEmpty ? ' / New company' : ''))),
-                  body: Center(
-                      child: Column(children: <Widget>[
-                    SizedBox(height: 100),
-                    InkWell(
-                        onLongPress: () {
-                          context.read<AuthBloc>().add(AuthChangedIp());
-                        },
-                        child: Text(widget.title,
-                            style: TextStyle(
-                                fontSize: isPhone ? 15 : 25,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold))),
-                    SizedBox(height: 40),
-                    authenticate.company?.partyId != null
-                        ? ElevatedButton(
-                            key: Key('loginButton'),
-                            child: Text('Login with an Existing ID'),
-                            onPressed: () async {
-                              await showDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return LoginDialog();
-                                  });
-                            })
-                        : Text('No companies yet, create one!'),
-                    SizedBox(height: 100),
-                    Visibility(
-                        visible: singleCompany.isEmpty,
-                        child: ElevatedButton(
-                            key: Key('newCompButton'),
-                            child: Text('Create a new company and admin'),
-                            onPressed: () async {
-                              await showDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return NewCompanyDialog(
-                                        formArguments: FormArguments(
-                                            object: authenticate.copyWith(
-                                                company: null)));
-                                  });
-                            })),
-                  ]))));
+          return Scaffold(
+              appBar: AppBar(
+                  key: Key('HomeFormUnAuth'),
+                  title: appBarTitle(
+                      context,
+                      authenticate,
+                      'Login' +
+                          (singleCompany.isEmpty ? ' / New company' : ''))),
+              body: Center(
+                  child: Column(children: <Widget>[
+                SizedBox(height: 100),
+                InkWell(
+                    onLongPress: () {
+                      context.read<AuthBloc>().add(AuthChangedIp());
+                    },
+                    child: Text(widget.title,
+                        style: TextStyle(
+                            fontSize: isPhone ? 15 : 25,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold))),
+                SizedBox(height: 40),
+                authenticate.company?.partyId != null
+                    ? ElevatedButton(
+                        key: Key('loginButton'),
+                        child: Text('Login with an Existing ID'),
+                        onPressed: () async {
+                          await showDialog(
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return LoginDialog();
+                              });
+                        })
+                    : Text('No companies yet, create one!'),
+                SizedBox(height: 100),
+                Visibility(
+                    visible: singleCompany.isEmpty,
+                    child: ElevatedButton(
+                        key: Key('newCompButton'),
+                        child: Text('Create a new company and admin'),
+                        onPressed: () async {
+                          await showDialog(
+                              barrierDismissible: true,
+                              context: context,
+                              builder: (BuildContext context) {
+                                return NewCompanyDialog(
+                                    formArguments: FormArguments(
+                                        object: authenticate.copyWith(
+                                            company: null)));
+                              });
+                        }))
+              ])));
         default:
           return LoadingIndicator();
       }

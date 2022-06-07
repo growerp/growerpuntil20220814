@@ -27,8 +27,6 @@ class _ChatState extends State<ChatDialog> {
   String? searchString;
   List<ChatMessage> messages = [];
   TextEditingController messageController = TextEditingController();
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {
@@ -76,12 +74,10 @@ class _ChatState extends State<ChatDialog> {
                               padding: EdgeInsets.all(20),
                               width: 500,
                               height: 600,
-                              child: ScaffoldMessenger(
-                                  key: scaffoldMessengerKey,
-                                  child: Scaffold(
-                                    backgroundColor: Colors.transparent,
-                                    body: chatPage(context),
-                                  ))),
+                              child: Scaffold(
+                                backgroundColor: Colors.transparent,
+                                body: chatPage(context),
+                              )),
                           Positioned(
                               top: 5, right: 5, child: DialogCloseButton())
                         ]),

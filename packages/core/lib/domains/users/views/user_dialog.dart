@@ -64,8 +64,7 @@ class _UserState extends State<UserPage> {
   late User updatedUser;
   late APIRepository repos;
   final ImagePicker _picker = ImagePicker();
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
   late bool isPhone;
 
   @override
@@ -129,30 +128,27 @@ class _UserState extends State<UserPage> {
         ),
         child: Stack(clipBehavior: Clip.none, children: [
           SingleChildScrollView(
-            key: Key('listView'),
-            child: Container(
-                padding: EdgeInsets.all(20),
-                width: 400,
-                height: 1020,
-                child: BlocListener<UserBloc, UserState>(
-                    listener: (context, state) {
-                      if (state.status == UserStatus.failure) {
-                        loading = false;
-                        HelperFunctions.showMessage(
-                            context, '${state.message}', Colors.red);
-                      }
-                      if (state.status == UserStatus.success) {
-                        Navigator.of(context).pop(updatedUser);
-                      }
-                    },
-                    child: ScaffoldMessenger(
-                        key: scaffoldMessengerKey,
-                        child: Scaffold(
-                            backgroundColor: Colors.transparent,
-                            floatingActionButton:
-                                imageButtons(context, _onImageButtonPressed),
-                            body: listChild())))),
-          ),
+              key: Key('listView'),
+              child: Container(
+                  padding: EdgeInsets.all(20),
+                  width: 400,
+                  height: 1020,
+                  child: BlocListener<UserBloc, UserState>(
+                      listener: (context, state) {
+                        if (state.status == UserStatus.failure) {
+                          loading = false;
+                          HelperFunctions.showMessage(
+                              context, '${state.message}', Colors.red);
+                        }
+                        if (state.status == UserStatus.success) {
+                          Navigator.of(context).pop(updatedUser);
+                        }
+                      },
+                      child: Scaffold(
+                          backgroundColor: Colors.transparent,
+                          floatingActionButton:
+                              imageButtons(context, _onImageButtonPressed),
+                          body: listChild())))),
           Positioned(top: 5, right: 5, child: DialogCloseButton())
         ]));
   }

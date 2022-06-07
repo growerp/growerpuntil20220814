@@ -71,8 +71,7 @@ class _MyFinDocState extends State<FinDocPage> {
   late APIRepository repos;
   late FinDoc finDocUpdated;
   User? _selectedUser;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
   late bool isPhone;
   _MyFinDocState(this.finDoc);
 
@@ -158,46 +157,40 @@ class _MyFinDocState extends State<FinDocPage> {
     };
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                        key: Key(
-                            "FinDocDialog${finDoc.sales == true ? 'Sales' : 'Purchase'}"
-                            "${finDoc.docType}"),
-                        insetPadding: EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: SingleChildScrollView(
-                            key: Key('listView1'),
-                            child: Stack(clipBehavior: Clip.none, children: [
-                              Container(
-                                  width: isPhone ? 400 : 800,
-                                  height: isPhone
-                                      ? 600
-                                      : 600, // not increase height otherwise tests will fail
-                                  child:
-                                      Builder(builder: (BuildContext context) {
-                                    if (finDoc.sales)
-                                      return BlocConsumer<SalesCartBloc,
-                                              CartState>(
-                                          listener: blocConsumerListener,
-                                          builder: blocConsumerBuilder);
-                                    // purchase from here
-                                    return BlocConsumer<PurchaseCartBloc,
-                                            CartState>(
-                                        listener: blocConsumerListener,
-                                        builder: blocConsumerBuilder);
-                                  })),
-                              Positioned(
-                                  top: -10,
-                                  right: -10,
-                                  child: DialogCloseButton())
-                            ])))))));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                    key: Key(
+                        "FinDocDialog${finDoc.sales == true ? 'Sales' : 'Purchase'}"
+                        "${finDoc.docType}"),
+                    insetPadding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: SingleChildScrollView(
+                        key: Key('listView1'),
+                        child: Stack(clipBehavior: Clip.none, children: [
+                          Container(
+                              width: isPhone ? 400 : 800,
+                              height: isPhone
+                                  ? 600
+                                  : 600, // not increase height otherwise tests will fail
+                              child: Builder(builder: (BuildContext context) {
+                                if (finDoc.sales)
+                                  return BlocConsumer<SalesCartBloc, CartState>(
+                                      listener: blocConsumerListener,
+                                      builder: blocConsumerBuilder);
+                                // purchase from here
+                                return BlocConsumer<PurchaseCartBloc,
+                                        CartState>(
+                                    listener: blocConsumerListener,
+                                    builder: blocConsumerBuilder);
+                              })),
+                          Positioned(
+                              top: -10, right: -10, child: DialogCloseButton())
+                        ]))))));
   }
 
   Widget headerEntry(repos) {

@@ -49,8 +49,6 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
   List<Product> _selectedProducts = [];
   late String classificationId;
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
   _CategoryState(this.category);
 
   @override
@@ -86,15 +84,12 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: ScaffoldMessenger(
-                    key: scaffoldMessengerKey,
-                    child: Scaffold(
-                        backgroundColor: Colors.transparent,
-                        body: Stack(clipBehavior: Clip.none, children: [
-                          _categoryDialog(state),
-                          Positioned(
-                              top: 5, right: 5, child: DialogCloseButton()),
-                        ]))));
+                child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: Stack(clipBehavior: Clip.none, children: [
+                      _categoryDialog(state),
+                      Positioned(top: 5, right: 5, child: DialogCloseButton()),
+                    ])));
           return LoadingIndicator();
         }));
   }

@@ -16,9 +16,6 @@ class EditorDialog extends StatefulWidget {
 class _MarkdownPageState extends State<EditorDialog> {
   late String data;
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
-
   @override
   void initState() {
     data = widget.content.text.isEmpty
@@ -35,14 +32,12 @@ class _MarkdownPageState extends State<EditorDialog> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: Stack(clipBehavior: Clip.none, children: [
-                  _showForm(),
-                  Positioned(top: 5, right: 5, child: DialogCloseButton()),
-                ]))));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Stack(clipBehavior: Clip.none, children: [
+              _showForm(),
+              Positioned(top: 5, right: 5, child: DialogCloseButton()),
+            ])));
   }
 
   Widget _showForm() {

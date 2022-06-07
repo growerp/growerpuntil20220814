@@ -62,12 +62,8 @@ class _CompanyState extends State<CompanyPage> {
   dynamic _pickImageError;
   String? _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
 
-  _CompanyState(this.message, this.authenticate) {
-    HelperFunctions.showTopMessage(scaffoldMessengerKey, message);
-  }
+  _CompanyState(this.message, this.authenticate);
 
   @override
   void initState() {
@@ -140,28 +136,25 @@ class _CompanyState extends State<CompanyPage> {
           authenticate = state.authenticate!;
           company = authenticate.company!;
           user = authenticate.user!;
-          return ScaffoldMessenger(
-              key: scaffoldMessengerKey,
-              child: Scaffold(
-                  floatingActionButton:
-                      imageButtons(context, _onImageButtonPressed),
-                  body: Center(
-                    child: !kIsWeb &&
-                            defaultTargetPlatform == TargetPlatform.android
-                        ? FutureBuilder<void>(
-                            future: retrieveLostData(),
-                            builder: (BuildContext context,
-                                AsyncSnapshot<void> snapshot) {
-                              if (snapshot.hasError) {
-                                return Text(
-                                  'Pick image error: ${snapshot.error}}',
-                                  textAlign: TextAlign.center,
-                                );
-                              }
-                              return _showForm(isAdmin, company, state);
-                            })
-                        : _showForm(isAdmin, company, state),
-                  )));
+          return Scaffold(
+              floatingActionButton:
+                  imageButtons(context, _onImageButtonPressed),
+              body: Center(
+                  child:
+                      !kIsWeb && defaultTargetPlatform == TargetPlatform.android
+                          ? FutureBuilder<void>(
+                              future: retrieveLostData(),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<void> snapshot) {
+                                if (snapshot.hasError) {
+                                  return Text(
+                                    'Pick image error: ${snapshot.error}}',
+                                    textAlign: TextAlign.center,
+                                  );
+                                }
+                                return _showForm(isAdmin, company, state);
+                              })
+                          : _showForm(isAdmin, company, state)));
         default:
           return LoadingIndicator();
       }

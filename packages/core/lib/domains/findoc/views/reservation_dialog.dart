@@ -49,8 +49,7 @@ class _ReservationState extends State<ReservationDialog> {
   TextEditingController _daysController = TextEditingController();
   TextEditingController _productSearchBoxController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
 //  _ReservationState() {
 //    HelperFunctions.showTopMessage(scaffoldMessengerKey, widget.message!);
 //  }
@@ -84,42 +83,39 @@ class _ReservationState extends State<ReservationDialog> {
 
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                        key: Key('ReservationDialog'),
-                        insetPadding: EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: BlocListener<FinDocBloc, FinDocState>(
-                            listener: (context, state) async {
-                              switch (state.status) {
-                                case FinDocStatus.success:
-                                  HelperFunctions.showMessage(
-                                      context,
-                                      '${widget.finDoc.idIsNull() ? "Add" : "Update"} successfull',
-                                      Colors.green);
-                                  await Future.delayed(
-                                      Duration(milliseconds: 500));
-                                  Navigator.of(context).pop();
-                                  break;
-                                case FinDocStatus.failure:
-                                  HelperFunctions.showMessage(context,
-                                      'Error: ${state.message}', Colors.red);
-                                  break;
-                                default:
-                                  Text("????");
-                              }
-                            },
-                            child: Container(
-                                height: 600,
-                                width: 400,
-                                child: _addRentalItemDialog(repos))))))));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                    key: Key('ReservationDialog'),
+                    insetPadding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: BlocListener<FinDocBloc, FinDocState>(
+                        listener: (context, state) async {
+                          switch (state.status) {
+                            case FinDocStatus.success:
+                              HelperFunctions.showMessage(
+                                  context,
+                                  '${widget.finDoc.idIsNull() ? "Add" : "Update"} successfull',
+                                  Colors.green);
+                              await Future.delayed(Duration(milliseconds: 500));
+                              Navigator.of(context).pop();
+                              break;
+                            case FinDocStatus.failure:
+                              HelperFunctions.showMessage(context,
+                                  'Error: ${state.message}', Colors.red);
+                              break;
+                            default:
+                              Text("????");
+                          }
+                        },
+                        child: Container(
+                            height: 600,
+                            width: 400,
+                            child: _addRentalItemDialog(repos)))))));
   }
 
   Widget _addRentalItemDialog(repos) {

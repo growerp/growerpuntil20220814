@@ -46,8 +46,7 @@ class WebsitePage extends StatefulWidget {
 
 class _WebsiteState extends State<WebsitePage> {
   final _formKey = GlobalKey<FormState>();
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
   late WebsiteBloc _websiteBloc;
   List<Content>? _updatedContent;
   List<Category>? _updatedCategories;
@@ -81,9 +80,7 @@ class _WebsiteState extends State<WebsitePage> {
             _updatedContent = List.of(state.website!.websiteContent);
           if (_updatedCategories == null)
             _updatedCategories = List.of(state.website!.websiteCategories);
-          return ScaffoldMessenger(
-              key: scaffoldMessengerKey,
-              child: Scaffold(body: Center(child: _showForm(state))));
+          return Scaffold(body: Center(child: _showForm(state)));
         default:
           return LoadingIndicator();
       }

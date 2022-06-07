@@ -35,8 +35,6 @@ class _TimeEntryState extends State<TimeEntryDialog> {
   TextEditingController _hoursController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
   _TimeEntryState(this.timeEntry);
 
   @override
@@ -52,51 +50,46 @@ class _TimeEntryState extends State<TimeEntryDialog> {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                        key: Key('TimeEntryDialog'),
-                        insetPadding: EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: BlocListener<TaskBloc, TaskState>(
-                            listener: (context, state) async {
-                              switch (state.status) {
-                                case TaskStatus.success:
-                                  HelperFunctions.showMessage(
-                                      context,
-                                      '${timeEntry.timeEntryId == null ? "Add" : "Update"} successfull',
-                                      Colors.green);
-                                  await Future.delayed(
-                                      Duration(milliseconds: 500));
-                                  Navigator.of(context).pop();
-                                  break;
-                                case TaskStatus.failure:
-                                  HelperFunctions.showMessage(context,
-                                      'Error: ${state.message}', Colors.red);
-                                  break;
-                                default:
-                                  Text("????");
-                              }
-                            },
-                            child: Stack(clipBehavior: Clip.none, children: [
-                              Container(
-                                  padding: EdgeInsets.all(20),
-                                  width: 400,
-                                  height: 400,
-                                  child: Center(
-                                    child: _showForm(isPhone),
-                                  )),
-                              Positioned(
-                                  top: -10,
-                                  right: -10,
-                                  child: DialogCloseButton())
-                            ])))))));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                    key: Key('TimeEntryDialog'),
+                    insetPadding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: BlocListener<TaskBloc, TaskState>(
+                        listener: (context, state) async {
+                          switch (state.status) {
+                            case TaskStatus.success:
+                              HelperFunctions.showMessage(
+                                  context,
+                                  '${timeEntry.timeEntryId == null ? "Add" : "Update"} successfull',
+                                  Colors.green);
+                              await Future.delayed(Duration(milliseconds: 500));
+                              Navigator.of(context).pop();
+                              break;
+                            case TaskStatus.failure:
+                              HelperFunctions.showMessage(context,
+                                  'Error: ${state.message}', Colors.red);
+                              break;
+                            default:
+                              Text("????");
+                          }
+                        },
+                        child: Stack(clipBehavior: Clip.none, children: [
+                          Container(
+                              padding: EdgeInsets.all(20),
+                              width: 400,
+                              height: 400,
+                              child: Center(
+                                child: _showForm(isPhone),
+                              )),
+                          Positioned(
+                              top: -10, right: -10, child: DialogCloseButton())
+                        ]))))));
   }
 
   Widget _showForm(isPhone) {

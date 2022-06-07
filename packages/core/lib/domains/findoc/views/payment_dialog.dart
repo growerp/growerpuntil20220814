@@ -38,8 +38,7 @@ class _PaymentState extends State<PaymentDialog> {
   late FinDoc finDocUpdated;
   User? _selectedUser;
   ItemType? _selectedItemType;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
   late bool isPhone;
   late PaymentInstrument _paymentInstrument;
   final _userSearchBoxController = TextEditingController();
@@ -68,44 +67,41 @@ class _PaymentState extends State<PaymentDialog> {
     isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-          key: scaffoldMessengerKey,
-          child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: GestureDetector(
-                  onTap: () {},
-                  child: Dialog(
-                      key: Key(
-                          "PaymentDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
-                      insetPadding: EdgeInsets.all(10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: BlocConsumer<FinDocBloc, FinDocState>(
-                        listener: (context, state) {
-                          if (state.status == FinDocStatus.success)
-                            Navigator.of(context).pop();
-                          if (state.status == FinDocStatus.failure)
-                            HelperFunctions.showMessage(
-                                context, '${state.message}', Colors.red);
-                        },
-                        builder: (context, state) {
-                          return SingleChildScrollView(
-                              key: Key('listView2'),
-                              physics: ClampingScrollPhysics(),
-                              child: Stack(clipBehavior: Clip.none, children: [
-                                Container(
-                                    width: 400,
-                                    height: 750,
-                                    child: paymentForm(state, _formKey)),
-                                Positioned(
-                                    top: -10,
-                                    right: -10,
-                                    child: DialogCloseButton())
-                              ]));
-                        },
-                      )))),
-        ));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                    key: Key(
+                        "PaymentDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
+                    insetPadding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: BlocConsumer<FinDocBloc, FinDocState>(
+                      listener: (context, state) {
+                        if (state.status == FinDocStatus.success)
+                          Navigator.of(context).pop();
+                        if (state.status == FinDocStatus.failure)
+                          HelperFunctions.showMessage(
+                              context, '${state.message}', Colors.red);
+                      },
+                      builder: (context, state) {
+                        return SingleChildScrollView(
+                            key: Key('listView2'),
+                            physics: ClampingScrollPhysics(),
+                            child: Stack(clipBehavior: Clip.none, children: [
+                              Container(
+                                  width: 400,
+                                  height: 750,
+                                  child: paymentForm(state, _formKey)),
+                              Positioned(
+                                  top: -10,
+                                  right: -10,
+                                  child: DialogCloseButton())
+                            ]));
+                      },
+                    )))));
   }
 
   Widget paymentForm(FinDocState state, GlobalKey<FormState> _formKey) {

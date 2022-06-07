@@ -40,8 +40,6 @@ class _ChatRoomState extends State<ChatRoomDialog> {
   bool loading = false;
   User? _selectedUser;
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
   _ChatRoomState(this.chatRoom);
 
   @override
@@ -78,12 +76,10 @@ class _ChatRoomState extends State<ChatRoomDialog> {
                   padding: EdgeInsets.all(20),
                   width: 500,
                   height: 500,
-                  child: ScaffoldMessenger(
-                      key: scaffoldMessengerKey,
-                      child: Scaffold(
-                        backgroundColor: Colors.transparent,
-                        body: _showForm(repos, isPhone),
-                      ))),
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: _showForm(repos, isPhone),
+                  )),
               Positioned(top: 5, right: 5, child: DialogCloseButton())
             ]),
           ));

@@ -51,7 +51,7 @@ class OpportunityTest {
     SaveTest test = await PersistFunctions.getTest();
     // check if already modified then skip
     var newOpportunities = List.of(test.opportunities);
-    if (test.opportunities[0].opportunityName !=
+    if (newOpportunities[0].opportunityName !=
         opportunities[0].opportunityName) {
       // get new opportunities preserving id
       for (int x = 0; x < test.opportunities.length; x++) {

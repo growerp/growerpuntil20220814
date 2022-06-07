@@ -60,8 +60,7 @@ class _CategoryState extends State<CategoryDialogFull> {
   late String classificationId;
 
   final ImagePicker _picker = ImagePicker();
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
   _CategoryState(this.category);
 
   void _onImageButtonPressed(ImageSource source,

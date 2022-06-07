@@ -173,8 +173,6 @@ class _ChatRoomsState extends State<ChatRooms> {
   String? searchString;
   String classificationId = GlobalConfiguration().getValue('classificationId');
   late String entityName;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
 
   @override
   void initState() {

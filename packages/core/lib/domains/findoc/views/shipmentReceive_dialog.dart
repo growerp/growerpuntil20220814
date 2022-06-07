@@ -33,8 +33,7 @@ class ShipmentReceiveDialog extends StatefulWidget {
 class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
   final FinDoc finDoc; // incoming finDoc
   late APIRepository repos;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
   late bool isPhone;
   List<TextEditingController> _locationSearchBoxControllers = [];
   List<TextEditingController> _newLocationControllers = [];
@@ -61,29 +60,26 @@ class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
     isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                        key: Key(
-                            "ShipmentReceiveDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
-                        insetPadding: EdgeInsets.all(20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Stack(clipBehavior: Clip.none, children: [
-                          Container(
-                              width: isPhone ? 400 : 800,
-                              height: isPhone
-                                  ? 600
-                                  : 600, // not increase height otherwise tests will fail
-                              child: shipmentItemList()),
-                          Positioned(
-                              top: 5, right: 5, child: DialogCloseButton())
-                        ]))))));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                    key: Key(
+                        "ShipmentReceiveDialog${finDoc.sales ? 'Sales' : 'Purchase'}"),
+                    insetPadding: EdgeInsets.all(20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Stack(clipBehavior: Clip.none, children: [
+                      Container(
+                          width: isPhone ? 400 : 800,
+                          height: isPhone
+                              ? 600
+                              : 600, // not increase height otherwise tests will fail
+                          child: shipmentItemList()),
+                      Positioned(top: 5, right: 5, child: DialogCloseButton())
+                    ])))));
   }
 
   Widget shipmentItemList() {

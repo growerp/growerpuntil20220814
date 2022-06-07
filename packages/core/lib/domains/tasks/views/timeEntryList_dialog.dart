@@ -29,8 +29,7 @@ class TimeEntryListDialog extends StatefulWidget {
 
 class _TimeEntryListState extends State<TimeEntryListDialog> {
   final List<TimeEntry> timeEntries;
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
   _TimeEntryListState(this.timeEntries);
 
   @override
@@ -42,26 +41,23 @@ class _TimeEntryListState extends State<TimeEntryListDialog> {
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return GestureDetector(
-      onTap: () => Navigator.of(context).pop(),
-      child: ScaffoldMessenger(
-          key: scaffoldMessengerKey,
-          child: Dialog(
-              key: Key('TimeEntryListDialog'),
-              insetPadding: EdgeInsets.all(10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Stack(clipBehavior: Clip.none, children: [
-                Container(
-                    padding: EdgeInsets.all(20),
-                    width: 400,
-                    height: 400,
-                    child: Center(
-                      child: _showList(isPhone),
-                    )),
-                Positioned(top: 5, right: 5, child: DialogCloseButton())
-              ]))),
-    );
+        onTap: () => Navigator.of(context).pop(),
+        child: Dialog(
+            key: Key('TimeEntryListDialog'),
+            insetPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Stack(clipBehavior: Clip.none, children: [
+              Container(
+                  padding: EdgeInsets.all(20),
+                  width: 400,
+                  height: 400,
+                  child: Center(
+                    child: _showList(isPhone),
+                  )),
+              Positioned(top: 5, right: 5, child: DialogCloseButton())
+            ])));
   }
 
   Widget _showList(isPhone) {

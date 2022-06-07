@@ -44,8 +44,6 @@ class _AssetState extends State<AssetDialog> {
   Product? _selectedProduct;
   String? _statusId = 'Available';
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
   _AssetState(this.asset);
 
   @override
@@ -65,51 +63,46 @@ class _AssetState extends State<AssetDialog> {
     var repos = context.read<APIRepository>();
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                        key: Key('AssetDialog'),
-                        insetPadding: EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: BlocListener<AssetBloc, AssetState>(
-                            listener: (context, state) async {
-                              switch (state.status) {
-                                case AssetStatus.success:
-                                  HelperFunctions.showMessage(
-                                      context,
-                                      '${asset.assetId.isEmpty ? "Add" : "Update"} successfull',
-                                      Colors.green);
-                                  await Future.delayed(
-                                      Duration(milliseconds: 500));
-                                  Navigator.of(context).pop();
-                                  break;
-                                case AssetStatus.failure:
-                                  HelperFunctions.showMessage(context,
-                                      'Error: ${state.message}', Colors.red);
-                                  break;
-                                default:
-                                  Text("????");
-                              }
-                            },
-                            child: Stack(clipBehavior: Clip.none, children: [
-                              Container(
-                                  padding: EdgeInsets.all(20),
-                                  width: 400,
-                                  height: 500,
-                                  child: Center(
-                                    child: _showForm(repos, isPhone),
-                                  )),
-                              Positioned(
-                                  top: -10,
-                                  right: -10,
-                                  child: DialogCloseButton())
-                            ])))))));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                    key: Key('AssetDialog'),
+                    insetPadding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: BlocListener<AssetBloc, AssetState>(
+                        listener: (context, state) async {
+                          switch (state.status) {
+                            case AssetStatus.success:
+                              HelperFunctions.showMessage(
+                                  context,
+                                  '${asset.assetId.isEmpty ? "Add" : "Update"} successfull',
+                                  Colors.green);
+                              await Future.delayed(Duration(milliseconds: 500));
+                              Navigator.of(context).pop();
+                              break;
+                            case AssetStatus.failure:
+                              HelperFunctions.showMessage(context,
+                                  'Error: ${state.message}', Colors.red);
+                              break;
+                            default:
+                              Text("????");
+                          }
+                        },
+                        child: Stack(clipBehavior: Clip.none, children: [
+                          Container(
+                              padding: EdgeInsets.all(20),
+                              width: 400,
+                              height: 500,
+                              child: Center(
+                                child: _showForm(repos, isPhone),
+                              )),
+                          Positioned(
+                              top: -10, right: -10, child: DialogCloseButton())
+                        ]))))));
   }
 
   Widget _showForm(APIRepository repos, bool isPhone) {

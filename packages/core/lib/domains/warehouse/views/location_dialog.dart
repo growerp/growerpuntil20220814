@@ -31,8 +31,7 @@ class _LocationState extends State<LocationDialog> {
   final Location location;
   final _formKey = GlobalKey<FormState>();
   TextEditingController _nameController = TextEditingController();
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
+
   _LocationState(this.location);
 
   @override
@@ -47,51 +46,46 @@ class _LocationState extends State<LocationDialog> {
     var repos = context.read<APIRepository>();
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                        key: Key('LocationDialog'),
-                        insetPadding: EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: BlocListener<LocationBloc, LocationState>(
-                            listener: (context, state) async {
-                              switch (state.status) {
-                                case LocationStatus.success:
-                                  HelperFunctions.showMessage(
-                                      context,
-                                      '${location.locationId == null ? "Add" : "Update"} successfull',
-                                      Colors.green);
-                                  await Future.delayed(
-                                      Duration(milliseconds: 500));
-                                  Navigator.of(context).pop();
-                                  break;
-                                case LocationStatus.failure:
-                                  HelperFunctions.showMessage(context,
-                                      'Error: ${state.message}', Colors.red);
-                                  break;
-                                default:
-                                  Text("????");
-                              }
-                            },
-                            child: Stack(clipBehavior: Clip.none, children: [
-                              Container(
-                                  padding: EdgeInsets.all(20),
-                                  width: 400,
-                                  height: 200,
-                                  child: Center(
-                                    child: _showForm(repos, isPhone),
-                                  )),
-                              Positioned(
-                                  top: -10,
-                                  right: -10,
-                                  child: DialogCloseButton())
-                            ])))))));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                    key: Key('LocationDialog'),
+                    insetPadding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: BlocListener<LocationBloc, LocationState>(
+                        listener: (context, state) async {
+                          switch (state.status) {
+                            case LocationStatus.success:
+                              HelperFunctions.showMessage(
+                                  context,
+                                  '${location.locationId == null ? "Add" : "Update"} successfull',
+                                  Colors.green);
+                              await Future.delayed(Duration(milliseconds: 500));
+                              Navigator.of(context).pop();
+                              break;
+                            case LocationStatus.failure:
+                              HelperFunctions.showMessage(context,
+                                  'Error: ${state.message}', Colors.red);
+                              break;
+                            default:
+                              Text("????");
+                          }
+                        },
+                        child: Stack(clipBehavior: Clip.none, children: [
+                          Container(
+                              padding: EdgeInsets.all(20),
+                              width: 400,
+                              height: 200,
+                              child: Center(
+                                child: _showForm(repos, isPhone),
+                              )),
+                          Positioned(
+                              top: -10, right: -10, child: DialogCloseButton())
+                        ]))))));
   }
 
   Widget _showForm(repos, isPhone) {

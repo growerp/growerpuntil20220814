@@ -49,8 +49,6 @@ class _OpportunityState extends State<OpportunityDialog> {
   late APIRepository repos;
   late OpportunityBloc _opportunityBloc;
 
-  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
-      GlobalKey<ScaffoldMessengerState>();
   _OpportunityState(this.opportunity);
 
   @override
@@ -81,48 +79,43 @@ class _OpportunityState extends State<OpportunityDialog> {
     int columns = ResponsiveWrapper.of(context).isSmallerThan(TABLET) ? 1 : 2;
     return GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: ScaffoldMessenger(
-            key: scaffoldMessengerKey,
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: GestureDetector(
-                    onTap: () {},
-                    child: Dialog(
-                        key: Key('OpportunityDialog'),
-                        insetPadding: EdgeInsets.all(10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: BlocListener<OpportunityBloc, OpportunityState>(
-                            listener: (context, state) async {
-                              switch (state.status) {
-                                case OpportunityStatus.success:
-                                  HelperFunctions.showMessage(
-                                      context,
-                                      '${opportunity.opportunityId.isEmpty ? "Add" : "Update"} successfull',
-                                      Colors.green);
-                                  await Future.delayed(
-                                      Duration(milliseconds: 500));
-                                  Navigator.of(context).pop();
-                                  break;
-                                case OpportunityStatus.failure:
-                                  HelperFunctions.showMessage(context,
-                                      'Error: ${state.message}', Colors.red);
-                                  break;
-                                default:
-                                  Text("????");
-                              }
-                            },
-                            child: Stack(clipBehavior: Clip.none, children: [
-                              Container(
-                                  width: columns.toDouble() * 400,
-                                  height: 1 / columns.toDouble() * 1000,
-                                  child: _opportunityForm()),
-                              Positioned(
-                                  top: -10,
-                                  right: -10,
-                                  child: DialogCloseButton())
-                            ])))))));
+        child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: GestureDetector(
+                onTap: () {},
+                child: Dialog(
+                    key: Key('OpportunityDialog'),
+                    insetPadding: EdgeInsets.all(10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: BlocListener<OpportunityBloc, OpportunityState>(
+                        listener: (context, state) async {
+                          switch (state.status) {
+                            case OpportunityStatus.success:
+                              HelperFunctions.showMessage(
+                                  context,
+                                  '${opportunity.opportunityId.isEmpty ? "Add" : "Update"} successfull',
+                                  Colors.green);
+                              await Future.delayed(Duration(milliseconds: 500));
+                              Navigator.of(context).pop();
+                              break;
+                            case OpportunityStatus.failure:
+                              HelperFunctions.showMessage(context,
+                                  'Error: ${state.message}', Colors.red);
+                              break;
+                            default:
+                              Text("????");
+                          }
+                        },
+                        child: Stack(clipBehavior: Clip.none, children: [
+                          Container(
+                              width: columns.toDouble() * 400,
+                              height: 1 / columns.toDouble() * 1000,
+                              child: _opportunityForm()),
+                          Positioned(
+                              top: -10, right: -10, child: DialogCloseButton())
+                        ]))))));
   }
 
   Widget _opportunityForm() {
