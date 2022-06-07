@@ -54,7 +54,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       // start from record zero for initial and refresh
       if (state.status == ProductStatus.initial || event.refresh) {
         ApiResult<List<Product>> compResult =
-            await repos.getProduct(searchString: event.searchString);
+            await repos.getProduct(start: 0, limit: _productLimit);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: ProductStatus.success,
@@ -70,8 +70,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       if (event.searchString.isNotEmpty && state.searchString.isEmpty ||
           (state.searchString.isNotEmpty &&
               event.searchString != state.searchString)) {
-        ApiResult<List<Product>> compResult =
-            await repos.getProduct(searchString: event.searchString);
+        ApiResult<List<Product>> compResult = await repos.getProduct(
+            searchString: event.searchString, start: 0, limit: _productLimit);
         return emit(compResult.when(
             success: (data) => state.copyWith(
                   status: ProductStatus.success,
@@ -84,8 +84,10 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       }
       // get next page also for search
 
-      ApiResult<List<Product>> compResult =
-          await repos.getProduct(searchString: event.searchString);
+      ApiResult<List<Product>> compResult = await repos.getProduct(
+          searchString: event.searchString,
+          start: state.products.length,
+          limit: _productLimit);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: ProductStatus.success,

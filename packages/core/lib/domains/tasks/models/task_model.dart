@@ -39,10 +39,10 @@ class Task with _$Task {
     User? customerUser,
     User? vendorUser,
     User? employeeUser,
-    @DecimalConverter() Decimal? rate,
+    Decimal? rate,
     @DateTimeConverter() DateTime? startDate,
     @DateTimeConverter() DateTime? endDate,
-    @DecimalConverter() Decimal? unInvoicedHours,
+    Decimal? unInvoicedHours,
     @Default([]) List<TimeEntry> timeEntries,
   }) = _Task;
 

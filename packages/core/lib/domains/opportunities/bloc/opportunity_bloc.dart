@@ -81,9 +81,10 @@ class OpportunityBloc extends Bloc<OpportunityEvent, OpportunityState> {
                 status: OpportunityStatus.failure, message: error.toString())));
       }
       // get next page also for search
-
-      ApiResult<List<Opportunity>> compResult =
-          await repos.getOpportunity(searchString: event.searchString);
+      ApiResult<List<Opportunity>> compResult = await repos.getOpportunity(
+          searchString: event.searchString,
+          start: state.opportunities.length,
+          limit: _opportunityLimit);
       return emit(compResult.when(
           success: (data) => state.copyWith(
                 status: OpportunityStatus.success,

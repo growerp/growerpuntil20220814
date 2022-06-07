@@ -42,7 +42,7 @@ class FinDoc with _$FinDoc {
     String? description,
     User?
         otherUser, //a single person responsible for finDoc of a single company
-    @DecimalConverter() Decimal? grandTotal,
+    Decimal? grandTotal,
     String? classificationId, // is productStore
     @Default([]) List<FinDocItem> items,
   }) = _FinDoc;

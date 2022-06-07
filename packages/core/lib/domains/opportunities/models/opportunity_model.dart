@@ -29,7 +29,7 @@ class Opportunity with _$Opportunity {
     @Default("") String opportunityId,
     String? opportunityName,
     String? description,
-    @DecimalConverter() Decimal? estAmount,
+    Decimal? estAmount,
     int? estProbability,
     String? stageId,
     String? nextStep,

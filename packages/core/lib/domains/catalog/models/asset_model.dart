@@ -27,8 +27,8 @@ class Asset with _$Asset {
     String? assetClassId, // room, table etc
     String? assetName, // include room number/name
     String? statusId,
-    @DecimalConverter() Decimal? quantityOnHand,
-    @DecimalConverter() Decimal? availableToPromise,
+    Decimal? quantityOnHand,
+    Decimal? availableToPromise,
     String? parentAssetId,
     @DateTimeConverter() DateTime? receivedDate,
     @DateTimeConverter() DateTime? expectedEndOfLifeDate,

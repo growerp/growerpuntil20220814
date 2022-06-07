@@ -21,22 +21,6 @@ class Uint8ListConverter implements JsonConverter<Uint8List?, String?> {
   }
 }
 
-class DecimalConverter implements JsonConverter<Decimal?, String?> {
-  const DecimalConverter();
-
-  @override
-  Decimal? fromJson(String? json) {
-    if (json == null) return null;
-    return Decimal.parse(json);
-  }
-
-  @override
-  String? toJson(Decimal? object) {
-    if (object == null) return null;
-    return object.toString();
-  }
-}
-
 class DateTimeConverter implements JsonConverter<DateTime?, String?> {
   const DateTimeConverter();
 

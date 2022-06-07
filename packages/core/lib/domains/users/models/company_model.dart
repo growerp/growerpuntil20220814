@@ -46,8 +46,8 @@ class Company with _$Company {
     @Uint8ListConverter() Uint8List? image,
     Address? address,
     PaymentMethod? paymentMethod,
-    @DecimalConverter() Decimal? vatPerc,
-    @DecimalConverter() Decimal? salesPerc,
+    Decimal? vatPerc,
+    Decimal? salesPerc,
   }) = _Company;
 
   factory Company.fromJson(Map<String, dynamic> json) =>

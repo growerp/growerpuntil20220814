@@ -36,7 +36,7 @@ class TimeEntry with _$TimeEntry {
     String? timeEntryId,
     String? taskId,
     String? partyId,
-    @DecimalConverter() Decimal? hours,
+    Decimal? hours,
     String? comments,
     @DateTimeConverter() DateTime? date,
   }) = _TimeEntry;
