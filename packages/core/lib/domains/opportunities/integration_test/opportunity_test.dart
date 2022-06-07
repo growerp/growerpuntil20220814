@@ -50,16 +50,19 @@ class OpportunityTest {
       WidgetTester tester, List<Opportunity> opportunities) async {
     SaveTest test = await PersistFunctions.getTest();
     // check if already modified then skip
+    var newOpportunities = List.of(test.opportunities);
     if (test.opportunities[0].opportunityName !=
         opportunities[0].opportunityName) {
+      // get new opportunities preserving id
       for (int x = 0; x < test.opportunities.length; x++) {
-        test.opportunities[x] = opportunities[x]
+        newOpportunities[x] = opportunities[x]
             .copyWith(opportunityId: test.opportunities[x].opportunityId);
       }
-      await enterOpportunityData(tester, test.opportunities);
-      await PersistFunctions.persistTest(test);
+      await enterOpportunityData(tester, newOpportunities);
+      await PersistFunctions.persistTest(
+          test.copyWith(opportunities: newOpportunities));
     }
-    await checkOpportunity(tester, test.opportunities);
+    await checkOpportunity(tester, newOpportunities);
   }
 
   static Future<void> deleteLastOpportunity(WidgetTester tester) async {
