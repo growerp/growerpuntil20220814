@@ -49,17 +49,18 @@ class PaymentTest {
   static Future<void> updatePayments(
       WidgetTester tester, List<FinDoc> payments) async {
     SaveTest test = await PersistFunctions.getTest();
-    if (test.payments[0].grandTotal != payments[0].grandTotal) {
+    var newPayments = List.of(test.payments);
+    if (newPayments[0].grandTotal != payments[0].grandTotal) {
       // copy new payment data with paymentId
       for (int x = 0; x < test.payments.length; x++) {
-        test.payments[x] =
+        newPayments[x] =
             payments[x].copyWith(paymentId: test.payments[x].paymentId);
       }
       // update existing records, no need to use return data
-      await enterPaymentData(tester, test.payments);
-      await PersistFunctions.persistTest(test);
+      await enterPaymentData(tester, newPayments);
+      await PersistFunctions.persistTest(test.copyWith(payments: newPayments));
     }
-    await checkPayment(tester, test.payments);
+    await checkPayment(tester, newPayments);
   }
 
   static Future<void> deleteLastPayment(WidgetTester tester) async {
