@@ -117,13 +117,14 @@ class OrderTest {
   static Future<void> createRentalSalesOrder(
       WidgetTester tester, List<FinDoc> finDocs) async {
     SaveTest test = await PersistFunctions.getTest();
+    List<FinDoc> newOrders = [];
     var usFormat = new DateFormat('M/d/yyyy');
     for (FinDoc finDoc in finDocs) {
       await CommonTest.tapByKey(tester, 'addNew');
       await CommonTest.tapByKey(tester, 'customer');
       await CommonTest.tapByText(tester, finDoc.otherUser!.companyName!);
       await CommonTest.tapByKey(tester, 'itemRental');
-      await CommonTest.tapByKey(tester, 'product');
+      await CommonTest.tapByKey(tester, 'product', seconds: 5);
       await CommonTest.tapByText(tester, finDoc.items[0].description!);
       await CommonTest.tapByKey(tester, 'setDate');
       await CommonTest.tapByTooltip(tester, 'Switch to input');
@@ -147,10 +148,10 @@ class OrderTest {
         newItems[index] = newItem;
       }
       await CommonTest.tapByKey(tester, 'id0'); // close again
-      test.orders.add(finDoc.copyWith(
+      newOrders.add(finDoc.copyWith(
           orderId: CommonTest.getTextField('id0'), items: newItems));
     }
-    await PersistFunctions.persistTest(test);
+    await PersistFunctions.persistTest(test.copyWith(orders: newOrders));
   }
 
   static Future<void> checkPurchaseOrder(WidgetTester tester) async {
