@@ -39,5 +39,5 @@ void main() {
   purchase_invoice.main();
   purchase_sales.main();
   room_rental.main();
-  chat.main();
+  //  chat.main();
 }
