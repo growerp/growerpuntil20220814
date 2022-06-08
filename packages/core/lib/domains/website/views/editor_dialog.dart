@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:markdown_widget/markdown_widget.dart';
-import '../../../widgets/dialogCloseButton.dart';
 import '../../common/functions/helper_functions.dart';
 import '../../domains.dart';
 

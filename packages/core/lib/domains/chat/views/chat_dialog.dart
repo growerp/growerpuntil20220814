@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:core/domains/common/functions/helper_functions.dart';
-import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:flutter/material.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

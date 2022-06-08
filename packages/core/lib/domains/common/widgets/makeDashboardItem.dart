@@ -14,7 +14,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import '../domains/common/common.dart';
+
+import '../common.dart';
 
 Card makeDashboardItem(String key, BuildContext context, MenuOption menuOption,
     String subTitle, String subTitle1, String subTitle2, String subTitle3) {

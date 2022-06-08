@@ -23,7 +23,6 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/styles/themes.dart';
-import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'package:http/http.dart' as http;
 import 'package:flutter_phoenix/flutter_phoenix.dart';

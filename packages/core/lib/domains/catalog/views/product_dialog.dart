@@ -16,7 +16,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:core/domains/common/functions/helper_functions.dart';
-import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';

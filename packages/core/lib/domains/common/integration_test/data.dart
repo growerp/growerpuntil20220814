@@ -455,7 +455,7 @@ List<Product> products = [
     price: Decimal.parse('23.99'),
     listPrice: Decimal.parse('27.99'),
     categories: [categories[0]],
-    productTypeId: productTypes[1],
+    productTypeId: productTypes[0], // must be zero: shippable good
     description: 'This is a dummy description of first product',
     useWarehouse: true,
   ),
@@ -465,7 +465,7 @@ List<Product> products = [
     price: Decimal.parse('73.99'),
     listPrice: Decimal.parse('73.99'),
     categories: [categories[0], categories[1]],
-    productTypeId: productTypes[0],
+    productTypeId: productTypes[0], // must be zero: shippable good
     description: 'This is a dummy description of second product',
     useWarehouse: true,
   ),

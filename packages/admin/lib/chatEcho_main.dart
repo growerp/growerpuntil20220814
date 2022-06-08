@@ -27,7 +27,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:responsive_framework/responsive_framework.dart';
-import 'package:core/widgets/@widgets.dart';
 import 'generated/l10n.dart';
 import 'router.dart' as router;
 

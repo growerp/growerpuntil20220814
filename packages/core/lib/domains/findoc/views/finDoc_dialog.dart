@@ -15,7 +15,6 @@
 import 'package:core/domains/common/functions/helper_functions.dart';
 import 'package:core/extensions.dart';
 import 'package:core/services/api_result.dart';
-import 'package:core/widgets/dialogCloseButton.dart';
 import 'package:core/domains/domains.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dropdown_search/dropdown_search.dart';
@@ -809,6 +808,9 @@ Future addRentalItemDialog(BuildContext context, repos) async {
                                     ),
                                     controller: _productSearchBoxController,
                                   ),
+                                  menuProps: MenuProps(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0)),
                                 ),
                                 itemAsString: (Product? u) =>
                                     "${u!.productName}",
