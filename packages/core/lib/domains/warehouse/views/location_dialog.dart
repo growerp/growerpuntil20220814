@@ -83,7 +83,7 @@ class _LocationState extends State<LocationDialog> {
                                 child: _showForm(repos, isPhone),
                               )),
                           Positioned(
-                              top: -10, right: -10, child: DialogCloseButton())
+                              top: 10, right: 10, child: DialogCloseButton())
                         ]))))));
   }
 

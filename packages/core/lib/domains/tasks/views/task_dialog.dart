@@ -84,7 +84,7 @@ class _TaskState extends State<TaskDialog> {
                                 child: _showForm(isPhone),
                               )),
                           Positioned(
-                              top: -10, right: -10, child: DialogCloseButton())
+                              top: 10, right: 10, child: DialogCloseButton())
                         ]))))));
   }
 

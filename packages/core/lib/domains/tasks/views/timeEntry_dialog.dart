@@ -87,7 +87,7 @@ class _TimeEntryState extends State<TimeEntryDialog> {
                                 child: _showForm(isPhone),
                               )),
                           Positioned(
-                              top: -10, right: -10, child: DialogCloseButton())
+                              top: 10, right: 10, child: DialogCloseButton())
                         ]))))));
   }
 

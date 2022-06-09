@@ -52,7 +52,8 @@ class _PaymentState extends State<PaymentDialog> {
     _selectedUser = finDocUpdated.otherUser;
     _amountController.text =
         finDoc.grandTotal == null ? '' : finDoc.grandTotal.toString();
-    _selectedItemType = finDocUpdated.items.isNotEmpty
+    _selectedItemType = finDocUpdated.items.isNotEmpty &&
+            finDocUpdated.items[0].itemTypeId != null
         ? ItemType(
             itemTypeId: finDocUpdated.items[0].itemTypeId!, itemTypeName: '')
         : null;
@@ -95,8 +96,8 @@ class _PaymentState extends State<PaymentDialog> {
                                   height: 750,
                                   child: paymentForm(state, _formKey)),
                               Positioned(
-                                  top: -10,
-                                  right: -10,
+                                  top: 10,
+                                  right: 10,
                                   child: DialogCloseButton())
                             ]));
                       },

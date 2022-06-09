@@ -23,6 +23,8 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:core/domains/domains.dart';
 import 'package:integration_test/integration_test.dart';
 
+import '../../../extensions.dart';
+
 class CommonTest {
   String classificationId = GlobalConfiguration().get("classificationId");
 
@@ -67,7 +69,8 @@ class CommonTest {
   }
 
   static Future<void> login(WidgetTester tester,
-      {String? username, String? password}) async {
+      {String? username, String? password, int days = 0}) async {
+    CustomizableDateTime.customTime = DateTime.now().add(Duration(days: days));
     SaveTest test = await PersistFunctions.getTest();
     if ((test.company == null || test.admin == null) &&
         (username == null || password == null)) {

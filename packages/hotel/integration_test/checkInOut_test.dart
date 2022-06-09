@@ -16,10 +16,7 @@ import 'package:core/api_repository.dart';
 import 'package:core/domains/integration_test.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:hotel/main.dart';
-import 'package:dio/dio.dart';
-import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:integration_test/integration_test.dart';
@@ -47,9 +44,9 @@ void main() {
         clear: true);
 
     await CompanyTest.createCompany(tester);
-    await CategoryTest.selectCategory(tester);
+    await CategoryTest.selectCategories(tester);
     await CategoryTest.addCategories(tester, [categories[0]], check: false);
-    await ProductTest.selectProduct(tester);
+    await ProductTest.selectProducts(tester);
     await ProductTest.addProducts(tester, [products[2]], check: false);
     await AssetTest.selectAsset(tester);
     await AssetTest.addAssets(tester, [assets[2]], check: false);
@@ -59,8 +56,8 @@ void main() {
   });
 
   testWidgets("Test checkin >>>>>", (WidgetTester tester) async {
-    await CommonTest.login(tester, HotelApp(repos: Moqui(client: Dio())));
-    if (Test.isPhone()) {
+    await CommonTest.login(tester);
+    if (CommonTest.isPhone()) {
       await tester.tap(find.byTooltip('Open navigation menu'));
       await tester.pump(Duration(seconds: 10));
     }
@@ -68,17 +65,16 @@ void main() {
     await tester.pumpAndSettle(Duration(seconds: 1));
     expect(find.byKey(Key('FinDocsFormCheckIn')), findsOneWidget);
     expect(find.byKey(Key('finDocItem')), findsNWidgets(1));
-    expect(Test.getTextField('statusId0'), equals('Created'));
+    expect(CommonTest.getTextField('statusId0'), equals('Created'));
     await tester.tap(find.byKey(Key('ID0')));
     await tester.pump(Duration(seconds: 10));
-    expect(Test.getTextField('itemLine0'), contains('$todayStringIntl'));
+    expect(CommonTest.getTextField('itemLine0'), contains('$todayStringIntl'));
     await tester.tap(find.byKey(Key('nextStatus')));
     await tester.pump(Duration(seconds: 10));
   }, skip: false);
 
   testWidgets("Test checkout >>>>>", (WidgetTester tester) async {
-    await CommonTest.login(tester, HotelApp(repos: Moqui(client: Dio())),
-        days: 1);
+    await CommonTest.login(tester, days: 1);
     if (CommonTest.isPhone()) {
       await tester.tap(find.byTooltip('Open navigation menu'));
       await tester.pump(Duration(seconds: 10));
@@ -106,16 +102,16 @@ void main() {
 
   testWidgets("Test empty checkin and checkout >>>>>",
       (WidgetTester tester) async {
-    await CommonTest.login(tester, HotelApp(repos: Moqui(client: Dio())));
+    await CommonTest.login(tester);
     //  username: 'e87@example.org');
-    if (Test.isPhone()) {
+    if (CommonTest.isPhone()) {
       await tester.tap(find.byTooltip('Open navigation menu'));
       await tester.pump(Duration(seconds: 10));
     }
     await tester.tap(find.byKey(Key('tap/checkInOut')));
     await tester.pump(Duration(seconds: 1));
     expect(find.byKey(Key('finDocItem')), findsNothing);
-    if (Test.isPhone())
+    if (CommonTest.isPhone())
       await tester.tap(find.byTooltip('2'));
     else
       await tester.tap(find.byKey(Key('tapFinDocsFormCheckOut')));

@@ -34,7 +34,7 @@ List<MenuOption> menuOptions = [
     writeGroups: [UserGroup.Admin],
     tabItems: [
       TabItem(
-        form: CompanyInfoForm(FormArguments()),
+        form: CompanyForm(FormArguments()),
         label: "Company Info",
         icon: Icon(Icons.home),
       ),

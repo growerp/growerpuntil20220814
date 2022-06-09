@@ -14,16 +14,15 @@
 import 'package:core/api_repository.dart';
 import 'package:core/extensions.dart';
 import 'package:core/services/chat_server.dart';
-import 'menuOption_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:hotel/menuItem_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'generated/l10n.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/styles/themes.dart';
-import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'package:http/http.dart' as http;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -36,25 +35,24 @@ Future main() async {
 
   // can change backend url by pressing long the title on the home screen.
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String ip = prefs.getString("ip") ?? '';
-  String chat = prefs.getString("chat") ?? '';
-  String singleCompany = prefs.getString("companyPartyId") ?? '';
+  String ip = prefs.getString('ip') ?? '';
+  String chat = prefs.getString('chat') ?? '';
+  String singleCompany = prefs.getString('companyPartyId') ?? '';
   if (ip.isNotEmpty) {
     late http.Response response;
     try {
       response = await http.get(Uri.parse('${ip}rest/s1/growerp/Ping'));
       if (response.statusCode == 200) {
-        GlobalConfiguration().updateValue("databaseUrl", ip);
-        GlobalConfiguration().updateValue("chatUrl", chat);
-        GlobalConfiguration().updateValue("singleCompany", singleCompany);
-        print("=== New ip: $ip , chat: $chat company: $singleCompany Updated!");
+        GlobalConfiguration().updateValue('databaseUrl', ip);
+        GlobalConfiguration().updateValue('chatUrl', chat);
+        GlobalConfiguration().updateValue('singleCompany', singleCompany);
+        print('=== New ip: $ip , chat: $chat company: $singleCompany Updated!');
       }
     } catch (error) {
-      print("===$ip does not respond...not updating databaseUrl: $error");
+      print('===$ip does not respond...not updating databaseUrl: $error');
     }
   }
 
-  CustomizableDateTime.customTime = DateTime.now().add(Duration(days: 0));
   BlocOverrides.runZoned(
     () => runApp(Phoenix(
         child: TopApp(dbServer: APIRepository(), chatServer: ChatServer()))),

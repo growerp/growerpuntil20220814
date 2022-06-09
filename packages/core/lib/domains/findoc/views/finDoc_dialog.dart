@@ -188,7 +188,7 @@ class _MyFinDocState extends State<FinDocPage> {
                                     builder: blocConsumerBuilder);
                               })),
                           Positioned(
-                              top: -10, right: -10, child: DialogCloseButton())
+                              top: 10, right: 10, child: DialogCloseButton())
                         ]))))));
   }
 

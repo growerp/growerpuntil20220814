@@ -133,6 +133,7 @@ class _ChatRoomsState extends State<ChatRoomListDialog> {
 
   ListTile listHeader(BuildContext context) {
     return ListTile(
+        key: Key("search"),
         onTap: (() {
           setState(() {
             search = !search;
@@ -146,6 +147,7 @@ class _ChatRoomsState extends State<ChatRoomListDialog> {
                         ? 150
                         : 250,
                     child: TextField(
+                      key: Key("searchField"),
                       textInputAction: TextInputAction.go,
                       autofocus: true,
                       decoration: InputDecoration(
