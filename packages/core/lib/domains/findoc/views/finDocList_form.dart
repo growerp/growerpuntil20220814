@@ -213,9 +213,10 @@ class FinDocListState extends State<FinDocList> {
                         child: Center(
                             heightFactor: 20,
                             child: Text(
-                                (widget.docType == FinDocType.shipment
-                                        ? "no open ${widget.sales ? 'outgoing' : 'incoming'} "
-                                        : "no ${widget.sales ? 'sales' : 'purchase'} ") +
+                                "no (open)" +
+                                    (widget.docType == FinDocType.shipment
+                                        ? "${widget.sales ? 'outgoing' : 'incoming'} "
+                                        : "${widget.sales ? 'sales' : 'purchase'} ") +
                                     "${entityName}s found!",
                                 textAlign: TextAlign.center)))
                   ]);

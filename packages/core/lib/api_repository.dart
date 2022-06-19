@@ -637,9 +637,10 @@ class APIRepository {
   Future<ApiResult<Product>> createProduct(Product product) async {
     // no productId is add
     try {
-      final response = await dioClient.post(
-          'rest/s1/growerp/100/Product', apiKey!, data: <String, dynamic>{
+      final response = await dioClient
+          .post('rest/s1/growerp/100/Product', apiKey!, data: <String, dynamic>{
         'product': jsonEncode(product.toJson()),
+        'classificationId': classificationId,
         'moquiSessionToken': sessionToken
       });
       return getResponse<Product>(
@@ -653,10 +654,12 @@ class APIRepository {
     // no productId is add
     try {
       final response = await dioClient.patch(
-          'rest/s1/growerp/100/Product', apiKey!, data: <String, dynamic>{
-        'product': jsonEncode(product.toJson()),
-        'moquiSessionToken': sessionToken
-      });
+          'rest/s1/growerp/100/Product', apiKey!,
+          data: <String, dynamic>{
+            'product': jsonEncode(product.toJson()),
+            'classificationId': classificationId,
+            'moquiSessionToken': sessionToken
+          });
       return getResponse<Product>(
           "product", response, (json) => Product.fromJson(json));
     } on Exception catch (e) {

@@ -253,7 +253,6 @@ class _AssetState extends State<AssetDialog> {
                                           : Decimal.parse('1'),
                                   product: _selectedProduct,
                                   statusId: _statusId,
-                                  assetClassId: 'Hotel Room',
                                 ),
                               ));
                         }

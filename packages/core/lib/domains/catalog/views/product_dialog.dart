@@ -57,6 +57,7 @@ class _ProductState extends State<ProductDialogFull> {
   TextEditingController _descriptionController = TextEditingController();
   TextEditingController _priceController = TextEditingController();
   TextEditingController _listPriceController = TextEditingController();
+  TextEditingController _assetsController = TextEditingController();
 
   late bool useWarehouse;
   String? _selectedTypeId;
@@ -75,7 +76,9 @@ class _ProductState extends State<ProductDialogFull> {
     _priceController.text =
         product.price == null ? '' : product.price.toString();
     _listPriceController.text =
-        product.listPrice == null ? '' : product.listPrice.toString();
+        product.assetCount == null ? '' : product.listPrice.toString();
+    _assetsController.text =
+        product.listPrice == null ? '' : product.assetCount.toString();
     _selectedCategories = List.of(product.categories);
     _selectedTypeId = product.productTypeId ?? null;
     classificationId = GlobalConfiguration().get("classificationId");
@@ -141,17 +144,17 @@ class _ProductState extends State<ProductDialogFull> {
           }
         }, builder: (context, state) {
           if (state.status == CategoryStatus.success)
-            return Dialog(
-                key: Key('ProductDialog'),
-                insetPadding: EdgeInsets.all(20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Scaffold(
-                    backgroundColor: Colors.transparent,
-                    floatingActionButton:
-                        imageButtons(context, _onImageButtonPressed),
-                    body: Stack(clipBehavior: Clip.none, children: [
+            return Scaffold(
+                backgroundColor: Colors.transparent,
+                floatingActionButton:
+                    imageButtons(context, _onImageButtonPressed),
+                body: Dialog(
+                    key: Key('ProductDialog'),
+                    insetPadding: EdgeInsets.all(20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Stack(clipBehavior: Clip.none, children: [
                       listChild(classificationId, isPhone, state),
                       Positioned(top: 5, right: 5, child: DialogCloseButton()),
                     ])));
@@ -200,6 +203,7 @@ class _ProductState extends State<ProductDialogFull> {
     }
     return Center(
         child: Container(
+            width: 400,
             padding: EdgeInsets.all(20),
             child: Form(
                 key: _formKey,
@@ -377,30 +381,47 @@ class _ProductState extends State<ProductDialogFull> {
                               isExpanded: true,
                             ),
                             SizedBox(height: 10),
-                            Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25.0),
-                                  border: Border.all(
-                                      color: Colors.black45,
-                                      style: BorderStyle.solid,
-                                      width: 0.80),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0),
+                                        border: Border.all(
+                                            color: Colors.black45,
+                                            style: BorderStyle.solid,
+                                            width: 0.80),
+                                      ),
+                                      child: CheckboxListTile(
+                                          key: Key('useWarehouse'),
+                                          title: Text("Use Warehouse?",
+                                              style: TextStyle(
+                                                  color: Color(0xFF4baa9b))),
+                                          value: useWarehouse,
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              useWarehouse = value!;
+                                            });
+                                          })),
                                 ),
-                                child: CheckboxListTile(
-                                    key: Key('useWarehouse'),
-                                    title: Text("Use Warehouse?",
-                                        style: TextStyle(
-                                            color: Color(0xFF4baa9b))),
-                                    value: useWarehouse,
-                                    onChanged: (bool? value) {
-                                      setState(() {
-                                        useWarehouse = value!;
-                                      });
-                                    }))
-                          ])),
-                      SizedBox(height: 20),
-                      Row(children: [
-                        Expanded(
-                            child: ElevatedButton(
+                                SizedBox(width: 10),
+                                Expanded(
+                                  child: TextFormField(
+                                    key: Key('assets'),
+                                    decoration: InputDecoration(
+                                        labelText: 'Assets in warehouse'),
+                                    inputFormatters: <TextInputFormatter>[
+                                      FilteringTextInputFormatter.allow(
+                                          RegExp('[0-9.,]+'))
+                                    ],
+                                    controller: _assetsController,
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            ElevatedButton(
                                 key: Key('update'),
                                 child: Text(product.productId.isEmpty
                                     ? 'Create'
@@ -434,13 +455,18 @@ class _ProductState extends State<ProductDialogFull> {
                                                   _priceController.text.isEmpty
                                                       ? '0.00'
                                                       : _priceController.text),
+                                              assetCount: _assetsController
+                                                      .text.isEmpty
+                                                  ? 0
+                                                  : int.parse(
+                                                      _assetsController.text),
                                               categories: _selectedCategories,
                                               productTypeId: _selectedTypeId,
                                               useWarehouse: useWarehouse,
                                               image: image)));
                                   }
-                                })),
-                      ])
+                                })
+                          ])),
                     ])))));
   }
 }
