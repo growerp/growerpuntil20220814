@@ -76,9 +76,9 @@ class _ProductState extends State<ProductDialogFull> {
     _priceController.text =
         product.price == null ? '' : product.price.toString();
     _listPriceController.text =
-        product.assetCount == null ? '' : product.listPrice.toString();
+        product.listPrice == null ? '' : product.listPrice.toString();
     _assetsController.text =
-        product.listPrice == null ? '' : product.assetCount.toString();
+        product.assetCount == null ? '' : product.assetCount.toString();
     _selectedCategories = List.of(product.categories);
     _selectedTypeId = product.productTypeId ?? null;
     classificationId = GlobalConfiguration().get("classificationId");
