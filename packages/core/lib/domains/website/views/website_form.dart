@@ -32,10 +32,13 @@ class WebsiteForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) =>
-          WebsiteBloc(context.read<APIRepository>())..add(WebsiteFetch()),
-      child: WebsitePage(),
-    );
+        create: (BuildContext context) =>
+            WebsiteBloc(context.read<APIRepository>())..add(WebsiteFetch()),
+        child: BlocProvider(
+          create: (BuildContext context) =>
+              CategoryBloc(context.read<APIRepository>())..add(CategoryFetch()),
+          child: WebsitePage(),
+        ));
   }
 }
 
@@ -50,6 +53,8 @@ class _WebsiteState extends State<WebsitePage> {
   late WebsiteBloc _websiteBloc;
   List<Content>? _updatedContent;
   List<Category>? _updatedCategories;
+  List<Category>? _selectedCategories;
+  List<Category>? _availableCategories;
 
   @override
   void initState() {
@@ -59,31 +64,50 @@ class _WebsiteState extends State<WebsitePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<WebsiteBloc, WebsiteState>(listener: (context, state) {
+    return BlocConsumer<CategoryBloc, CategoryState>(
+        listener: (context, state) async {
       switch (state.status) {
-        case WebsiteStatus.success:
-          HelperFunctions.showMessage(
-              context, '${state.message}', Colors.green);
-          break;
-        case WebsiteStatus.failure:
-          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+        case CategoryStatus.failure:
+          HelperFunctions.showMessage(context,
+              'Error getting categories: ${state.message}', Colors.red);
           break;
         default:
       }
     }, builder: (context, state) {
-      switch (state.status) {
-        case WebsiteStatus.failure:
-          return Center(
-              child: Text('failed to fetch website info ${state.message}'));
-        case WebsiteStatus.success:
-          if (_updatedContent == null)
-            _updatedContent = List.of(state.website!.websiteContent);
-          if (_updatedCategories == null)
-            _updatedCategories = List.of(state.website!.websiteCategories);
-          return Scaffold(body: Center(child: _showForm(state)));
-        default:
-          return LoadingIndicator();
+      if (state.status == CategoryStatus.success) {
+        _availableCategories = state.categories;
+        return BlocConsumer<WebsiteBloc, WebsiteState>(
+            listener: (context, state) {
+          switch (state.status) {
+            case WebsiteStatus.success:
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.green);
+              break;
+            case WebsiteStatus.failure:
+              HelperFunctions.showMessage(
+                  context, '${state.message}', Colors.red);
+              break;
+            default:
+          }
+        }, builder: (context, state) {
+          switch (state.status) {
+            case WebsiteStatus.failure:
+              return Center(
+                  child: Text('failed to fetch website info ${state.message}'));
+            case WebsiteStatus.success:
+              if (_updatedContent == null)
+                _updatedContent = List.of(state.website!.websiteContent);
+              if (_updatedCategories == null)
+                _updatedCategories = List.of(state.website!.websiteCategories);
+              if (_selectedCategories == null)
+                _selectedCategories = List.of(state.website!.productCategories);
+              return Scaffold(body: Center(child: _showForm(state)));
+            default:
+              return LoadingIndicator();
+          }
+        });
       }
+      return LoadingIndicator();
     });
   }
 
@@ -187,11 +211,73 @@ class _WebsiteState extends State<WebsitePage> {
                           Wrap(children: contentButtons),
                           SizedBox(height: 30),
                           Text(
-                            'Product Categories',
+                            'Website Categories',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
                           Wrap(children: catButtons),
+                          SizedBox(height: 30),
+                          Text(
+                            'Product Categories',
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ElevatedButton(
+                                  key: Key('addCategories'),
+                                  onPressed: () async {
+                                    var result = await showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return MultiSelect<Category>(
+                                            title:
+                                                'Select one or more categories',
+                                            items: _availableCategories!,
+                                            selectedItems: _selectedCategories!,
+                                          );
+                                        });
+                                    if (result != null) {
+                                      setState(() {
+                                        _selectedCategories = result;
+                                      });
+                                      context.read<WebsiteBloc>().add(
+                                          WebsiteUpdate(Website(
+                                              id: state.website!.id,
+                                              productCategories:
+                                                  _selectedCategories!)));
+                                    }
+                                  },
+                                  child: const Text(
+                                      'modify available category list'),
+                                ),
+                                Wrap(
+                                  spacing: 10.0,
+                                  children: _selectedCategories!
+                                      .map((Category e) => Chip(
+                                            label: Text(
+                                              e.categoryName,
+                                              key: Key(e.categoryName),
+                                            ),
+                                            deleteIcon: const Icon(
+                                              Icons.cancel,
+                                              key: Key("deleteChip"),
+                                            ),
+                                            onDeleted: () async {
+                                              setState(() {
+                                                _selectedCategories!.remove(e);
+                                              });
+                                              context.read<WebsiteBloc>().add(
+                                                  WebsiteUpdate(Website(
+                                                      id: state.website!.id,
+                                                      productCategories:
+                                                          _selectedCategories!)));
+                                            },
+                                          ))
+                                      .toList(),
+                                )
+                              ])
                         ]))))));
   }
 }

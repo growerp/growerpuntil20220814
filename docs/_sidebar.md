@@ -3,6 +3,7 @@
 - Introduction
   * [What is GrowERP?](whatIsGrowerp.md)
   * [Getting started.](getStarted.md)
+  * [Releases](releases.md)
 
 - End User Documentation
   * [General business flow](userDoc/generalBusinessFlow.md)
