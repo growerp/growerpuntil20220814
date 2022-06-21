@@ -33,17 +33,18 @@ void main(List<String> arguments) async {
   // growerp already cloned or pulled
   // update growerp itself
   print("update growerp itself");
-  process = await Process.runSync('git', ['stash'],
+  process += await Process.runSync('git', ['stash'],
       workingDirectory: '$home/growerp');
-  process =
+  process +=
       await Process.runSync('git', ['pull'], workingDirectory: '$home/growerp');
-  process = await Process.runSync('flutter', ['pub', 'get'],
+  process += await Process.runSync('flutter', ['pub', 'get'],
       workingDirectory: '$home/growerp/packages/core');
-  process = await Process.runSync('flutter', ['pub', 'get'],
+  process += await Process.runSync('flutter', ['pub', 'get'],
       workingDirectory: '$home/growerp/packages/admin');
-  process = await Process.runSync('flutter',
+  process += await Process.runSync('flutter',
       ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-0outputs'],
       workingDirectory: '$home/growerp/packages/core');
+  print('=========git pull build growerp: ${process.stdout}');
 
   // growerp-chat
   print("update chat");

@@ -20,16 +20,17 @@ import '../../common/integration_test/commonTest.dart';
 class WarehouseTest {
   static Future<void> selectIncomingShipments(WidgetTester tester) async {
     await CommonTest.selectOption(
-        tester, 'dbWarehouse', 'FinDocListFormShipmentsIn', '3');
+        tester, 'dbWarehouse', 'FinDocListFormShipmentsIn', '2');
   }
 
   static Future<void> selectOutgoingShipments(WidgetTester tester) async {
     await CommonTest.selectOption(
-        tester, 'dbWarehouse', 'FinDocListFormShipmentsOut', '2');
+        tester, 'dbWarehouse', 'FinDocListFormShipmentsOut', '1');
   }
 
   static Future<void> selectWareHouseLocations(WidgetTester tester) async {
-    await CommonTest.selectOption(tester, 'dbWarehouse', 'LocationListForm');
+    await CommonTest.selectOption(
+        tester, 'dbWarehouse', 'LocationListForm', '3');
   }
 
   static Future<void> checkIncomingShipments(WidgetTester tester) async {

@@ -99,7 +99,7 @@ class FinDocListItem extends StatelessWidget {
                   key: Key('description$index'),
                 )),
             ]),
-            children: items(finDoc.items),
+            children: items(finDoc),
             trailing: SizedBox(
               width: isPhone ? 100 : 195,
               child: docType == FinDocType.payment &&
@@ -231,8 +231,8 @@ class FinDocListItem extends StatelessWidget {
     ]);
   }
 
-  List<Widget> items(List<FinDocItem> items) {
-    return List.from(items.mapIndexed((index, e) =>
+  List<Widget> items(FinDoc findoc) {
+    List<Widget> finDocItems = List.from(finDoc.items.mapIndexed((index, e) =>
         Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
           SizedBox(width: 50),
           Expanded(
@@ -264,5 +264,16 @@ class FinDocListItem extends StatelessWidget {
                                   : '', // payment
                       key: Key('itemLine$index'))))
         ])));
+    if (finDoc.address != null)
+      finDocItems.add(ListTile(
+          leading: SizedBox(width: 50),
+          title: Text("Shipping method: ${finDoc.shipmentMethod} "
+              "telephone: ${finDoc.telephoneNr}\n"
+              "${findoc.address!.address1} ${findoc.address!.address2} "
+              "${findoc.address!.province}\n"
+              "${findoc.address!.postalCode} ${finDoc.address!.city}\n"
+              "${finDoc.address!.country}")));
+
+    return finDocItems;
   }
 }

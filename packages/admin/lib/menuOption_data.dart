@@ -171,11 +171,6 @@ List<MenuOption> menuOptions = [
     readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
     tabItems: [
       TabItem(
-        form: LocationListForm(),
-        label: '\nWH Locations',
-        icon: const Icon(Icons.location_pin),
-      ),
-      TabItem(
         form: const FinDocListForm(
             key: Key('ShipmentsOut'),
             sales: true,
@@ -190,6 +185,11 @@ List<MenuOption> menuOptions = [
             docType: FinDocType.shipment),
         label: '\nIncoming shipments',
         icon: const Icon(Icons.call_received),
+      ),
+      TabItem(
+        form: LocationListForm(),
+        label: '\nWH Locations',
+        icon: const Icon(Icons.location_pin),
       ),
     ],
   ),
