@@ -44,6 +44,7 @@ class FinDoc with _$FinDoc {
         otherUser, //a single person responsible for finDoc of a single company
     Decimal? grandTotal,
     String? classificationId, // is productStore
+    String? salesChannel,
     String? shipmentMethod,
     Address? address,
     String? telephoneNr,

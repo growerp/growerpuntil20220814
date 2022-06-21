@@ -165,70 +165,74 @@ class FinDocListItem extends StatelessWidget {
             )));
   }
 
-  Widget itemButtons(BuildContext context, PaymentMethod? paymentMethod) {
-    return Row(children: [
-      Visibility(
-          visible: !isPhone,
-          child: Row(children: [
-            IconButton(
-              key: Key('delete$index'),
-              icon: Icon(Icons.delete_forever),
-              tooltip: 'Cancel ${finDoc.docType}',
-              onPressed: () {
-                finDocBloc.add(FinDocUpdate(
-                    finDoc.copyWith(status: FinDocStatusVal.Cancelled)));
-              },
-            ),
-            IconButton(
-              key: Key('print$index'),
-              icon: Icon(Icons.print),
-              tooltip: 'PDF/Print ${finDoc.docType}',
+  Widget? itemButtons(BuildContext context, PaymentMethod? paymentMethod) {
+    if (finDoc.salesChannel != 'Web' ||
+        (finDoc.salesChannel == 'Web' &&
+            finDoc.status != FinDocStatusVal.InPreparation))
+      return Row(children: [
+        Visibility(
+            visible: !isPhone,
+            child: Row(children: [
+              IconButton(
+                key: Key('delete$index'),
+                icon: Icon(Icons.delete_forever),
+                tooltip: 'Cancel ${finDoc.docType}',
+                onPressed: () {
+                  finDocBloc.add(FinDocUpdate(
+                      finDoc.copyWith(status: FinDocStatusVal.Cancelled)));
+                },
+              ),
+              IconButton(
+                key: Key('print$index'),
+                icon: Icon(Icons.print),
+                tooltip: 'PDF/Print ${finDoc.docType}',
+                onPressed: () async {
+                  await Navigator.pushNamed(context, '/printer',
+                      arguments: finDoc);
+                },
+              ),
+            ])),
+        IconButton(
+            key: Key('nextStatus$index'),
+            icon: Icon(Icons.arrow_upward),
+            tooltip: finDoc.status != null
+                ? FinDocStatusVal.nextStatus(finDoc.status!).toString()
+                : '',
+            onPressed: () {
+              finDocBloc.add(FinDocUpdate(finDoc.copyWith(
+                  status: FinDocStatusVal.nextStatus(finDoc.status!))));
+            }),
+        Visibility(
+            visible: [
+              FinDocType.order,
+              FinDocType.invoice,
+              FinDocType.payment,
+            ].contains(finDoc.docType),
+            child: IconButton(
+              icon: Icon(Icons.edit),
+              key: Key('edit$index'),
+              tooltip: 'Edit ${finDoc.docType}',
               onPressed: () async {
-                await Navigator.pushNamed(context, '/printer',
-                    arguments: finDoc);
+                await showDialog(
+                    barrierDismissible: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return BlocProvider.value(
+                          value: finDocBloc,
+                          child: onlyRental == true
+                              ? ReservationDialog(
+                                  finDoc: finDoc, original: finDoc)
+                              : finDoc.docType == FinDocType.payment
+                                  ? PaymentDialog(
+                                      finDoc,
+                                      paymentMethod: paymentMethod,
+                                    )
+                                  : FinDocDialog(finDoc: finDoc));
+                    });
               },
-            ),
-          ])),
-      IconButton(
-          key: Key('nextStatus$index'),
-          icon: Icon(Icons.arrow_upward),
-          tooltip: finDoc.status != null
-              ? FinDocStatusVal.nextStatus(finDoc.status!).toString()
-              : '',
-          onPressed: () {
-            finDocBloc.add(FinDocUpdate(finDoc.copyWith(
-                status: FinDocStatusVal.nextStatus(finDoc.status!))));
-          }),
-      Visibility(
-          visible: [
-            FinDocType.order,
-            FinDocType.invoice,
-            FinDocType.payment,
-          ].contains(finDoc.docType),
-          child: IconButton(
-            icon: Icon(Icons.edit),
-            key: Key('edit$index'),
-            tooltip: 'Edit ${finDoc.docType}',
-            onPressed: () async {
-              await showDialog(
-                  barrierDismissible: true,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return BlocProvider.value(
-                        value: finDocBloc,
-                        child: onlyRental == true
-                            ? ReservationDialog(
-                                finDoc: finDoc, original: finDoc)
-                            : finDoc.docType == FinDocType.payment
-                                ? PaymentDialog(
-                                    finDoc,
-                                    paymentMethod: paymentMethod,
-                                  )
-                                : FinDocDialog(finDoc: finDoc));
-                  });
-            },
-          )),
-    ]);
+            )),
+      ]);
+    return null;
   }
 
   List<Widget> items(FinDoc findoc) {

@@ -42,7 +42,7 @@ void main(List<String> arguments) async {
   process += await Process.runSync('flutter', ['pub', 'get'],
       workingDirectory: '$home/growerp/packages/admin');
   process += await Process.runSync('flutter',
-      ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-0outputs'],
+      ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
       workingDirectory: '$home/growerp/packages/core');
   print('=========git pull build growerp: ${process.stdout}');
 
