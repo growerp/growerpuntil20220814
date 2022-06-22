@@ -155,8 +155,13 @@ class _ProductState extends State<ProductDialogFull> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Stack(clipBehavior: Clip.none, children: [
-                      listChild(classificationId, isPhone, state),
-                      Positioned(top: 5, right: 5, child: DialogCloseButton()),
+                      Center(
+                          child: Container(
+                              width: 400,
+                              padding: EdgeInsets.all(20),
+                              child:
+                                  listChild(classificationId, isPhone, state))),
+                      Positioned(top: 5, right: 5, child: DialogCloseButton())
                     ])));
           return LoadingIndicator();
         }));
@@ -201,272 +206,256 @@ class _ProductState extends State<ProductDialogFull> {
         textAlign: TextAlign.center,
       );
     }
-    return Center(
-        child: Container(
-            width: 400,
-            padding: EdgeInsets.all(20),
-            child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                    key: Key('listView'),
-                    child: Column(children: <Widget>[
-                      Center(
-                          child: Text(
-                        'Product #${product.productId.isEmpty ? " New" : product.productId}',
-                        style: TextStyle(
-                            fontSize: isPhone ? 10 : 20,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                        key: Key('header'),
-                      )),
-                      SizedBox(height: 20),
-                      CircleAvatar(
-                          backgroundColor: Colors.green,
-                          radius: 80,
-                          child: _imageFile != null
-                              ? foundation.kIsWeb
-                                  ? Image.network(_imageFile!.path)
-                                  : Image.file(File(_imageFile!.path))
-                              : product.image != null
-                                  ? Image.memory(
-                                      product.image!,
-                                    )
-                                  : Text(
-                                      product.productName?.substring(0, 1) ??
-                                          '',
-                                      style: TextStyle(
-                                          fontSize: 30, color: Colors.black))),
-                      SizedBox(height: 30),
-                      TextFormField(
-                        key: Key('name'),
-                        decoration: InputDecoration(
-                            labelText: classificationId == 'AppHotel'
-                                ? 'Room Type Name'
-                                : 'Product Name'),
-                        controller: _nameController,
-                        validator: (value) {
-                          return value!.isEmpty ? 'Please enter a name?' : null;
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      TextFormField(
-                        key: Key('description'),
-                        maxLines: 3,
-                        decoration: InputDecoration(labelText: 'Description'),
-                        controller: _descriptionController,
-                        validator: (value) {
-                          return value!.isEmpty
-                              ? 'Please enter a description?'
-                              : null;
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              key: Key('listPrice'),
-                              decoration:
-                                  InputDecoration(labelText: 'List Price'),
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[0-9.,]+'))
-                              ],
-                              controller: _listPriceController,
-                              validator: (value) {
-                                return value!.isEmpty
-                                    ? 'Please enter a list price?'
-                                    : null;
-                              },
-                            ),
-                          ),
-                          SizedBox(width: 10),
-                          Expanded(
-                            child: TextFormField(
-                              key: Key('price'),
-                              decoration:
-                                  InputDecoration(labelText: 'Current Price'),
-                              inputFormatters: <TextInputFormatter>[
-                                FilteringTextInputFormatter.allow(
-                                    RegExp('[0-9.,]+'))
-                              ],
-                              controller: _priceController,
-                            ),
-                          )
-                        ],
-                      ),
-                      Visibility(
-                          visible: classificationId != 'AppHotel',
-                          child: Column(children: [
-                            SizedBox(height: 10),
-                            Container(
-                              width: 400,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(
-                                    color: Colors.black45,
-                                    style: BorderStyle.solid,
-                                    width: 0.80),
-                              ),
-                              padding: EdgeInsets.all(16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ElevatedButton(
-                                    key: Key('addCategories'),
-                                    onPressed: () async {
-                                      var result = await showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return MultiSelect<Category>(
-                                              title:
-                                                  'Select one or more categories',
-                                              items: state.categories,
-                                              selectedItems:
-                                                  _selectedCategories,
-                                            );
-                                          });
-                                      if (result != null) {
-                                        setState(() {
-                                          _selectedCategories = result;
-                                        });
-                                      }
-                                    },
-                                    child: const Text('Assign to category'),
-                                  ),
+    return Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+            key: Key('listView'),
+            child: Column(children: <Widget>[
+              Center(
+                  child: Text(
+                'Product #${product.productId.isEmpty ? " New" : product.productId}',
+                style: TextStyle(
+                    fontSize: isPhone ? 10 : 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+                key: Key('header'),
+              )),
+              SizedBox(height: 10),
+              CircleAvatar(
+                  backgroundColor: Colors.green,
+                  radius: 80,
+                  child: _imageFile != null
+                      ? foundation.kIsWeb
+                          ? Image.network(_imageFile!.path)
+                          : Image.file(File(_imageFile!.path))
+                      : product.image != null
+                          ? Image.memory(
+                              product.image!,
+                            )
+                          : Text(product.productName?.substring(0, 1) ?? '',
+                              style: TextStyle(
+                                  fontSize: 30, color: Colors.black))),
+              SizedBox(height: 30),
+              TextFormField(
+                key: Key('name'),
+                decoration: InputDecoration(
+                    labelText: classificationId == 'AppHotel'
+                        ? 'Room Type Name'
+                        : 'Product Name'),
+                controller: _nameController,
+                validator: (value) {
+                  return value!.isEmpty ? 'Please enter a name?' : null;
+                },
+              ),
+              SizedBox(height: 10),
+              TextFormField(
+                key: Key('description'),
+                maxLines: 3,
+                decoration: InputDecoration(labelText: 'Description'),
+                controller: _descriptionController,
+                validator: (value) {
+                  return value!.isEmpty ? 'Please enter a description?' : null;
+                },
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      key: Key('listPrice'),
+                      decoration: InputDecoration(labelText: 'List Price'),
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.allow(RegExp('[0-9.,]+'))
+                      ],
+                      controller: _listPriceController,
+                      validator: (value) {
+                        return value!.isEmpty
+                            ? 'Please enter a list price?'
+                            : null;
+                      },
+                    ),
+                  ),
+                  SizedBox(width: 10),
+                  Expanded(
+                    child: TextFormField(
+                      key: Key('price'),
+                      decoration: InputDecoration(labelText: 'Current Price'),
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.allow(RegExp('[0-9.,]+'))
+                      ],
+                      controller: _priceController,
+                    ),
+                  )
+                ],
+              ),
+              Visibility(
+                visible: classificationId != 'AppHotel',
+                child: Column(children: [
+                  SizedBox(height: 10),
+                  Container(
+                    width: 400,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.0),
+                      border: Border.all(
+                          color: Colors.black45,
+                          style: BorderStyle.solid,
+                          width: 0.80),
+                    ),
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ElevatedButton(
+                          key: Key('addCategories'),
+                          onPressed: () async {
+                            var result = await showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return MultiSelect<Category>(
+                                    title: 'Select one or more categories',
+                                    items: state.categories,
+                                    selectedItems: _selectedCategories,
+                                  );
+                                });
+                            if (result != null) {
+                              setState(() {
+                                _selectedCategories = result;
+                              });
+                            }
+                          },
+                          child: const Text('Assign to category'),
+                        ),
 
-                                  // display selected items
-                                  Wrap(
-                                    spacing: 10.0,
-                                    children: _selectedCategories
-                                        .map((Category e) => Chip(
-                                              label: Text(
-                                                e.categoryName,
-                                                key: Key(e.categoryName),
-                                              ),
-                                              deleteIcon: const Icon(
-                                                Icons.cancel,
-                                                key: Key("deleteChip"),
-                                              ),
-                                              onDeleted: () async {
-                                                setState(() {
-                                                  _selectedCategories.remove(e);
-                                                });
-                                              },
-                                            ))
-                                        .toList(),
-                                  )
-                                ],
-                              ),
+                        // display selected items
+                        Wrap(
+                          spacing: 10.0,
+                          children: _selectedCategories
+                              .map((Category e) => Chip(
+                                    label: Text(
+                                      e.categoryName,
+                                      key: Key(e.categoryName),
+                                    ),
+                                    deleteIcon: const Icon(
+                                      Icons.cancel,
+                                      key: Key("deleteChip"),
+                                    ),
+                                    onDeleted: () async {
+                                      setState(() {
+                                        _selectedCategories.remove(e);
+                                      });
+                                    },
+                                  ))
+                              .toList(),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 10),
+                  DropdownButtonFormField<String>(
+                    key: Key('productTypeDropDown'),
+                    value: _selectedTypeId,
+                    decoration: InputDecoration(labelText: 'Product Type'),
+                    validator: (value) {
+                      return value == null ? 'field required' : null;
+                    },
+                    items: productTypes.map((item) {
+                      return DropdownMenuItem<String>(
+                          child: Text(item,
+                              style: TextStyle(color: Color(0xFF4baa9b))),
+                          value: item);
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      _selectedTypeId = newValue!;
+                    },
+                    isExpanded: true,
+                  ),
+                  SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25.0),
+                              border: Border.all(
+                                  color: Colors.black45,
+                                  style: BorderStyle.solid,
+                                  width: 0.80),
                             ),
-                            SizedBox(height: 10),
-                            DropdownButtonFormField<String>(
-                              key: Key('productTypeDropDown'),
-                              value: _selectedTypeId,
-                              decoration:
-                                  InputDecoration(labelText: 'Product Type'),
-                              validator: (value) {
-                                return value == null ? 'field required' : null;
-                              },
-                              items: productTypes.map((item) {
-                                return DropdownMenuItem<String>(
-                                    child: Text(item,
-                                        style: TextStyle(
-                                            color: Color(0xFF4baa9b))),
-                                    value: item);
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                _selectedTypeId = newValue!;
-                              },
-                              isExpanded: true,
-                            ),
-                            SizedBox(height: 10),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(25.0),
-                                        border: Border.all(
-                                            color: Colors.black45,
-                                            style: BorderStyle.solid,
-                                            width: 0.80),
-                                      ),
-                                      child: CheckboxListTile(
-                                          key: Key('useWarehouse'),
-                                          title: Text("Use Warehouse?",
-                                              style: TextStyle(
-                                                  color: Color(0xFF4baa9b))),
-                                          value: useWarehouse,
-                                          onChanged: (bool? value) {
-                                            setState(() {
-                                              useWarehouse = value!;
-                                            });
-                                          })),
-                                ),
-                                SizedBox(width: 10),
-                                Expanded(
-                                  child: TextFormField(
-                                    key: Key('assets'),
-                                    decoration: InputDecoration(
-                                        labelText: 'Assets in warehouse'),
-                                    inputFormatters: <TextInputFormatter>[
-                                      FilteringTextInputFormatter.allow(
-                                          RegExp('[0-9.,]+'))
-                                    ],
-                                    controller: _assetsController,
-                                  ),
-                                )
-                              ],
-                            ),
-                            SizedBox(height: 10),
-                            ElevatedButton(
-                                key: Key('update'),
-                                child: Text(product.productId.isEmpty
-                                    ? 'Create'
-                                    : 'Update'),
-                                onPressed: () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    Uint8List? image =
-                                        await HelperFunctions.getResizedImage(
-                                            _imageFile?.path);
-                                    if (_imageFile?.path != null &&
-                                        image == null)
-                                      HelperFunctions.showMessage(
-                                          context,
-                                          "Image upload error or larger than 200K",
-                                          Colors.red);
-                                    else
-                                      context.read<ProductBloc>().add(
-                                          ProductUpdate(Product(
-                                              productId: product.productId,
-                                              productName: _nameController.text,
-                                              assetClassId:
-                                                  classificationId ==
-                                                          'AppHotel'
-                                                      ? 'Hotel Room'
-                                                      : null,
-                                              description:
-                                                  _descriptionController.text,
-                                              listPrice: Decimal.parse(
-                                                  _listPriceController.text),
-                                              price: Decimal.parse(
-                                                  _priceController.text.isEmpty
+                            child: CheckboxListTile(
+                                key: Key('useWarehouse'),
+                                title: Text("Use Warehouse?",
+                                    style: TextStyle(color: Color(0xFF4baa9b))),
+                                value: useWarehouse,
+                                onChanged: (bool? value) {
+                                  setState(() {
+                                    useWarehouse = value!;
+                                  });
+                                })),
+                      ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: TextFormField(
+                          key: Key('assets'),
+                          decoration:
+                              InputDecoration(labelText: 'Assets in warehouse'),
+                          inputFormatters: <TextInputFormatter>[
+                            FilteringTextInputFormatter.allow(
+                                RegExp('[0-9.,]+'))
+                          ],
+                          controller: _assetsController,
+                        ),
+                      )
+                    ],
+                  ),
+                ]),
+              ),
+              SizedBox(height: 10),
+              Row(children: [
+                Expanded(
+                    child: ElevatedButton(
+                        key: Key('update'),
+                        child: Text(
+                            product.productId.isEmpty ? 'Create' : 'Update'),
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            Uint8List? image =
+                                await HelperFunctions.getResizedImage(
+                                    _imageFile?.path);
+                            if (_imageFile?.path != null && image == null)
+                              HelperFunctions.showMessage(
+                                  context,
+                                  "Image upload error or larger than 200K",
+                                  Colors.red);
+                            else
+                              context.read<ProductBloc>().add(ProductUpdate(
+                                  Product(
+                                      productId: product.productId,
+                                      productName: _nameController.text,
+                                      assetClassId: classificationId ==
+                                              'AppHotel'
+                                          ? 'Hotel Room'
+                                          : null,
+                                      description: _descriptionController.text,
+                                      listPrice:
+                                          Decimal.parse(_listPriceController
+                                              .text),
+                                      price:
+                                          Decimal
+                                              .parse(
+                                                  _priceController
+                                                          .text.isEmpty
                                                       ? '0.00'
                                                       : _priceController.text),
-                                              assetCount: _assetsController
-                                                      .text.isEmpty
-                                                  ? 0
-                                                  : int.parse(
-                                                      _assetsController.text),
-                                              categories: _selectedCategories,
-                                              productTypeId: _selectedTypeId,
-                                              useWarehouse: useWarehouse,
-                                              image: image)));
-                                  }
-                                })
-                          ])),
-                    ])))));
+                                      assetCount: _assetsController.text.isEmpty
+                                          ? 0
+                                          : int.parse(_assetsController.text),
+                                      categories: _selectedCategories,
+                                      productTypeId: _selectedTypeId,
+                                      useWarehouse: useWarehouse,
+                                      image: image)));
+                          }
+                        }))
+              ])
+            ])));
   }
 }
