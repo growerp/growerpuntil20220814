@@ -2,7 +2,7 @@
 
 GrowERP is an open source multiplatform ERP application you can try right now!
 
-Please note the application need to install for the first time:
+Please note the application needs to download for the first time:
 - Web:     https://admin.growerp.com
 - Android: https://play.google.com/store/apps/details?id=org.growerp.admin
 - IOS:     https://apps.apple.com/us/app/growerp-admin-open-source/id1545521755

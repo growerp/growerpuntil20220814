@@ -22,6 +22,7 @@
       alias: {
         '/.*/_sidebar.md': '/_sidebar.md'
       },
+      subMaxLevel: 3,
       homepage:
           "https://raw.githubusercontent.com/growerp/growerp/master/README.md",
       repo: 'https://github.com/growerp/growerp',
@@ -37,10 +38,13 @@
             return this.origin.code.apply(this, arguments);
           }
         }
-      }
+      },
+      sidebarDisplayLevel: 1,
     }
   </script>
   <!-- Docsify v4 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <!-- plugins -->
+  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
 </body>
 </html>

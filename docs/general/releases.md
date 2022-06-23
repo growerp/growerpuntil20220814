@@ -1,7 +1,7 @@
 # GrowERP releases
 
 
-## June 1 2022 beta release (last?) 
+## June 1 2022 beta release (last beta?) 
 
 1. Automatically generated e-commerce website
 	- Maintenance from flutter frontend:
@@ -12,16 +12,16 @@
 	- multi company
 	- selenium tests
 
-2. Api documented and available for testing with Flutter frontend
+2. [Api documented and available](technical_user/api.md) for testing with Flutter frontend
 	- in/output parameters definition
 	- authorization
 	- test/production sites at test.growerp.org/backend.growerp.com
 
 3. Stripe payment gateway available
-	- working with ecommerce website and flutter frontend.
+	- working with E-commerce website and flutter frontend.
 
 4. Flutter frontend improvements:
-	- Added Ecommerce website maintenance to flutter frontend at company -> website
+	- Added E-commerce website maintenance to flutter frontend at company -> website
 	- adding categories to products and adding products to categories improved
 	- no mandatory assignment of a product to at least a single category
 	- be able to add assets at the product screen

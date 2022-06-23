@@ -18,18 +18,18 @@ Additional ERP systems can be added on request, A REST interface is required.
 The implementation time is 40+ hours.
 
 # To run the system locally.
-## After installation of [Java 11](https://openjdk.java.net/install/):
+After installation of [Java 11](https://openjdk.java.net/install/):
   
-### Moqui backend: (preferred)
+Moqui backend: (preferred)
   https://github.com/growerp/growerp-moqui/README.md
 
-### OR...Apache OFBiz backend:
+OR...Apache OFBiz backend:
   https://github.com/growerp/growerp-ofbiz/blob/master/README.adoc
 
-### clone and run the WebSocket chat server(optional)
+clone and run the WebSocket chat server(optional)
   https://github.com/growerp/growerp-chat  
 
-### Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
+Flutter app, after [installation of Flutter](https://flutter.dev/docs/get-started/install):
 ```
 git clone https://github.com/growerp/growerp
 $ cd growerp/packages/core
