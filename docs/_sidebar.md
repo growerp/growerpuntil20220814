@@ -9,7 +9,7 @@
   * [Getting started](end_user/getStarted.md)
   * [Functional overview](end_user/functional_overview.md)
     * [Marketing & Sales](end_user/marketing_sales.md)
-    * [Sales order entry](end_user/sales_order_entry.md)
+    * [Sales order management](end_user/sales_order_management.md)
     * [Inventory management](end_user/inventory_management.md)
     * [Purchasing](end_user/purchasing.md)
     * [Accounting](end_user/accounting.md)

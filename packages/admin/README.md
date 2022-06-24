@@ -1,22 +1,22 @@
-# GrowERP Flutter ERP Admin App for Moqui.org or ofbiz.apache.org (web browser/Android/IOS)
+# GrowERP Flutter ERP Admin App.
 
 more info at https://www.growerp.org (be patient, also in flutter, needs to load for the first time....)
 
 - also see the introduction below.
 
-# Online versions.
+## Online versions.
 where you can create your own company, demo data will be provided.
-## Web browser version.
+### Web browser version.
 - Admin: https://admin.growerp.org
 
-## Android Playstore
+### Android Playstore
 - Admin: https://play.google.com/store/apps/details?id=org.growerp.admin
 
-## IOS Appstore:
+### IOS Appstore:
 - Admin: https://apps.apple.com/us/app/growerp-admin-open-source/id1545521755
 
-# To run the system locally.
-## After installation of [Java 11](https://openjdk.java.net/install/):
+## To run the system locally.
+After installation of [Java 11](https://openjdk.java.net/install/):
   
 ### Moqui backend: (preferred)
   https://github.com/growerp/growerp-moqui/README.md
@@ -32,7 +32,7 @@ flutter run
 ```
 create your first company!
 
-# Introduction.
+## Introduction.
 GrowERP Admin Flutter frontend component for Android, IOS and Web using https://flutter.dev This application is build for the stable version of flutter, you can find the installation instructions at: https://flutter.dev/docs/get-started
 
 Although all screens work on IOS/Anderoid/Web devices however a smaller screen will show less information but it is still usable.
@@ -55,9 +55,9 @@ The implementation time is 40+ hours.
 Functions coming up:
 More accounting reports
 
-# registering in the app/play stores
+## registering in the app/play stores
 Please see the android/fastlane/REDME and ios/fastlane/README files 
 
-# Single company use.
+## Single company use.
 
 This frontend can be used for a single company, set the company partyId in the assets/cfg frontend dir.

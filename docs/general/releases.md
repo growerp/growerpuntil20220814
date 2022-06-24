@@ -3,7 +3,7 @@
 
 ## June 1 2022 beta release (last beta?) 
 
-1. Automatically generated e-commerce website
+1. Automatically generated [e-commerce website](../end_user/marketing_sales.md)
 	- Maintenance from flutter frontend:
 		- logo, products and categories
 		- title, about, support, using markdown format
@@ -17,7 +17,7 @@
 	- authorization
 	- test/production sites at test.growerp.org/backend.growerp.com
 
-3. Stripe payment gateway available
+3. [Stripe payment gateway](technical_user/stripe.md).
 	- working with E-commerce website and flutter frontend.
 
 4. Flutter frontend improvements:
