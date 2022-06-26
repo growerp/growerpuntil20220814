@@ -184,6 +184,7 @@ class FinDocBloc extends Bloc<FinDocEvent, FinDocState>
                   index = finDocs.indexWhere((element) =>
                       element.transactionId == event.finDoc.transactionId);
                   break;
+                default:
               }
               finDocs[index] = data;
               return state.copyWith(

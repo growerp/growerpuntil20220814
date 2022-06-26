@@ -12,24 +12,21 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-// a replacement for enum:
-// https://medium.com/@ra9r/overcoming-the-limitations-of-dart-enum-8866df8a1c47
-/// acting role within the system.
-class FinDocStatusVal {
+enum FinDocStatusVal {
+  InPreparation('FinDocInPrep'),
+  Created('FinDocCreated'),
+  Approved('FinDocApproved'),
+  Completed('FinDocCompleted'),
+  Cancelled('FinDocCancelled'),
+  Unknown('unknown');
+
   final String _name;
-  const FinDocStatusVal._(this._name);
+  const FinDocStatusVal(this._name);
 
   @override
   String toString() {
     return _name;
   }
-
-  static const FinDocStatusVal InPreparation = FinDocStatusVal._('FinDocPrep');
-  static const FinDocStatusVal Created = FinDocStatusVal._('FinDocCreated');
-  static const FinDocStatusVal Approved = FinDocStatusVal._('FinDocApproved');
-  static const FinDocStatusVal Completed = FinDocStatusVal._('FinDocCompleted');
-  static const FinDocStatusVal Cancelled = FinDocStatusVal._('FinDocCancelled');
-  static const FinDocStatusVal Unknown = FinDocStatusVal._('??');
 
   static FinDocStatusVal? tryParse(String val) {
     switch (val) {

@@ -198,6 +198,7 @@ class PaymentTest {
       case FinDocType.payment:
         await PersistFunctions.persistTest(test.copyWith(payments: finDocs));
         break;
+      default:
     }
   }
 

@@ -1,7 +1,7 @@
 # GrowERP releases
 
 
-## June 1 2022 beta release (last beta?) 
+## June 1, 2022 beta release (last beta?) 
 
 1. Automatically generated [e-commerce website](../end_user/marketing_sales.md)
 	- Maintenance from flutter frontend:
@@ -27,7 +27,7 @@
 	- be able to add assets at the product screen
 	- improved demo data from Moqui PopRestStore
 	- integration tests now all fixed.
-	- products can now assigned to more categories
+	- A product can now be assigned to more categories
 	- Upgraded to flutter v3 with mostly latest packages.
 	- upgraded app in app/play store
 

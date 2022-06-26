@@ -183,6 +183,8 @@ class FinDocListState extends State<FinDocList> {
         break;
       case FinDocType.transaction:
         _finDocBloc = context.read<TransactionBloc>() as FinDocBloc;
+        break;
+      default:
     }
   }
 

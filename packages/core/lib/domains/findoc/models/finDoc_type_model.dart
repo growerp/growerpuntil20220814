@@ -11,41 +11,36 @@
  * along with this software (see the LICENSE.md file). If not, see
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
-
-// a replacement for enum:
-// https://medium.com/@ra9r/overcoming-the-limitations-of-dart-enum-8866df8a1c47
-
 /// financial document (FinDoc) types
-class FinDocType {
+enum FinDocType {
+  order('Order'),
+  invoice('Invoice'),
+  payment('Payment'),
+  shipment('Shipment'),
+  transaction('Transaction'),
+  unknown('UnKnown');
+
+  const FinDocType(this._name);
   final String _name;
-  const FinDocType._(this._name);
+
+  static FinDocType tryParse(String val) {
+    switch (val) {
+      case 'Order':
+        return order;
+      case 'Invoice':
+        return invoice;
+      case 'Payment':
+        return payment;
+      case 'Shipment':
+        return shipment;
+      case 'Transaction':
+        return transaction;
+    }
+    return unknown;
+  }
 
   @override
   String toString() {
     return _name;
-  }
-
-  static const FinDocType order = FinDocType._('Order');
-  static const FinDocType invoice = FinDocType._('Invoice');
-  static const FinDocType payment = FinDocType._('Payment');
-  static const FinDocType shipment = FinDocType._('Shipment');
-  static const FinDocType transaction = FinDocType._('Transaction');
-  static const FinDocType unknown = FinDocType._('??');
-
-  static FinDocType tryParse(String val) {
-    switch (val.toLowerCase()) {
-      case 'order':
-        return order;
-      case 'invoice':
-        return invoice;
-      case 'payment':
-        return payment;
-      case 'shipment':
-        return shipment;
-      case 'transaction':
-        return transaction;
-      default:
-        return unknown;
-    }
   }
 }
