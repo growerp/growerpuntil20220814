@@ -42,9 +42,9 @@
   - [HTML Website](technical_user/website.md)
   - [Stripe Payment Processor](technical_user/stripe.md)
   - Installation
-    - [Android](fastlane/android/README.md)
-    - [IOS](fastlane/ios/README.md)
-    - [Integration Test](integrationTest.md)
+    - [Android](technical_user/android/README.md)
+    - [IOS](technical_user/ios/README.md)
+    - [Integration Test](technical_user/integrationTest.md)
 [//]: # (
       - backend servers
       - web
