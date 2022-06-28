@@ -156,7 +156,7 @@ void main() {
       await tapMenuButton('tap/company');
       await waitFor(find.byValueKey('/company'), expected: true);
       if (imagePrefix != 'test_driver/screenshots')
-        await takeScreenshot('company');
+        await takeScreenshot('website');
 
       //catalog
       await tapMenuButton('tap/catalog');

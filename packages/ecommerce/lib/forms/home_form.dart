@@ -211,7 +211,7 @@ class _HomeState extends State<HomePage> {
                     ),
                   ),
                   Row(children: <Widget>[
-                    Text(data.categoryName!),
+                    Text(data.categoryName),
                     Icon(
                       Icons.keyboard_arrow_right,
                       size: 14,
@@ -235,7 +235,8 @@ class _HomeState extends State<HomePage> {
       );
     else {
       List<Product> productList = products!
-          .where((i) => i.category!.categoryId == selectedCategoryId)
+          .where((i) => i.categories
+              .contains((element) => element.categoryId == selectedCategoryId))
           .toList();
       return ClipRRect(
           borderRadius: BorderRadius.only(

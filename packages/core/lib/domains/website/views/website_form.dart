@@ -252,6 +252,7 @@ class _WebsiteState extends State<WebsitePage> {
                                   child: const Text(
                                       'modify available category list'),
                                 ),
+                                SizedBox(height: 10),
                                 Wrap(
                                   spacing: 10.0,
                                   children: _selectedCategories!

@@ -52,7 +52,7 @@ class CompanyTest {
   }
 
   static Future<void> selectCompany(WidgetTester tester) async {
-    await CommonTest.selectOption(tester, 'tapCompany', 'CompanyForm');
+    await CommonTest.selectOption(tester, 'tapCompany', 'CompanyForm', '4');
   }
 
   static Future<void> updateCompany(WidgetTester tester) async {

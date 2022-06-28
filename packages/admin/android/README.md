@@ -1,20 +1,44 @@
-Running fastlane to upload in Playstore
-=======================================
+# Running fastlane to upload in Playstore
 
-Steps AFTER preparation below:
-1. create screenshots and frame them, in admin home directory: 
-    flutter pub run utils:screenshots
-2. Move the framed images to the respective directories 
-    under: metadata/android/en-US/images: phoneScreenshots, seveninchScreenshots,teninchScreenshots 
-3. increase in pubspec.yaml version+buildnr
+### create these emulators:
+
+Nexus_10_API_30         • Nexus 10 API 30           • Google • android
+Nexus_7_2012_API_30     • Nexus 7 (2012) API 30     • Google • android
+Pixel_4_Edited_1_API_30 • Pixel 4 (Edited) 1 API 30 • User   • android
+
+launch these for the first time:
+flutter emulators --lanch nexus_7
+flutter emulators --lanch nexus_10
+flutter emulators --lanch pixel
+
+For the tablets change to horizontal view.
+
+Install frameit_chrome: dart pub global activate frameit_chrome
+
+### create screen shots:
+create title.strings and key.word.strings with screenshots
+
+In growerp/packages/admin dir:  
+flutter pub run utils:screenshots
+
+Only framing:
+flutter pub global run frameit_chrome \
+    --base-dir=android/fastlane/metadata/android \
+    --frames-dir=android/fastlane/frames \
+    --chrome-binary="/usr/bin/google-chrome-stable" \
+    --pixel-ratio=1
+
+### futher
+1. Move the framed images in fastlane/metadata/framed/en-US to the respective directories under: metadata/android/en-US/images: phoneScreenshots, seveninchScreenshots,teninchScreenshots 
+2. increase in pubspec.yaml version+buildnr
     buildnr should always increase, version is shown to the user
-4. in web/index.html increase version:
+3. in web/index.html increase version:
     main.dart.js?version=?
-5. adjust the backend urls (test or production)
+4. adjust the backend urls (test or production)
     in assets/cfg/app_settings.json
-6. create app bundle in admin home:
+5. create app bundle in admin home:
     flutter build appbundle
-7. Upload in Play store: (in android dir)
+6. Upload in Play store: (in android dir)
     (everything including build/meta/screenshots)
     fastlane supply \
         --aab ../build/app/outputs/bundle/release/app-release.aab \
@@ -26,32 +50,12 @@ Steps AFTER preparation below:
 
 check file fastfile for another actions.
 
-To prepare before running screenshots and upload to playstore
--------------------------------------------------------------
-1. make sure the menutest works, see test_driver directory
-use these emulators:
-
-Nexus_10_API_30         • Nexus 10 API 30           • Google • android
-Nexus_7_2012_API_30     • Nexus 7 (2012) API 30     • Google • android
-Pixel_4_Edited_1_API_30 • Pixel 4 (Edited) 1 API 30 • User   • android
-
-Install frameit_chrome: dart pub global activate frameit_chrome
-
-In admin dir: frame the screenshots single run:
-create title.strings and key.word.strings with screenshots
-flutter pub global run frameit_chrome \
-    --base-dir=android/fastlane/metadata/android \
-    --frames-dir=android/fastlane/frames \
-    --chrome-binary="/usr/bin/google-chrome-stable" \
-    --pixel-ratio=1
 
 adding framed images
 
-Other requirements:
-====================
+### Other requirements:
 
-create a <projdir>/android/key.properties link to a local file
---------------------------------------------------------------
+#### create a <projdir>/android/key.properties link to a local file
 which contains the following info:
 storePassword=xxxxx
 keyPassword=xxxxx
@@ -62,8 +66,7 @@ storeFile=xxxxxxx
 to create a link in linux in the android directory:
     ln -s key.properties here/your/actual/file
 
-should have local.properties file
----------------------------------
+#### should have local.properties file
 which contains the following info:
 sdk.dir=/home/dell/Android/Sdk
 flutter.sdk=/home/dell/snap/flutter/common/flutter
@@ -86,21 +89,17 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 
-build the aab bundle:
-----------------------
+#### build the aab bundle:
 flutter build appbundle
 
-First time upload by hand, make sure bundle id is set correctly:
-----------------------------------------------------------------
+#### First time upload by hand, make sure bundle id is set correctly:
 flutter create --org org/growerp/admin .
 init: fastlane supply init
 
-Upload in Play store: (android dir)
+#### Upload in Play store: (android dir)
 (everything including build/meta/screenshots)
---------------------------------------
 fastlane supply \
     --aab /home/dell/admin/build/app/outputs/bundle/release/app-release.aab \
     --track beta --in_app_update_priority 3 \
     --version_code x
-
 

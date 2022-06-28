@@ -16,7 +16,6 @@ import 'package:core/api_repository.dart';
 import 'package:core/domains/domains.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:core/styles/themes.dart';
-import 'package:core/widgets/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,6 +59,7 @@ class TopApp extends StatelessWidget {
                   BlocProvider.of<AuthBloc>(context))),
           BlocProvider<SalesCartBloc>(
               create: (context) => CartBloc(
+                  repos: context.read<APIRepository>(),
                   sales: true,
                   docType: FinDocType.order,
                   finDocBloc:

@@ -1,9 +1,9 @@
 # Upload a new version to the appstore:
 
 start emulators from command line:
-https://medium.com/@abrisad_it/how-to-launch-ios-simulator-and-android-emulator-on-mac-cd198295532e
+flutter emulators --launch pixel
 
-to create a missing emulator ipad: (adjust ios version and ipad version)
+<b>to create a missing emulator ipad</b>: (adjust ios version and ipad version)
 xcrun simctl create "iPad Pro (12.9-inch) (3rd generation)" "com.apple.CoreSimulator.SimDeviceType.iPad-Pro--12-9-inch---3rd-generation-" "com.apple.CoreSimulator.SimRuntime.iOS-14-5"
 
 1. Start all emulators you need screen shots from
@@ -28,8 +28,7 @@ Build and upload Manual:
 certicate access (rediculus!!)    
     https://stackoverflow.com/questions/10204320/mac-os-x-wants-to-use-system-keychain-when-compiling-the-project
 
-Fastlane:
----------
+### Fastlane
 1. increase numbers in ios/Runner/Info.plist:
     CFBundleShortVersionString: major version seen by the user ie: 0.0.13
     CFBundleVersion: seqeuntial nuber within version
