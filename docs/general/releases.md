@@ -1,7 +1,7 @@
 # GrowERP releases
 
 
-## June 1, 2022 beta release (last beta?) 
+## Third beta release July 1, 2022.
 
 1. Automatically generated [e-commerce website](../end_user/marketing_sales.md)
 	- Maintenance from flutter frontend:
@@ -10,12 +10,11 @@
 	- using improved demo data
 	- multi currency
 	- multi company
-	- selenium tests
 
 2. [Api documented and available](technical_user/api.md) for testing with Flutter frontend
 	- in/output parameters definition
 	- authorization
-	- test/production sites at test.growerp.org/backend.growerp.com
+	- test/production public API sites at test.growerp.org/backend.growerp.com
 
 3. [Stripe payment gateway](technical_user/stripe.md).
 	- working with E-commerce website and flutter frontend.
@@ -29,7 +28,8 @@
 	- integration tests now all fixed.
 	- A product can now be assigned to more categories
 	- Upgraded to flutter v3 with mostly latest packages.
-	- upgraded app in app/play store
+	- upgraded app in app/play store.
+	- More documentation.
 
 ## Second beta release May 3, 2022
 
