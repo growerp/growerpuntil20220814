@@ -141,7 +141,11 @@ class _CategoryState extends State<CategoryDialogFull> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Stack(clipBehavior: Clip.none, children: [
-                      listChild(state),
+                      Container(
+                          padding: EdgeInsets.all(20),
+                          width: 400,
+                          height: 600,
+                          child: Center(child: listChild(state))),
                       Positioned(top: 5, right: 5, child: DialogCloseButton()),
                     ])));
           return LoadingIndicator();
@@ -245,7 +249,7 @@ class _CategoryState extends State<CategoryDialogFull> {
                           : null;
                     },
                   ),
-                  SizedBox(height: 30),
+                  SizedBox(height: 10),
                   TextFormField(
                     key: Key('description'),
                     decoration: InputDecoration(labelText: 'Description'),
@@ -257,7 +261,7 @@ class _CategoryState extends State<CategoryDialogFull> {
                       return null;
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: 10),
                   ElevatedButton(
                     key: Key('addProducts'),
                     onPressed: () async {
@@ -278,6 +282,7 @@ class _CategoryState extends State<CategoryDialogFull> {
                     },
                     child: const Text('Select one or more products '),
                   ),
+                  SizedBox(height: 10),
                   Wrap(
                     spacing: 10.0,
                     children: _selectedProducts.isNotEmpty

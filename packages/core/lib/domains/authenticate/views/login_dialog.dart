@@ -145,7 +145,7 @@ class _LoginHeaderState extends State<LoginDialog> {
                 TextFormField(
                   autofocus: _usernameController.text.isEmpty,
                   key: Key('username'),
-                  decoration: InputDecoration(labelText: 'Username'),
+                  decoration: InputDecoration(labelText: 'Username/Email'),
                   controller: _usernameController,
                   validator: (value) {
                     if (value!.isEmpty)

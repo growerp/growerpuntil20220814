@@ -155,12 +155,11 @@ class _ProductState extends State<ProductDialogFull> {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Stack(clipBehavior: Clip.none, children: [
-                      Center(
-                          child: Container(
-                              width: 400,
-                              padding: EdgeInsets.all(20),
-                              child:
-                                  listChild(classificationId, isPhone, state))),
+                      Container(
+                          width: 400,
+                          height: 900,
+                          padding: EdgeInsets.all(20),
+                          child: listChild(classificationId, isPhone, state)),
                       Positioned(top: 5, right: 5, child: DialogCloseButton())
                     ])));
           return LoadingIndicator();
@@ -292,63 +291,52 @@ class _ProductState extends State<ProductDialogFull> {
                 visible: classificationId != 'AppHotel',
                 child: Column(children: [
                   SizedBox(height: 10),
-                  Container(
-                    width: 400,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(25.0),
-                      border: Border.all(
-                          color: Colors.black45,
-                          style: BorderStyle.solid,
-                          width: 0.80),
-                    ),
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ElevatedButton(
-                          key: Key('addCategories'),
-                          onPressed: () async {
-                            var result = await showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return MultiSelect<Category>(
-                                    title: 'Select one or more categories',
-                                    items: state.categories,
-                                    selectedItems: _selectedCategories,
-                                  );
-                                });
-                            if (result != null) {
-                              setState(() {
-                                _selectedCategories = result;
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ElevatedButton(
+                        key: Key('addCategories'),
+                        onPressed: () async {
+                          var result = await showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return MultiSelect<Category>(
+                                  title: 'Select one or more categories',
+                                  items: state.categories,
+                                  selectedItems: _selectedCategories,
+                                );
                               });
-                            }
-                          },
-                          child: const Text('Assign to category'),
-                        ),
+                          if (result != null) {
+                            setState(() {
+                              _selectedCategories = result;
+                            });
+                          }
+                        },
+                        child: const Text('Assign to category'),
+                      ),
 
-                        // display selected items
-                        Wrap(
-                          spacing: 10.0,
-                          children: _selectedCategories
-                              .map((Category e) => Chip(
-                                    label: Text(
-                                      e.categoryName,
-                                      key: Key(e.categoryName),
-                                    ),
-                                    deleteIcon: const Icon(
-                                      Icons.cancel,
-                                      key: Key("deleteChip"),
-                                    ),
-                                    onDeleted: () async {
-                                      setState(() {
-                                        _selectedCategories.remove(e);
-                                      });
-                                    },
-                                  ))
-                              .toList(),
-                        )
-                      ],
-                    ),
+                      // display selected items
+                      Wrap(
+                        spacing: 10.0,
+                        children: _selectedCategories
+                            .map((Category e) => Chip(
+                                  label: Text(
+                                    e.categoryName,
+                                    key: Key(e.categoryName),
+                                  ),
+                                  deleteIcon: const Icon(
+                                    Icons.cancel,
+                                    key: Key("deleteChip"),
+                                  ),
+                                  onDeleted: () async {
+                                    setState(() {
+                                      _selectedCategories.remove(e);
+                                    });
+                                  },
+                                ))
+                            .toList(),
+                      )
+                    ],
                   ),
                   SizedBox(height: 10),
                   DropdownButtonFormField<String>(
