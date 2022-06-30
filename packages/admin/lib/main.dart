@@ -27,6 +27,7 @@ import 'router.dart' as router;
 import 'package:http/http.dart' as http;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:core/domains/domains.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,6 +36,12 @@ Future main() async {
 
   // can change backend url by pressing long the title on the home screen.
   SharedPreferences prefs = await SharedPreferences.getInstance();
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  GlobalConfiguration().updateValue('appName', packageInfo.appName);
+  GlobalConfiguration().updateValue('packageName', packageInfo.packageName);
+  GlobalConfiguration().updateValue('version', packageInfo.version);
+  GlobalConfiguration().updateValue('build', packageInfo.buildNumber);
+
   String ip = prefs.getString('ip') ?? '';
   String chat = prefs.getString('chat') ?? '';
   String singleCompany = prefs.getString('companyPartyId') ?? '';

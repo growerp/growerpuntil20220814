@@ -43,78 +43,98 @@ class _HomeFormState extends State<HomeForm> {
   @override
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
+
+    Widget _appInfo = Center(
+        child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Text(
+                "${GlobalConfiguration().get("appName")} "
+                "V${GlobalConfiguration().get("version")} "
+                "#${GlobalConfiguration().get("build")}",
+                style: TextStyle(fontSize: 10, color: Colors.black))));
+
     return BlocBuilder<AuthBloc, AuthState>(builder: (context, state) {
       switch (state.status) {
         case AuthStatus.authenticated:
           Authenticate authenticate = state.authenticate!;
-          return DisplayMenuOption(
-            menuList: widget.menuOptions,
-            menuIndex: 0,
-            actions: <Widget>[
-              if (authenticate.apiKey != null)
-                IconButton(
-                    key: Key('logoutButton'),
-                    icon: Icon(Icons.do_not_disturb, key: Key('HomeFormAuth')),
-                    tooltip: 'Logout',
-                    onPressed: () => {
-                          context.read<AuthBloc>().add(AuthLoggedOut()),
-                        }),
-            ],
-          );
+          return Column(children: [
+            Expanded(
+                child: DisplayMenuOption(
+                    menuList: widget.menuOptions,
+                    menuIndex: 0,
+                    actions: <Widget>[
+                  if (authenticate.apiKey != null)
+                    IconButton(
+                        key: Key('logoutButton'),
+                        icon: Icon(Icons.do_not_disturb,
+                            key: Key('HomeFormAuth')),
+                        tooltip: 'Logout',
+                        onPressed: () => {
+                              context.read<AuthBloc>().add(AuthLoggedOut()),
+                            }),
+                ])),
+            _appInfo
+          ]);
         case AuthStatus.unAuthenticated:
           Authenticate authenticate = state.authenticate!;
-          return Scaffold(
-              appBar: AppBar(
-                  key: Key('HomeFormUnAuth'),
-                  title: appBarTitle(
-                      context,
-                      authenticate,
-                      'Login' +
-                          (singleCompany.isEmpty ? ' / New company' : ''))),
-              body: Center(
-                  child: Column(children: <Widget>[
-                SizedBox(height: 100),
-                InkWell(
-                    onLongPress: () {
-                      context.read<AuthBloc>().add(AuthChangedIp());
-                    },
-                    child: Text(widget.title,
-                        style: TextStyle(
-                            fontSize: isPhone ? 15 : 25,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold))),
-                SizedBox(height: 40),
-                authenticate.company?.partyId != null
-                    ? ElevatedButton(
-                        key: Key('loginButton'),
-                        child: Text('Login with an Existing ID'),
-                        onPressed: () async {
-                          await showDialog(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return LoginDialog();
-                              });
-                        })
-                    : Text('No companies yet, create one!'),
-                SizedBox(height: 100),
-                Visibility(
-                    visible: singleCompany.isEmpty,
-                    child: ElevatedButton(
-                        key: Key('newCompButton'),
-                        child: Text('Create a new company and admin'),
-                        onPressed: () async {
-                          await showDialog(
-                              barrierDismissible: true,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return NewCompanyDialog(
-                                    formArguments: FormArguments(
-                                        object: authenticate.copyWith(
-                                            company: null)));
-                              });
-                        }))
-              ])));
+          return Column(children: [
+            Expanded(
+                child: Scaffold(
+                    appBar: AppBar(
+                        key: Key('HomeFormUnAuth'),
+                        title: appBarTitle(
+                            context,
+                            authenticate,
+                            'Login' +
+                                (singleCompany.isEmpty
+                                    ? ' / New company'
+                                    : ''))),
+                    body: Center(
+                        child: Column(children: <Widget>[
+                      SizedBox(height: 100),
+                      InkWell(
+                          onLongPress: () {
+                            context.read<AuthBloc>().add(AuthChangedIp());
+                          },
+                          child: Text(widget.title,
+                              style: TextStyle(
+                                  fontSize: isPhone ? 15 : 25,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold))),
+                      SizedBox(height: 40),
+                      authenticate.company?.partyId != null
+                          ? ElevatedButton(
+                              key: Key('loginButton'),
+                              child: Text('Login with an Existing ID'),
+                              onPressed: () async {
+                                await showDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return LoginDialog();
+                                    });
+                              })
+                          : Text('No companies yet, create one!'),
+                      SizedBox(height: 100),
+                      Visibility(
+                          visible: singleCompany.isEmpty,
+                          child: ElevatedButton(
+                              key: Key('newCompButton'),
+                              child: Text('Create a new company and admin'),
+                              onPressed: () async {
+                                await showDialog(
+                                    barrierDismissible: true,
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return NewCompanyDialog(
+                                          formArguments: FormArguments(
+                                              object: authenticate.copyWith(
+                                                  company: null)));
+                                    });
+                              })),
+                    ])))),
+            _appInfo
+          ]);
         default:
           return LoadingIndicator();
       }

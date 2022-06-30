@@ -26,15 +26,18 @@ class AboutForm extends StatelessWidget {
 class AboutFormHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double? version = GlobalConfiguration().get("version") ?? 0.00;
-    int? build = GlobalConfiguration().get("build") ?? 0;
+    String version = GlobalConfiguration().get("version") ?? '';
+    String build = GlobalConfiguration().get("build") ?? '';
     String databaseUrl = GlobalConfiguration().get("databaseUrl") ?? '';
+    String packageName = GlobalConfiguration().get("packageName") ?? '';
+    String appName = GlobalConfiguration().get("packageName") ?? '';
     var year = DateTime.now().year;
 
     return AboutPage(
         dialog: false,
-        title: Text('About GrowERP and this Admin app'),
+        title: Text('About GrowERP and this $appName app'),
         applicationVersion: 'Version $version, build #$build',
+        applicationName: packageName,
         applicationDescription: Center(child: Text("$databaseUrl")),
         applicationIcon: Image(
           image: AssetImage('assets/images/growerp.png'),

@@ -1,6 +1,5 @@
 {
-    "version": 0.1,
-    "build": 10,
+    "appName": "", "packageName":"", "version": "", "build": "",
     "classificationId": "AppAdmin",
     "_________________comment__backend": "moqui / ofbiz",
     "backend": "moqui",
@@ -21,5 +20,5 @@
     "_________________comment_restRequestsLogs": "show logging of requests",
     "restRequestLogs": false,
     "_________________comment_restResponseLogs": "show logging of responses",
-    "restResponseLogs": false
+    "restResponseLogs": false 
 }

@@ -21,6 +21,8 @@ You can either use the links below or search within the store for 'growerp' and 
 
 * Use your favorite web browser and go to the admin application at [https://admin.growerp.com](https://admin.growerp.com). As mentioned, be patient, the application needs to be downloaded. The next time you start, it will startup much quicker.
 
+The admin app is for the maintenance of the system, the website is only for customers ordering your products; You can add products in the admin app and they will appear on the website for ordering.
+
 ## Publish your first product on your own website.
 
 Now make your product available for internet sale: register, create the product and publish it.
