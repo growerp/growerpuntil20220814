@@ -86,7 +86,7 @@ void main() {
     // email
     await driver.waitFor(find.byValueKey('email'));
     await driver.tap(find.byValueKey('email'));
-    await driver.enterText('test@example.org');
+    await driver.enterText('test@example.com');
     // companyName
     await driver.waitFor(find.byValueKey('companyName'));
     await driver.tap(find.byValueKey('companyName'));
@@ -103,8 +103,8 @@ void main() {
     await driver.tap(find.byValueKey('loginButton'));
     await driver.waitFor(find.byValueKey('username'));
     await driver.tap(find.byValueKey('username'));
-    await driver.enterText('test@example.org');
-    await driver.waitFor(find.text('test@example.org'));
+    await driver.enterText('test@example.com');
+    await driver.waitFor(find.text('test@example.com'));
     await driver.tap(find.byValueKey('password'));
     await driver.enterText('qqqqqq9!');
     await driver.tap(find.byValueKey('login'));

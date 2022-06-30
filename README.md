@@ -18,7 +18,7 @@ If you like this initiative, please give a star to the project.
  
 Documentation available at https://www.growerp.com
 
-Some phone screen shots:
+### Some phone screen shots:q
 <div style="text-align: center">
     <table>
         <tr>
@@ -40,12 +40,13 @@ Some phone screen shots:
                     <img src="https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/android/fastlane/metadata/images/phoneScreenshots/Pixel_4_API_31-orders.png" width="200">
             </td>
             <td style="text-align: center">
-                    <img src="https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/android/fastlane/metadata/images/phoneScreenshots/Pixel_4_API_31-warehouse.png" width="200">
+                    <img src="https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/android/fastlane/metadata/images/phoneScreenshots/Pixel_4_API_31-website.png" width="200">
             </td>
         </tr>
     </table>
 </div>
-Some web/tablet screen shots:
+
+### Some web/tablet screen shots:
 <div style="text-align: center">
     <table>
         <tr>
@@ -70,7 +71,18 @@ Some web/tablet screen shots:
         </tr>
         <tr>
             <td style="text-align: center">
-                    <img src="https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/android/fastlane/metadata/images/teninchScreenshots/Nexus_10_API_30-warehouse.png" width="600">
+                    <img src="https://raw.githubusercontent.com/growerp/growerp/master/packages/admin/android/fastlane/metadata/images/teninchScreenshots/Nexus_10_API_30-website.png" width="600">
+            </td>
+        </tr>
+    </table>
+</div>
+
+### The generated business website:
+<div style="text-align: center">
+    <table>
+        <tr>
+            <td style="text-align: center">
+                    <img src="https://raw.githubusercontent.com/growerp/growerp/master/docs/_media/htmlWebsite.png" width="600">
             </td>            
         </tr>
     </table>

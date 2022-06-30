@@ -32,26 +32,21 @@ flutter pub global run frameit_chrome \
 1. Move the framed images in fastlane/metadata/framed/en-US to the respective directories under: metadata/android/en-US/images: phoneScreenshots, seveninchScreenshots,teninchScreenshots 
 2. increase in pubspec.yaml version+buildnr
     buildnr should always increase, version is shown to the user
-3. in web/index.html increase version:
-    main.dart.js?version=?
-4. adjust the backend urls (test or production)
+3. adjust the backend urls (test or production)
     in assets/cfg/app_settings.json
-5. create app bundle in admin home:
+4. create app bundle in admin home:
     flutter build appbundle
-6. Upload in Play store: (in android dir)
+5. Upload in Play store: (in android dir)
     (everything including build/meta/screenshots)
     fastlane supply \
         --aab ../build/app/outputs/bundle/release/app-release.aab \
-        --track beta --in_app_update_priority 3 \
-        --version_code 7
-        --skip_docs
+        --track beta --in_app_update_priority 3
+
    upload just binary:
-    fastlane upload skip_docs
+    fastlane upload
 
 check file fastfile for another actions.
 
-
-adding framed images
 
 ### Other requirements:
 
@@ -100,6 +95,5 @@ init: fastlane supply init
 (everything including build/meta/screenshots)
 fastlane supply \
     --aab /home/dell/admin/build/app/outputs/bundle/release/app-release.aab \
-    --track beta --in_app_update_priority 3 \
-    --version_code x
+    --track beta --in_app_update_priority 3 
 
