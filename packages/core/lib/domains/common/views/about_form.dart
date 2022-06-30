@@ -30,7 +30,7 @@ class AboutFormHeader extends StatelessWidget {
     String build = GlobalConfiguration().get("build") ?? '';
     String databaseUrl = GlobalConfiguration().get("databaseUrl") ?? '';
     String packageName = GlobalConfiguration().get("packageName") ?? '';
-    String appName = GlobalConfiguration().get("packageName") ?? '';
+    String appName = GlobalConfiguration().get("appName") ?? '';
     var year = DateTime.now().year;
 
     return AboutPage(
