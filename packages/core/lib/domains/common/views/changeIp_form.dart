@@ -15,74 +15,100 @@
 import 'package:core/domains/domains.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ChangeIpForm extends StatelessWidget {
+class ChangeIpForm extends StatefulWidget {
+  @override
+  State<ChangeIpForm> createState() => _ChangeIpFormState();
+}
+
+class _ChangeIpFormState extends State<ChangeIpForm> {
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     String ip = '', companyPartyId = '', chat = '';
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Center(
           child: AlertDialog(
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20.0))),
         title: Text('Enter a backend && chat url in the form of: xxx.yyy.zzz',
             textAlign: TextAlign.center),
-        content: Container(
-            height: 200,
-            child: Column(children: <Widget>[
-              TextFormField(
-                  autofocus: true,
-                  decoration: new InputDecoration(labelText: 'Backend server:'),
-                  onChanged: (value) {
-                    ip = value;
-                  }),
-              SizedBox(height: 10),
-              TextFormField(
-                  autofocus: true,
-                  decoration: new InputDecoration(labelText: 'Chat server:'),
-                  onChanged: (value) {
-                    chat = value;
-                  }),
-              SizedBox(height: 10),
-              TextFormField(
-                  autofocus: true,
-                  decoration: new InputDecoration(
-                      labelText: 'partyId of main company:'),
-                  onChanged: (value) {
-                    companyPartyId = value;
-                  })
-            ])),
-        actions: <Widget>[
-          ElevatedButton(
-            child: Text('Cancel'),
-            onPressed: () {
-              context.read<AuthBloc>().add(AuthLoad());
-            },
-          ),
-          ElevatedButton(
-            child: Text('Ok'),
-            onPressed: () async {
-              if (ip.isNotEmpty) {
-                if (!ip.startsWith('https://')) ip = 'https://$ip';
-                if (!ip.endsWith('/')) ip = '$ip/';
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.setString('ip', ip);
-              }
-              if (chat.isNotEmpty) {
-                if (!chat.startsWith('wss://')) chat = 'wss://$chat';
-                if (!chat.endsWith('/')) chat = '$chat/';
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.setString('chat', chat);
-              }
-              if (companyPartyId.isNotEmpty) {
-                SharedPreferences prefs = await SharedPreferences.getInstance();
-                await prefs.setString('companyPartyId', companyPartyId);
-              }
-              context.read<AuthBloc>().add(AuthLoad());
-            },
-          ),
-        ],
+        content: Form(
+            key: _formKey,
+            child: Container(
+                height: 300,
+                child: Column(children: <Widget>[
+                  TextFormField(
+                      autofocus: true,
+                      decoration:
+                          new InputDecoration(labelText: 'Backend server:'),
+                      validator: (value) =>
+                          value == null ? 'field required!' : null,
+                      onChanged: (value) {
+                        setState(() {
+                          ip = value;
+                        });
+                      }),
+                  SizedBox(height: 10),
+                  TextFormField(
+                      autofocus: true,
+                      decoration:
+                          new InputDecoration(labelText: 'Chat server:'),
+                      validator: (value) =>
+                          value == null ? 'field required!' : null,
+                      onChanged: (value) {
+                        setState(() {
+                          chat = value;
+                        });
+                      }),
+                  SizedBox(height: 10),
+                  TextFormField(
+                      autofocus: true,
+                      decoration: new InputDecoration(
+                          labelText: 'partyId of main company:'),
+                      onChanged: (value) {
+                        companyPartyId = value;
+                      }),
+                  SizedBox(height: 20),
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        child: Text('Cancel'),
+                        onPressed: () {
+                          context.read<AuthBloc>().add(AuthLoad());
+                        },
+                      ),
+                      SizedBox(width: 20),
+                      Expanded(
+                        child: ElevatedButton(
+                            child: Text('Ok'),
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                if (!ip.startsWith('https://'))
+                                  ip = 'https://$ip';
+                                if (!ip.endsWith('/')) ip = '$ip/';
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString('ip', ip);
+                                if (!chat.startsWith('wss://'))
+                                  chat = 'wss://$chat';
+                                if (!chat.endsWith('/')) chat = '$chat/';
+                                await prefs.setString('chat', chat);
+                                if (companyPartyId.isNotEmpty) {
+                                  await prefs.setString(
+                                      'companyPartyId', companyPartyId);
+                                }
+                                Phoenix.rebirth(context);
+                              }
+                            }),
+                      )
+                    ],
+                  ),
+                ]))),
       )),
     );
   }

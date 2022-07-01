@@ -93,8 +93,13 @@ class _HomeFormState extends State<HomeForm> {
                         child: Column(children: <Widget>[
                       SizedBox(height: 100),
                       InkWell(
-                          onLongPress: () {
-                            context.read<AuthBloc>().add(AuthChangedIp());
+                          onLongPress: () async {
+                            await showDialog(
+                                barrierDismissible: true,
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return ChangeIpForm();
+                                });
                           },
                           child: Text(widget.title,
                               style: TextStyle(

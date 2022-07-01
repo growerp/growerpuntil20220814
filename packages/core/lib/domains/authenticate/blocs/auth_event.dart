@@ -84,5 +84,3 @@ class AuthLoggedOut extends AuthEvent {
   @override
   String toString() => 'loggedOut with: ${authenticate?.user?.loginName}';
 }
-
-class AuthChangedIp extends AuthEvent {}
