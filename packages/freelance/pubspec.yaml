@@ -1,5 +1,5 @@
 name: freelance
-version: 0.0.1+1
+version: 0.1.0+1
 publish_to: none
 
 environment:
@@ -10,26 +10,19 @@ dependencies:
     sdk: flutter
   flutter_localizations:
         sdk: flutter
-  decimal: ^1.0.0
-  intl: ^0.17.0
   global_configuration: ^2.0.0-nullsafety.0
   equatable: ^2.0.3
   dio: ^4.0.0
-  flutter_bloc: ^8.0.0
   meta: ^1.3.0
   shared_preferences: ^2.0.6
-  image_picker: ^0.7.3
-  about: ^2.0.0
-  animations: ^2.0.0
-  responsive_framework: ^0.1.0
+  responsive_framework: ^0.2.0
   flutter_simple_treeview: ^3.0.0-nullsafety.1
   printing: ^5.0.4
   pdf: ^3.0.0
-  dropdown_search: ^0.6.3
-  flutter_phoenix: ^1.0.0
   bloc_concurrency: ^0.2.0
   core:
     path: ../core
+  package_info_plus: ^1.4.2
 
 dev_dependencies:
   flutter_test:

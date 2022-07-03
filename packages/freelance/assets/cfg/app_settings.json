@@ -1,6 +1,5 @@
 {
-    "version": 0.1,
-    "build": 10,
+    "appName": "", "packageName":"", "version": "", "build": "",
     "classificationId": "AppFreelance",
     "_________________comment__backend(only moqui is active)": "moqui / ofbiz",
     "backend": "moqui",

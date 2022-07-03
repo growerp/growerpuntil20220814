@@ -14,7 +14,7 @@
 
 import 'package:core/api_repository.dart';
 import 'package:core/services/chat_server.dart';
-import 'menuOption_data.dart';
+import 'menuItem_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,16 +23,21 @@ import 'package:global_configuration/global_configuration.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/styles/themes.dart';
-import 'package:core/widgets/@widgets.dart';
 import 'router.dart' as router;
 import 'package:http/http.dart' as http;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:core/domains/domains.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await GlobalConfiguration().loadFromAsset('app_settings');
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  GlobalConfiguration().updateValue('appName', packageInfo.appName);
+  GlobalConfiguration().updateValue('packageName', packageInfo.packageName);
+  GlobalConfiguration().updateValue('version', packageInfo.version);
+  GlobalConfiguration().updateValue('build', packageInfo.buildNumber);
 
   // can change backend url by pressing long the title on the home screen.
   SharedPreferences prefs = await SharedPreferences.getInstance();

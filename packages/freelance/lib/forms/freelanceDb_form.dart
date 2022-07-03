@@ -14,10 +14,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:core/widgets/@widgets.dart';
 import 'package:core/domains/domains.dart';
 
-import '../menuOption_data.dart';
+import '../menuItem_data.dart';
 
 class FreelanceDbForm extends StatelessWidget {
   @override

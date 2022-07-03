@@ -115,7 +115,7 @@ List<MenuOption> menuOptions = [
     tabItems: [
       TabItem(
         form: FinDocListForm(
-            key: Key("SalesOrder"), sales: true, docType: FinDocType.Order),
+            key: Key("SalesOrder"), sales: true, docType: FinDocType.order),
         label: "Sales orders",
         icon: Icon(Icons.home),
       ),
@@ -138,7 +138,7 @@ List<MenuOption> menuOptions = [
     tabItems: [
       TabItem(
         form: FinDocListForm(
-            key: Key("PurchaseOrder"), sales: false, docType: FinDocType.Order),
+            key: Key("PurchaseOrder"), sales: false, docType: FinDocType.order),
         label: "Purchase orders",
         icon: Icon(Icons.home),
       ),
