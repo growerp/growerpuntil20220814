@@ -12,7 +12,6 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 import 'package:core/api_repository.dart';
-import 'package:core/extensions.dart';
 import 'package:core/services/chat_server.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -27,11 +26,17 @@ import 'router.dart' as router;
 import 'package:http/http.dart' as http;
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:core/domains/domains.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await GlobalConfiguration().loadFromAsset("app_settings");
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+  GlobalConfiguration().updateValue('appName', packageInfo.appName);
+  GlobalConfiguration().updateValue('packageName', packageInfo.packageName);
+  GlobalConfiguration().updateValue('version', packageInfo.version);
+  GlobalConfiguration().updateValue('build', packageInfo.buildNumber);
 
   // can change backend url by pressing long the title on the home screen.
   SharedPreferences prefs = await SharedPreferences.getInstance();
