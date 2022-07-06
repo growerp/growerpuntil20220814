@@ -119,7 +119,7 @@ class _AssetState extends State<AssetDialog> {
                                   ? "New"
                                   : "${asset.assetId}"),
                           style: TextStyle(
-                              fontSize: isPhone ? 10 : 20,
+                              fontSize: 10,
                               color: Colors.black,
                               fontWeight: FontWeight.bold),
                           key: Key('header'))),

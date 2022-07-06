@@ -144,7 +144,7 @@ class _CategoryState extends State<CategoryDialogFull> {
                       Container(
                           padding: EdgeInsets.all(20),
                           width: 400,
-                          height: 600,
+                          height: 650,
                           child: Center(child: listChild(state))),
                       Positioned(top: 5, right: 5, child: DialogCloseButton()),
                     ])));
@@ -205,10 +205,50 @@ class _CategoryState extends State<CategoryDialogFull> {
         textAlign: TextAlign.center,
       );
     }
-    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
+
+    List<Widget> _relProducts = [];
+    _selectedProducts.asMap().forEach((index, product) {
+      _relProducts.add(InputChip(
+          label: Text(
+            product.productName!,
+            key: Key(product.productId),
+          ),
+          deleteIcon: const Icon(
+            Icons.cancel,
+            key: Key("deleteChip"),
+          ),
+          onDeleted: () async {
+            setState(() {
+              _selectedProducts.removeAt(index);
+            });
+          }));
+    });
+    _relProducts.add(IconButton(
+      iconSize: 25,
+      icon: Icon(Icons.add_circle),
+      color: Colors.deepOrange,
+      padding: const EdgeInsets.all(0.0),
+      key: Key('addProducts'),
+      onPressed: () async {
+        var result = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return MultiSelect<Product>(
+                title: 'Select one or more products',
+                items: state.products,
+                selectedItems: _selectedProducts,
+              );
+            });
+        if (result != null) {
+          setState(() {
+            _selectedProducts = result;
+          });
+        }
+      },
+    ));
+
     return Center(
         child: Container(
-            width: 400,
             padding: EdgeInsets.all(20),
             child: Form(
                 key: _formKey,
@@ -217,7 +257,7 @@ class _CategoryState extends State<CategoryDialogFull> {
                       child: Text(
                     'Category #${category.categoryId.isEmpty ? " New" : category.categoryId}',
                     style: TextStyle(
-                        fontSize: isPhone ? 10 : 20,
+                        fontSize: 10,
                         color: Colors.black,
                         fontWeight: FontWeight.bold),
                     key: Key('header'),
@@ -228,10 +268,10 @@ class _CategoryState extends State<CategoryDialogFull> {
                       radius: 80,
                       child: _imageFile != null
                           ? foundation.kIsWeb
-                              ? Image.network(_imageFile!.path)
-                              : Image.file(File(_imageFile!.path))
+                              ? Image.network(_imageFile!.path, scale: 0.3)
+                              : Image.file(File(_imageFile!.path), scale: 0.3)
                           : category.image != null
-                              ? Image.memory(category.image!)
+                              ? Image.memory(category.image!, scale: 0.3)
                               : Text(
                                   category.categoryName.isEmpty
                                       ? '?'
@@ -262,51 +302,15 @@ class _CategoryState extends State<CategoryDialogFull> {
                     },
                   ),
                   SizedBox(height: 10),
-                  ElevatedButton(
-                    key: Key('addProducts'),
-                    onPressed: () async {
-                      var result = await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return MultiSelect<Product>(
-                              title: 'Select one or more products',
-                              items: state.products,
-                              selectedItems: _selectedProducts,
-                            );
-                          });
-                      if (result != null) {
-                        setState(() {
-                          _selectedProducts = result;
-                        });
-                      }
-                    },
-                    child: const Text('Select one or more products '),
-                  ),
+                  Container(
+                      child: InputDecorator(
+                          decoration: InputDecoration(
+                              labelText: 'Related Products',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              )),
+                          child: Wrap(spacing: 10.0, children: _relProducts))),
                   SizedBox(height: 10),
-                  Wrap(
-                    spacing: 10.0,
-                    children: _selectedProducts.isNotEmpty
-                        ? _selectedProducts
-                            .map((Product e) => Chip(
-                                label: Text(
-                                  e.productName!,
-                                  key: Key(e.productId),
-                                ),
-                                deleteIcon: const Icon(
-                                  Icons.cancel,
-                                  key: Key("deleteChip"),
-                                ),
-                                onDeleted: () async {
-                                  setState(() {
-                                    _selectedProducts.remove(e);
-                                  });
-                                  context.read<CategoryBloc>().add(
-                                      CategoryUpdate(category.copyWith(
-                                          products: _selectedProducts)));
-                                }))
-                            .toList()
-                        : [],
-                  ),
                   ElevatedButton(
                       key: Key('update'),
                       child: Text(
@@ -323,9 +327,7 @@ class _CategoryState extends State<CategoryDialogFull> {
                           if (_imageFile?.path != null &&
                               updatedCategory.image == null)
                             HelperFunctions.showMessage(
-                                context,
-                                "Image upload error or larger than 200K",
-                                Colors.red);
+                                context, "Image upload error!", Colors.red);
                           else
                             context.read<CategoryBloc>().add(CategoryUpdate(
                                   updatedCategory,

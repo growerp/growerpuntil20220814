@@ -117,7 +117,7 @@ class _TimeEntryState extends State<TimeEntryDialog> {
                                   ? "New"
                                   : "${timeEntry.timeEntryId}"),
                           style: TextStyle(
-                              fontSize: isPhone ? 10 : 20,
+                              fontSize: 10,
                               color: Colors.black,
                               fontWeight: FontWeight.bold))),
                   SizedBox(height: 30),

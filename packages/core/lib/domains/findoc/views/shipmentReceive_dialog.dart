@@ -104,7 +104,7 @@ class _ShipmentReceiveState extends State<ShipmentReceiveDialog> {
                             child: Text(
                                 'Incoming Shipment# ${finDoc.shipmentId}',
                                 style: TextStyle(
-                                    fontSize: isPhone ? 10 : 20,
+                                    fontSize: 10,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold))),
                         SizedBox(height: 20),

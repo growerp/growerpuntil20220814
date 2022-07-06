@@ -17,7 +17,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:core/domains/domains.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import '../../../api_repository.dart';
 
 class WebsiteCategoryDialog extends StatelessWidget {
@@ -83,91 +82,96 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Scaffold(
-                    backgroundColor: Colors.transparent,
-                    body: Stack(clipBehavior: Clip.none, children: [
-                      _categoryDialog(state),
-                      Positioned(top: 5, right: 5, child: DialogCloseButton()),
-                    ])));
+                child: Container(
+                    width: 400,
+                    height: 500,
+                    padding: EdgeInsets.all(20),
+                    child: Scaffold(
+                        backgroundColor: Colors.transparent,
+                        body: Stack(clipBehavior: Clip.none, children: [
+                          _categoryDialog(state),
+                          Positioned(
+                              top: 5, right: 5, child: DialogCloseButton()),
+                        ]))));
           return LoadingIndicator();
         }));
   }
 
   Widget _categoryDialog(ProductState state) {
-    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
-    return Center(
-        child: Container(
-            width: 400,
-            padding: EdgeInsets.all(20),
-            child: Form(
-                key: _formKey,
-                child: ListView(key: Key('listView'), children: <Widget>[
-                  Center(
-                      child: Text(
-                    'Category #${category.categoryId.isEmpty ? " New" : category.categoryId}',
-                    style: TextStyle(
-                        fontSize: isPhone ? 10 : 20,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                    key: Key('header'),
-                  )),
-                  SizedBox(height: 30),
-                  Center(
-                      child: Text(
-                    category.categoryName,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  )),
-                  SizedBox(height: 30),
-                  ElevatedButton(
-                    key: Key('addProducts'),
-                    onPressed: () async {
-                      var result = await showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return MultiSelect<Product>(
-                              title: 'Select one or more products',
-                              items: state.products,
-                              selectedItems: _selectedProducts,
-                            );
-                          });
-                      if (result != null) {
-                        setState(() {
-                          _selectedProducts = result;
-                        });
-                      }
-                    },
-                    child: const Text('Select one or more products '),
-                  ),
-                  Wrap(
-                    spacing: 10.0,
-                    children: _selectedProducts
-                        .map((Product e) => Chip(
-                            label: Text(
-                              e.productName!,
-                              key: Key(e.productId),
-                            ),
-                            deleteIcon: const Icon(
-                              Icons.cancel,
-                              key: Key("deleteChip"),
-                            ),
-                            onDeleted: () async {
-                              setState(() {
-                                _selectedProducts.remove(e);
-                              });
-                            }))
-                        .toList(),
-                  ),
-                  ElevatedButton(
-                      key: Key('update'),
-                      child: Text('Update'),
-                      onPressed: () async {
-                        context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
-                                id: widget.websiteId,
-                                websiteCategories: [
-                                  widget.category
-                                      .copyWith(products: _selectedProducts)
-                                ])));
-                      }),
-                ]))));
+    List<Widget> productsWrap = [];
+    _selectedProducts.asMap().forEach((index, product) {
+      productsWrap.add(InputChip(
+        label: Text(
+          product.productName!,
+          key: Key(product.productId),
+        ),
+        deleteIcon: const Icon(
+          Icons.cancel,
+          key: Key("deleteChip"),
+        ),
+        onDeleted: () async {
+          setState(() {
+            _selectedProducts.remove(index);
+          });
+        },
+      ));
+    });
+    productsWrap.add(IconButton(
+      iconSize: 30,
+      icon: Icon(Icons.add_circle),
+      color: Colors.deepOrange,
+      padding: const EdgeInsets.all(0.0),
+      key: Key('addProducts'),
+      onPressed: () async {
+        var result = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return MultiSelect<Product>(
+                title: 'Select one or more products',
+                items: state.products,
+                selectedItems: _selectedProducts,
+              );
+            });
+        if (result != null) {
+          setState(() {
+            _selectedProducts = result;
+          });
+        }
+      },
+    ));
+
+    return Form(
+        key: _formKey,
+        child: ListView(key: Key('listView'), children: <Widget>[
+          Center(
+              child: Text(
+            'Category #${category.categoryId.isEmpty ? " New" : category.categoryId}',
+            style: TextStyle(
+                fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
+            key: Key('header'),
+          )),
+          SizedBox(height: 30),
+          Center(
+              child: Text(
+            "Products in ${category.categoryName}",
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          )),
+          SizedBox(height: 30),
+          Wrap(
+            spacing: 10.0,
+            children: productsWrap,
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+              key: Key('update'),
+              child: Text('Update'),
+              onPressed: () async {
+                context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                        id: widget.websiteId,
+                        websiteCategories: [
+                          widget.category.copyWith(products: _selectedProducts)
+                        ])));
+              }),
+        ]));
   }
 }

@@ -135,7 +135,7 @@ class _PaymentState extends State<PaymentDialog> {
                       "${finDoc.sales ? 'Sales/incoming' : 'Purchase/outgoing'} "
                       "Payment #${finDoc.paymentId ?? 'new'}",
                       style: TextStyle(
-                          fontSize: isPhone ? 10 : 20,
+                          fontSize: 10,
                           color: Colors.black,
                           fontWeight: FontWeight.bold),
                       key: Key('header'))),

@@ -98,7 +98,7 @@ class _ChatRoomState extends State<ChatRoomDialog> {
                                   ? "New"
                                   : "${chatRoom.chatRoomId}"),
                           style: TextStyle(
-                              fontSize: isPhone ? 10 : 20,
+                              fontSize: 10,
                               color: Colors.black,
                               fontWeight: FontWeight.bold))),
                   SizedBox(height: 30),

@@ -216,18 +216,14 @@ class _UserState extends State<UserPage> {
               child: Text(
             'User ${widget.user.userGroup.toString()} #${updatedUser.partyId ?? " New"}',
             style: TextStyle(
-                fontSize: isPhone ? 10 : 20,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
+                fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
             key: Key('header'),
           )),
           Center(
               child: Text(
             'Company #${updatedUser.companyPartyId ?? ""}',
             style: TextStyle(
-                fontSize: isPhone ? 10 : 20,
-                color: Colors.black,
-                fontWeight: FontWeight.bold),
+                fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
             key: Key('compHeader'),
           )),
           Visibility(
@@ -240,10 +236,10 @@ class _UserState extends State<UserPage> {
               radius: 80,
               child: _imageFile != null
                   ? kIsWeb
-                      ? Image.network(_imageFile!.path)
-                      : Image.file(File(_imageFile!.path))
+                      ? Image.network(_imageFile!.path, scale: 0.3)
+                      : Image.file(File(_imageFile!.path), scale: 0.3)
                   : widget.user.image != null
-                      ? Image.memory(widget.user.image!, height: 150)
+                      ? Image.memory(widget.user.image!, scale: 0.3)
                       : Text(widget.user.firstName?.substring(0, 1) ?? '',
                           style: TextStyle(fontSize: 30, color: Colors.black))),
           SizedBox(height: 20),
@@ -483,9 +479,7 @@ class _UserState extends State<UserPage> {
                         if (_imageFile?.path != null &&
                             updatedUser.image == null)
                           HelperFunctions.showMessage(
-                              context,
-                              "Image upload error or larger than 200K",
-                              Colors.red);
+                              context, "Image upload error!", Colors.red);
                         else
                           context.read<UserBloc>().add(UserUpdate(updatedUser));
                       }

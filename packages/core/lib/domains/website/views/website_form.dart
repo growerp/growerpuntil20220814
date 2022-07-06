@@ -244,7 +244,7 @@ class _WebsiteState extends State<WebsitePage> {
                               child: Text(
                             'id:#${state.website?.id}',
                             style: TextStyle(
-                                fontSize: isPhone ? 10 : 20,
+                                fontSize: 10,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
                             key: Key('header'),
@@ -302,6 +302,7 @@ class _WebsiteState extends State<WebsitePage> {
                             style: TextStyle(fontSize: 10),
                           ),
                           ReorderableWrap(
+                              runSpacing: 10,
                               onReorder: (int oldIndex, int newIndex) {
                                 var content =
                                     List.of(state.website!.websiteContent);
@@ -327,6 +328,7 @@ class _WebsiteState extends State<WebsitePage> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
+                          SizedBox(height: 10),
                           Wrap(children: catButtons, spacing: 10),
                           SizedBox(height: 30),
                           Text(
@@ -334,6 +336,7 @@ class _WebsiteState extends State<WebsitePage> {
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
+                          SizedBox(height: 10),
                           Wrap(children: browseCatButtons, spacing: 10),
                         ]))))));
   }

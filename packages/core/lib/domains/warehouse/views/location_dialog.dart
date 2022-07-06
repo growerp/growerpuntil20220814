@@ -99,7 +99,7 @@ class _LocationState extends State<LocationDialog> {
                               ? "New"
                               : "${location.locationId}",
                           style: TextStyle(
-                              fontSize: isPhone ? 10 : 20,
+                              fontSize: 10,
                               color: Colors.black,
                               fontWeight: FontWeight.bold))),
                   SizedBox(height: 30),

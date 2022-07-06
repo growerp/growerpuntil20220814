@@ -196,7 +196,7 @@ class _CompanyState extends State<CompanyPage> {
                               child: Text(
                             'id:#${company.partyId}',
                             style: TextStyle(
-                                fontSize: isPhone ? 10 : 20,
+                                fontSize: 10,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold),
                             key: Key('header'),
@@ -207,10 +207,12 @@ class _CompanyState extends State<CompanyPage> {
                               radius: 80,
                               child: _imageFile != null
                                   ? kIsWeb
-                                      ? Image.network(_imageFile!.path)
-                                      : Image.file(File(_imageFile!.path))
+                                      ? Image.network(_imageFile!.path,
+                                          scale: 0.3)
+                                      : Image.file(File(_imageFile!.path),
+                                          scale: 0.3)
                                   : company.image != null
-                                      ? Image.memory(company.image!)
+                                      ? Image.memory(company.image!, scale: 0.3)
                                       : Text(
                                           company.name!.isNotEmpty
                                               ? company.name!.substring(0, 1)
@@ -425,7 +427,7 @@ class _CompanyState extends State<CompanyPage> {
                                                       company.image == null)
                                                     HelperFunctions.showMessage(
                                                         context,
-                                                        "Image upload error or larger than 200K",
+                                                        "Image upload error!",
                                                         Colors.red);
                                                   else
                                                     context

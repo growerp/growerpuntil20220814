@@ -205,6 +205,49 @@ class _ProductState extends State<ProductDialogFull> {
         textAlign: TextAlign.center,
       );
     }
+
+    List<Widget> _relCategories = [];
+    _selectedCategories.asMap().forEach((index, category) {
+      _relCategories.add(InputChip(
+        label: Text(
+          category.categoryName,
+          key: Key(category.categoryName),
+        ),
+        deleteIcon: const Icon(
+          Icons.cancel,
+          key: Key("deleteChip"),
+        ),
+        onDeleted: () async {
+          setState(() {
+            _selectedCategories.removeAt(index);
+          });
+        },
+      ));
+    });
+    _relCategories.add(IconButton(
+      iconSize: 25,
+      icon: Icon(Icons.add_circle),
+      color: Colors.deepOrange,
+      padding: const EdgeInsets.all(0.0),
+      key: Key('addCategories'),
+      onPressed: () async {
+        var result = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return MultiSelect<Category>(
+                title: 'Select one or more categories',
+                items: state.categories,
+                selectedItems: _selectedCategories,
+              );
+            });
+        if (result != null) {
+          setState(() {
+            _selectedCategories = result;
+          });
+        }
+      },
+    ));
+
     return Form(
         key: _formKey,
         child: SingleChildScrollView(
@@ -214,7 +257,7 @@ class _ProductState extends State<ProductDialogFull> {
                   child: Text(
                 'Product #${product.productId.isEmpty ? " New" : product.productId}',
                 style: TextStyle(
-                    fontSize: isPhone ? 10 : 20,
+                    fontSize: 10,
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
                 key: Key('header'),
@@ -225,12 +268,10 @@ class _ProductState extends State<ProductDialogFull> {
                   radius: 80,
                   child: _imageFile != null
                       ? foundation.kIsWeb
-                          ? Image.network(_imageFile!.path)
-                          : Image.file(File(_imageFile!.path))
+                          ? Image.network(_imageFile!.path, scale: 0.3)
+                          : Image.file(File(_imageFile!.path), scale: 0.3)
                       : product.image != null
-                          ? Image.memory(
-                              product.image!,
-                            )
+                          ? Image.memory(product.image!, scale: 0.3)
                           : Text(product.productName?.substring(0, 1) ?? '',
                               style: TextStyle(
                                   fontSize: 30, color: Colors.black))),
@@ -291,53 +332,15 @@ class _ProductState extends State<ProductDialogFull> {
                 visible: classificationId != 'AppHotel',
                 child: Column(children: [
                   SizedBox(height: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ElevatedButton(
-                        key: Key('addCategories'),
-                        onPressed: () async {
-                          var result = await showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return MultiSelect<Category>(
-                                  title: 'Select one or more categories',
-                                  items: state.categories,
-                                  selectedItems: _selectedCategories,
-                                );
-                              });
-                          if (result != null) {
-                            setState(() {
-                              _selectedCategories = result;
-                            });
-                          }
-                        },
-                        child: const Text('Assign to category'),
-                      ),
-
-                      // display selected items
-                      Wrap(
-                        spacing: 10.0,
-                        children: _selectedCategories
-                            .map((Category e) => Chip(
-                                  label: Text(
-                                    e.categoryName,
-                                    key: Key(e.categoryName),
-                                  ),
-                                  deleteIcon: const Icon(
-                                    Icons.cancel,
-                                    key: Key("deleteChip"),
-                                  ),
-                                  onDeleted: () async {
-                                    setState(() {
-                                      _selectedCategories.remove(e);
-                                    });
-                                  },
-                                ))
-                            .toList(),
-                      )
-                    ],
-                  ),
+                  Container(
+                      child: InputDecorator(
+                          decoration: InputDecoration(
+                              labelText: 'Related categories',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(25.0),
+                              )),
+                          child:
+                              Wrap(spacing: 10.0, children: _relCategories))),
                   SizedBox(height: 10),
                   DropdownButtonFormField<String>(
                     key: Key('productTypeDropDown'),
@@ -411,9 +414,7 @@ class _ProductState extends State<ProductDialogFull> {
                                     _imageFile?.path);
                             if (_imageFile?.path != null && image == null)
                               HelperFunctions.showMessage(
-                                  context,
-                                  "Image upload error or larger than 200K",
-                                  Colors.red);
+                                  context, "Image upload error!", Colors.red);
                             else
                               context.read<ProductBloc>().add(ProductUpdate(
                                   Product(
