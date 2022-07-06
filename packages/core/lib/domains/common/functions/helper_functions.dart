@@ -68,12 +68,11 @@ class HelperFunctions {
       } else {
         imageData = File(imagePath).readAsBytesSync();
       }
-      // print("====image size input ${imageData.length}");
-      if (imageData.length > 200000) return null;
-      IMG.Image img = IMG.decodeImage(imageData)!;
-      IMG.Image resized = IMG.copyResize(img, width: 200);
-      imageData = IMG.encodeJpg(resized) as Uint8List;
-      // print("====image size output ${resized.length}");
+      if (imageData.length > 200000) {
+        IMG.Image img = IMG.decodeImage(imageData)!;
+        IMG.Image resized = IMG.copyResize(img, width: -1, height: 200);
+        imageData = IMG.encodeJpg(resized) as Uint8List;
+      }
       return imageData;
     } else
       return null;
