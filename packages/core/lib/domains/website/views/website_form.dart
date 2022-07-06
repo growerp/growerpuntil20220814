@@ -19,6 +19,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domains/domains.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:url_launcher/link.dart';
+import 'package:reorderables/reorderables.dart';
 import '../../../api_repository.dart';
 
 class WebsiteForm extends StatelessWidget {
@@ -51,10 +52,11 @@ class _WebsiteState extends State<WebsitePage> {
   final _formKey = GlobalKey<FormState>();
 
   late WebsiteBloc _websiteBloc;
-  List<Content>? _updatedContent;
-  List<Category>? _updatedCategories;
-  List<Category>? _selectedCategories;
-  List<Category>? _availableCategories;
+  List<Content> _updatedContent = [];
+  List<Category> _updatedCategories = [];
+  List<Category> _selectedCategories = [];
+  List<Category> _availableCategories = [];
+  String changedTitle = '';
 
   @override
   void initState() {
@@ -91,17 +93,13 @@ class _WebsiteState extends State<WebsitePage> {
           }
         }, builder: (context, state) {
           switch (state.status) {
-            case WebsiteStatus.failure:
-              return Center(
-                  child: Text('failed to fetch website info ${state.message}'));
             case WebsiteStatus.success:
-              if (_updatedContent == null)
-                _updatedContent = List.of(state.website!.websiteContent);
-              if (_updatedCategories == null)
-                _updatedCategories = List.of(state.website!.websiteCategories);
-              if (_selectedCategories == null)
-                _selectedCategories = List.of(state.website!.productCategories);
+              _updatedContent = List.of(state.website!.websiteContent);
+              _updatedCategories = List.of(state.website!.websiteCategories);
+              _selectedCategories = List.of(state.website!.productCategories);
               return Scaffold(body: Center(child: _showForm(state)));
+            case WebsiteStatus.failure:
+              return Center(child: Text("error happened"));
             default:
               return LoadingIndicator();
           }
@@ -115,23 +113,55 @@ class _WebsiteState extends State<WebsitePage> {
     // create content buttons
     List<Widget> contentButtons = [];
     state.website!.websiteContent.asMap().forEach((index, content) {
-      contentButtons.add(ElevatedButton(
-          key: Key(content.id),
-          child: Text(content.id),
-          onPressed: () async {
-            showDialog(
-                barrierDismissible: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return BlocProvider.value(
-                      value: _websiteBloc,
-                      child: EditorDialog(state.website!.id, content));
-                });
-          }));
-      contentButtons.add(SizedBox(width: 10));
+      contentButtons.add(InputChip(
+        key: Key(content.path),
+        label: Text(
+          content.title,
+        ),
+        onPressed: () {
+          showDialog(
+              barrierDismissible: true,
+              context: context,
+              builder: (BuildContext context) {
+                return BlocProvider.value(
+                    value: _websiteBloc,
+                    child: EditorDialog(state.website!.id, content));
+              });
+          setState(() {});
+        },
+        deleteIcon: const Icon(
+          Icons.cancel,
+          key: Key("deleteChip"),
+        ),
+        onDeleted: () async {
+          _updatedContent[index] = _updatedContent[index].copyWith(title: '');
+          context.read<WebsiteBloc>().add(WebsiteUpdate(
+              Website(id: state.website!.id, websiteContent: _updatedContent)));
+          setState(() {});
+        },
+      ));
     });
+    contentButtons.add(IconButton(
+        iconSize: 30,
+        icon: Icon(Icons.add_circle),
+        color: Colors.deepOrange,
+        padding: const EdgeInsets.all(0.0),
+        onPressed: () async {
+          Content newContent = Content(text: '# new title here...');
+          await showDialog(
+              barrierDismissible: true,
+              context: context,
+              builder: (BuildContext context) {
+                return BlocProvider.value(
+                    value: _websiteBloc,
+                    child: EditorDialog(state.website!.id, newContent));
+              });
+          setState(() {
+//            if (result != null) _updatedContent!.add(result);
+          });
+        }));
 
-    // create category buttons
+    // create website category buttons
     List<Widget> catButtons = [];
     state.website!.websiteCategories.asMap().forEach((index, category) {
       catButtons.add(ElevatedButton(
@@ -150,10 +180,55 @@ class _WebsiteState extends State<WebsitePage> {
                           WebsiteCategoryDialog(state.website!.id, category));
                 });
           }));
-      catButtons.add(SizedBox(width: 10));
     });
-    String title =
-        state.website!.websiteContent.firstWhere((e) => e.id == 'title').text;
+
+    // create product browse categories
+    List<Widget> browseCatButtons = [];
+    state.website!.productCategories.asMap().forEach((index, category) {
+      browseCatButtons.add(InputChip(
+        label: Text(
+          category.categoryName,
+          key: Key(category.categoryName),
+        ),
+        deleteIcon: const Icon(
+          Icons.cancel,
+          key: Key("deleteChip"),
+        ),
+        onDeleted: () async {
+          context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+              id: state.website!.id, productCategories: _selectedCategories)));
+          setState(() {
+            _selectedCategories.removeAt(index);
+          });
+        },
+      ));
+    });
+
+    browseCatButtons.add(IconButton(
+      iconSize: 30,
+      icon: Icon(Icons.add_circle),
+      color: Colors.deepOrange,
+      padding: const EdgeInsets.all(0.0),
+      onPressed: () async {
+        var result = await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return MultiSelect<Category>(
+                title: 'Select one or more categories',
+                items: _availableCategories,
+                selectedItems: _selectedCategories,
+              );
+            });
+        if (result != null) {
+          setState(() {
+            _selectedCategories = result;
+          });
+          context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+              id: state.website!.id, productCategories: _selectedCategories)));
+        }
+      },
+    ));
+
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     return Center(
         child: Container(
@@ -178,8 +253,10 @@ class _WebsiteState extends State<WebsitePage> {
                           Link(
                               uri: Uri.parse(foundation.kReleaseMode
                                   ? "https://${state.website?.hostName}"
-                                  : "http://10.0.2.2:8080/store"),
-                              builder: (context, followLink) {
+                                  : "http://${state.website!.id}.localhost:8080/store"),
+                              target: LinkTarget.blank,
+                              builder: (BuildContext context,
+                                  FollowLink? followLink) {
                                 return InkWell(
                                   onTap: followLink,
                                   child: Text(
@@ -193,92 +270,71 @@ class _WebsiteState extends State<WebsitePage> {
                                 );
                               }),
                           SizedBox(height: 30),
-                          Center(
-                              child: Text(
-                            title,
-                            style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                            key: Key('titleText'),
-                          )),
+                          Row(children: [
+                            Expanded(
+                              child: TextFormField(
+                                  key: Key('title'),
+                                  initialValue: state.website!.title,
+                                  decoration: new InputDecoration(
+                                      labelText: 'Title of the website'),
+                                  onChanged: (value) {
+                                    changedTitle = value;
+                                  }),
+                            ),
+                            SizedBox(width: 10),
+                            ElevatedButton(
+                                key: Key('update'),
+                                child: Text('update'),
+                                onPressed: () async {
+                                  _websiteBloc.add(WebsiteUpdate(Website(
+                                      id: state.website!.id,
+                                      title: changedTitle)));
+                                }),
+                          ]),
                           SizedBox(height: 30),
                           Text(
                             'Text sections',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          Wrap(children: contentButtons),
+                          Text(
+                            'Can change order with long press',
+                            style: TextStyle(fontSize: 10),
+                          ),
+                          ReorderableWrap(
+                              onReorder: (int oldIndex, int newIndex) {
+                                var content =
+                                    List.of(state.website!.websiteContent);
+                                content.insert(newIndex, content[oldIndex]);
+                                if (newIndex < oldIndex)
+                                  content.removeAt(oldIndex + 1);
+                                else
+                                  content.removeAt(oldIndex);
+                                int index = 1;
+                                for (int i = 0; i < content.length; i++)
+                                  content[i] = content[i]
+                                      .copyWith(seqId: index++, text: '');
+                                context.read<WebsiteBloc>().add(WebsiteUpdate(
+                                    Website(
+                                        id: state.website!.id,
+                                        websiteContent: content)));
+                              },
+                              spacing: 10,
+                              children: contentButtons),
                           SizedBox(height: 30),
                           Text(
-                            'Website Categories',
+                            'Home Page Categories',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          Wrap(children: catButtons),
+                          Wrap(children: catButtons, spacing: 10),
                           SizedBox(height: 30),
                           Text(
-                            'Product Categories',
+                            'Shop Categories',
                             style: TextStyle(
                                 fontSize: 20, fontWeight: FontWeight.bold),
                           ),
-                          Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ElevatedButton(
-                                  key: Key('addCategories'),
-                                  onPressed: () async {
-                                    var result = await showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return MultiSelect<Category>(
-                                            title:
-                                                'Select one or more categories',
-                                            items: _availableCategories!,
-                                            selectedItems: _selectedCategories!,
-                                          );
-                                        });
-                                    if (result != null) {
-                                      setState(() {
-                                        _selectedCategories = result;
-                                      });
-                                      context.read<WebsiteBloc>().add(
-                                          WebsiteUpdate(Website(
-                                              id: state.website!.id,
-                                              productCategories:
-                                                  _selectedCategories!)));
-                                    }
-                                  },
-                                  child: const Text(
-                                      'modify available category list'),
-                                ),
-                                SizedBox(height: 10),
-                                Wrap(
-                                  spacing: 10.0,
-                                  children: _selectedCategories!
-                                      .map((Category e) => Chip(
-                                            label: Text(
-                                              e.categoryName,
-                                              key: Key(e.categoryName),
-                                            ),
-                                            deleteIcon: const Icon(
-                                              Icons.cancel,
-                                              key: Key("deleteChip"),
-                                            ),
-                                            onDeleted: () async {
-                                              setState(() {
-                                                _selectedCategories!.remove(e);
-                                              });
-                                              context.read<WebsiteBloc>().add(
-                                                  WebsiteUpdate(Website(
-                                                      id: state.website!.id,
-                                                      productCategories:
-                                                          _selectedCategories!)));
-                                            },
-                                          ))
-                                      .toList(),
-                                )
-                              ])
+                          Wrap(children: browseCatButtons, spacing: 10),
                         ]))))));
   }
 }

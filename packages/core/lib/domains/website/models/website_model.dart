@@ -25,6 +25,7 @@ class Website with _$Website {
   factory Website({
     @Default('') String id,
     @Default('') String hostName,
+    @Default('') String title,
     @Default([]) List<Content> websiteContent,
     @Default([]) List<Category> websiteCategories,
     @Default([]) List<Category> productCategories,

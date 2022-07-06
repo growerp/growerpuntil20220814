@@ -22,16 +22,18 @@ part 'content_model.g.dart';
 class Content extends Equatable with _$Content {
   Content._();
   factory Content({
-    @Default("") String id,
+    @Default("") String path,
+    @Default("") String title,
     @Default("") String text,
+    @Default(0) int seqId,
   }) = _Content;
 
   factory Content.fromJson(Map<String, dynamic> json) =>
       _$ContentFromJson(json);
 
   @override
-  List<Object?> get props => [id];
+  List<Object?> get props => [path];
 
   @override
-  String toString() => '$id';
+  String toString() => '$path';
 }

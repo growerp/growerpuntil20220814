@@ -17,6 +17,7 @@ import 'package:core/domains/domains.dart';
 import 'package:core/templates/@templates.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:core/domains/catalog/models/category_model.dart' as cat;
 
 import 'menuOption_data.dart';
 
@@ -41,6 +42,10 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => DisplayMenuOption(
               menuList: menuOptions, menuIndex: 3, tabIndex: 0));
+    case '/category':
+      return MaterialPageRoute(
+          builder: (context) =>
+              CategoryDialog(settings.arguments as cat.Category));
     case '/orders':
       return MaterialPageRoute(
           builder: (context) => DisplayMenuOption(

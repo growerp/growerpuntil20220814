@@ -18,7 +18,7 @@ class _MarkdownPageState extends State<EditorDialog> {
   @override
   void initState() {
     data = widget.content.text.isEmpty
-        ? 'Enter ${widget.content.id} text here'
+        ? 'Enter ${widget.content.path} text here'
         : widget.content.text;
     super.initState();
   }
@@ -40,47 +40,48 @@ class _MarkdownPageState extends State<EditorDialog> {
   }
 
   Widget _showForm() {
-    return BlocListener<WebsiteBloc, WebsiteState>(
-        listener: (context, state) {
-          if (state.status == WebsiteStatus.success)
-            Navigator.of(context).pop();
-          if (state.status == WebsiteStatus.failure)
-            HelperFunctions.showMessage(context, state.message, Colors.red);
-        },
-        child: Container(
-            width: 400,
-            height: 800,
-            padding: EdgeInsets.all(20),
-            child: Column(children: [
-              Expanded(
-                  child: TextFormField(
-                      decoration: InputDecoration(
-                          labelText: '${widget.content.id} text'),
-                      expands: true,
-                      maxLines: null,
-                      textInputAction: TextInputAction.newline,
-                      initialValue: data,
-                      onChanged: (text) {
-                        setState(() {
-                          data = text;
-                        });
-                      })),
-              SizedBox(height: 20),
-              Expanded(child: MarkdownWidget(data: data)),
-              SizedBox(height: 20),
-              ElevatedButton(
-                  key: Key('update'),
-                  child: Text('Update'),
-                  onPressed: () async {
-                    if (data != widget.content.text)
-                      context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
-                              id: widget.websiteId,
-                              websiteContent: [
-                                widget.content.copyWith(text: data)
-                              ])));
-                    else
-                      Navigator.of(context).pop(data);
-                  }),
-            ])));
+    return BlocConsumer<WebsiteBloc, WebsiteState>(listener: (context, state) {
+      if (state.status == WebsiteStatus.success)
+        Navigator.of(context).pop(widget.content.copyWith(text: data));
+      if (state.status == WebsiteStatus.failure)
+        HelperFunctions.showMessage(context, state.message, Colors.red);
+    }, builder: (context, state) {
+      if (state.status != WebsiteStatus.success) return LoadingIndicator();
+      return Container(
+          width: 400,
+          height: 800,
+          padding: EdgeInsets.all(20),
+          child: Column(children: [
+            Expanded(
+                child: TextFormField(
+                    decoration: InputDecoration(
+                        labelText: '${widget.content.path} text'),
+                    expands: true,
+                    maxLines: null,
+                    textInputAction: TextInputAction.newline,
+                    initialValue: data,
+                    onChanged: (text) {
+                      setState(() {
+                        data = text;
+                      });
+                    })),
+            SizedBox(height: 20),
+            Expanded(child: MarkdownWidget(data: data)),
+            SizedBox(height: 20),
+            ElevatedButton(
+                key: Key('update'),
+                child: Text(widget.content.path.isEmpty ? 'Create' : 'Update'),
+                onPressed: () async {
+                  if (data != widget.content.text)
+                    context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                            id: widget.websiteId,
+                            websiteContent: [
+                              widget.content.copyWith(text: data)
+                            ])));
+                  else
+                    Navigator.of(context).pop();
+                }),
+          ]));
+    });
   }
 }

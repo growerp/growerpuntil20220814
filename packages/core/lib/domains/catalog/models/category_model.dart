@@ -29,6 +29,7 @@ class Category extends Equatable with _$Category {
     @Default("") String categoryName,
     @Default("") String description,
     @Uint8ListConverter() Uint8List? image,
+    @Default(0) int seqId,
     @Default([]) List<Product> products,
   }) = _Category;
 

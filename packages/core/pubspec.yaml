@@ -14,6 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   decimal: ^2.1.0
+  reorderables:
   intl: ^0.17.0
   global_configuration: ^2.0.0-nullsafety.0
   equatable: ^2.0.0
@@ -41,7 +42,7 @@ dependencies:
   freezed: ^2.0.3
   credit_card_validator: ^2.0.1
   markdown_widget: ^1.2.8
-  url_launcher: ^6.1.2
+  url_launcher: ^6.1.4
 
 dev_dependencies:
   flutter_test:
