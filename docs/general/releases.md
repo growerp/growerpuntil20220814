@@ -1,5 +1,14 @@
 # GrowERP releases
 
+## Fourth beta release July 7, 2022.
+First comments from end users arrived.
+1. Upload images was limited to 200K, now larger although after upload the size will be reduced to about 200k
+2. At the html website one can now add menu dropdowns which are generated from the markdown documents
+3. On the html website available categories can now be reduced even to the stage they do not show at all.
+4. On the html website available products in the home page can now be managed.
+5. When the title of a markdown document is called it appear on the home above the products if any.
+6. The above changes mean, that the website can now be used just as a textual website without any e-commerce products.
+7. Web application has now an improved user interface taking advantage of the larger screen.
 
 ## Third beta release July 1, 2022.
 

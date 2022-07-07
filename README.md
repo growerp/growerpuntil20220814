@@ -1,16 +1,14 @@
 # Welcome to flutter open source GrowERP.
 
-GrowERP is an open source multiplatform ERP application you can try right now!
+GrowERP is an open source multi platform ERP application you can try right now!
 
-Please note the application needs to download for the first time:
+We have latest test version at [admin.growerp.org](https://admin.growerp.org)
+Data at this site will be refreshed regularly.
+
+We have now started a Beta production version:
 - Web:     https://admin.growerp.com
 - Android: https://play.google.com/store/apps/details?id=org.growerp.admin
 - IOS:     https://apps.apple.com/us/app/growerp-admin-open-source/id1545521755
- 
-We also created a first vertical app for Hotel owners: (others will follow)
-- Web:     https://hotel.growerp.com
-- Android: https://play.google.com/store/apps/details?id=org.growerp.hotel
-- IOS:     https://apps.apple.com/us/app/growerp-admin-open-source/id1531267095
 
 When the application is loaded, create a new company, select demo data and look around!
 
@@ -18,7 +16,13 @@ If you like this initiative, please give a star to the project.
  
 Documentation available at https://www.growerp.com
 
-### Some phone screen shots:q
+We also created a first vertical app for Hotel owners which will be released later. 
+- Web:     https://hotel.growerp.org
+- Android: https://play.google.com/store/apps/details?id=org.growerp.hotel
+- IOS:     https://apps.apple.com/us/app/growerp-admin-open-source/id1531267095
+
+
+### Some phone screen shots:
 <div style="text-align: center">
     <table>
         <tr>
