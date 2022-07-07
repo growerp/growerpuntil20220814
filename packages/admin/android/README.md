@@ -97,3 +97,6 @@ fastlane supply \
     --aab /home/dell/admin/build/app/outputs/bundle/release/app-release.aab \
     --track beta --in_app_update_priority 3 
 
+(upload just binary)
+    fastlane upload
+
