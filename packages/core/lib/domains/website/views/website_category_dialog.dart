@@ -84,7 +84,7 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
                 ),
                 child: Container(
                     width: 400,
-                    height: 500,
+                    height: 300,
                     padding: EdgeInsets.all(20),
                     child: Scaffold(
                         backgroundColor: Colors.transparent,
@@ -111,7 +111,7 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
         ),
         onDeleted: () async {
           setState(() {
-            _selectedProducts.remove(index);
+            _selectedProducts.removeAt(index);
           });
         },
       ));

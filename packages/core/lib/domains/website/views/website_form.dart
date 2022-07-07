@@ -195,10 +195,13 @@ class _WebsiteState extends State<WebsitePage> {
           key: Key("deleteChip"),
         ),
         onDeleted: () async {
-          context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
-              id: state.website!.id, productCategories: _selectedCategories)));
           setState(() {
             _selectedCategories.removeAt(index);
+            if (_selectedCategories.isEmpty)
+              _selectedCategories.add(Category(categoryId: 'allDelete'));
+            context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                id: state.website!.id,
+                productCategories: _selectedCategories)));
           });
         },
       ));

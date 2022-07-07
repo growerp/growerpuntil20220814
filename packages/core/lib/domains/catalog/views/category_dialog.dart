@@ -21,7 +21,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:core/domains/domains.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 
 import '../../../api_repository.dart';
 
