@@ -115,6 +115,7 @@ class MyApp extends StatelessWidget {
           }
         },
         child: MaterialApp(
+            title: title,
             debugShowCheckedModeBanner: false,
             localizationsDelegates: const [
               S.delegate,

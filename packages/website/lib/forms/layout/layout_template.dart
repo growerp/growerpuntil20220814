@@ -18,7 +18,7 @@ class LayoutTemplate extends StatelessWidget {
         body: CenteredView(
           child: Column(
             children: <Widget>[
-              NavigationBar(),
+              NavigationMenu(),
               SizedBox(height: 20),
               Expanded(child: form)
             ],

@@ -16,9 +16,8 @@ import 'package:core/coreRouter.dart';
 import 'package:core/domains/domains.dart';
 import 'package:core/templates/@templates.dart';
 import 'package:flutter/material.dart';
-import 'package:core/domains/common/common.dart';
 
-import 'menuItem_data.dart';
+import 'menuOption_data.dart';
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   print(">>>NavigateTo { ${settings.name} " +
@@ -35,6 +34,9 @@ Route<dynamic> generateRoute(RouteSettings settings) {
       return MaterialPageRoute(
           builder: (context) => DisplayMenuOption(
               menuList: menuOptions, menuIndex: 1, tabIndex: 0));
+    case '/website':
+      return MaterialPageRoute(
+          builder: (context) => WebsiteForm(userGroup: UserGroup.Admin));
     case '/catalog':
       return MaterialPageRoute(
           builder: (context) => DisplayMenuOption(

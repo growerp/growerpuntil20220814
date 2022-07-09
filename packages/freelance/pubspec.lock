@@ -799,6 +799,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.0"
+  reorderables:
+    dependency: transitive
+    description:
+      name: reorderables
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.0"
   responsive_framework:
     dependency: "direct main"
     description:

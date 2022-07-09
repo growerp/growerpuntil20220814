@@ -100,7 +100,7 @@ class TopApp extends StatelessWidget {
 }
 
 class MyApp extends StatelessWidget {
-  static String title = "GrowERP Hotel.";
+  static String title = "GrowERP Hotel";
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -113,6 +113,7 @@ class MyApp extends StatelessWidget {
           }
         },
         child: MaterialApp(
+            title: title,
             debugShowCheckedModeBanner: false,
             localizationsDelegates: [
               S.delegate,

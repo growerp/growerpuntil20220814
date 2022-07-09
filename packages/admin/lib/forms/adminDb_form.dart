@@ -31,44 +31,44 @@ class AdminDbForm extends StatelessWidget {
             authenticate.company!.name!.length > 20
                 ? "${authenticate.company!.name!.substring(0, 20)}..."
                 : "${authenticate.company!.name}",
-            "Administrators: ${authenticate.stats?.admins}",
-            "Other Employees: ${authenticate.stats?.employees}",
+            "Administrators: ${authenticate.stats?.admins ?? 0}",
+            "Other Employees: ${authenticate.stats?.employees ?? 0}",
             "",
           ),
           makeDashboardItem(
             'dbCrm',
             context,
             menuOptions[2],
-            "All Opportunities: ${authenticate.stats?.opportunities}",
-            "My Opportunities: ${authenticate.stats?.myOpportunities}",
-            "Leads: ${authenticate.stats?.leads}",
-            "Customers: ${authenticate.stats?.customers}",
+            "All Opportunities: ${authenticate.stats?.opportunities ?? 0}",
+            "My Opportunities: ${authenticate.stats?.myOpportunities ?? 0}",
+            "Leads: ${authenticate.stats?.leads ?? 0}",
+            "Customers: ${authenticate.stats?.customers ?? 0}",
           ),
           makeDashboardItem(
             'dbCatalog',
             context,
             menuOptions[3],
-            "Categories: ${authenticate.stats?.categories}",
-            "Products: ${authenticate.stats?.products}",
-            "Assets: ${authenticate.stats?.assets}",
+            "Categories: ${authenticate.stats?.categories ?? 0}",
+            "Products: ${authenticate.stats?.products ?? 0}",
+            "Assets: ${authenticate.stats?.assets ?? 0}",
             "",
           ),
           makeDashboardItem(
             'dbOrders',
             context,
             menuOptions[4],
-            "Sales Orders: ${authenticate.stats?.openSlsOrders}",
-            "Customers: ${authenticate.stats?.customers}",
-            "Purchase Orders: ${authenticate.stats?.openPurOrders}",
-            "Suppliers: ${authenticate.stats?.suppliers}",
+            "Sales Orders: ${authenticate.stats?.openSlsOrders ?? 0}",
+            "Customers: ${authenticate.stats?.customers ?? 0}",
+            "Purchase Orders: ${authenticate.stats?.openPurOrders ?? 0}",
+            "Suppliers: ${authenticate.stats?.suppliers ?? 0}",
           ),
           makeDashboardItem(
             'dbWarehouse',
             context,
             menuOptions[5],
-            "Incoming Shipments: ${authenticate.stats?.incomingShipments}",
-            "Outgoing Shipments: ${authenticate.stats?.outgoingShipments}",
-            "Wh Locations: ${authenticate.stats?.whLocations}",
+            "Incoming Shipments: ${authenticate.stats?.incomingShipments ?? 0}",
+            "Outgoing Shipments: ${authenticate.stats?.outgoingShipments ?? 0}",
+            "Wh Locations: ${authenticate.stats?.whLocations ?? 0}",
             "",
           ),
           makeDashboardItem(
@@ -78,11 +78,11 @@ class AdminDbForm extends StatelessWidget {
             "Sales open invoices: \n"
                 "${authenticate.company!.currency?.currencyId} "
                 "${authenticate.stats?.salesInvoicesNotPaidAmount ?? '0.00'} "
-                "(${authenticate.stats?.salesInvoicesNotPaidCount})",
+                "(${authenticate.stats?.salesInvoicesNotPaidCount ?? 0})",
             "Purchase unpaid invoices: \n"
                 "${authenticate.company!.currency?.currencyId} "
                 "${authenticate.stats?.purchInvoicesNotPaidAmount ?? '0.00'} "
-                "(${authenticate.stats?.purchInvoicesNotPaidCount})",
+                "(${authenticate.stats?.purchInvoicesNotPaidCount ?? 0})",
             "",
             "",
           ),

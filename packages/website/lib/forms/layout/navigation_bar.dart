@@ -3,21 +3,21 @@ import '../../routing/route_names.dart';
 import 'package:responsive_builder/responsive_builder.dart';
 import 'nav_bar_item.dart';
 
-class NavigationBar extends StatelessWidget {
-  const NavigationBar({Key? key}) : super(key: key);
+class NavigationMenu extends StatelessWidget {
+  const NavigationMenu({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ScreenTypeLayout(
-      mobile: NavigationBarMobile(),
-      tablet: NavigationBarTabletDesktop(20),
-      desktop: NavigationBarTabletDesktop(50),
+      mobile: NavigationMenuMobile(),
+      tablet: NavigationMenuTabletDesktop(20),
+      desktop: NavigationMenuTabletDesktop(50),
     );
   }
 }
 
-class NavigationBarMobile extends StatelessWidget {
-  const NavigationBarMobile({Key? key}) : super(key: key);
+class NavigationMenuMobile extends StatelessWidget {
+  const NavigationMenuMobile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +40,9 @@ class NavigationBarMobile extends StatelessWidget {
   }
 }
 
-class NavigationBarTabletDesktop extends StatelessWidget {
+class NavigationMenuTabletDesktop extends StatelessWidget {
   final double spacing;
-  const NavigationBarTabletDesktop(this.spacing);
+  const NavigationMenuTabletDesktop(this.spacing);
 
   @override
   Widget build(BuildContext context) {

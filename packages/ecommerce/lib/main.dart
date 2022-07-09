@@ -74,9 +74,11 @@ class TopApp extends StatelessWidget {
 }
 
 class MyApp extends StatelessWidget {
+  static String title = 'GrowERP Ecommerce.';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        title: title,
         debugShowCheckedModeBanner: false,
         builder: (context, widget) => ResponsiveWrapper.builder(
             BouncingScrollWrapper.builder(context, widget!),

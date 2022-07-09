@@ -106,52 +106,53 @@ List<MenuOption> menuOptions = [
         ),
       ]),
   MenuOption(
-    image: "assets/images/orderGrey.png",
-    selectedImage: "assets/images/order.png",
-    title: "Sales",
-    route: '/sales',
+    image: 'assets/images/orderGrey.png',
+    selectedImage: 'assets/images/order.png',
+    title: 'Orders',
+    route: '/orders',
     readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
     writeGroups: [UserGroup.Admin],
     tabItems: [
       TabItem(
-        form: FinDocListForm(
-            key: Key("SalesOrder"), sales: true, docType: FinDocType.order),
-        label: "Sales orders",
-        icon: Icon(Icons.home),
+        form: const FinDocListForm(
+            key: Key('SalesOrder'), sales: true, docType: FinDocType.order),
+        label: '\nSales orders',
+        icon: const Icon(Icons.home),
       ),
       TabItem(
-        form: UserListForm(
-          key: Key("Customer"),
+        form: const UserListForm(
+          key: Key('Customer'),
           userGroup: UserGroup.Customer,
         ),
-        label: "Customers",
-        icon: Icon(Icons.business),
-      )
+        label: 'Customers',
+        icon: const Icon(Icons.business),
+      ),
+      TabItem(
+        form: const FinDocListForm(
+            key: Key('PurchaseOrder'), sales: false, docType: FinDocType.order),
+        label: '\nPurchase orders',
+        icon: const Icon(Icons.home),
+      ),
+      TabItem(
+        form: const UserListForm(
+          key: Key('Supplier'),
+          userGroup: UserGroup.Supplier,
+        ),
+        label: 'Suppliers',
+        icon: const Icon(Icons.business),
+      ),
     ],
   ),
   MenuOption(
-    image: "assets/images/supplierGrey.png",
-    selectedImage: "assets/images/supplier.png",
-    title: "Purchase",
-    route: '/purchase',
-    readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
-    tabItems: [
-      TabItem(
-        form: FinDocListForm(
-            key: Key("PurchaseOrder"), sales: false, docType: FinDocType.order),
-        label: "Purchase orders",
-        icon: Icon(Icons.home),
-      ),
-      TabItem(
-        form: UserListForm(
-          key: Key("Supplier"),
-          userGroup: UserGroup.Supplier,
-        ),
-        label: "Suppliers",
-        icon: Icon(Icons.business),
-      )
-    ],
-  ),
+      image: "assets/images/tasksGrey.png",
+      selectedImage: "assets/images/tasks.png",
+      title: "Website",
+      route: '/website',
+      readGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
+      writeGroups: [UserGroup.Admin, UserGroup.Employee, UserGroup.SuperAdmin],
+      child: WebsiteForm(
+        userGroup: UserGroup.Admin,
+      )),
   MenuOption(
       image: "assets/images/accountingGrey.png",
       selectedImage: "assets/images/accounting.png",
