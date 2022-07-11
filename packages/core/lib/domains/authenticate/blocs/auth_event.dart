@@ -26,14 +26,22 @@ class AuthUpdateUser extends AuthEvent {
   final User user;
   AuthUpdateUser(this.user);
   @override
-  String toString() => 'Update Authenticate User: $user';
+  String toString() => 'Update User: $user';
+}
+
+class AuthDeleteUser extends AuthEvent {
+  final User user;
+  final bool deleteCompany;
+  AuthDeleteUser(this.user, this.deleteCompany);
+  @override
+  String toString() => 'Delete User: $user Company: $deleteCompany';
 }
 
 class AuthUpdateCompany extends AuthEvent {
   final Company? company;
   AuthUpdateCompany(this.company);
   @override
-  String toString() => 'Update Authenticate Company $company';
+  String toString() => 'Update Company $company';
 }
 
 class AuthRegisterCompanyAndAdmin extends AuthEvent {

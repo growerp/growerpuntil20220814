@@ -160,7 +160,8 @@ class UserBloc extends Bloc<UserEvent, UserState>
   ) async {
     try {
       List<User> users = List.from(state.users);
-      ApiResult<User> compResult = await repos.deleteUser(event.user.partyId!);
+      ApiResult<User> compResult =
+          await repos.deleteUser(event.user.partyId!, false);
       return emit(compResult.when(
           success: (data) {
             int index = users

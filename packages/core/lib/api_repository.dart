@@ -315,11 +315,15 @@ class APIRepository {
     }
   }
 
-  Future<ApiResult<User>> deleteUser(String partyId) async {
+  Future<ApiResult<User>> deleteUser(
+      String partyId, bool deleteCompanyToo) async {
     try {
       final response = await dioClient.delete(
           'rest/s1/growerp/100/User', apiKey!,
-          queryParameters: <String, dynamic>{'partyId': partyId});
+          queryParameters: <String, dynamic>{
+            'partyId': partyId,
+            'deleteCompanyToo': deleteCompanyToo,
+          });
       return getResponse<User>("user", response, (json) => User.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));

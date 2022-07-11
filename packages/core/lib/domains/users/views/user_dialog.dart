@@ -452,6 +452,28 @@ class _UserState extends State<UserPage> {
               ])),
           SizedBox(height: 10),
           Row(children: [
+            ElevatedButton(
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(Colors.red)),
+                key: Key('deleteUser'),
+                child: Text('Delete User'),
+                onPressed: () async {
+                  var result = await confirmDeleteUserComp(
+                      context, widget.user.userGroup!);
+                  if (result != null) {
+                    // delete company too?
+                    if (widget.user.partyId == authenticate.user!.partyId!) {
+                      context
+                          .read<AuthBloc>()
+                          .add(AuthDeleteUser(widget.user, result));
+                      Navigator.of(context).pop(updatedUser);
+                      context.read<AuthBloc>().add(AuthLoggedOut());
+                    } else {
+                      context.read<UserBloc>().add(UserDelete(widget.user));
+                    }
+                  }
+                }),
+            SizedBox(width: 10),
             Expanded(
                 child: ElevatedButton(
                     key: Key('updateUser'),

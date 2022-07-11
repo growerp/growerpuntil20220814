@@ -35,6 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthLoad>(_onAuthLoad);
     on<AuthUpdateCompany>(_onAuthUpdateCompany);
     on<AuthUpdateUser>(_onAuthUpdateUser);
+    on<AuthDeleteUser>(_onAuthDeleteUser);
     on<AuthRegisterCompanyAndAdmin>(_onAuthRegisterCompanyAndAdmin);
     on<AuthRegisterUserEcommerce>(_onAuthRegisterUserEcommerce);
     on<AuthLoggedOut>(_onAuthLoggedOut);
@@ -135,6 +136,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                 authenticate: state.authenticate?.copyWith(user: data),
                 message:
                     'User ${event.user.firstName} ${event.user.lastName} updated');
+          },
+          failure: (NetworkExceptions error) => state.copyWith(
+              status: AuthStatus.failure, message: error.toString())));
+    }
+  }
+
+  Future<void> _onAuthDeleteUser(
+    AuthDeleteUser event,
+    Emitter<AuthState> emit,
+  ) async {
+    if (event.user.partyId == state.authenticate?.user!.partyId) {
+      //only delete logged in user
+      ApiResult<User> compResult =
+          await repos.deleteUser(event.user.partyId!, event.deleteCompany);
+      return emit(compResult.when(
+          success: (data) {
+            return state.copyWith(
+                authenticate: Authenticate(),
+                message:
+                    'User ${event.user.firstName} ${event.user.lastName} deleted');
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: AuthStatus.failure, message: error.toString())));

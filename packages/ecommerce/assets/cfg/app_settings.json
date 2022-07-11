@@ -1,6 +1,5 @@
 {
-    "version": 0.1,
-    "build": 10,
+    "appName": "", "packageName":"", "version": "", "build": "",
     "classificationId": "AppEcommerceShop",
     "_________________comment__backend": "moqui / ofbiz",
     "backend": "moqui",

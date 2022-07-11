@@ -14,32 +14,43 @@
 
 import 'package:flutter/material.dart';
 
-/// dialog returns true when continue, false when cancelled
-confirmDialog(BuildContext context, String title, String content) {
+import '../../domains.dart';
+
+/// dialog returns true when company delete, false when not,
+/// null when cancelled
+///
+confirmDeleteUserComp(BuildContext context, UserGroup userGroup) {
   // set up the buttons
   Widget cancelButton = ElevatedButton(
     child: Text("cancel"),
     onPressed: () {
-      Navigator.of(context).pop(false);
+      Navigator.of(context).pop();
     },
   );
-  Widget continueButton = ElevatedButton(
-    child: Text("Continue"),
+  Widget alsoCompanyDeleteButton = ElevatedButton(
+    child: Text("User AND Company delete"),
     onPressed: () {
       Navigator.of(context).pop(true);
     },
   );
+  Widget justUserDeleteButton = ElevatedButton(
+    child: Text("Only User delete"),
+    onPressed: () {
+      Navigator.of(context).pop(false);
+    },
+  );
+
+  List<Widget> actions = [cancelButton, justUserDeleteButton];
+  if (userGroup == UserGroup.Admin) actions.add(alsoCompanyDeleteButton);
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(32.0))),
-    title: Text("$title"),
-    content: Text("$content"),
-    actions: [
-      cancelButton,
-      continueButton,
-    ],
+    title: Text(
+        "Delete user ${userGroup == UserGroup.Admin ? ' and optionally company?' : ''}"),
+    content: Text("Please note this cannot be undone!"),
+    actions: actions,
   );
 
   // show the dialog
