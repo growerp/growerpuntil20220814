@@ -12,8 +12,12 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'dart:typed_data';
+
 import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+import '../../../services/jsonConverters.dart';
 
 part 'content_model.freezed.dart';
 part 'content_model.g.dart';
@@ -22,14 +26,17 @@ part 'content_model.g.dart';
 class Content extends Equatable with _$Content {
   Content._();
   factory Content({
-    @Default("") String path,
+    @Default("") String path, // filename when image
     @Default("") String title,
     @Default("") String text,
+    @Uint8ListConverter() Uint8List? image,
     @Default(0) int seqId,
   }) = _Content;
 
   factory Content.fromJson(Map<String, dynamic> json) =>
       _$ContentFromJson(json);
+
+  bool isText() => text.isNotEmpty;
 
   @override
   List<Object?> get props => [path];

@@ -107,7 +107,7 @@ class _CategoryState extends State<CategoryDialogFull> {
           switch (state.status) {
             case CategoryStatus.success:
               HelperFunctions.showMessage(
-                  context, 'Error: ${state.message}', Colors.green);
+                  context, '${state.message}', Colors.green);
               Navigator.of(context).pop();
               break;
             case CategoryStatus.failure:

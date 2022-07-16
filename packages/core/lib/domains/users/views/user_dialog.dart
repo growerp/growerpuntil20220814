@@ -119,6 +119,23 @@ class _UserState extends State<UserPage> {
     isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     repos = context.read<APIRepository>();
     User? user = widget.user;
+    return BlocConsumer<UserBloc, UserState>(listener: (context, state) {
+      if (state.status == UserStatus.failure) {
+        loading = false;
+        HelperFunctions.showMessage(context, '${state.message}', Colors.red);
+      }
+      if (state.status == UserStatus.success) {
+        Navigator.of(context).pop(updatedUser);
+      }
+    }, builder: (context, state) {
+      if (state.status == UserStatus.loading) return LoadingIndicator();
+      print("========$state");
+      //    if (state != UserStatus.success) return LoadingIndicator();
+      return scaffold(user, context);
+    });
+  }
+
+  Dialog scaffold(User user, BuildContext context) {
     return Dialog(
         key: Key('UserDialog${user.userGroup.toString()}'),
         insetPadding: EdgeInsets.all(10),
@@ -132,22 +149,11 @@ class _UserState extends State<UserPage> {
                   padding: EdgeInsets.all(20),
                   width: 400,
                   height: 1020,
-                  child: BlocListener<UserBloc, UserState>(
-                      listener: (context, state) {
-                        if (state.status == UserStatus.failure) {
-                          loading = false;
-                          HelperFunctions.showMessage(
-                              context, '${state.message}', Colors.red);
-                        }
-                        if (state.status == UserStatus.success) {
-                          Navigator.of(context).pop(updatedUser);
-                        }
-                      },
-                      child: Scaffold(
-                          backgroundColor: Colors.transparent,
-                          floatingActionButton:
-                              imageButtons(context, _onImageButtonPressed),
-                          body: listChild())))),
+                  child: Scaffold(
+                      backgroundColor: Colors.transparent,
+                      floatingActionButton:
+                          imageButtons(context, _onImageButtonPressed),
+                      body: listChild()))),
           Positioned(top: 5, right: 5, child: DialogCloseButton())
         ]));
   }

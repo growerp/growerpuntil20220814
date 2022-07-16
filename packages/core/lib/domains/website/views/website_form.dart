@@ -17,9 +17,8 @@ import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domains/domains.dart';
-import 'package:responsive_framework/responsive_framework.dart';
-import 'package:url_launcher/link.dart';
 import 'package:reorderables/reorderables.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../api_repository.dart';
 
 class WebsiteForm extends StatelessWidget {
@@ -53,10 +52,10 @@ class _WebsiteState extends State<WebsitePage> {
 
   late WebsiteBloc _websiteBloc;
   List<Content> _updatedContent = [];
-  List<Category> _updatedCategories = [];
   List<Category> _selectedCategories = [];
   List<Category> _availableCategories = [];
   String changedTitle = '';
+  String changedHostName = '';
 
   @override
   void initState() {
@@ -95,7 +94,6 @@ class _WebsiteState extends State<WebsitePage> {
           switch (state.status) {
             case WebsiteStatus.success:
               _updatedContent = List.of(state.website!.websiteContent);
-              _updatedCategories = List.of(state.website!.websiteCategories);
               _selectedCategories = List.of(state.website!.productCategories);
               return Scaffold(body: Center(child: _showForm(state)));
             case WebsiteStatus.failure:
@@ -110,55 +108,121 @@ class _WebsiteState extends State<WebsitePage> {
   }
 
   Widget _showForm(WebsiteState state) {
-    // create content buttons
-    List<Widget> contentButtons = [];
+    // create text content buttons
+    List<Widget> _textButtons = [];
+
+    // create text content list
     state.website!.websiteContent.asMap().forEach((index, content) {
-      contentButtons.add(InputChip(
-        key: Key(content.path),
-        label: Text(
-          content.title,
-        ),
-        onPressed: () {
-          showDialog(
-              barrierDismissible: true,
-              context: context,
-              builder: (BuildContext context) {
-                return BlocProvider.value(
-                    value: _websiteBloc,
-                    child: EditorDialog(state.website!.id, content));
+      if (content.text.isNotEmpty)
+        _textButtons.add(InputChip(
+          key: Key(content.path),
+          label: Text(
+            content.title,
+          ),
+          onPressed: () async {
+            var updContent = await showDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return BlocProvider.value(
+                      value: _websiteBloc,
+                      child: WebsiteContentDialog(state.website!.id, content));
+                });
+            if (updContent != null)
+              setState(() {
+                context.read<WebsiteBloc>().add(WebsiteFetch());
               });
-          setState(() {});
-        },
-        deleteIcon: const Icon(
-          Icons.cancel,
-          key: Key("deleteChip"),
-        ),
-        onDeleted: () async {
-          _updatedContent[index] = _updatedContent[index].copyWith(title: '');
-          context.read<WebsiteBloc>().add(WebsiteUpdate(
-              Website(id: state.website!.id, websiteContent: _updatedContent)));
-          setState(() {});
-        },
-      ));
+          },
+          deleteIcon: const Icon(
+            Icons.cancel,
+            key: Key("deleteChip"),
+          ),
+          onDeleted: () async {
+            context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                id: state.website!.id,
+                websiteContent: [_updatedContent[index].copyWith(title: '')])));
+            setState(() {});
+          },
+        ));
     });
-    contentButtons.add(IconButton(
+    _textButtons.add(IconButton(
+        key: Key('addText'),
         iconSize: 30,
         icon: Icon(Icons.add_circle),
         color: Colors.deepOrange,
         padding: const EdgeInsets.all(0.0),
         onPressed: () async {
-          Content newContent = Content(text: '# new title here...');
-          await showDialog(
+          var updContent = await showDialog(
               barrierDismissible: true,
               context: context,
               builder: (BuildContext context) {
                 return BlocProvider.value(
                     value: _websiteBloc,
-                    child: EditorDialog(state.website!.id, newContent));
+                    child: WebsiteContentDialog(
+                        state.website!.id, Content(text: '# ')));
               });
-          setState(() {
-//            if (result != null) _updatedContent!.add(result);
-          });
+
+          if (updContent != null)
+            setState(() {
+              context.read<WebsiteBloc>().add(WebsiteFetch());
+            });
+        }));
+
+    // create image buttons
+    List<Widget> _imageButtons = [];
+    state.website!.websiteContent.asMap().forEach((index, content) {
+      if (content.text.isEmpty)
+        _imageButtons.add(InputChip(
+          key: Key(content.path),
+          label: Text(
+            content.title,
+          ),
+          onPressed: () async {
+            var updContent = await showDialog(
+                barrierDismissible: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return BlocProvider.value(
+                      value: _websiteBloc,
+                      child: WebsiteContentDialog(state.website!.id, content));
+                });
+            if (updContent != null)
+              setState(() {
+                context.read<WebsiteBloc>().add(WebsiteFetch());
+              });
+          },
+          deleteIcon: const Icon(
+            Icons.cancel,
+            key: Key("deleteChip"),
+          ),
+          onDeleted: () async {
+            setState(() {
+              context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                      id: state.website!.id,
+                      websiteContent: [
+                        _updatedContent[index].copyWith(title: '')
+                      ])));
+            });
+          },
+        ));
+    });
+    _imageButtons.add(IconButton(
+        key: Key('addImage'),
+        iconSize: 30,
+        icon: Icon(Icons.add_circle),
+        color: Colors.deepOrange,
+        padding: const EdgeInsets.all(0.0),
+        onPressed: () async {
+          var updContent = await showDialog(
+              barrierDismissible: true,
+              context: context,
+              builder: (BuildContext context) {
+                return WebsiteContentDialog(state.website!.id, Content());
+              });
+          if (updContent != null)
+            setState(() {
+              context.read<WebsiteBloc>().add(WebsiteFetch());
+            });
         }));
 
     // create website category buttons
@@ -232,7 +296,14 @@ class _WebsiteState extends State<WebsitePage> {
       },
     ));
 
-    bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
+    final Uri _url = Uri.parse(foundation.kReleaseMode
+        ? "https://${state.website?.hostName}"
+        : "http://${state.website!.id}.localhost:8080");
+
+    void _launchUrl() async {
+      if (!await launchUrl(_url)) throw 'Could not launch $_url';
+    }
+
     return Center(
         child: Container(
             width: 400,
@@ -253,26 +324,46 @@ class _WebsiteState extends State<WebsitePage> {
                             key: Key('header'),
                           )),
                           SizedBox(height: 10),
-                          Link(
-                              uri: Uri.parse(foundation.kReleaseMode
-                                  ? "https://${state.website?.hostName}"
-                                  : "http://${state.website!.id}.localhost:8080/store"),
-                              target: LinkTarget.blank,
-                              builder: (BuildContext context,
-                                  FollowLink? followLink) {
-                                return InkWell(
-                                  onTap: followLink,
-                                  child: Text(
-                                    "${state.website?.hostName}",
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.blue,
-                                      decoration: TextDecoration.underline,
-                                    ),
-                                  ),
-                                );
-                              }),
-                          SizedBox(height: 30),
+                          InkWell(
+                            onTap: _launchUrl,
+                            child: Text(
+                              "${state.website?.hostName}",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.blue,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          Row(children: [
+                            Expanded(
+                              child: TextFormField(
+                                  key: Key('url'),
+                                  initialValue:
+                                      state.website!.hostName.split('.')[0],
+                                  decoration:
+                                      new InputDecoration(labelText: 'url'),
+                                  onChanged: (value) {
+                                    changedHostName = value;
+                                  }),
+                            ),
+                            Text(
+                                state.website!.hostName.substring(
+                                    state.website!.hostName.indexOf('.')),
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                            SizedBox(width: 10),
+                            ElevatedButton(
+                                key: Key('updateHost'),
+                                child: Text('update'),
+                                onPressed: () async {
+                                  _websiteBloc.add(WebsiteUpdate(Website(
+                                      id: state.website!.id,
+                                      hostName: changedHostName)));
+                                }),
+                          ]),
+                          SizedBox(height: 10),
                           Row(children: [
                             Expanded(
                               child: TextFormField(
@@ -286,7 +377,7 @@ class _WebsiteState extends State<WebsitePage> {
                             ),
                             SizedBox(width: 10),
                             ElevatedButton(
-                                key: Key('update'),
+                                key: Key('updateTitle'),
                                 child: Text('update'),
                                 onPressed: () async {
                                   _websiteBloc.add(WebsiteUpdate(Website(
@@ -294,53 +385,117 @@ class _WebsiteState extends State<WebsitePage> {
                                       title: changedTitle)));
                                 }),
                           ]),
-                          SizedBox(height: 30),
-                          Text(
-                            'Text sections',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            'Can change order with long press',
-                            style: TextStyle(fontSize: 10),
-                          ),
-                          ReorderableWrap(
-                              runSpacing: 10,
-                              onReorder: (int oldIndex, int newIndex) {
-                                var content =
-                                    List.of(state.website!.websiteContent);
-                                content.insert(newIndex, content[oldIndex]);
-                                if (newIndex < oldIndex)
-                                  content.removeAt(oldIndex + 1);
-                                else
-                                  content.removeAt(oldIndex);
-                                int index = 1;
-                                for (int i = 0; i < content.length; i++)
-                                  content[i] = content[i]
-                                      .copyWith(seqId: index++, text: '');
-                                context.read<WebsiteBloc>().add(WebsiteUpdate(
-                                    Website(
-                                        id: state.website!.id,
-                                        websiteContent: content)));
-                              },
-                              spacing: 10,
-                              children: contentButtons),
-                          SizedBox(height: 30),
-                          Text(
-                            'Home Page Categories',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
                           SizedBox(height: 10),
-                          Wrap(children: catButtons, spacing: 10),
-                          SizedBox(height: 30),
-                          Text(
-                            'Shop Categories',
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
+                          Container(
+                              width: 400,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                border: Border.all(
+                                    color: Colors.black45,
+                                    style: BorderStyle.solid,
+                                    width: 0.80),
+                              ),
+                              child: Column(children: [
+                                Text(
+                                  'Text sections',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  'Can change order with long press',
+                                  style: TextStyle(fontSize: 10),
+                                ),
+                                ReorderableWrap(
+                                    runSpacing: 10,
+                                    onReorder: (int oldIndex, int newIndex) {
+                                      var content = List.of(state
+                                          .website!.websiteContent
+                                          .where((el) => el.text.isNotEmpty));
+                                      if (newIndex == content.length)
+                                        newIndex--;
+                                      var save = content[oldIndex];
+                                      content[oldIndex] = content[newIndex];
+                                      content[newIndex] = save;
+                                      int index = 1;
+                                      for (int i = 0; i < content.length; i++)
+                                        content[i] =
+                                            content[i].copyWith(seqId: index++);
+                                      context.read<WebsiteBloc>().add(
+                                          WebsiteUpdate(Website(
+                                              id: state.website!.id,
+                                              websiteContent: content)));
+                                    },
+                                    spacing: 10,
+                                    children: _textButtons)
+                              ])),
                           SizedBox(height: 10),
-                          Wrap(children: browseCatButtons, spacing: 10),
+                          Container(
+                              width: 400,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                border: Border.all(
+                                    color: Colors.black45,
+                                    style: BorderStyle.solid,
+                                    width: 0.80),
+                              ),
+                              child: Column(children: [
+                                Text(
+                                  'Images',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 10),
+                                Wrap(
+                                    runSpacing: 10,
+                                    spacing: 10,
+                                    children: _imageButtons)
+                              ])),
+                          SizedBox(height: 10),
+                          Container(
+                              width: 400,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                border: Border.all(
+                                    color: Colors.black45,
+                                    style: BorderStyle.solid,
+                                    width: 0.80),
+                              ),
+                              child: Column(children: [
+                                Text(
+                                  'Home Page Categories',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 10),
+                                Wrap(children: catButtons, spacing: 10)
+                              ])),
+                          SizedBox(height: 10),
+                          Container(
+                              width: 400,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                border: Border.all(
+                                    color: Colors.black45,
+                                    style: BorderStyle.solid,
+                                    width: 0.80),
+                              ),
+                              child: Column(children: [
+                                Text(
+                                  'Shop dropdown Categories',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 10),
+                                Wrap(children: browseCatButtons, spacing: 10)
+                              ])),
                         ]))))));
   }
 }

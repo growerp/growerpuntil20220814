@@ -1051,6 +1051,38 @@ class APIRepository {
     }
   }
 
+  Future<ApiResult<Content>> getWebsiteContent(Content content) async {
+    try {
+      final response = await dioClient.get(
+          'rest/s1/growerp/100/WebsiteContent', apiKey!,
+          queryParameters: <String, dynamic>{
+            'content': jsonEncode(content.toJson()),
+            'classificationId': classificationId
+          });
+      return getResponse<Content>(
+          "content", response, (json) => Content.fromJson(json));
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<Content>> uploadWebsiteContent(
+      String websiteId, Content content) async {
+    try {
+      final response = await dioClient.post(
+          'rest/s1/growerp/100/WebsiteContent', apiKey!,
+          data: <String, dynamic>{
+            'content': jsonEncode(content.toJson()),
+            'classificationId': classificationId,
+            'moquiSessionToken': sessionToken
+          });
+      return getResponse<Content>(
+          "content", response, (json) => Content.fromJson(json));
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
   Future<ApiResult<Website>> updateWebsite(Website website) async {
     try {
       final response = await dioClient.patch(

@@ -25,6 +25,4 @@ class WebsiteFetch extends WebsiteEvent {}
 class WebsiteUpdate extends WebsiteEvent {
   final Website website;
   WebsiteUpdate(this.website);
-  @override
-  String toString() => 'Update Website Website: $website';
 }

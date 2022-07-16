@@ -2,7 +2,7 @@
  * This GrowERP software is in the public domain under CC0 1.0 Universal plus a
  * Grant of Patent License.
  * 
- * To the extent possible under law, the websiteor(s) have dedicated all
+ * To the extent possible under law, the contentor(s) have dedicated all
  * copyright and related and neighboring rights to this software to the
  * public domain worldwide. This software is distributed without any
  * warranty.
@@ -12,45 +12,41 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
-part of 'website_bloc.dart';
+part of 'content_bloc.dart';
 
-enum WebsiteStatus {
+enum ContentStatus {
   initial,
   loading,
   success,
   failure,
 }
 
-class WebsiteState extends Equatable {
-  const WebsiteState({
-    this.status = WebsiteStatus.initial,
-    this.website,
+class ContentState extends Equatable {
+  const ContentState({
+    this.status = ContentStatus.initial,
     this.content,
     this.message,
   });
 
-  final WebsiteStatus status;
-  final Website? website;
+  final ContentStatus status;
   final Content? content;
   final String? message;
 
-  WebsiteState copyWith({
-    WebsiteStatus? status,
-    Website? website,
+  ContentState copyWith({
+    ContentStatus? status,
     Content? content,
     String? message,
   }) {
-    return WebsiteState(
+    return ContentState(
       status: status ?? this.status,
-      website: website ?? this.website,
       content: content ?? this.content,
       message: message, // message not kept over state changes
     );
   }
 
   @override
-  List<Object?> get props => [status, website, content, message];
+  List<Object?> get props => [content, message];
 
   @override
-  String toString() => "$status { website: ${website?.id}";
+  String toString() => "$status { content: ${content?.path}";
 }

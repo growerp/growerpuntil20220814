@@ -4,7 +4,8 @@
             "name": "Flutter (lib/main.dart)",
             "type": "dart",
             "request": "launch",
-            "program": "lib/main.dart"
+            "program": "lib/main.dart",
+            "args": ["--web-enable-expression-evaluation"]
         },
         {
             "name": "Flutter (integration_test/main_test.dart)",
