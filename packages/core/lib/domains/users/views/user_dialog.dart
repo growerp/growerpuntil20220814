@@ -129,13 +129,11 @@ class _UserState extends State<UserPage> {
       }
     }, builder: (context, state) {
       if (state.status == UserStatus.loading) return LoadingIndicator();
-      print("========$state");
-      //    if (state != UserStatus.success) return LoadingIndicator();
-      return scaffold(user, context);
+      return scaffoldWidget(user, context);
     });
   }
 
-  Dialog scaffold(User user, BuildContext context) {
+  Dialog scaffoldWidget(User user, BuildContext context) {
     return Dialog(
         key: Key('UserDialog${user.userGroup.toString()}'),
         insetPadding: EdgeInsets.all(10),
