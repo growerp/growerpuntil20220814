@@ -218,19 +218,20 @@ class APIRepository {
     }
   }
 
-  Future<ApiResult<void>> updatePassword(
+  Future<ApiResult<Authenticate>> updatePassword(
       {required String username,
       required String oldPassword,
       required String newPassword}) async {
     try {
-      await dioClient.post('rest/s1/growerp/100/Password', apiKey!,
-          data: <String, dynamic>{
-            'username': username,
-            'oldPassword': oldPassword,
-            'newPassword': newPassword,
-            'moquiSessionToken': this.sessionToken
-          });
-      return ApiResult.success(data: null);
+      final response = await dioClient
+          .post('rest/s1/growerp/100/Password', null, data: <String, dynamic>{
+        'username': username,
+        'oldPassword': oldPassword,
+        'newPassword': newPassword,
+        'moquiSessionToken': this.sessionToken
+      });
+      return getResponse<Authenticate>(
+          "authenticate", response, (json) => Authenticate.fromJson(json));
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

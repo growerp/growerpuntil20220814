@@ -239,10 +239,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     );
     emit(apiResult.when(
-        success: (auth) => state.copyWith(
-            status: AuthStatus.authenticated,
-            authenticate: auth,
-            message: 'You are logged in now...'),
+        success: (auth) {
+          if (auth.apiKey == 'passwordChange')
+            return state.copyWith(
+                status: AuthStatus.passwordChange,
+                authenticate: state.authenticate,
+                message: 'need to change password');
+          else
+            return state.copyWith(
+                status: AuthStatus.authenticated,
+                authenticate: auth,
+                message: 'You are logged in now...');
+        },
         failure: (error) => state.copyWith(
             status: AuthStatus.failure,
             message: "failed logging in: ${error.toString()}")));
@@ -272,14 +280,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthChangePassword event,
     Emitter<AuthState> emit,
   ) async {
-    ApiResult<void> apiResult = await repos.updatePassword(
+    emit(state.copyWith(status: AuthStatus.loading));
+    ApiResult<Authenticate> apiResult = await repos.updatePassword(
         username: event.username,
         oldPassword: event.oldPassword,
         newPassword: event.newPassword);
     emit(apiResult.when(
-        success: (_) =>
-            state.copyWith(message: "password successfully changed"),
-        failure: (_) => state.copyWith(
-            status: AuthStatus.failure, message: "Change password failed!")));
+        success: (auth) => state.copyWith(
+            message: "password successfully changed",
+            status: AuthStatus.authenticated,
+            authenticate: auth),
+        failure: (NetworkExceptions error) => state.copyWith(
+            status: AuthStatus.failure, message: error.toString())));
+    if (state.status == AuthStatus.authenticated) {
+      repos.setApiKey(
+          state.authenticate!.apiKey!, state.authenticate!.moquiSessionToken!);
+      PersistFunctions.persistAuthenticate(state.authenticate!);
+      chat.connect(
+          state.authenticate!.apiKey!, state.authenticate!.user!.userId!);
+    }
   }
 }

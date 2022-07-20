@@ -53,6 +53,11 @@ class _LoginHeaderState extends State<LoginDialog> {
         case AuthStatus.authenticated:
           Navigator.of(context).pop(state.authenticate);
           break;
+        case AuthStatus.passwordChange:
+          Navigator.pushNamed(context, '/changePw',
+              arguments: ChangePwArgs(
+                  _usernameController.text, _passwordController.text));
+          break;
         case AuthStatus.failure:
           HelperFunctions.showMessage(context, '${state.message}', Colors.red);
           break;

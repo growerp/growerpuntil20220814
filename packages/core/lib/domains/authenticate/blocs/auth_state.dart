@@ -21,7 +21,8 @@ enum AuthStatus {
   authenticated,
   unAuthenticated,
   failure,
-  changeIp
+  changeIp,
+  passwordChange,
 }
 
 class AuthState extends Equatable {

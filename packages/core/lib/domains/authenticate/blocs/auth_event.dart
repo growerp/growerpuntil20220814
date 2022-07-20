@@ -81,7 +81,7 @@ class AuthChangePassword extends AuthEvent {
   final String username;
   final String oldPassword;
   final String newPassword;
-  const AuthChangePassword(this.oldPassword, this.newPassword, this.username);
+  const AuthChangePassword(this.username, this.oldPassword, this.newPassword);
   @override
   String toString() => 'Change Password with $username';
 }
