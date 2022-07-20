@@ -1,1 +1,0 @@
-../../../../docs/fastlane/android/README.md
