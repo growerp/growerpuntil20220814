@@ -69,7 +69,8 @@ class CategoryListItem extends StatelessWidget {
               key: Key('delete$index'),
               icon: Icon(Icons.delete_forever),
               onPressed: () {
-                _categoryBloc.add(CategoryDelete(category));
+                _categoryBloc
+                    .add(CategoryDelete(category.copyWith(image: null)));
               },
             )));
   }

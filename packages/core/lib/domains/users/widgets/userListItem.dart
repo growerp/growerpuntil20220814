@@ -104,7 +104,7 @@ class UserListItem extends StatelessWidget {
               key: Key("delete$index"),
               icon: Icon(Icons.delete_forever),
               onPressed: () {
-                userBloc.add(UserDelete(user));
+                userBloc.add(UserDelete(user.copyWith(image: null)));
               },
             )));
   }

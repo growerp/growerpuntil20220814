@@ -467,13 +467,14 @@ class _UserState extends State<UserPage> {
                   if (result != null) {
                     // delete company too?
                     if (widget.user.partyId == authenticate.user!.partyId!) {
-                      context
-                          .read<AuthBloc>()
-                          .add(AuthDeleteUser(widget.user, result));
+                      context.read<AuthBloc>().add(AuthDeleteUser(
+                          widget.user.copyWith(image: null), result));
                       Navigator.of(context).pop(updatedUser);
                       context.read<AuthBloc>().add(AuthLoggedOut());
                     } else {
-                      context.read<UserBloc>().add(UserDelete(widget.user));
+                      context
+                          .read<UserBloc>()
+                          .add(UserDelete(widget.user.copyWith(image: null)));
                     }
                   }
                 }),

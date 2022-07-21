@@ -79,7 +79,7 @@ class ProductListItem extends StatelessWidget {
               key: Key('delete$index'),
               icon: Icon(Icons.delete_forever),
               onPressed: () {
-                _productBloc.add(ProductDelete(product));
+                _productBloc.add(ProductDelete(product.copyWith(image: null)));
               },
             )));
   }

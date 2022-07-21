@@ -205,7 +205,7 @@ class _MyFinDocState extends State<FinDocPage> {
                     autofocus: true,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25.0)),
+                          borderRadius: BorderRadius.circular(20)),
                     ),
                     controller: _userSearchBoxController,
                   ),
@@ -498,7 +498,7 @@ Future addAnotherItemDialog(
       var _formKey = GlobalKey<FormState>();
       return AlertDialog(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
         title: Text('Add another Item', textAlign: TextAlign.center),
         content: Container(
             height: 350,
@@ -598,7 +598,7 @@ Future addProductItemDialog(BuildContext context, repos) async {
             return AlertDialog(
               key: Key('addProductItemDialog'),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
+                  borderRadius: BorderRadius.all(Radius.circular(20))),
               title: Text('Add a Product', textAlign: TextAlign.center),
               content: Container(
                   height: 350,
@@ -616,12 +616,12 @@ Future addProductItemDialog(BuildContext context, repos) async {
                                   decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius:
-                                            BorderRadius.circular(25.0)),
+                                            BorderRadius.circular(20)),
                                   ),
                                   controller: _productSearchBoxController,
                                 ),
                                 menuProps: MenuProps(
-                                    borderRadius: BorderRadius.circular(20.0)),
+                                    borderRadius: BorderRadius.circular(20)),
                                 title: Container(
                                     height: 50,
                                     decoration: BoxDecoration(
@@ -642,7 +642,7 @@ Future addProductItemDialog(BuildContext context, repos) async {
                               dropdownSearchDecoration: InputDecoration(
                                 labelText: 'Product',
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.0)),
+                                    borderRadius: BorderRadius.circular(20)),
                               ),
                               key: Key('product'),
                               itemAsString: (Product? u) =>
@@ -768,7 +768,7 @@ Future addRentalItemDialog(BuildContext context, repos) async {
         var _formKey = GlobalKey<FormState>();
         return AlertDialog(
           shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+              borderRadius: BorderRadius.all(Radius.circular(20))),
           title: Text('Add a Reservation', textAlign: TextAlign.center),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
@@ -804,13 +804,12 @@ Future addRentalItemDialog(BuildContext context, repos) async {
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
                                           borderRadius:
-                                              BorderRadius.circular(25.0)),
+                                              BorderRadius.circular(20)),
                                     ),
                                     controller: _productSearchBoxController,
                                   ),
                                   menuProps: MenuProps(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
+                                      borderRadius: BorderRadius.circular(20)),
                                 ),
                                 itemAsString: (Product? u) =>
                                     "${u!.productName}",
