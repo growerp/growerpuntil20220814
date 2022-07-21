@@ -138,9 +138,14 @@ class _WebsiteState extends State<WebsitePage> {
             key: Key("deleteChip"),
           ),
           onDeleted: () async {
-            context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
-                id: state.website!.id,
-                websiteContent: [_updatedContent[index].copyWith(title: '')])));
+            bool result = await confirmDialog(
+                context, "delete ${content.title}?", "cannot be undone!");
+            if (result == true)
+              context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                      id: state.website!.id,
+                      websiteContent: [
+                        _updatedContent[index].copyWith(title: '')
+                      ])));
             setState(() {});
           },
         ));
@@ -196,12 +201,15 @@ class _WebsiteState extends State<WebsitePage> {
             key: Key("deleteChip"),
           ),
           onDeleted: () async {
-            setState(() {
-              context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
-                      id: state.website!.id,
-                      websiteContent: [
-                        _updatedContent[index].copyWith(title: '')
-                      ])));
+            setState(() async {
+              bool result = await confirmDialog(
+                  context, "delete ${content.title}?", "cannot be undone!");
+              if (result == true)
+                context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                        id: state.website!.id,
+                        websiteContent: [
+                          _updatedContent[index].copyWith(title: '')
+                        ])));
             });
           },
         ));
@@ -260,12 +268,16 @@ class _WebsiteState extends State<WebsitePage> {
         ),
         onDeleted: () async {
           setState(() {
-            _selectedCategories.removeAt(index);
-            if (_selectedCategories.isEmpty)
-              _selectedCategories.add(Category(categoryId: 'allDelete'));
-            context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
-                id: state.website!.id,
-                productCategories: _selectedCategories)));
+            bool result = confirmDialog(context,
+                "Remove ${category.categoryName}?", "can be added again!");
+            if (result == true) {
+              _selectedCategories.removeAt(index);
+              if (_selectedCategories.isEmpty)
+                _selectedCategories.add(Category(categoryId: 'allDelete'));
+              context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                  id: state.website!.id,
+                  productCategories: _selectedCategories)));
+            }
           });
         },
       ));
