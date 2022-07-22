@@ -8,6 +8,7 @@
 - [End User Documentation](end_user/documentation)
   * [Getting started](end_user/getStarted.md)
   * [Functional overview](end_user/functional_overview.md)
+    * [Website](end_user/website.md)
     * [Marketing & Sales](end_user/marketing_sales.md)
     * [Sales order management](end_user/sales_order_management.md)
     * [Inventory management](end_user/inventory_management.md)
