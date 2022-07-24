@@ -319,11 +319,11 @@ class _WebsiteState extends State<WebsitePage> {
     if (state.website!.colorJson.isNotEmpty)
       websiteColor = jsonDecode(state.website!.colorJson);
     websiteColor['HeaderFooterBg'] = websiteColor['HeaderFooterBg'] == ''
-        ? '#333333'
-        : websiteColor['HeaderFooterBg'];
+        ? '#ffeb3b'
+        : websiteColor['HeaderFooterBg'] ?? '#ffeb3b';
     websiteColor['HeaderFooterText'] = websiteColor['HeaderFooterText'] == ''
-        ? '#fff'
-        : websiteColor['HeaderFooterText'];
+        ? '#ff5722'
+        : websiteColor['HeaderFooterText'] ?? '#ff5722';
     websiteColor.forEach((key, value) => colorCatButtons.add(InputChip(
         backgroundColor: fromCssColor(websiteColor[key]),
         label: Text(key,
