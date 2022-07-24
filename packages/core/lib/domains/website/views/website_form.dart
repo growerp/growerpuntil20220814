@@ -12,6 +12,8 @@
  * <http://creativecommons.org/publicdomain/zero/1.0/>.
  */
 
+import 'dart:convert';
+
 import 'package:core/domains/common/functions/helper_functions.dart';
 import 'package:flutter/foundation.dart' as foundation;
 import 'package:flutter/material.dart';
@@ -19,6 +21,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domains/domains.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:from_css_color/from_css_color.dart';
 import '../../../api_repository.dart';
 
 class WebsiteForm extends StatelessWidget {
@@ -308,6 +312,66 @@ class _WebsiteState extends State<WebsitePage> {
       },
     ));
 
+    // create product browse categories
+    List<Widget> colorCatButtons = [];
+    Map websiteColor = {};
+    if (state.website!.colorJson.isNotEmpty)
+      websiteColor = jsonDecode(state.website!.colorJson);
+    websiteColor['HeaderFooterBg'] =
+        websiteColor['HeaderFooterBg'] ?? '#333333';
+    websiteColor['HeaderFooterText'] =
+        websiteColor['HeaderFooterText'] ?? '#fff';
+    websiteColor.forEach((key, value) => colorCatButtons.add(InputChip(
+        backgroundColor: fromCssColor(websiteColor[key]),
+        label: Text(key,
+            key: Key(key),
+            style: TextStyle(
+                color: fromCssColor(websiteColor[key]).computeLuminance() < 0.5
+                    ? Colors.white
+                    : Colors.black)),
+        onPressed: () async {
+          var result = await showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                String cssColor = '';
+                return AlertDialog(
+                  title: Text('Pick a color!'),
+                  content: SingleChildScrollView(
+                    child: MaterialPicker(
+                      pickerColor: fromCssColor(value), //default color
+                      onColorChanged: (Color color) {
+                        setState(() {
+                          cssColor = color.toCssString();
+                        });
+                      },
+                    ),
+                  ),
+                  actions: <Widget>[
+                    ElevatedButton(
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        Navigator.of(context).pop(); //dismiss the color picker
+                      },
+                    ),
+                    ElevatedButton(
+                      child: const Text('Save'),
+                      onPressed: () {
+                        Navigator.of(context)
+                            .pop(cssColor); //dismiss the color picker
+                      },
+                    ),
+                  ],
+                );
+              });
+          if (result != null) {
+            setState(() {
+              websiteColor[key] = result;
+              context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
+                  id: state.website!.id, colorJson: jsonEncode(websiteColor))));
+            });
+          }
+        })));
+
     final Uri _url = Uri.parse(foundation.kReleaseMode
         ? "https://${state.website?.hostName}"
         : "http://${state.website!.id}.localhost:8080");
@@ -507,6 +571,27 @@ class _WebsiteState extends State<WebsitePage> {
                                 ),
                                 SizedBox(height: 10),
                                 Wrap(children: browseCatButtons, spacing: 10)
+                              ])),
+                          SizedBox(height: 10),
+                          Container(
+                              width: 400,
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25.0),
+                                border: Border.all(
+                                    color: Colors.black45,
+                                    style: BorderStyle.solid,
+                                    width: 0.80),
+                              ),
+                              child: Column(children: [
+                                Text(
+                                  'Website colors',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 10),
+                                Wrap(children: colorCatButtons, spacing: 10)
                               ])),
                         ]))))));
   }

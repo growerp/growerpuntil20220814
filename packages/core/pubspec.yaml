@@ -43,6 +43,8 @@ dependencies:
   credit_card_validator: ^2.0.1
   markdown_widget: ^1.2.8
   url_launcher: ^6.1.4
+  flutter_colorpicker: ^1.0.3
+  from_css_color: ^2.0.0
 
 dev_dependencies:
   flutter_test:

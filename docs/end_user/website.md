@@ -10,29 +10,32 @@ The website is maintained by the 'admin' application. on the dashboard -> compan
 
 <img src=_media/websiteAdmin.png>          <img src=_media/website.png>
 
-## Website Logo
+## Website Logo.
 The logo at the top-left of the website can be changed by uploading an image at the admin dashboard -> Company -> company info screen
 
-## Website title
+## Website title.
 At the website admin screen as shown above, you can change the title of the website
 
-## website address
+## website address.
 You receive a free subdomain name and free https certificate by using this system of which you can change the first part. It is also possible to use your own domain name for an extra charge.
 
-## Text Sections
+## Text Sections.
 Text sections are in [markdown format](https://www.markdownguide.org/cheat-sheet/) and can be added and deleted at will. The title of the text page will appear as a menu item in the header of the website. Further  an automatic content list is generated making use of the markdown '#' and '##' headers. Initially example page are generated to help you get started. You can delete them all if you do not want to use them.
 
 An exception is the text section page which starts with 'home'. This page will not show in the menu but will appear at the homepage when present. With this page you can create a text only website if remove all the references to categories and products from the website.
 
 You can also include images within the text with the following code: ![](/getImage/xxxx) where 'xxxx' are the first few characters of the image name.
 
-## Images
-Here you can upload the images for use within the text section pages.
+## Images.
+Here you can upload the images for use within the text section pages. Give it a unique name because you need it to insert in the test section.
 
-## Home Page categories
+## Home Page categories.
 The home will show products in two rows as indicated by the 'home page categories'
 If you click on the deals or features button you can add specific categories to be show here. If no products are assigned the row will not show. 
 
-## Shop drop down categories
+## Shop drop-down categories.
 If you have a lot of products it is advised to create categories in the admin dashboard -> catalog -> categories screen and group your products here.  
 The categories you created can be added to this section show them in the 'shop' dropdown.  If no categories are assigned the 'shop' option will not show.
+
+## promote on other platforms.
+If you like to promote a single product on other platforms, go to your own website here and click on the product. Now copy the full internet address at the top of your browser and past it as a link in the text you created somewhere else.
