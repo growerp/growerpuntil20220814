@@ -20,6 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:core/domains/domains.dart';
 import 'package:reorderables/reorderables.dart';
+import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:from_css_color/from_css_color.dart';
@@ -380,11 +381,212 @@ class _WebsiteState extends State<WebsitePage> {
       if (!await launchUrl(_url)) throw 'Could not launch $_url';
     }
 
+    List<Widget> _widgets = [
+      Container(
+          width: 400,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
+          ),
+          child: InkWell(
+            onTap: _launchUrl,
+            child: Text(
+              "${state.website?.hostName}",
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.blue,
+                decoration: TextDecoration.underline,
+              ),
+            ),
+          )),
+      Container(
+          width: 400,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
+          ),
+          child: Row(children: [
+            Expanded(
+              child: TextFormField(
+                  key: Key('url'),
+                  initialValue: state.website!.hostName.split('.')[0],
+                  decoration: new InputDecoration(labelText: 'url'),
+                  onChanged: (value) {
+                    changedHostName = value;
+                  }),
+            ),
+            Text(
+                state.website!.hostName
+                    .substring(state.website!.hostName.indexOf('.')),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            SizedBox(width: 10),
+            ElevatedButton(
+                key: Key('updateHost'),
+                child: Text('update'),
+                onPressed: () async {
+                  _websiteBloc.add(WebsiteUpdate(Website(
+                      id: state.website!.id, hostName: changedHostName)));
+                }),
+          ])),
+      Container(
+          width: 400,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
+          ),
+          child: Row(children: [
+            Expanded(
+              child: TextFormField(
+                  key: Key('title'),
+                  initialValue: state.website!.title,
+                  decoration:
+                      new InputDecoration(labelText: 'Title of the website'),
+                  onChanged: (value) {
+                    changedTitle = value;
+                  }),
+            ),
+            SizedBox(width: 10),
+            ElevatedButton(
+                key: Key('updateTitle'),
+                child: Text('update'),
+                onPressed: () async {
+                  _websiteBloc.add(WebsiteUpdate(
+                      Website(id: state.website!.id, title: changedTitle)));
+                }),
+          ])),
+      Container(
+          width: 400,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
+          ),
+          child: Column(children: [
+            Text(
+              'Text sections',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              'Can change order with long press',
+              style: TextStyle(fontSize: 10),
+            ),
+            ReorderableWrap(
+                runSpacing: 10,
+                onReorder: (int oldIndex, int newIndex) {
+                  var content = List.of(state.website!.websiteContent
+                      .where((el) => el.text.isNotEmpty));
+                  if (newIndex == content.length) newIndex--;
+                  var save = content[oldIndex];
+                  content[oldIndex] = content[newIndex];
+                  content[newIndex] = save;
+                  int index = 1;
+                  for (int i = 0; i < content.length; i++)
+                    content[i] = content[i].copyWith(seqId: index++);
+                  context.read<WebsiteBloc>().add(WebsiteUpdate(
+                      Website(id: state.website!.id, websiteContent: content)));
+                },
+                spacing: 10,
+                children: _textButtons)
+          ])),
+      Container(
+          width: 400,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
+          ),
+          child: Column(children: [
+            Text(
+              'Images',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Wrap(runSpacing: 10, spacing: 10, children: _imageButtons)
+          ])),
+      Container(
+          width: 400,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
+          ),
+          child: Column(children: [
+            Text(
+              'Home Page Categories',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Wrap(children: catButtons, spacing: 10)
+          ])),
+      Container(
+          width: 400,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
+          ),
+          child: Column(children: [
+            Text(
+              'Shop dropdown Categories',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Wrap(children: browseCatButtons, spacing: 10)
+          ])),
+      Container(
+          width: 400,
+          padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(25.0),
+            border: Border.all(
+                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
+          ),
+          child: Column(children: [
+            Text(
+              'Website colors',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 10),
+            Wrap(children: colorCatButtons, spacing: 10)
+          ])),
+    ];
+
+    List<Widget> rows = [];
+    if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET)) {
+      // change list in two columns
+      for (var i = 0; i < _widgets.length; i++)
+        rows.add(Row(
+          children: [
+            Expanded(
+                child:
+                    Padding(padding: EdgeInsets.all(10), child: _widgets[i++])),
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: i < _widgets.length ? _widgets[i] : Container()))
+          ],
+        ));
+    }
+
+    List<Widget> column = [];
+    for (var i = 0; i < _widgets.length; i++)
+      column.add(Padding(padding: EdgeInsets.all(10), child: _widgets[i]));
+
     return Center(
         child: Container(
-            width: 400,
             child: SingleChildScrollView(
                 key: Key('listView'),
+                padding: EdgeInsets.all(20),
                 child: Form(
                     key: _formKey,
                     child: Padding(
@@ -400,199 +602,7 @@ class _WebsiteState extends State<WebsitePage> {
                             key: Key('header'),
                           )),
                           SizedBox(height: 10),
-                          InkWell(
-                            onTap: _launchUrl,
-                            child: Text(
-                              "${state.website?.hostName}",
-                              style: TextStyle(
-                                fontSize: 20,
-                                color: Colors.blue,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Row(children: [
-                            Expanded(
-                              child: TextFormField(
-                                  key: Key('url'),
-                                  initialValue:
-                                      state.website!.hostName.split('.')[0],
-                                  decoration:
-                                      new InputDecoration(labelText: 'url'),
-                                  onChanged: (value) {
-                                    changedHostName = value;
-                                  }),
-                            ),
-                            Text(
-                                state.website!.hostName.substring(
-                                    state.website!.hostName.indexOf('.')),
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                            SizedBox(width: 10),
-                            ElevatedButton(
-                                key: Key('updateHost'),
-                                child: Text('update'),
-                                onPressed: () async {
-                                  _websiteBloc.add(WebsiteUpdate(Website(
-                                      id: state.website!.id,
-                                      hostName: changedHostName)));
-                                }),
-                          ]),
-                          SizedBox(height: 10),
-                          Row(children: [
-                            Expanded(
-                              child: TextFormField(
-                                  key: Key('title'),
-                                  initialValue: state.website!.title,
-                                  decoration: new InputDecoration(
-                                      labelText: 'Title of the website'),
-                                  onChanged: (value) {
-                                    changedTitle = value;
-                                  }),
-                            ),
-                            SizedBox(width: 10),
-                            ElevatedButton(
-                                key: Key('updateTitle'),
-                                child: Text('update'),
-                                onPressed: () async {
-                                  _websiteBloc.add(WebsiteUpdate(Website(
-                                      id: state.website!.id,
-                                      title: changedTitle)));
-                                }),
-                          ]),
-                          SizedBox(height: 10),
-                          Container(
-                              width: 400,
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(
-                                    color: Colors.black45,
-                                    style: BorderStyle.solid,
-                                    width: 0.80),
-                              ),
-                              child: Column(children: [
-                                Text(
-                                  'Text sections',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  'Can change order with long press',
-                                  style: TextStyle(fontSize: 10),
-                                ),
-                                ReorderableWrap(
-                                    runSpacing: 10,
-                                    onReorder: (int oldIndex, int newIndex) {
-                                      var content = List.of(state
-                                          .website!.websiteContent
-                                          .where((el) => el.text.isNotEmpty));
-                                      if (newIndex == content.length)
-                                        newIndex--;
-                                      var save = content[oldIndex];
-                                      content[oldIndex] = content[newIndex];
-                                      content[newIndex] = save;
-                                      int index = 1;
-                                      for (int i = 0; i < content.length; i++)
-                                        content[i] =
-                                            content[i].copyWith(seqId: index++);
-                                      context.read<WebsiteBloc>().add(
-                                          WebsiteUpdate(Website(
-                                              id: state.website!.id,
-                                              websiteContent: content)));
-                                    },
-                                    spacing: 10,
-                                    children: _textButtons)
-                              ])),
-                          SizedBox(height: 10),
-                          Container(
-                              width: 400,
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(
-                                    color: Colors.black45,
-                                    style: BorderStyle.solid,
-                                    width: 0.80),
-                              ),
-                              child: Column(children: [
-                                Text(
-                                  'Images',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 10),
-                                Wrap(
-                                    runSpacing: 10,
-                                    spacing: 10,
-                                    children: _imageButtons)
-                              ])),
-                          SizedBox(height: 10),
-                          Container(
-                              width: 400,
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(
-                                    color: Colors.black45,
-                                    style: BorderStyle.solid,
-                                    width: 0.80),
-                              ),
-                              child: Column(children: [
-                                Text(
-                                  'Home Page Categories',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 10),
-                                Wrap(children: catButtons, spacing: 10)
-                              ])),
-                          SizedBox(height: 10),
-                          Container(
-                              width: 400,
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(
-                                    color: Colors.black45,
-                                    style: BorderStyle.solid,
-                                    width: 0.80),
-                              ),
-                              child: Column(children: [
-                                Text(
-                                  'Shop dropdown Categories',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 10),
-                                Wrap(children: browseCatButtons, spacing: 10)
-                              ])),
-                          SizedBox(height: 10),
-                          Container(
-                              width: 400,
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25.0),
-                                border: Border.all(
-                                    color: Colors.black45,
-                                    style: BorderStyle.solid,
-                                    width: 0.80),
-                              ),
-                              child: Column(children: [
-                                Text(
-                                  'Website colors',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 10),
-                                Wrap(children: colorCatButtons, spacing: 10)
-                              ])),
+                          Column(children: (rows.isEmpty ? column : rows)),
                         ]))))));
   }
 }
