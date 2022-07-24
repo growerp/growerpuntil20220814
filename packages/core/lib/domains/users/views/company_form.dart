@@ -52,7 +52,7 @@ class _CompanyState extends State<CompanyPage> {
   late Company company;
   late User user;
   TextEditingController _nameController = TextEditingController();
-  TextEditingController _telephoneController = TextEditingController();
+  final TextEditingController _telephoneController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _vatPercController = TextEditingController();
   TextEditingController _salesPercController = TextEditingController();
@@ -182,9 +182,206 @@ class _CompanyState extends State<CompanyPage> {
         textAlign: TextAlign.center,
       );
     }
+
+    List<Widget> _widgets = [
+      TextFormField(
+        readOnly: !isAdmin,
+        key: Key('companyName'),
+        decoration: InputDecoration(labelText: 'Company Name'),
+        controller: _nameController,
+        validator: (value) {
+          if (value!.isEmpty) return 'Please enter the company Name?';
+          return null;
+        },
+      ),
+      TextFormField(
+        readOnly: !isAdmin,
+        key: Key('email'),
+        decoration: InputDecoration(labelText: 'Company Email address'),
+        controller: _emailController,
+        validator: (value) {
+          if (value!.isEmpty) return 'Please enter Email address?';
+          if (!RegExp(
+                  r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+              .hasMatch(value)) {
+            return 'This is not a valid email';
+          }
+          return null;
+        },
+      ),
+      TextFormField(
+        key: Key('telephoneNr'),
+        decoration: InputDecoration(labelText: 'Telephone number'),
+        controller: _telephoneController,
+      ),
+      DropdownButtonFormField<Currency>(
+        key: Key('currency'),
+        decoration: InputDecoration(labelText: 'Currency'),
+        hint: Text('Currency'),
+        value: _selectedCurrency,
+        items: currencies.map((item) {
+          return DropdownMenuItem<Currency>(
+              child: Text(item.description!), value: item);
+        }).toList(),
+        onChanged: isAdmin
+            ? (Currency? newValue) {
+                setState(() {
+                  _selectedCurrency = newValue!;
+                });
+              }
+            : null,
+        isExpanded: true,
+      ),
+      Row(children: [
+        Expanded(
+            child: TextFormField(
+          key: Key('vatPerc'),
+          readOnly: !isAdmin,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+          ],
+          decoration: InputDecoration(labelText: 'VAT. percentage'),
+          controller: _vatPercController,
+        )),
+        SizedBox(width: 10),
+        Expanded(
+            child: TextFormField(
+          key: Key('salesPerc'),
+          readOnly: !isAdmin,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+          ],
+          decoration: InputDecoration(labelText: 'Sales Tax percentage'),
+          controller: _salesPercController,
+        ))
+      ]),
+      Row(children: [
+        Expanded(
+            child: Text(
+                company.address != null
+                    ? "${company.address?.city} "
+                        "${company.address?.country!}"
+                    : "No address yet",
+                key: Key('addressLabel'))),
+        SizedBox(
+            width: 100,
+            child: ElevatedButton(
+              key: Key('address'),
+              onPressed: isAdmin
+                  ? () async {
+                      var result = await showDialog(
+                          barrierDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AddressDialog(address: company.address);
+                          });
+                      if (result is Address)
+                        context.read<AuthBloc>().add(AuthUpdateCompany(
+                            company.copyWith(address: result)));
+                    }
+                  : null,
+              child: Text(
+                  company.address != null ? 'Update\nAddress' : 'Add\nAddress'),
+            ))
+      ]),
+      Row(children: [
+        Expanded(
+            child: Text(
+                company.paymentMethod != null
+                    ? "${company.paymentMethod?.ccDescription}"
+                    : "No payment methods yet",
+                key: Key('paymentMethodLabel'))),
+        SizedBox(
+            width: 100,
+            child: ElevatedButton(
+                key: Key('paymentMethod'),
+                onPressed: isAdmin
+                    ? () async {
+                        var result = await showDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return PaymentMethodDialog(
+                                  paymentMethod: company.paymentMethod);
+                            });
+                        if (result is PaymentMethod) {
+                          context.read<AuthBloc>().add(AuthUpdateCompany(
+                              company.copyWith(paymentMethod: result)));
+                        }
+                      }
+                    : null,
+                child: Text((company.paymentMethod != null ? 'Update' : 'Add') +
+                    ' Payment Method')))
+      ]),
+      Row(children: [
+        Expanded(
+            child: Visibility(
+                visible: isAdmin,
+                child: ElevatedButton(
+                    key: Key('update'),
+                    child: Text(
+                      company.partyId == null ? 'Create' : 'Update',
+                    ),
+                    onPressed: isAdmin
+                        ? () async {
+                            if (_formKey.currentState!.validate()) {
+                              company = Company(
+                                  partyId: company.partyId,
+                                  email: _emailController.text,
+                                  name: _nameController.text,
+                                  telephoneNr: _telephoneController.text,
+                                  currency: _selectedCurrency,
+                                  address: company.address,
+                                  paymentMethod:
+                                      authenticate.company?.paymentMethod,
+                                  vatPerc: Decimal.parse(
+                                      _vatPercController.text.isEmpty
+                                          ? '0'
+                                          : _vatPercController.text),
+                                  salesPerc: Decimal.parse(
+                                      _salesPercController.text.isEmpty
+                                          ? '0'
+                                          : _salesPercController.text),
+                                  image: await HelperFunctions.getResizedImage(
+                                      _imageFile?.path));
+                              if (_imageFile?.path != null &&
+                                  company.image == null)
+                                HelperFunctions.showMessage(
+                                    context, "Image upload error!", Colors.red);
+                              else
+                                context
+                                    .read<AuthBloc>()
+                                    .add(AuthUpdateCompany(company));
+                            }
+                          }
+                        : null)))
+      ])
+    ];
+
+    List<Widget> rows = [];
+    if (!ResponsiveWrapper.of(context).isSmallerThan(TABLET)) {
+      // change list in two columns
+      for (var i = 0; i < _widgets.length; i++)
+        rows.add(Row(
+          children: [
+            Expanded(
+                child:
+                    Padding(padding: EdgeInsets.all(10), child: _widgets[i++])),
+            Expanded(
+                child: Padding(
+                    padding: EdgeInsets.all(10),
+                    child: i < _widgets.length ? _widgets[i] : Container()))
+          ],
+        ));
+    }
+    List<Widget> column = [];
+    for (var i = 0; i < _widgets.length; i++)
+      column.add(Padding(padding: EdgeInsets.all(10), child: _widgets[i]));
+
     return Center(
         child: Container(
-            width: 400,
             child: SingleChildScrollView(
                 key: Key('listView'),
                 child: Form(
@@ -221,223 +418,7 @@ class _CompanyState extends State<CompanyPage> {
                                               fontSize: 30,
                                               color: Colors.black))),
                           SizedBox(height: 10),
-                          TextFormField(
-                            readOnly: !isAdmin,
-                            key: Key('companyName'),
-                            decoration:
-                                InputDecoration(labelText: 'Company Name'),
-                            controller: _nameController,
-                            validator: (value) {
-                              if (value!.isEmpty)
-                                return 'Please enter the company Name?';
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 10),
-                          TextFormField(
-                            readOnly: !isAdmin,
-                            key: Key('email'),
-                            decoration: InputDecoration(
-                                labelText: 'Company Email address'),
-                            controller: _emailController,
-                            validator: (value) {
-                              if (value!.isEmpty)
-                                return 'Please enter Email address?';
-                              if (!RegExp(
-                                      r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                                  .hasMatch(value)) {
-                                return 'This is not a valid email';
-                              }
-                              return null;
-                            },
-                          ),
-                          SizedBox(height: 10),
-                          TextFormField(
-                            key: Key('telephoneNr'),
-                            decoration:
-                                InputDecoration(labelText: 'Telephone number'),
-                            controller: _telephoneController,
-                          ),
-                          SizedBox(height: 10),
-                          DropdownButtonFormField<Currency>(
-                            key: Key('currency'),
-                            decoration: InputDecoration(labelText: 'Currency'),
-                            hint: Text('Currency'),
-                            value: _selectedCurrency,
-                            items: currencies.map((item) {
-                              return DropdownMenuItem<Currency>(
-                                  child: Text(item.description!), value: item);
-                            }).toList(),
-                            onChanged: isAdmin
-                                ? (Currency? newValue) {
-                                    setState(() {
-                                      _selectedCurrency = newValue!;
-                                    });
-                                  }
-                                : null,
-                            isExpanded: true,
-                          ),
-                          SizedBox(height: 10),
-                          Row(children: [
-                            Expanded(
-                                child: TextFormField(
-                              key: Key('vatPerc'),
-                              readOnly: !isAdmin,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}')),
-                              ],
-                              decoration:
-                                  InputDecoration(labelText: 'VAT. percentage'),
-                              controller: _vatPercController,
-                            )),
-                            SizedBox(width: 10),
-                            Expanded(
-                                child: TextFormField(
-                              key: Key('salesPerc'),
-                              readOnly: !isAdmin,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                    RegExp(r'^\d+\.?\d{0,2}')),
-                              ],
-                              decoration: InputDecoration(
-                                  labelText: 'Sales Tax percentage'),
-                              controller: _salesPercController,
-                            ))
-                          ]),
-                          SizedBox(height: 10),
-                          Row(children: [
-                            Expanded(
-                                child: Text(
-                                    company.address != null
-                                        ? "${company.address?.city} "
-                                            "${company.address?.country!}"
-                                        : "No address yet",
-                                    key: Key('addressLabel'))),
-                            SizedBox(
-                                width: 100,
-                                child: ElevatedButton(
-                                  key: Key('address'),
-                                  onPressed: isAdmin
-                                      ? () async {
-                                          var result = await showDialog(
-                                              barrierDismissible: true,
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AddressDialog(
-                                                    address: company.address);
-                                              });
-                                          if (result is Address)
-                                            context.read<AuthBloc>().add(
-                                                AuthUpdateCompany(
-                                                    company.copyWith(
-                                                        address: result)));
-                                        }
-                                      : null,
-                                  child: Text(company.address != null
-                                      ? 'Update\nAddress'
-                                      : 'Add\nAddress'),
-                                ))
-                          ]),
-                          SizedBox(height: 10),
-                          Row(children: [
-                            Expanded(
-                                child: Text(
-                                    company.paymentMethod != null
-                                        ? "${company.paymentMethod?.ccDescription}"
-                                        : "No payment methods yet",
-                                    key: Key('paymentMethodLabel'))),
-                            SizedBox(
-                                width: 100,
-                                child: ElevatedButton(
-                                    key: Key('paymentMethod'),
-                                    onPressed: isAdmin
-                                        ? () async {
-                                            var result = await showDialog(
-                                                barrierDismissible: true,
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return PaymentMethodDialog(
-                                                      paymentMethod: company
-                                                          .paymentMethod);
-                                                });
-                                            if (result is PaymentMethod) {
-                                              context.read<AuthBloc>().add(
-                                                  AuthUpdateCompany(
-                                                      company.copyWith(
-                                                          paymentMethod:
-                                                              result)));
-                                            }
-                                          }
-                                        : null,
-                                    child: Text((company.paymentMethod != null
-                                            ? 'Update'
-                                            : 'Add') +
-                                        ' Payment Method')))
-                          ]),
-                          SizedBox(height: 10),
-                          Row(children: [
-                            Expanded(
-                                child: Visibility(
-                                    visible: isAdmin,
-                                    child: ElevatedButton(
-                                        key: Key('update'),
-                                        child: Text(
-                                          company.partyId == null
-                                              ? 'Create'
-                                              : 'Update',
-                                        ),
-                                        onPressed: isAdmin
-                                            ? () async {
-                                                if (_formKey.currentState!
-                                                    .validate()) {
-                                                  company = Company(
-                                                      partyId: company.partyId,
-                                                      email:
-                                                          _emailController.text,
-                                                      name:
-                                                          _nameController.text,
-                                                      telephoneNr:
-                                                          _telephoneController
-                                                              .text,
-                                                      currency:
-                                                          _selectedCurrency,
-                                                      address: company.address,
-                                                      paymentMethod:
-                                                          authenticate.company
-                                                              ?.paymentMethod,
-                                                      vatPerc: Decimal.parse(
-                                                          _vatPercController
-                                                                  .text.isEmpty
-                                                              ? '0'
-                                                              : _vatPercController
-                                                                  .text),
-                                                      salesPerc: Decimal.parse(
-                                                          _salesPercController
-                                                                  .text.isEmpty
-                                                              ? '0'
-                                                              : _salesPercController
-                                                                  .text),
-                                                      image: await HelperFunctions.getResizedImage(_imageFile?.path));
-                                                  if (_imageFile?.path !=
-                                                          null &&
-                                                      company.image == null)
-                                                    HelperFunctions.showMessage(
-                                                        context,
-                                                        "Image upload error!",
-                                                        Colors.red);
-                                                  else
-                                                    context
-                                                        .read<AuthBloc>()
-                                                        .add(AuthUpdateCompany(
-                                                            company));
-                                                }
-                                              }
-                                            : null)))
-                          ])
+                          Column(children: (rows.isEmpty ? column : rows)),
                         ]))))));
   }
 }
