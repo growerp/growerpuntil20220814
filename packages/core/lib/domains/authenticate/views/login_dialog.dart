@@ -130,132 +130,156 @@ class _LoginHeaderState extends State<LoginDialog> {
   }
 
   Widget _loginToCurrentCompany(AuthState state, BuildContext context) {
-    return Stack(clipBehavior: Clip.none, children: [
-      Container(
-          padding: EdgeInsets.all(20),
-          width: 400,
-          height: 400,
-          child: Form(
+    return PopUp(
+        context: context,
+        title: "Login with Existing user name",
+        child: Form(
             key: _formKey,
-            child: ListView(
-              children: <Widget>[
-                SizedBox(height: 20),
-                Center(
-                    child: Text("Login with Existing user name",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold))),
-                SizedBox(height: 20),
-                TextFormField(
-                  autofocus: _usernameController.text.isEmpty,
-                  key: Key('username'),
-                  decoration: InputDecoration(labelText: 'Username/Email'),
-                  controller: _usernameController,
+            child: ListView(children: <Widget>[
+              SizedBox(height: 20),
+              TextFormField(
+                autofocus: _usernameController.text.isEmpty,
+                key: Key('username'),
+                decoration: InputDecoration(labelText: 'Username/Email'),
+                controller: _usernameController,
+                validator: (value) {
+                  if (value!.isEmpty) return 'Please enter username or email?';
+                  return null;
+                },
+              ),
+              SizedBox(height: 20),
+              TextFormField(
+                  autofocus: _usernameController.text.isNotEmpty,
+                  key: Key('password'),
                   validator: (value) {
-                    if (value!.isEmpty)
-                      return 'Please enter username or email?';
+                    if (value!.isEmpty) return 'Please enter your password?';
                     return null;
                   },
-                ),
-                SizedBox(height: 20),
-                TextFormField(
-                    autofocus: _usernameController.text.isNotEmpty,
-                    key: Key('password'),
-                    validator: (value) {
-                      if (value!.isEmpty) return 'Please enter your password?';
-                      return null;
-                    },
-                    controller: _passwordController,
-                    obscureText: _obscureText,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _obscureText = !_obscureText;
-                          });
-                        },
-                        child: Icon(_obscureText
-                            ? Icons.visibility
-                            : Icons.visibility_off),
-                      ),
-                    )),
-                SizedBox(height: 20),
-                Row(children: [
-                  Expanded(
-                      child: ElevatedButton(
-                          key: Key('login'),
-                          child: Text('Login'),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate())
-                              context.read<AuthBloc>().add(AuthLogin(
-                                  authenticate.company,
-                                  _usernameController.text,
-                                  _passwordController.text));
-                          }))
-                ]),
-                SizedBox(height: 30),
-                Center(
-                    child: GestureDetector(
-                        child: Text('forgot/change password?'),
-                        onTap: () async {
-                          String username = authenticate.user?.loginName ??
-                              (kReleaseMode ? '' : 'test@example.com');
-                          username =
-                              await _sendResetPasswordDialog(context, username);
-                          if (username.isNotEmpty) {
-                            context
-                                .read<AuthBloc>()
-                                .add(AuthResetPassword(username: username));
-                            HelperFunctions.showMessage(
-                                context,
-                                'An email with password has been '
-                                'send to $username',
-                                Colors.green);
-                          }
-                        })),
-              ],
+                  controller: _passwordController,
+                  obscureText: _obscureText,
+                  decoration: InputDecoration(
+                    labelText: 'Password',
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                      child: Icon(_obscureText
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                    ),
+                  )),
+              SizedBox(height: 20),
+              Row(children: [
+                Expanded(
+                    child: ElevatedButton(
+                        key: Key('login'),
+                        child: Text('Login'),
+                        onPressed: () {
+                          if (_formKey.currentState!.validate())
+                            context.read<AuthBloc>().add(AuthLogin(
+                                authenticate.company,
+                                _usernameController.text,
+                                _passwordController.text));
+                        }))
+              ]),
+              SizedBox(height: 30),
+              Center(
+                  child: GestureDetector(
+                      child: Text('forgot/change password?'),
+                      onTap: () async {
+                        String username = authenticate.user?.loginName ??
+                            (kReleaseMode ? '' : 'test@example.com');
+                        username =
+                            await _sendResetPasswordDialog(context, username);
+                        if (username.isNotEmpty) {
+                          context
+                              .read<AuthBloc>()
+                              .add(AuthResetPassword(username: username));
+                          HelperFunctions.showMessage(
+                              context,
+                              'An email with password has been '
+                              'send to $username',
+                              Colors.green);
+                        }
+                      })),
+            ])));
+  }
+
+  _sendResetPasswordDialog(BuildContext context, String? username) async {
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(32.0))),
+          title: Text(
+              'Email you registered with?\nWe will send you a reset password',
+              textAlign: TextAlign.center),
+          content: TextFormField(
+              initialValue: username,
+              autofocus: true,
+              decoration: new InputDecoration(labelText: 'Email:'),
+              onChanged: (value) {
+                username = value;
+              }),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop('');
+              },
             ),
-          )),
-      Positioned(top: 5, right: 5, child: DialogCloseButton())
+            ElevatedButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop(username);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<Object>? PopUpWait(
+      {required BuildContext context,
+      required Widget child,
+      String title = '',
+      double height = 400}) {
+    PopUp(context: context, child: child);
+    return Future.value(Object());
+  }
+
+  Widget PopUp(
+      {required BuildContext context,
+      required Widget child,
+      String title = '',
+      double height = 400}) {
+    return Stack(clipBehavior: Clip.none, children: [
+      Container(
+          width: 400,
+          height: height,
+          child: Column(children: [
+            Container(
+                height: 50,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColorDark,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    )),
+                child: Center(
+                    child: Text(title,
+                        style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold)))),
+            Expanded(child: Padding(padding: EdgeInsets.all(20), child: child)),
+          ])),
+      Positioned(top: 10, right: 10, child: DialogCloseButton())
     ]);
   }
-}
-
-_sendResetPasswordDialog(BuildContext context, String? username) async {
-  return showDialog<String>(
-    context: context,
-    barrierDismissible: true,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        title: Text(
-            'Email you registered with?\nWe will send you a reset password',
-            textAlign: TextAlign.center),
-        content: TextFormField(
-            initialValue: username,
-            autofocus: true,
-            decoration: new InputDecoration(labelText: 'Email:'),
-            onChanged: (value) {
-              username = value;
-            }),
-        actions: <Widget>[
-          ElevatedButton(
-            child: Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop('');
-            },
-          ),
-          ElevatedButton(
-            child: Text('Ok'),
-            onPressed: () {
-              Navigator.of(context).pop(username);
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

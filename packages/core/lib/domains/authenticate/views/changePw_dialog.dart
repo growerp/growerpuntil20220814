@@ -59,7 +59,8 @@ class _ChangePwEntryState extends State<ChangePwDialog> {
         Navigator.of(context).pop("Password successfully changed");
       }
     }, builder: (context, state) {
-      if (state.status == AuthStatus.passwordChange)
+      if (state.status == AuthStatus.passwordChange ||
+          state.status == AuthStatus.failure)
         return Dialog(
             key: Key('ChangePwDialog'),
             insetPadding: EdgeInsets.all(20),
