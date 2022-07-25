@@ -17,6 +17,7 @@ Install frameit_chrome: dart pub global activate frameit_chrome
 
 ### create screen shots:
 create title.strings and key.word.strings with screenshots
+make sure the first debug company is created.
 
 In growerp/packages/admin dir:  
 flutter pub run utils:screenshots
