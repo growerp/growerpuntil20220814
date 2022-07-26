@@ -121,7 +121,7 @@ class _CategoriesState extends State<CategoryList> {
                       },
                     )));
           default:
-            return const Center(child: CircularProgressIndicator());
+            return LoadingIndicator();
         }
       },
     );

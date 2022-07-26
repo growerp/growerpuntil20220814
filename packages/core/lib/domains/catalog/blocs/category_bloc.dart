@@ -53,6 +53,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         event.searchString.isEmpty) return;
     try {
       // start from record zero for initial and refresh
+      emit(state.copyWith(status: CategoryStatus.loading));
       if (state.status == CategoryStatus.initial || event.refresh) {
         ApiResult<List<Category>> compResult = await repos.getCategory(
             companyPartyId: event.companyPartyId,
@@ -111,6 +112,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     try {
+      emit(state.copyWith(status: CategoryStatus.loading));
       List<Category> categories = List.from(state.categories);
       if (event.category.categoryId.isNotEmpty) {
         ApiResult<Category> compResult =
@@ -153,6 +155,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     try {
+      emit(state.copyWith(status: CategoryStatus.loading));
       List<Category> categories = List.from(state.categories);
       ApiResult<Category> compResult =
           await repos.deleteCategory(event.category);

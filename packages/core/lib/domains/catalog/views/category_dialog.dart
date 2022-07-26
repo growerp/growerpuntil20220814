@@ -102,49 +102,48 @@ class _CategoryState extends State<CategoryDialogFull> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CategoryBloc, CategoryState>(
+    return BlocConsumer<CategoryBloc, CategoryState>(
         listener: (context, state) async {
-          switch (state.status) {
-            case CategoryStatus.success:
-              HelperFunctions.showMessage(
-                  context, '${state.message}', Colors.green);
-              Navigator.of(context).pop();
-              break;
-            case CategoryStatus.failure:
-              HelperFunctions.showMessage(
-                  context, 'Error: ${state.message}', Colors.red);
-              break;
-            default:
-              Text("????");
-          }
-        },
-        child: BlocConsumer<ProductBloc, ProductState>(
-            listener: (context, state) async {
-          switch (state.status) {
-            case ProductStatus.failure:
-              HelperFunctions.showMessage(context,
-                  'Error getting categories: ${state.message}', Colors.red);
-              break;
-            default:
-          }
-        }, builder: (context, state) {
-          if (state.status == ProductStatus.success)
-            return Dialog(
-                key: Key('CategoryDialog'),
-                insetPadding: EdgeInsets.all(20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Stack(clipBehavior: Clip.none, children: [
-                  Container(
-                      padding: EdgeInsets.all(20),
-                      width: 400,
-                      height: 650,
-                      child: Center(child: listChild(state))),
-                  Positioned(top: 5, right: 5, child: DialogCloseButton()),
-                ]));
-          return LoadingIndicator();
-        }));
+      switch (state.status) {
+        case CategoryStatus.success:
+          Navigator.of(context).pop();
+          break;
+        case CategoryStatus.failure:
+          HelperFunctions.showMessage(
+              context, 'Error: ${state.message}', Colors.red);
+          break;
+        default:
+      }
+    }, builder: (context, state) {
+      if (state.status == CategoryStatus.loading) return LoadingIndicator();
+      return BlocConsumer<ProductBloc, ProductState>(
+          listener: (context, state) async {
+        switch (state.status) {
+          case ProductStatus.failure:
+            HelperFunctions.showMessage(context,
+                'Error getting categories: ${state.message}', Colors.red);
+            break;
+          default:
+        }
+      }, builder: (context, state) {
+        if (state.status == ProductStatus.success)
+          return Dialog(
+              key: Key('CategoryDialog'),
+              insetPadding: EdgeInsets.all(20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Stack(clipBehavior: Clip.none, children: [
+                Container(
+                    padding: EdgeInsets.all(20),
+                    width: 400,
+                    height: 650,
+                    child: Center(child: listChild(state))),
+                Positioned(top: 5, right: 5, child: DialogCloseButton()),
+              ]));
+        return LoadingIndicator();
+      });
+    });
   }
 
   Widget listChild(state) {
