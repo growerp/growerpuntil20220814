@@ -18,13 +18,13 @@ import 'package:flutter/material.dart';
 confirmDialog(BuildContext context, String title, String content) {
   // set up the buttons
   Widget cancelButton = ElevatedButton(
-    child: Text("cancel"),
+    child: Text("Cancel", key: Key('cancel')),
     onPressed: () {
       Navigator.of(context).pop(false);
     },
   );
   Widget continueButton = ElevatedButton(
-    child: Text("Continue"),
+    child: Text("Continue", key: Key('continue')),
     onPressed: () {
       Navigator.of(context).pop(true);
     },

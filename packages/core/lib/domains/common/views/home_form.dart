@@ -91,7 +91,7 @@ class _HomeFormState extends State<HomeForm> {
                                     : ''))),
                     body: Center(
                         child: Column(children: <Widget>[
-                      SizedBox(height: 100),
+                      SizedBox(height: 80),
                       InkWell(
                           onLongPress: () async {
                             await showDialog(

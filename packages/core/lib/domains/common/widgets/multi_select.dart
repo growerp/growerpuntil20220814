@@ -86,9 +86,7 @@ class MultiSelectState<T> extends State<MultiSelect> {
         ElevatedButton(
           key: Key('ok'),
           onPressed: (() {
-            if (selectedItems.isNotEmpty)
-              return Navigator.pop(context, selectedItems);
-            return Navigator.pop(context);
+            return Navigator.pop(context, selectedItems);
           }),
           child: const Text('OK'),
         ),

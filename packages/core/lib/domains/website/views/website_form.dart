@@ -53,14 +53,15 @@ class WebsitePage extends StatefulWidget {
 }
 
 class _WebsiteState extends State<WebsitePage> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
 
   late WebsiteBloc _websiteBloc;
   List<Content> _updatedContent = [];
   List<Category> _selectedCategories = [];
   List<Category> _availableCategories = [];
-  String changedTitle = '';
-  String changedHostName = '';
+  TextEditingController _urlController = TextEditingController();
+  TextEditingController _titleController = TextEditingController();
 
   @override
   void initState() {
@@ -98,6 +99,8 @@ class _WebsiteState extends State<WebsitePage> {
         }, builder: (context, state) {
           switch (state.status) {
             case WebsiteStatus.success:
+              _urlController.text = state.website!.hostName.split('.')[0];
+              _titleController.text = state.website!.title;
               _updatedContent = List.of(state.website!.websiteContent);
               _selectedCategories = List.of(state.website!.productCategories);
               return Scaffold(body: Center(child: _showForm(state)));
@@ -120,9 +123,9 @@ class _WebsiteState extends State<WebsitePage> {
     state.website!.websiteContent.asMap().forEach((index, content) {
       if (content.text.isNotEmpty)
         _textButtons.add(InputChip(
-          key: Key(content.path),
           label: Text(
             content.title,
+            key: Key(content.title),
           ),
           onPressed: () async {
             var updContent = await showDialog(
@@ -140,7 +143,7 @@ class _WebsiteState extends State<WebsitePage> {
           },
           deleteIcon: const Icon(
             Icons.cancel,
-            key: Key("deleteChip"),
+            key: Key("deleteTextChip"),
           ),
           onDeleted: () async {
             bool result = await confirmDialog(
@@ -183,9 +186,9 @@ class _WebsiteState extends State<WebsitePage> {
     state.website!.websiteContent.asMap().forEach((index, content) {
       if (content.text.isEmpty)
         _imageButtons.add(InputChip(
-          key: Key(content.path),
           label: Text(
             content.title,
+            key: Key(content.title),
           ),
           onPressed: () async {
             var updContent = await showDialog(
@@ -203,19 +206,19 @@ class _WebsiteState extends State<WebsitePage> {
           },
           deleteIcon: const Icon(
             Icons.cancel,
-            key: Key("deleteChip"),
+            key: Key("deleteImageChip"),
           ),
           onDeleted: () async {
-            setState(() async {
-              bool result = await confirmDialog(
-                  context, "delete ${content.title}?", "cannot be undone!");
-              if (result == true)
+            bool result = await confirmDialog(
+                context, "delete ${content.title}?", "cannot be undone!");
+            if (result == true)
+              setState(() {
                 context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
                         id: state.website!.id,
                         websiteContent: [
                           _updatedContent[index].copyWith(title: '')
                         ])));
-            });
+              });
           },
         ));
     });
@@ -267,28 +270,29 @@ class _WebsiteState extends State<WebsitePage> {
           category.categoryName,
           key: Key(category.categoryName),
         ),
-        deleteIcon: const Icon(
+        deleteIcon: Icon(
           Icons.cancel,
-          key: Key("deleteChip"),
+          key: Key("delete${category.categoryName}"),
         ),
         onDeleted: () async {
-          setState(() {
-            bool result = confirmDialog(context,
-                "Remove ${category.categoryName}?", "can be added again!");
-            if (result == true) {
+          bool result = await confirmDialog(context,
+              "Remove ${category.categoryName}?", "can be added again!");
+          if (result == true) {
+            setState(() {
               _selectedCategories.removeAt(index);
               if (_selectedCategories.isEmpty)
                 _selectedCategories.add(Category(categoryId: 'allDelete'));
               context.read<WebsiteBloc>().add(WebsiteUpdate(Website(
                   id: state.website!.id,
                   productCategories: _selectedCategories)));
-            }
-          });
+            });
+          }
         },
       ));
     });
 
     browseCatButtons.add(IconButton(
+      key: Key('addShopCategory'),
       iconSize: 30,
       icon: Icon(Icons.add_circle),
       color: Colors.deepOrange,
@@ -396,6 +400,7 @@ class _WebsiteState extends State<WebsitePage> {
             onTap: _launchUrl,
             child: Text(
               "${state.website?.hostName}",
+              key: Key('url'),
               style: TextStyle(
                 fontSize: 20,
                 color: Colors.blue,
@@ -403,65 +408,79 @@ class _WebsiteState extends State<WebsitePage> {
               ),
             ),
           )),
-      Container(
-          width: 400,
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25.0),
-            border: Border.all(
-                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
-          ),
-          child: Row(children: [
-            Expanded(
-              child: TextFormField(
-                  key: Key('url'),
-                  initialValue: state.website!.hostName.split('.')[0],
-                  decoration: new InputDecoration(labelText: 'url'),
-                  onChanged: (value) {
-                    changedHostName = value;
-                  }),
-            ),
-            Text(
-                state.website!.hostName
-                    .substring(state.website!.hostName.indexOf('.')),
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            SizedBox(width: 10),
-            ElevatedButton(
-                key: Key('updateHost'),
-                child: Text('update'),
-                onPressed: () async {
-                  _websiteBloc.add(WebsiteUpdate(Website(
-                      id: state.website!.id, hostName: changedHostName)));
-                }),
-          ])),
-      Container(
-          width: 400,
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25.0),
-            border: Border.all(
-                color: Colors.black45, style: BorderStyle.solid, width: 0.80),
-          ),
-          child: Row(children: [
-            Expanded(
-              child: TextFormField(
-                  key: Key('title'),
-                  initialValue: state.website!.title,
-                  decoration:
-                      new InputDecoration(labelText: 'Title of the website'),
-                  onChanged: (value) {
-                    changedTitle = value;
-                  }),
-            ),
-            SizedBox(width: 10),
-            ElevatedButton(
-                key: Key('updateTitle'),
-                child: Text('update'),
-                onPressed: () async {
-                  _websiteBloc.add(WebsiteUpdate(
-                      Website(id: state.website!.id, title: changedTitle)));
-                }),
-          ])),
+      Form(
+          key: _formKey1,
+          child: Container(
+              width: 400,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25.0),
+                border: Border.all(
+                    color: Colors.black45,
+                    style: BorderStyle.solid,
+                    width: 0.80),
+              ),
+              child: Row(children: [
+                Expanded(
+                  child: TextFormField(
+                    key: Key('urlInput'),
+                    controller: _urlController,
+                    decoration: new InputDecoration(labelText: 'url'),
+                    validator: (value) {
+                      if (value!.isEmpty) return 'A subdomainname is required';
+                      return null;
+                    },
+                  ),
+                ),
+                Text(
+                    state.website!.hostName
+                        .substring(state.website!.hostName.indexOf('.')),
+                    style:
+                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                SizedBox(width: 10),
+                ElevatedButton(
+                    key: Key('updateHost'),
+                    child: Text('update'),
+                    onPressed: () async {
+                      if (_formKey1.currentState!.validate()) {
+                        _websiteBloc.add(WebsiteUpdate(Website(
+                            id: state.website!.id,
+                            hostName: _urlController.text)));
+                      }
+                    }),
+              ]))),
+      Form(
+          key: _formKey2,
+          child: Container(
+              width: 400,
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(25.0),
+                border: Border.all(
+                    color: Colors.black45,
+                    style: BorderStyle.solid,
+                    width: 0.80),
+              ),
+              child: Row(children: [
+                Expanded(
+                  child: TextFormField(
+                      key: Key('title'),
+                      controller: _titleController,
+                      decoration: new InputDecoration(
+                          labelText: 'Title of the website')),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                    key: Key('updateTitle'),
+                    child: Text('update'),
+                    onPressed: () async {
+                      if (_formKey2.currentState!.validate()) {
+                        _websiteBloc.add(WebsiteUpdate(Website(
+                            id: state.website!.id,
+                            title: _titleController.text)));
+                      }
+                    }),
+              ]))),
       Container(
           width: 400,
           padding: EdgeInsets.all(10),
@@ -589,22 +608,20 @@ class _WebsiteState extends State<WebsitePage> {
             child: SingleChildScrollView(
                 key: Key('listView'),
                 padding: EdgeInsets.all(20),
-                child: Form(
-                    key: _formKey,
-                    child: Padding(
-                        padding: EdgeInsets.all(15),
-                        child: Column(children: [
-                          Center(
-                              child: Text(
-                            'id:#${state.website?.id}',
-                            style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                            key: Key('header'),
-                          )),
-                          SizedBox(height: 10),
-                          Column(children: (rows.isEmpty ? column : rows)),
-                        ]))))));
+                child: Padding(
+                    padding: EdgeInsets.all(15),
+                    child: Column(children: [
+                      Center(
+                          child: Text(
+                        'id:#${state.website?.id}',
+                        style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold),
+                        key: Key('header'),
+                      )),
+                      SizedBox(height: 10),
+                      Column(children: (rows.isEmpty ? column : rows)),
+                    ])))));
   }
 }

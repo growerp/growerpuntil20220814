@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:markdown_widget/markdown_widget.dart';
@@ -43,6 +44,7 @@ class _WebsiteContentState extends State<WebsiteContent> {
   String? data;
   String? newData;
 
+  MethodChannel channel = MethodChannel('plugins.flutter.io/url_launcher');
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -240,7 +242,7 @@ class _WebsiteContentState extends State<WebsiteContent> {
                                       fontSize: 30, color: Colors.black))),
                   SizedBox(height: 30),
                   TextFormField(
-                    key: Key('name'),
+                    key: Key('imageName'),
                     decoration: InputDecoration(labelText: 'Image Name'),
                     controller: _nameController,
                     validator: (value) {
@@ -279,6 +281,7 @@ class _WebsiteContentState extends State<WebsiteContent> {
 
   Widget _showTextForm(bool isPhone, ContentState state) {
     Widget input = TextFormField(
+        key: Key('mdInput'),
         autofocus: true,
         decoration: InputDecoration(labelText: '${widget.content.title} text'),
         expands: true,

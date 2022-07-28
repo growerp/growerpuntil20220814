@@ -16,12 +16,14 @@ import 'dart:io';
 import 'package:core/domains/common/functions/functions.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:core/domains/domains.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../../extensions.dart';
 
@@ -171,6 +173,7 @@ class CommonTest {
     return true;
   }
 
+  /// check if a particular text can be found on the page.
   static Future<void> checkText(WidgetTester tester, String text) async {
     expect(find.textContaining(RegExp(text, caseSensitive: false)).last,
         findsOneWidget);
@@ -248,11 +251,13 @@ class CommonTest {
     return tff.selectedItem.toString();
   }
 
+  /// get the content of a text field identified by a key
   static String getTextField(String key) {
     Text tf = find.byKey(Key(key)).evaluate().single.widget as Text;
     return tf.data!;
   }
 
+  /// get the content of a TextFormField providing the key
   static String getTextFormField(String key) {
     TextFormField tff =
         find.byKey(Key(key)).evaluate().single.widget as TextFormField;
@@ -402,5 +407,69 @@ class CommonTest {
         contains(paymentMethod.expireMonth! + '/'));
     expect(getTextField('paymentMethodLabel'),
         contains(paymentMethod.expireYear!));
+  }
+
+  static void mockPackageInfo() {
+    const channel = MethodChannel('plugins.flutter.io/package_info');
+
+    handler(MethodCall methodCall) async {
+      if (methodCall.method == 'getAll') {
+        return <String, dynamic>{
+          'appName': 'myapp',
+          'packageName': 'com.mycompany.myapp',
+          'version': '0.0.1',
+          'buildNumber': '1'
+        };
+      }
+      return null;
+    }
+
+    TestWidgetsFlutterBinding.ensureInitialized();
+
+    TestDefaultBinaryMessengerBinding.instance!.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, handler);
+  }
+
+  static void mockImage_picker() {
+    const MethodChannel channel =
+        MethodChannel('plugins.flutter.io/image_picker');
+
+    _handler(MethodCall methodCall) async {
+      ByteData data = await rootBundle.load('assets/images/crm.png');
+      Uint8List bytes = data.buffer.asUint8List();
+      Directory tempDir = await getTemporaryDirectory();
+      File file = await File(
+        '${tempDir.path}/tmp.tmp',
+      ).writeAsBytes(bytes);
+      print('=========' + file.path);
+      return [
+        // file.path;
+        {
+          'name': "Icon.png",
+          'path': file.path,
+          'bytes': bytes,
+          'size': bytes.lengthInBytes,
+        }
+      ];
+    }
+
+    TestWidgetsFlutterBinding.ensureInitialized();
+
+    TestDefaultBinaryMessengerBinding.instance!.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, _handler);
+  }
+
+  static void mockUrl_launcher() {
+    const MethodChannel channel =
+        MethodChannel('plugins.flutter.io/url_launcher');
+
+    _handler(MethodCall methodCall) async {
+      print("=========" + methodCall.toString());
+    }
+
+    TestWidgetsFlutterBinding.ensureInitialized();
+
+    TestDefaultBinaryMessengerBinding.instance!.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, _handler);
   }
 }

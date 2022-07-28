@@ -22,6 +22,7 @@ Widget imageButtons(BuildContext context, _onImageButtonPressed) {
     children: <Widget>[
       SizedBox(height: 100),
       FloatingActionButton(
+        key: Key('gallery'),
         onPressed: () {
           _onImageButtonPressed(ImageSource.gallery, context: context);
         },
@@ -33,6 +34,7 @@ Widget imageButtons(BuildContext context, _onImageButtonPressed) {
       Visibility(
         visible: !kIsWeb,
         child: FloatingActionButton(
+          key: Key('camera'),
           onPressed: () {
             _onImageButtonPressed(ImageSource.camera, context: context);
           },

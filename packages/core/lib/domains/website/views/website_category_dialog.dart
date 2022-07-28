@@ -101,14 +101,9 @@ class _CategoryState extends State<WebsiteCategoryDialogFull> {
     List<Widget> productsWrap = [];
     _selectedProducts.asMap().forEach((index, product) {
       productsWrap.add(InputChip(
-        label: Text(
-          product.productName!,
-          key: Key(product.productId),
-        ),
-        deleteIcon: const Icon(
-          Icons.cancel,
-          key: Key("deleteChip"),
-        ),
+        label: Text(product.productName!, key: Key(product.productName!)),
+        deleteIcon:
+            Icon(Icons.cancel, key: Key('delete${product.productName!}')),
         onDeleted: () async {
           setState(() {
             _selectedProducts.removeAt(index);

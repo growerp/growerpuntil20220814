@@ -13,13 +13,18 @@ void main() {
     await GlobalConfiguration().loadFromAsset("app_settings");
   });
 
-  testWidgets('''GrowERP asset test''', (tester) async {
+  testWidgets('''GrowERP website test''', (tester) async {
     await CommonTest.startApp(
         tester, TopApp(dbServer: APIRepository(), chatServer: ChatServer()),
         clear: true);
     await CompanyTest.createCompany(tester);
+    await CategoryTest.selectCategories(tester);
+    await CategoryTest.addCategories(tester, categories.sublist(0, 2),
+        check: false);
+    await ProductTest.selectProducts(tester);
+    await ProductTest.addProducts(tester, products.sublist(0, 2), check: false);
+
     await WebsiteTest.selectWebsite(tester);
     await WebsiteTest.updateWebsite(tester);
-    await CommonTest.logout(tester);
   });
 }

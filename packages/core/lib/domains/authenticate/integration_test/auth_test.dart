@@ -22,7 +22,6 @@ class AuthTest {
 
   static Future<void> createNewAdminAndCompany(
       WidgetTester tester, User user, Company company) async {
-    print("========== Auth test: create new company");
     await logoutIfRequired(tester);
     await CommonTest.checkText(tester, 'Login / New company'); // initial screen
     await pressNewCompany(tester);
