@@ -146,8 +146,8 @@ class UserTest {
       await CommonTest.enterText(tester, 'lastName', user.lastName!);
       var email = user.email!.replaceFirst('XXX', '${seq++}');
       await CommonTest.enterText(tester, 'loginName', email);
-      await CommonTest.drag(tester);
       await CommonTest.enterText(tester, 'email', email);
+      await CommonTest.drag(tester);
       await CommonTest.enterText(tester, 'telephoneNr', user.telephoneNr!);
       // changing to new company will clear paymentMethod and address
       if (user.userGroup != UserGroup.Admin &&

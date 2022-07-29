@@ -87,7 +87,7 @@ class _NewCompanyHeaderState extends State<NewCompanyHeader> {
                 Container(
                     padding: EdgeInsets.all(20),
                     width: 400,
-                    height: 700,
+                    height: 600,
                     child: _registerForm(widget.authenticate, state)),
                 Positioned(top: 5, right: 5, child: DialogCloseButton())
               ])));
