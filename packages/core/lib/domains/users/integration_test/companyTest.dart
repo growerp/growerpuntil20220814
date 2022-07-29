@@ -35,8 +35,8 @@ class CompanyTest {
     await CommonTest.enterText(tester, 'email', email);
 
     /// [newCompany]
-    await CommonTest.enterText(
-        tester, 'companyName', '${company.name!} ${seq++}');
+    String companyName = '${company.name!} ${seq++}';
+    await CommonTest.enterText(tester, 'companyName', companyName);
     await CommonTest.drag(tester);
     if (demoData == false)
       await CommonTest.tapByKey(tester, 'demoData'); // no demo data
@@ -46,8 +46,7 @@ class CompanyTest {
         sequence: seq,
         nowDate: DateTime.now(), // used in rental
         admin: admin.copyWith(email: email, loginName: email),
-        company:
-            company.copyWith(email: email, name: '${company.name!} $seq')));
+        company: company.copyWith(email: email, name: companyName)));
     await CommonTest.login(tester);
   }
 
@@ -57,9 +56,9 @@ class CompanyTest {
 
   static Future<void> updateCompany(WidgetTester tester) async {
     SaveTest test = await PersistFunctions.getTest();
-    if (company.name != test.company!.name!) return;
     int seq = test.sequence;
     checkCompanyFields(test.company!, perc: false);
+    await CommonTest.drag(tester);
     await CommonTest.tapByKey(tester, 'update');
     checkCompanyFields(test.company!, perc: false);
     // add a '1' to all fields
@@ -82,6 +81,9 @@ class CompanyTest {
         tester, 'salesPerc', newCompany.salesPerc.toString());
     await CommonTest.drag(tester);
     await CommonTest.tapByKey(tester, 'update', seconds: 5);
+    // get data from server
+    await CommonTest.gotoMainMenu(tester);
+    await CompanyTest.selectCompany(tester);
     // and check them
     checkCompanyFields(newCompany);
     var id = CommonTest.getTextField('header').split('#')[1];
