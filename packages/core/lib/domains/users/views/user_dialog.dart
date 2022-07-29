@@ -492,37 +492,45 @@ class _UserState extends State<UserPage> {
 
     return Form(
         key: _formKey,
-        child: Column(children: <Widget>[
-          Center(
-              child: Text(
-            'User ${widget.user.userGroup.toString()} #${updatedUser.partyId ?? " New"}',
-            style: TextStyle(
-                fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-            key: Key('header'),
-          )),
-          Center(
-              child: Text(
-            'Company #${updatedUser.companyPartyId ?? ""}',
-            style: TextStyle(
-                fontSize: 10, color: Colors.black, fontWeight: FontWeight.bold),
-            key: Key('compHeader'),
-          )),
-          Visibility(
-              visible: updatedUser.userGroup == UserGroup.Admin ||
-                  updatedUser.userGroup == UserGroup.Employee,
-              child: Center(child: Text(companyName!))),
-          CircleAvatar(
-              backgroundColor: Colors.green,
-              radius: 80,
-              child: _imageFile != null
-                  ? kIsWeb
-                      ? Image.network(_imageFile!.path, scale: 0.3)
-                      : Image.file(File(_imageFile!.path), scale: 0.3)
-                  : widget.user.image != null
-                      ? Image.memory(widget.user.image!, scale: 0.3)
-                      : Text(widget.user.firstName?.substring(0, 1) ?? '',
-                          style: TextStyle(fontSize: 30, color: Colors.black))),
-          Column(children: (rows.isEmpty ? column : rows)),
-        ]));
+        child: SingleChildScrollView(
+            key: Key('listView'),
+            padding: EdgeInsets.all(20),
+            child: Column(children: <Widget>[
+              Center(
+                  child: Text(
+                'User ${widget.user.userGroup.toString()} #${updatedUser.partyId ?? " New"}',
+                style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+                key: Key('header'),
+              )),
+              Center(
+                  child: Text(
+                'Company #${updatedUser.companyPartyId ?? ""}',
+                style: TextStyle(
+                    fontSize: 10,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+                key: Key('compHeader'),
+              )),
+              Visibility(
+                  visible: updatedUser.userGroup == UserGroup.Admin ||
+                      updatedUser.userGroup == UserGroup.Employee,
+                  child: Center(child: Text(companyName!))),
+              CircleAvatar(
+                  backgroundColor: Colors.green,
+                  radius: 80,
+                  child: _imageFile != null
+                      ? kIsWeb
+                          ? Image.network(_imageFile!.path, scale: 0.3)
+                          : Image.file(File(_imageFile!.path), scale: 0.3)
+                      : widget.user.image != null
+                          ? Image.memory(widget.user.image!, scale: 0.3)
+                          : Text(widget.user.firstName?.substring(0, 1) ?? '',
+                              style: TextStyle(
+                                  fontSize: 30, color: Colors.black))),
+              Column(children: (rows.isEmpty ? column : rows)),
+            ])));
   }
 }
