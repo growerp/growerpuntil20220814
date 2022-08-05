@@ -22,6 +22,7 @@ Widget PopUpDialog({
   String title = '',
   double height = 400,
   double width = 400,
+  Key key = const Key('popUp'),
 }) {
   return Dialog(
       insetPadding: EdgeInsets.all(10),
