@@ -494,6 +494,39 @@ class APIRepository {
     }
   }
 
+  Future<ApiResult<String>> importCategories(
+      List<cat.Category> categories) async {
+    try {
+      final response = await dioClient.post(
+          'rest/s1/growerp/100/Categories', apiKey!,
+          data: <String, dynamic>{
+            'categoryList': '{"categories":' +
+                jsonEncode(categories.map((x) => x.toJson()).toList()) +
+                '}',
+            'classificationId': classificationId,
+            'moquiSessionToken': sessionToken
+          });
+      return ApiResult.success(
+          data: jsonDecode(response.toString())['messages'] ?? 'no result');
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<String>> exportCategories() async {
+    try {
+      final response = await dioClient.get(
+          'rest/s1/growerp/100/ExportCategories', apiKey ?? null,
+          queryParameters: <String, dynamic>{
+            'classificationId': classificationId,
+          });
+      return ApiResult.success(
+          data: jsonDecode(response.toString())['messages'] ?? 'no result');
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
   Future<ApiResult<cat.Category>> createCategory(cat.Category category) async {
     // no categoryId is add
     try {

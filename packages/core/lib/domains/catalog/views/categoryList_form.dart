@@ -17,6 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../api_repository.dart';
 import '../../common/functions/helper_functions.dart';
 import '../../domains.dart';
+import 'files_dialog.dart';
 
 class CategoryListForm extends StatelessWidget {
   @override
@@ -50,7 +51,7 @@ class _CategoriesState extends State<CategoryList> {
   void initState() {
     super.initState();
     search = false;
-    _categoryBloc = context.read<CategoryBloc>();
+    _categoryBloc = BlocProvider.of<CategoryBloc>(context);
     _scrollController.addListener(_onScroll);
   }
 
@@ -72,20 +73,38 @@ class _CategoriesState extends State<CategoryList> {
                 child: Text('failed to fetch categories: ${state.message}'));
           case CategoryStatus.success:
             return Scaffold(
-                floatingActionButton: FloatingActionButton(
-                    key: Key("addNew"),
-                    onPressed: () async {
-                      await showDialog(
-                          barrierDismissible: true,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return BlocProvider.value(
-                                value: _categoryBloc,
-                                child: CategoryDialog(Category()));
-                          });
-                    },
-                    tooltip: 'Add New',
-                    child: Icon(Icons.add)),
+                floatingActionButton:
+                    Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                  FloatingActionButton(
+                      key: Key("upDownload"),
+                      onPressed: () async {
+                        await showDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return BlocProvider.value(
+                                  value: _categoryBloc,
+                                  child: FilesDialog(Category()));
+                            });
+                      },
+                      tooltip: 'category up/download',
+                      child: Icon(Icons.file_copy)),
+                  SizedBox(height: 10),
+                  FloatingActionButton(
+                      key: Key("addNew"),
+                      onPressed: () async {
+                        await showDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (BuildContext context) {
+                              return BlocProvider.value(
+                                  value: _categoryBloc,
+                                  child: CategoryDialog(Category()));
+                            });
+                      },
+                      tooltip: 'Add New',
+                      child: Icon(Icons.add)),
+                ]),
                 body: RefreshIndicator(
                     onRefresh: (() async => context
                         .read<CategoryBloc>()

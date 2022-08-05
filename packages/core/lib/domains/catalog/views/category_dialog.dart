@@ -139,6 +139,20 @@ class _CategoryState extends State<CategoryDialogFull> {
                     width: 400,
                     height: 650,
                     child: Center(child: listChild(state))),
+                Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColorDark,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        )),
+                    child: Center(
+                        child: Text('Category Information',
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)))),
                 Positioned(top: 5, right: 5, child: DialogCloseButton()),
               ]));
         return LoadingIndicator();
@@ -251,6 +265,7 @@ class _CategoryState extends State<CategoryDialogFull> {
                 body: Form(
                     key: _formKey,
                     child: ListView(key: Key('listView'), children: <Widget>[
+                      SizedBox(height: 10),
                       Center(
                           child: Text(
                         'Category #${category.categoryId.isEmpty ? " New" : category.categoryId}',

@@ -41,3 +41,10 @@ class CategoryUpdate extends CategoryEvent {
   const CategoryUpdate(this.category);
   final Category category;
 }
+
+class CategoryDownload extends CategoryEvent {}
+
+class CategoryUpload extends CategoryEvent {
+  const CategoryUpload(this.file);
+  final File file;
+}

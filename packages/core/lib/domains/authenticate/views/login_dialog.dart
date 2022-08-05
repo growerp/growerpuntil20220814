@@ -252,34 +252,36 @@ class _LoginHeaderState extends State<LoginDialog> {
     PopUp(context: context, child: child);
     return Future.value(Object());
   }
+}
 
-  Widget PopUp(
-      {required BuildContext context,
-      required Widget child,
-      String title = '',
-      double height = 400}) {
-    return Stack(clipBehavior: Clip.none, children: [
-      Container(
-          width: 400,
-          height: height,
-          child: Column(children: [
-            Container(
-                height: 50,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColorDark,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    )),
-                child: Center(
-                    child: Text(title,
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold)))),
-            Expanded(child: Padding(padding: EdgeInsets.all(20), child: child)),
-          ])),
-      Positioned(top: 10, right: 10, child: DialogCloseButton())
-    ]);
-  }
+Widget PopUp({
+  required BuildContext context,
+  required Widget child,
+  String title = '',
+  double height = 400,
+  double width = 400,
+}) {
+  return Stack(clipBehavior: Clip.none, children: [
+    Container(
+        width: width,
+        height: height,
+        child: Column(children: [
+          Container(
+              height: 50,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColorDark,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20),
+                  )),
+              child: Center(
+                  child: Text(title,
+                      style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold)))),
+          Expanded(child: Padding(padding: EdgeInsets.all(20), child: child)),
+        ])),
+    Positioned(top: 10, right: 10, child: DialogCloseButton())
+  ]);
 }

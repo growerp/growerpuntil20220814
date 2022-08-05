@@ -5,3 +5,4 @@ export 'confirm_dialog.dart';
 export 'dialogCloseButton.dart';
 export 'makeDashboardItem.dart';
 export 'observer.dart';
+export 'popup_dialog.dart';
