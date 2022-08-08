@@ -14,8 +14,7 @@
 // original article:
 // https://www.kindacode.com/article/flutter-making-a-dropdown-multiselect-with-checkboxes/
 import 'package:flutter/material.dart';
-
-import 'popup_dialog.dart';
+import 'popup_dialog_no_scaf.dart';
 
 class MultiSelect<T> extends StatefulWidget {
   final String title;
@@ -53,41 +52,42 @@ class MultiSelectState<T> extends State<MultiSelect> {
     selectedItems = List.of(widget.selectedItems as List<T>);
   }
 
+  final GlobalKey<ScaffoldMessengerState> _my1scaffoldkey =
+      GlobalKey<ScaffoldMessengerState>();
   @override
   Widget build(BuildContext context) {
-    return PopUpDialog(
-        key: Key('multiSelect'),
-        width: 350,
-        context: context,
-        title: widget.title,
-        child: Column(
-          children: [
-            widget.items.isEmpty
-                ? Center(
-                    child: Text('nothing found, add some?',
-                        style: TextStyle(color: Colors.red)))
-                : ListBody(
-                    children: widget.items
-                        .map((item) => CheckboxListTile(
-                              value: selectedItems.contains(item),
-                              title: Text(item.toString()),
-                              controlAffinity: ListTileControlAffinity.leading,
-                              onChanged: (isChecked) =>
-                                  _itemChange(item, isChecked!),
-                            ))
-                        .toList(),
-                  ),
-            Row(children: [
-              Expanded(
-                  child: ElevatedButton(
-                key: Key('ok'),
-                onPressed: (() {
-                  return Navigator.pop(context, selectedItems);
-                }),
-                child: const Text('OK'),
-              ))
-            ]),
-          ],
-        ));
+    return PopUpDialogNoScaffold(
+      key: Key('multiSelect'),
+      width: 350,
+      context: context,
+      title: widget.title,
+      children: [
+        widget.items.isEmpty
+            ? Center(
+                child: Text('nothing found, add some?',
+                    style: TextStyle(color: Colors.red)))
+            : ListBody(
+                children: widget.items
+                    .map((item) => CheckboxListTile(
+                          value: selectedItems.contains(item),
+                          title: Text(item.toString()),
+                          controlAffinity: ListTileControlAffinity.leading,
+                          onChanged: (isChecked) =>
+                              _itemChange(item, isChecked!),
+                        ))
+                    .toList(),
+              ),
+        Row(children: [
+          Expanded(
+              child: ElevatedButton(
+            key: Key('ok'),
+            onPressed: (() {
+              return Navigator.pop(context, selectedItems);
+            }),
+            child: const Text('OK'),
+          ))
+        ]),
+      ],
+    );
   }
 }

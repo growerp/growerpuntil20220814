@@ -15,10 +15,9 @@
 import 'package:flutter/material.dart';
 import '../../domains.dart';
 
-Widget PopUpDialog({
+Widget PopUpDialogNoScaffold({
   required BuildContext context,
   required List<Widget> children,
-  required Key scaffoldkey,
   String title = '',
   double height = 400,
   double width = 400,
@@ -51,12 +50,7 @@ Widget PopUpDialog({
               Expanded(
                   child: Padding(
                 padding: EdgeInsets.all(20),
-                child: ScaffoldMessenger(
-                    key: scaffoldkey,
-                    child: Scaffold(
-                        key: scaffoldkey,
-                        backgroundColor: Colors.transparent,
-                        body: Center(child: Column(children: children)))),
+                child: SingleChildScrollView(child: Column(children: children)),
               ))
             ])),
         Positioned(top: 10, right: 10, child: DialogCloseButton())

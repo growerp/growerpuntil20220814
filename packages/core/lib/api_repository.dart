@@ -498,7 +498,7 @@ class APIRepository {
       List<cat.Category> categories) async {
     try {
       final response = await dioClient.post(
-          'rest/s1/growerp/100/Categories', apiKey!,
+          'rest/s1/growerp/100/ImportExport/Categories', apiKey!,
           data: <String, dynamic>{
             'categoryList': '{"categories":' +
                 jsonEncode(categories.map((x) => x.toJson()).toList()) +
@@ -516,7 +516,7 @@ class APIRepository {
   Future<ApiResult<String>> exportCategories() async {
     try {
       final response = await dioClient.get(
-          'rest/s1/growerp/100/ExportCategories', apiKey ?? null,
+          'rest/s1/growerp/100/ImportExport/Categories', apiKey ?? null,
           queryParameters: <String, dynamic>{
             'classificationId': classificationId,
           });
@@ -714,6 +714,38 @@ class APIRepository {
           });
       return getResponse<Product>(
           "product", response, (json) => Product.fromJson(json));
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<String>> importProducts(List<Product> products) async {
+    try {
+      final response = await dioClient.post(
+          'rest/s1/growerp/100/ImportExport/Products', apiKey!,
+          data: <String, dynamic>{
+            'productList': '{"products":' +
+                jsonEncode(products.map((x) => x.toJson()).toList()) +
+                '}',
+            'classificationId': classificationId,
+            'moquiSessionToken': sessionToken
+          });
+      return ApiResult.success(
+          data: jsonDecode(response.toString())['messages'] ?? 'no result');
+    } on Exception catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e));
+    }
+  }
+
+  Future<ApiResult<String>> exportProducts() async {
+    try {
+      final response = await dioClient.get(
+          'rest/s1/growerp/100/ImportExportProducts', apiKey ?? null,
+          queryParameters: <String, dynamic>{
+            'classificationId': classificationId,
+          });
+      return ApiResult.success(
+          data: jsonDecode(response.toString())['messages'] ?? 'no result');
     } on Exception catch (e) {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e));
     }

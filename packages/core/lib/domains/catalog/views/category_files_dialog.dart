@@ -18,17 +18,15 @@ import 'package:core/domains/domains.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../common/functions/functions.dart';
+final GlobalKey<ScaffoldMessengerState> CategoryFilesDialogKey =
+    GlobalKey<ScaffoldMessengerState>();
 
-class FilesDialog extends StatefulWidget {
-  final Object object;
-
-  const FilesDialog(this.object);
+class CategoryFilesDialog extends StatefulWidget {
   @override
-  State<FilesDialog> createState() => _FilesHeaderState();
+  State<CategoryFilesDialog> createState() => _FilesHeaderState();
 }
 
-class _FilesHeaderState extends State<FilesDialog> {
+class _FilesHeaderState extends State<CategoryFilesDialog> {
   late CategoryBloc _categoryBloc;
   @override
   void initState() {
@@ -39,24 +37,23 @@ class _FilesHeaderState extends State<FilesDialog> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CategoryBloc, CategoryState>(
-        listener: (context, state) {
-      switch (state.status) {
-        case CategoryStatus.success:
-          Navigator.of(context).pop();
-          break;
-        case CategoryStatus.failure:
-          HelperFunctions.showMessage(
-              context, 'Error: ${state.message}', Colors.red);
-          break;
-        default:
+        listener: (context, state) async {
+      if (state.status == CategoryStatus.failure)
+        CategoryFilesDialogKey.currentState!
+            .showSnackBar(snackBar(context, Colors.red, state.message ?? ''));
+      if (state.status == CategoryStatus.success) {
+        CategoryFilesDialogKey.currentState!
+            .showSnackBar(snackBar(context, Colors.green, state.message ?? ''));
+        await Future.delayed(Duration(milliseconds: 1000));
+        Navigator.of(context).pop();
       }
     }, builder: (context, state) {
       return Stack(children: [
         PopUpDialog(
+            scaffoldkey: CategoryFilesDialogKey,
             context: context,
             title: "Category Up/Download",
-            child: SingleChildScrollView(
-                child: Column(children: [
+            children: [
               SizedBox(height: 40),
               Text("Download first to obtain the format"),
               SizedBox(height: 10),
@@ -81,8 +78,8 @@ class _FilesHeaderState extends State<FilesDialog> {
                   }),
               SizedBox(height: 20),
               Text("A data file will be send by email"),
-            ]))),
-        if (state.status == CategoryStatus.loading) LoadingIndicator(),
+            ]),
+        if (state.status == CategoryStatus.filesLoading) LoadingIndicator(),
       ]);
     });
   }

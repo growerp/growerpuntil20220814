@@ -15,7 +15,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:core/domains/domains.dart';
@@ -188,7 +187,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     try {
-      emit(state.copyWith(status: CategoryStatus.loading));
+      emit(state.copyWith(status: CategoryStatus.filesLoading));
       List<Category> categories = [];
       final result = _fast_csv.parse(await event.file.readAsString());
       int line = 0;
@@ -196,7 +195,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       for (final row in result) {
         if (line++ < 2) continue;
         if (row.length > 1) {
-          ;
           categories.add(Category(
               categoryName: row[0],
               description: row[1],
@@ -207,9 +205,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       return emit(compResult.when(
           success: (data) {
             return state.copyWith(
-                status: CategoryStatus.success,
-                categories: state.categories,
-                message: data);
+                status: CategoryStatus.success, message: data);
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: CategoryStatus.failure, message: error.toString())));
@@ -224,13 +220,12 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     try {
-      emit(state.copyWith(status: CategoryStatus.loading));
+      emit(state.copyWith(status: CategoryStatus.filesLoading));
       ApiResult<String> compResult = await repos.exportCategories();
       return emit(compResult.when(
           success: (data) {
             return state.copyWith(
                 status: CategoryStatus.success,
-                categories: state.categories,
                 message:
                     "The request is scheduled and the email be be sent shortly");
           },

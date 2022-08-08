@@ -17,7 +17,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../api_repository.dart';
 import '../../common/functions/helper_functions.dart';
 import '../../domains.dart';
-import 'files_dialog.dart';
 
 class CategoryListForm extends StatelessWidget {
   @override
@@ -58,24 +57,24 @@ class _CategoriesState extends State<CategoryList> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<CategoryBloc, CategoryState>(
-      listener: (context, state) {
-        if (state.status == CategoryStatus.failure)
-          HelperFunctions.showMessage(context, '${state.message}', Colors.red);
-        if (state.status == CategoryStatus.success) {
-          HelperFunctions.showMessage(
-              context, '${state.message}', Colors.green);
-        }
-      },
-      builder: (context, state) {
-        switch (state.status) {
-          case CategoryStatus.failure:
-            return Center(
-                child: Text('failed to fetch categories: ${state.message}'));
-          case CategoryStatus.success:
-            return Scaffold(
+        listenWhen: (previous, current) =>
+            previous.status == CategoryStatus.loading,
+        listener: (context, state) {
+          if (state.status == CategoryStatus.failure)
+            HelperFunctions.showMessage(
+                context, '${state.message}', Colors.red);
+          if (state.status == CategoryStatus.success) {
+            HelperFunctions.showMessage(
+                context, '${state.message}', Colors.green);
+          }
+        },
+        builder: (context, state) {
+          return Stack(children: [
+            Scaffold(
                 floatingActionButton:
                     Column(mainAxisAlignment: MainAxisAlignment.end, children: [
                   FloatingActionButton(
+                      heroTag: 'catFiles',
                       key: Key("upDownload"),
                       onPressed: () async {
                         await showDialog(
@@ -84,13 +83,14 @@ class _CategoriesState extends State<CategoryList> {
                             builder: (BuildContext context) {
                               return BlocProvider.value(
                                   value: _categoryBloc,
-                                  child: FilesDialog(Category()));
+                                  child: CategoryFilesDialog());
                             });
                       },
                       tooltip: 'category up/download',
                       child: Icon(Icons.file_copy)),
                   SizedBox(height: 10),
                   FloatingActionButton(
+                      heroTag: 'catNew',
                       key: Key("addNew"),
                       onPressed: () async {
                         await showDialog(
@@ -138,12 +138,10 @@ class _CategoriesState extends State<CategoryList> {
                                     category: state.categories[index],
                                     index: index));
                       },
-                    )));
-          default:
-            return LoadingIndicator();
-        }
-      },
-    );
+                    ))),
+            if (state.status == CategoryStatus.loading) LoadingIndicator(),
+          ]);
+        });
   }
 
   @override

@@ -13,13 +13,17 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:core/domains/domains.dart';
 import 'package:core/services/api_result.dart';
 import 'package:core/services/network_exceptions.dart';
+import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:fast_csv/fast_csv.dart' as _fast_csv;
 
 import '../../../api_repository.dart';
 
@@ -40,6 +44,8 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
         transformer: productDroppable(Duration(milliseconds: 100)));
     on<ProductUpdate>(_onProductUpdate);
     on<ProductDelete>(_onProductDelete);
+    on<ProductUpload>(_onProductUpload);
+    on<ProductDownload>(_onProductDownload);
   }
 
   final APIRepository repos;
@@ -161,6 +167,77 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
                 status: ProductStatus.success,
                 products: products,
                 message: 'product ${event.product.productName} deleted');
+          },
+          failure: (NetworkExceptions error) => state.copyWith(
+              status: ProductStatus.failure, message: error.toString())));
+    } catch (error) {
+      emit(state.copyWith(
+          status: ProductStatus.failure, message: error.toString()));
+    }
+  }
+
+  Future<void> _onProductUpload(
+    ProductUpload event,
+    Emitter<ProductState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: ProductStatus.filesLoading));
+      List<Product> products = [];
+      final result = _fast_csv.parse(await event.file.readAsString());
+      int line = 0;
+      // import csv into products
+      for (final row in result) {
+        if (line++ < 2) continue;
+        if (row.length > 1) {
+          List<Category> categories = [
+            Category(categoryName: row[9]),
+            Category(categoryName: row[10]),
+            Category(categoryName: row[11]),
+          ];
+          products.add(Product(
+            productName: row[0],
+            description: row[1],
+            productTypeId: row[2],
+            image: Base64Decoder().convert(row[3]),
+            assetClassId: row[4],
+            listPrice: Decimal.parse(row[5]),
+            price: Decimal.parse(row[6]),
+            useWarehouse: row[7] == 'false' ? false : true,
+            assetCount: int.parse(row[8]),
+            categories: categories,
+          ));
+        }
+      }
+      ApiResult<String> compResult = await repos.importProducts(products);
+      return emit(compResult.when(
+          success: (data) {
+            return state.copyWith(
+                status: ProductStatus.success,
+                products: state.products,
+                message: data);
+          },
+          failure: (NetworkExceptions error) => state.copyWith(
+              status: ProductStatus.failure, message: error.toString())));
+    } catch (error) {
+      emit(state.copyWith(
+          status: ProductStatus.failure, message: error.toString()));
+    }
+  }
+
+  Future<void> _onProductDownload(
+    ProductDownload event,
+    Emitter<ProductState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(status: ProductStatus.filesLoading));
+      ApiResult<String> compResult = await repos.exportCategories();
+      return emit(compResult.when(
+          success: (data) {
+            return state.copyWith(
+                status: ProductStatus.success,
+                products: state.products,
+                message:
+                    "The request is scheduled and the email be be sent shortly");
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: ProductStatus.failure, message: error.toString())));

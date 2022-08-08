@@ -50,10 +50,6 @@ class _ReservationState extends State<ReservationDialog> {
   TextEditingController _productSearchBoxController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-//  _ReservationState() {
-//    HelperFunctions.showTopMessage(scaffoldMessengerKey, widget.message!);
-//  }
-
   @override
   void initState() {
     super.initState();

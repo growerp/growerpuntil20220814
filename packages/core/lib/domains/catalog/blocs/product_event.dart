@@ -43,3 +43,10 @@ class ProductUpdate extends ProductEvent {
   const ProductUpdate(this.product);
   final Product product;
 }
+
+class ProductDownload extends ProductEvent {}
+
+class ProductUpload extends ProductEvent {
+  const ProductUpload(this.file);
+  final File file;
+}

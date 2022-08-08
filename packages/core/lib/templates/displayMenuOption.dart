@@ -19,7 +19,6 @@ import 'package:responsive_framework/responsive_framework.dart';
 import 'package:core/domains/domains.dart';
 
 class DisplayMenuOption extends StatefulWidget {
-  final scaffoldMessengerKey;
   final MenuOption? menuOption; // display not an item from the list like chat
   final List<MenuOption> menuList; // menu list to be used
   final int menuIndex; // navigator rail menu selected
@@ -27,7 +26,6 @@ class DisplayMenuOption extends StatefulWidget {
   final TabItem? tabItem; // create new tab if tabIndex null
   final List<Widget>? actions; // actions at the appBar
   DisplayMenuOption({
-    this.scaffoldMessengerKey,
     Key? key,
     this.menuOption,
     required this.menuList,
@@ -191,24 +189,24 @@ class _MenuOptionState extends State<DisplayMenuOption>
       if (tabItems.isEmpty) {
         // show simple page
         if (isPhone) // no navigation bar
-          return simplePage(authenticate, isPhone, widget.scaffoldMessengerKey);
+          return simplePage(authenticate, isPhone);
         else // tablet or web show navigation
           return myNavigationRail(
             context,
             authenticate,
-            simplePage(authenticate, isPhone, widget.scaffoldMessengerKey),
+            simplePage(authenticate, isPhone),
             widget.menuIndex,
             widget.menuList,
           );
       } else {
         // show tabbar page
         if (isPhone)
-          return tabPage(authenticate, isPhone, widget.scaffoldMessengerKey);
+          return tabPage(authenticate, isPhone);
         else
           return myNavigationRail(
             context,
             authenticate,
-            tabPage(authenticate, isPhone, widget.scaffoldMessengerKey),
+            tabPage(authenticate, isPhone),
             widget.menuIndex,
             widget.menuList,
           );
@@ -216,72 +214,68 @@ class _MenuOptionState extends State<DisplayMenuOption>
     });
   }
 
-  Widget simplePage(
-      Authenticate authenticate, bool isPhone, scaffoldMessengerKey) {
-    return ScaffoldMessenger(
-        key: scaffoldMessengerKey,
-        child: Scaffold(
-            key: Key(route),
-            appBar: AppBar(
-                key: Key(child.toString()),
-                automaticallyImplyLeading: isPhone,
-                leading: leadAction,
-                title: appBarTitle(context, authenticate, title),
-                actions: actions),
-            drawer: myDrawer(context, authenticate, isPhone, widget.menuList),
-            floatingActionButton: floatingActionButton,
-            body: child));
+  Widget simplePage(Authenticate authenticate, bool isPhone) {
+    final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey =
+        GlobalKey<ScaffoldMessengerState>();
+    return Scaffold(
+        key: rootScaffoldMessengerKey,
+        appBar: AppBar(
+            key: Key(child.toString()),
+            automaticallyImplyLeading: isPhone,
+            leading: leadAction,
+            title: appBarTitle(context, authenticate, title),
+            actions: actions),
+        drawer: myDrawer(context, authenticate, isPhone, widget.menuList),
+        floatingActionButton: floatingActionButton,
+        body: child);
   }
 
-  Widget tabPage(
-      Authenticate authenticate, bool isPhone, scaffoldMessengerKey) {
+  Widget tabPage(Authenticate authenticate, bool isPhone) {
     formKey = tabList[tabIndex]
         .toString()
         .replaceAll(new RegExp(r'[^(a-z,A-Z)]'), '');
-    return ScaffoldMessenger(
-        key: scaffoldMessengerKey,
-        child: Scaffold(
-            key: Key(route),
-            appBar: AppBar(
-                automaticallyImplyLeading: isPhone,
-                bottom: isPhone
-                    ? null
-                    : TabBar(
-                        controller: _controller,
-                        labelPadding: EdgeInsets.all(10.0),
-                        labelColor: Colors.black,
-                        unselectedLabelColor: Colors.white,
-                        indicatorSize: TabBarIndicatorSize.label,
-                        indicator: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(10),
-                                topRight: Radius.circular(10)),
-                            color: Colors.white),
-                        tabs: tabText,
-                      ),
-                title: appBarTitle(context, authenticate,
-                    '$title ${bottomItems[tabIndex].label}'),
-                actions: actions),
-            drawer: myDrawer(context, authenticate, isPhone, widget.menuList),
-            floatingActionButton: floatingActionButtonList[tabIndex],
-            bottomNavigationBar: isPhone
-                ? BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    items: bottomItems,
-                    currentIndex: tabIndex,
-                    selectedItemColor: Colors.amber[800],
-                    onTap: (index) {
-                      setState(() {
-                        tabIndex = index;
-                      });
-                    })
-                : null,
-            body: isPhone
-                ? Center(child: tabList[tabIndex], key: Key(formKey))
-                : TabBarView(
-                    key: Key(formKey),
+    return Scaffold(
+        key: Key(route),
+        appBar: AppBar(
+            automaticallyImplyLeading: isPhone,
+            bottom: isPhone
+                ? null
+                : TabBar(
                     controller: _controller,
-                    children: tabList,
-                  )));
+                    labelPadding: EdgeInsets.all(10.0),
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.white,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicator: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        color: Colors.white),
+                    tabs: tabText,
+                  ),
+            title: appBarTitle(
+                context, authenticate, '$title ${bottomItems[tabIndex].label}'),
+            actions: actions),
+        drawer: myDrawer(context, authenticate, isPhone, widget.menuList),
+        floatingActionButton: floatingActionButtonList[tabIndex],
+        bottomNavigationBar: isPhone
+            ? BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                items: bottomItems,
+                currentIndex: tabIndex,
+                selectedItemColor: Colors.amber[800],
+                onTap: (index) {
+                  setState(() {
+                    tabIndex = index;
+                  });
+                })
+            : null,
+        body: isPhone
+            ? Center(child: tabList[tabIndex], key: Key(formKey))
+            : TabBarView(
+                key: Key(formKey),
+                controller: _controller,
+                children: tabList,
+              ));
   }
 }
