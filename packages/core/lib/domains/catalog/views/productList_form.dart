@@ -45,10 +45,12 @@ class _ProductsState extends State<ProductList> {
   String? searchString;
   String classificationId = GlobalConfiguration().getValue("classificationId");
   late String entityName;
+  late bool started;
 
   @override
   void initState() {
     super.initState();
+    started = false;
     entityName = classificationId == 'AppHotel' ? 'Room Type' : 'Product';
     _scrollController.addListener(_onScroll);
     _productBloc = context.read<ProductBloc>();
@@ -67,6 +69,7 @@ class _ProductsState extends State<ProductList> {
               duration: const Duration(seconds: 1),
             ));
           if (state.status == ProductStatus.success) {
+            started = true;
             HelperFunctions.showMessage(
                 context, '${state.message}', Colors.green);
           }
@@ -125,9 +128,10 @@ class _ProductsState extends State<ProductList> {
                               ProductListHeader(),
                               Visibility(
                                   visible: state.products.isEmpty,
-                                  child: const Center(
+                                  child: Center(
                                       heightFactor: 20,
-                                      child: Text('No products found',
+                                      child: Text(
+                                          started ? 'No products found' : '',
                                           key: Key('empty'),
                                           textAlign: TextAlign.center)))
                             ]);

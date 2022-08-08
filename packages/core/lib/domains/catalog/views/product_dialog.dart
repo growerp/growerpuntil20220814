@@ -14,7 +14,6 @@
 
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:core/domains/common/functions/helper_functions.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -27,6 +26,9 @@ import 'package:responsive_framework/responsive_wrapper.dart';
 import 'package:core/domains/domains.dart';
 import 'package:core/templates/@templates.dart';
 import '../../../api_repository.dart';
+
+final GlobalKey<ScaffoldMessengerState> ProductDialogKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 class ProductDialog extends StatelessWidget {
   final Product product;
@@ -119,47 +121,52 @@ class _ProductState extends State<ProductDialogFull> {
   Widget build(BuildContext context) {
     bool isPhone = ResponsiveWrapper.of(context).isSmallerThan(TABLET);
     if (classificationId == 'AppHotel') _selectedTypeId = 'Rental';
-    return BlocListener<ProductBloc, ProductState>(
+    return BlocConsumer<ProductBloc, ProductState>(
         listener: (context, state) async {
-          switch (state.status) {
-            case ProductStatus.success:
-              Navigator.of(context).pop();
-              break;
-            case ProductStatus.failure:
-              HelperFunctions.showMessage(
-                  context, 'Error: ${state.message}', Colors.red);
-              break;
-            default:
-              Text("????");
-          }
-        },
-        child: BlocConsumer<CategoryBloc, CategoryState>(
-            listener: (context, state) async {
-          switch (state.status) {
-            case CategoryStatus.failure:
-              HelperFunctions.showMessage(context,
-                  'Error getting categories: ${state.message}', Colors.red);
-              break;
-            default:
-          }
-        }, builder: (context, state) {
-          if (state.status == CategoryStatus.success)
-            return Dialog(
-                key: Key('ProductDialog'),
-                insetPadding: EdgeInsets.all(20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Stack(clipBehavior: Clip.none, children: [
-                  Container(
-                      width: isPhone ? 400 : 800,
-                      height: isPhone ? 900 : 600,
-                      padding: EdgeInsets.all(20),
-                      child: listChild(classificationId, isPhone, state)),
-                  Positioned(top: 5, right: 5, child: DialogCloseButton())
-                ]));
-          return LoadingIndicator();
-        }));
+      switch (state.status) {
+        case ProductStatus.success:
+          Navigator.of(context).pop();
+          break;
+        case ProductStatus.failure:
+          ProductDialogKey.currentState!
+              .showSnackBar(snackBar(context, Colors.red, state.message ?? ''));
+          break;
+        default:
+      }
+    }, builder: (context, productState) {
+      return BlocConsumer<CategoryBloc, CategoryState>(
+          listener: (context, categoryState) async {
+        switch (categoryState.status) {
+          case CategoryStatus.failure:
+            HelperFunctions.showMessage(
+                context,
+                'Error getting categories: ${categoryState.message}',
+                Colors.red);
+            break;
+          default:
+        }
+      }, builder: (context, categoryState) {
+        return Stack(children: [
+          Dialog(
+              key: Key('ProductDialog'),
+              insetPadding: EdgeInsets.all(20),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Stack(clipBehavior: Clip.none, children: [
+                Container(
+                    width: isPhone ? 400 : 800,
+                    height: isPhone ? 900 : 600,
+                    padding: EdgeInsets.all(20),
+                    child: listChild(classificationId, isPhone, categoryState)),
+                Positioned(top: 5, right: 5, child: DialogCloseButton())
+              ])),
+          if (productState.status == ProductStatus.updateLoading ||
+              categoryState.status == CategoryStatus.loading)
+            LoadingIndicator()
+        ]);
+      });
+    });
   }
 
   Widget listChild(String classificationId, bool isPhone, state) {
@@ -413,38 +420,42 @@ class _ProductState extends State<ProductDialogFull> {
     for (var i = 0; i < _widgets.length; i++)
       column.add(Padding(padding: EdgeInsets.all(10), child: _widgets[i]));
 
-    return Scaffold(
-        backgroundColor: Colors.transparent,
-        floatingActionButton: imageButtons(context, _onImageButtonPressed),
-        body: Form(
-            key: _formKey,
-            child: SingleChildScrollView(
-                key: Key('listView'),
-                child: Column(children: <Widget>[
-                  Center(
-                      child: Text(
-                    'Product #${product.productId.isEmpty ? " New" : product.productId}',
-                    style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold),
-                    key: Key('header'),
-                  )),
-                  SizedBox(height: 10),
-                  CircleAvatar(
-                      backgroundColor: Colors.green,
-                      radius: 80,
-                      child: _imageFile != null
-                          ? foundation.kIsWeb
-                              ? Image.network(_imageFile!.path, scale: 0.3)
-                              : Image.file(File(_imageFile!.path), scale: 0.3)
-                          : product.image != null
-                              ? Image.memory(product.image!, scale: 0.3)
-                              : Text(product.productName?.substring(0, 1) ?? '',
-                                  style: TextStyle(
-                                      fontSize: 30, color: Colors.black))),
-                  SizedBox(height: 10),
-                  Column(children: (rows.isEmpty ? column : rows)),
-                ]))));
+    return ScaffoldMessenger(
+      key: ProductDialogKey,
+      child: Scaffold(
+          backgroundColor: Colors.transparent,
+          floatingActionButton: imageButtons(context, _onImageButtonPressed),
+          body: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                  key: Key('listView'),
+                  child: Column(children: <Widget>[
+                    Center(
+                        child: Text(
+                      'Product #${product.productId.isEmpty ? " New" : product.productId}',
+                      style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                      key: Key('header'),
+                    )),
+                    SizedBox(height: 10),
+                    CircleAvatar(
+                        backgroundColor: Colors.green,
+                        radius: 80,
+                        child: _imageFile != null
+                            ? foundation.kIsWeb
+                                ? Image.network(_imageFile!.path, scale: 0.3)
+                                : Image.file(File(_imageFile!.path), scale: 0.3)
+                            : product.image != null
+                                ? Image.memory(product.image!, scale: 0.3)
+                                : Text(
+                                    product.productName?.substring(0, 1) ?? '',
+                                    style: TextStyle(
+                                        fontSize: 30, color: Colors.black))),
+                    SizedBox(height: 10),
+                    Column(children: (rows.isEmpty ? column : rows)),
+                  ])))),
+    );
   }
 }

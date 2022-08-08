@@ -58,6 +58,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       return;
     try {
       // start from record zero for initial and refresh
+      emit(state.copyWith(status: ProductStatus.loading));
       if (state.status == ProductStatus.initial || event.refresh) {
         ApiResult<List<Product>> compResult =
             await repos.getProduct(start: 0, limit: _productLimit);
@@ -113,6 +114,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     Emitter<ProductState> emit,
   ) async {
     try {
+      emit(state.copyWith(status: ProductStatus.updateLoading));
       List<Product> products = List.from(state.products);
       if (event.product.productId.isNotEmpty) {
         // update
@@ -156,6 +158,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     Emitter<ProductState> emit,
   ) async {
     try {
+      emit(state.copyWith(status: ProductStatus.loading));
       List<Product> products = List.from(state.products);
       ApiResult<Product> compResult = await repos.deleteProduct(event.product);
       return emit(compResult.when(
