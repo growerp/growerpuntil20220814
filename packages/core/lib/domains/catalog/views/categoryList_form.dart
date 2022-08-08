@@ -45,10 +45,12 @@ class _CategoriesState extends State<CategoryList> {
   final _scrollController = ScrollController();
   late bool search;
   late CategoryBloc _categoryBloc;
+  late bool started;
 
   @override
   void initState() {
     super.initState();
+    started = false;
     search = false;
     _categoryBloc = BlocProvider.of<CategoryBloc>(context);
     _scrollController.addListener(_onScroll);
@@ -64,6 +66,7 @@ class _CategoriesState extends State<CategoryList> {
             HelperFunctions.showMessage(
                 context, '${state.message}', Colors.red);
           if (state.status == CategoryStatus.success) {
+            started = true;
             HelperFunctions.showMessage(
                 context, '${state.message}', Colors.green);
           }
@@ -122,9 +125,10 @@ class _CategoriesState extends State<CategoryList> {
                             CategoryListHeader(),
                             Visibility(
                                 visible: state.categories.isEmpty,
-                                child: const Center(
+                                child: Center(
                                     heightFactor: 20,
-                                    child: Text('No categories found',
+                                    child: Text(
+                                        started ? 'No categories found' : '',
                                         key: Key('empty'),
                                         textAlign: TextAlign.center)))
                           ]);
@@ -139,7 +143,8 @@ class _CategoriesState extends State<CategoryList> {
                                     index: index));
                       },
                     ))),
-            if (state.status == CategoryStatus.loading) LoadingIndicator(),
+            if (state.status == CategoryStatus.updateLoading)
+              LoadingIndicator(),
           ]);
         });
   }

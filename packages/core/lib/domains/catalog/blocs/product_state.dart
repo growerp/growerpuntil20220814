@@ -14,7 +14,14 @@
 
 part of 'product_bloc.dart';
 
-enum ProductStatus { initial, loading, filesLoading, success, failure }
+enum ProductStatus {
+  initial,
+  loading,
+  filesLoading,
+  updateLoading,
+  success,
+  failure
+}
 
 class ProductState extends Equatable {
   const ProductState({

@@ -67,6 +67,8 @@ class _FilesHeaderState extends State<CategoryFilesDialog> {
                     if (result != null) {
                       File file = File(result.files.single.path ?? '');
                       _categoryBloc.add(CategoryUpload(file));
+                      await Future.delayed(Duration(milliseconds: 1000));
+                      _categoryBloc.add(CategoryFetch(refresh: true));
                     }
                   }),
               SizedBox(height: 20),

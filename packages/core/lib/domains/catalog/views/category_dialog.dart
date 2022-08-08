@@ -21,8 +21,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:core/domains/domains.dart';
-
 import '../../../api_repository.dart';
+
+final GlobalKey<ScaffoldMessengerState> CategoryDialogKey =
+    GlobalKey<ScaffoldMessengerState>();
 
 class CategoryDialog extends StatelessWidget {
   final Category category;
@@ -109,25 +111,24 @@ class _CategoryState extends State<CategoryDialogFull> {
           Navigator.of(context).pop();
           break;
         case CategoryStatus.failure:
-          HelperFunctions.showMessage(
-              context, 'Error: ${state.message}', Colors.red);
+          CategoryDialogKey.currentState!
+              .showSnackBar(snackBar(context, Colors.red, state.message ?? ''));
           break;
         default:
       }
-    }, builder: (context, state) {
-      if (state.status == CategoryStatus.loading) return LoadingIndicator();
+    }, builder: (context, categoryState) {
       return BlocConsumer<ProductBloc, ProductState>(
           listener: (context, state) async {
         switch (state.status) {
           case ProductStatus.failure:
             HelperFunctions.showMessage(context,
-                'Error getting categories: ${state.message}', Colors.red);
+                'Error getting products: ${state.message}', Colors.red);
             break;
           default:
         }
-      }, builder: (context, state) {
-        if (state.status == ProductStatus.success)
-          return Dialog(
+      }, builder: (context, productState) {
+        return Stack(children: [
+          Dialog(
               key: Key('CategoryDialog'),
               insetPadding: EdgeInsets.all(20),
               shape: RoundedRectangleBorder(
@@ -137,8 +138,7 @@ class _CategoryState extends State<CategoryDialogFull> {
                 Container(
                     padding: EdgeInsets.all(20),
                     width: 400,
-                    height: 650,
-                    child: Center(child: listChild(state))),
+                    child: Center(child: listChild(productState))),
                 Container(
                     height: 50,
                     decoration: BoxDecoration(
@@ -154,8 +154,11 @@ class _CategoryState extends State<CategoryDialogFull> {
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold)))),
                 Positioned(top: 5, right: 5, child: DialogCloseButton()),
-              ]));
-        return LoadingIndicator();
+              ])),
+          if (categoryState.status == CategoryStatus.updateLoading ||
+              productState.status == ProductStatus.loading)
+            LoadingIndicator(),
+        ]);
       });
     });
   }
@@ -258,99 +261,111 @@ class _CategoryState extends State<CategoryDialogFull> {
     return Center(
         child: Container(
             padding: EdgeInsets.all(20),
-            child: Scaffold(
-                backgroundColor: Colors.transparent,
-                floatingActionButton:
-                    imageButtons(context, _onImageButtonPressed),
-                body: Form(
-                    key: _formKey,
-                    child: ListView(key: Key('listView'), children: <Widget>[
-                      SizedBox(height: 10),
-                      Center(
-                          child: Text(
-                        'Category #${category.categoryId.isEmpty ? " New" : category.categoryId}',
-                        style: TextStyle(
-                            fontSize: 10,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                        key: Key('header'),
-                      )),
-                      SizedBox(height: 30),
-                      CircleAvatar(
-                          backgroundColor: Colors.green,
-                          radius: 80,
-                          child: _imageFile != null
-                              ? foundation.kIsWeb
-                                  ? Image.network(_imageFile!.path, scale: 0.3)
-                                  : Image.file(File(_imageFile!.path),
-                                      scale: 0.3)
-                              : category.image != null
-                                  ? Image.memory(category.image!, scale: 0.3)
-                                  : Text(
-                                      category.categoryName.isEmpty
-                                          ? '?'
-                                          : category.categoryName
-                                              .substring(0, 1),
-                                      style: TextStyle(
-                                          fontSize: 30, color: Colors.black))),
-                      SizedBox(height: 30),
-                      TextFormField(
-                        key: Key('name'),
-                        decoration: InputDecoration(labelText: 'Category Name'),
-                        controller: _nameController,
-                        validator: (value) {
-                          return value!.isEmpty
-                              ? 'Please enter a category name?'
-                              : null;
-                        },
-                      ),
-                      SizedBox(height: 10),
-                      TextFormField(
-                        key: Key('description'),
-                        decoration: InputDecoration(labelText: 'Description'),
-                        controller: _descrController,
-                        maxLines: 3,
-                        validator: (value) {
-                          if (value!.isEmpty)
-                            return 'Please enter a category description?';
-                          return null;
-                        },
-                      ),
-                      SizedBox(height: 10),
-                      Container(
-                          child: InputDecorator(
-                              decoration: InputDecoration(
-                                  labelText: 'Related Products',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  )),
-                              child:
-                                  Wrap(spacing: 10.0, children: _relProducts))),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                          key: Key('update'),
-                          child: Text(category.categoryId.isEmpty
-                              ? 'Create'
-                              : 'Update'),
-                          onPressed: () async {
-                            if (_formKey.currentState!.validate()) {
-                              updatedCategory = Category(
-                                  categoryId: category.categoryId,
-                                  categoryName: _nameController.text,
-                                  description: _descrController.text,
-                                  products: _selectedProducts,
-                                  image: await HelperFunctions.getResizedImage(
-                                      _imageFile?.path));
-                              if (_imageFile?.path != null &&
-                                  updatedCategory.image == null)
-                                HelperFunctions.showMessage(
-                                    context, "Image upload error!", Colors.red);
-                              else
-                                context.read<CategoryBloc>().add(CategoryUpdate(
-                                      updatedCategory,
-                                    ));
-                            }
-                          }),
-                    ])))));
+            child: ScaffoldMessenger(
+                key: CategoryDialogKey,
+                child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    floatingActionButton:
+                        imageButtons(context, _onImageButtonPressed),
+                    body: Form(
+                        key: _formKey,
+                        child:
+                            ListView(key: Key('listView'), children: <Widget>[
+                          SizedBox(height: 10),
+                          Center(
+                              child: Text(
+                            'Category #${category.categoryId.isEmpty ? " New" : category.categoryId}',
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                            key: Key('header'),
+                          )),
+                          SizedBox(height: 30),
+                          CircleAvatar(
+                              backgroundColor: Colors.green,
+                              radius: 80,
+                              child: _imageFile != null
+                                  ? foundation.kIsWeb
+                                      ? Image.network(_imageFile!.path,
+                                          scale: 0.3)
+                                      : Image.file(File(_imageFile!.path),
+                                          scale: 0.3)
+                                  : category.image != null
+                                      ? Image.memory(category.image!,
+                                          scale: 0.3)
+                                      : Text(
+                                          category.categoryName.isEmpty
+                                              ? '?'
+                                              : category.categoryName
+                                                  .substring(0, 1),
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.black))),
+                          SizedBox(height: 30),
+                          TextFormField(
+                            key: Key('name'),
+                            decoration:
+                                InputDecoration(labelText: 'Category Name'),
+                            controller: _nameController,
+                            validator: (value) {
+                              return value!.isEmpty
+                                  ? 'Please enter a category name?'
+                                  : null;
+                            },
+                          ),
+                          SizedBox(height: 10),
+                          TextFormField(
+                            key: Key('description'),
+                            decoration:
+                                InputDecoration(labelText: 'Description'),
+                            controller: _descrController,
+                            maxLines: 3,
+                            validator: (value) {
+                              if (value!.isEmpty)
+                                return 'Please enter a category description?';
+                              return null;
+                            },
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                              child: InputDecorator(
+                                  decoration: InputDecoration(
+                                      labelText: 'Related Products',
+                                      border: OutlineInputBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(25.0),
+                                      )),
+                                  child: Wrap(
+                                      spacing: 10.0, children: _relProducts))),
+                          SizedBox(height: 10),
+                          ElevatedButton(
+                              key: Key('update'),
+                              child: Text(category.categoryId.isEmpty
+                                  ? 'Create'
+                                  : 'Update'),
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  updatedCategory = Category(
+                                      categoryId: category.categoryId,
+                                      categoryName: _nameController.text,
+                                      description: _descrController.text,
+                                      products: _selectedProducts,
+                                      image:
+                                          await HelperFunctions.getResizedImage(
+                                              _imageFile?.path));
+                                  if (_imageFile?.path != null &&
+                                      updatedCategory.image == null)
+                                    HelperFunctions.showMessage(context,
+                                        "Image upload error!", Colors.red);
+                                  else
+                                    context
+                                        .read<CategoryBloc>()
+                                        .add(CategoryUpdate(
+                                          updatedCategory,
+                                        ));
+                                }
+                              }),
+                        ]))))));
   }
 }

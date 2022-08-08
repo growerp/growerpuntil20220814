@@ -54,7 +54,6 @@ Widget PopUpDialog({
                 child: ScaffoldMessenger(
                     key: scaffoldkey,
                     child: Scaffold(
-                        key: scaffoldkey,
                         backgroundColor: Colors.transparent,
                         body: Center(child: Column(children: children)))),
               ))
