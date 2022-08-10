@@ -39,7 +39,9 @@ class APIRepository {
         ? '$databaseUrl/'
         : (kIsWeb || Platform.isIOS || Platform.isLinux)
             ? '$databaseUrlDebug/'
-            : 'http://10.0.2.2:8080/';
+            : databaseUrlDebug.contains('localhost')
+                ? 'http://10.0.2.2:8080/'
+                : '$databaseUrlDebug/';
 
     print('Production config url: $databaseUrl');
     print('Using base backend url: $_baseUrl');
