@@ -22,23 +22,29 @@ We also created a first vertical app for Hotel owners which will be released lat
 - IOS:     https://apps.apple.com/us/app/growerp-admin-open-source/id1531267095
 
 ### Install flutter app locally
+```
 git clone https://github.com/growerp/growerp.git 
 cd growerp/packages/core 
 flutter pub get & flutter pub run build_runner build 
 cd ../admin 
+```
 
 ### Prepare for backend
 OR:  install backend according: https://github.com/growerp/growerp-moqui.git
 
 OR: use our test backend:  
 change file packages/admin/assets/cfg/app_settings.json:
+```
 - from:   "databaseUrlDebug": "http://localhost:8080",
 - to:     "databaseUrlDebug": "https://test.growerp.org",  
 
 - from:   "chatUrlDebug":  "ws://localhost:8081",
 - to:     "chatUrlDebug": "wss://chat.growerp.org",  
-  
-start emulator or use browser and start app: flutter run
+```  
+start emulator or use browser and start app:
+```
+flutter run
+```
 
 ### Some phone screen shots:
 <div style="text-align: center">
