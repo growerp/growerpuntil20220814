@@ -22,10 +22,10 @@ We also created a first vertical app for Hotel owners which will be released lat
 - IOS:     https://apps.apple.com/us/app/growerp-admin-open-source/id1531267095
 
 ### Install flutter app locally
-git clone https://github.com/growerp/growerp.git
-cd growerp/packages/core
-flutter pub get & flutter pub run build_runner build
-cd ../admin
+git clone https://github.com/growerp/growerp.git 
+cd growerp/packages/core 
+flutter pub get & flutter pub run build_runner build 
+cd ../admin 
 
 ### Prepare for backend
 OR:  install backend according: https://github.com/growerp/growerp-moqui.git
