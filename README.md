@@ -41,7 +41,7 @@ change file packages/admin/assets/cfg/app_settings.json:
 - from:   "chatUrlDebug":  "ws://localhost:8081",
 - to:     "chatUrlDebug": "wss://chat.growerp.org",  
 ```  
-start emulator or use browser and start app:
+start emulator or use browser and start app in directory: packages/admin:
 ```
 flutter run
 ```
