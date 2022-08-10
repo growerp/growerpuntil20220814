@@ -190,27 +190,26 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
       int line = 0;
       // import csv into products
       for (final row in result) {
-        if (line++ < 2) continue;
-        if (row.length > 1) {
-          List<Category> categories = [
-            Category(categoryName: row[9]),
-            Category(categoryName: row[10]),
-            Category(categoryName: row[11]),
-          ];
-          products.add(Product(
-            productName: row[0],
-            description: row[1],
-            productTypeId: row[2],
-            image: Base64Decoder().convert(row[3]),
-            assetClassId: row[4],
-            listPrice: Decimal.parse(row[5]),
-            price: Decimal.parse(row[6]),
-            useWarehouse: row[7] == 'false' ? false : true,
-            assetCount: int.parse(row[8]),
-            categories: categories,
-          ));
-        }
+        if (line++ < 2 || row.length < 12) continue;
+        List<Category> categories = [];
+        if (row[9].isNotEmpty) categories.add(Category(categoryName: row[9]));
+        if (row[10].isNotEmpty) categories.add(Category(categoryName: row[10]));
+        if (row[11].isNotEmpty) categories.add(Category(categoryName: row[11]));
+
+        products.add(Product(
+          productName: row[0],
+          description: row[1],
+          productTypeId: row[2],
+          image: Base64Decoder().convert(row[3]),
+          assetClassId: row[4],
+          listPrice: Decimal.parse(row[5]),
+          price: Decimal.parse(row[6]),
+          useWarehouse: row[7] == 'true' ? true : false,
+          assetCount: int.parse(row[8]),
+          categories: categories,
+        ));
       }
+
       ApiResult<String> compResult = await repos.importProducts(products);
       return emit(compResult.when(
           success: (data) {
@@ -233,14 +232,14 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
   ) async {
     try {
       emit(state.copyWith(status: ProductStatus.filesLoading));
-      ApiResult<String> compResult = await repos.exportCategories();
+      ApiResult<String> compResult = await repos.exportProducts();
       return emit(compResult.when(
           success: (data) {
             return state.copyWith(
                 status: ProductStatus.success,
                 products: state.products,
                 message:
-                    "The request is scheduled and the email be be sent shortly");
+                    "The request is scheduled and the email will be sent shortly");
           },
           failure: (NetworkExceptions error) => state.copyWith(
               status: ProductStatus.failure, message: error.toString())));

@@ -39,9 +39,7 @@ class APIRepository {
         ? '$databaseUrl/'
         : (kIsWeb || Platform.isIOS || Platform.isLinux)
             ? '$databaseUrlDebug/'
-            : databaseUrlDebug.contains('localhost')
-                ? 'http://10.0.2.2:8080/'
-                : '$databaseUrlDebug/';
+            : 'http://10.0.2.2:8080/';
 
     print('Production config url: $databaseUrl');
     print('Using base backend url: $_baseUrl');
@@ -742,7 +740,7 @@ class APIRepository {
   Future<ApiResult<String>> exportProducts() async {
     try {
       final response = await dioClient.get(
-          'rest/s1/growerp/100/ImportExportProducts', apiKey ?? null,
+          'rest/s1/growerp/100/ImportExport/Products', apiKey ?? null,
           queryParameters: <String, dynamic>{
             'classificationId': classificationId,
           });
