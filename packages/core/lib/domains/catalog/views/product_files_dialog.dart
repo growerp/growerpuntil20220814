@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:core/domains/domains.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/foundation.dart' as foundation;
 
 final GlobalKey<ScaffoldMessengerState> ProductFilesDialogKey =
     GlobalKey<ScaffoldMessengerState>();
@@ -65,8 +66,15 @@ class _FilesHeaderState extends State<ProductFilesDialog> {
                         .pickFiles(
                             allowedExtensions: ['csv'], type: FileType.custom);
                     if (result != null) {
-                      File file = File(result.files.single.path ?? '');
-                      _ProductBloc.add(ProductUpload(file));
+                      String fileString = '';
+                      if (foundation.kIsWeb) {
+                        foundation.Uint8List bytes = result.files.first.bytes!;
+                        fileString = String.fromCharCodes(bytes);
+                      } else {
+                        File file = File(result.files.single.path!);
+                        fileString = await file.readAsString();
+                      }
+                      _ProductBloc.add(ProductUpload(fileString));
                     }
                   }),
               SizedBox(height: 20),

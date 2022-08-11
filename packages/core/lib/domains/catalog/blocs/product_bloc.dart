@@ -24,7 +24,7 @@ import 'package:decimal/decimal.dart';
 import 'package:equatable/equatable.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:fast_csv/fast_csv.dart' as _fast_csv;
-
+import 'package:flutter/foundation.dart' as foundation;
 import '../../../api_repository.dart';
 
 part 'product_event.dart';
@@ -186,7 +186,7 @@ class ProductBloc extends Bloc<ProductEvent, ProductState> {
     try {
       emit(state.copyWith(status: ProductStatus.filesLoading));
       List<Product> products = [];
-      final result = _fast_csv.parse(await event.file.readAsString());
+      final result = _fast_csv.parse(await event.file);
       int line = 0;
       // import csv into products
       for (final row in result) {

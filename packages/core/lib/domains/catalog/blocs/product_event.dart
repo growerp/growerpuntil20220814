@@ -48,5 +48,5 @@ class ProductDownload extends ProductEvent {}
 
 class ProductUpload extends ProductEvent {
   const ProductUpload(this.file);
-  final File file;
+  final String file;
 }

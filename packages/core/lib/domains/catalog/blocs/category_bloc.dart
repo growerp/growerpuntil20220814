@@ -14,7 +14,6 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:core/domains/domains.dart';
@@ -189,7 +188,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     try {
       emit(state.copyWith(status: CategoryStatus.filesLoading));
       List<Category> categories = [];
-      final result = _fast_csv.parse(await event.file.readAsString());
+      final result = _fast_csv.parse(await event.file);
       int line = 0;
       // import csv into categories
       for (final row in result) {

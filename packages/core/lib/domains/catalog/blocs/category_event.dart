@@ -46,5 +46,5 @@ class CategoryDownload extends CategoryEvent {}
 
 class CategoryUpload extends CategoryEvent {
   const CategoryUpload(this.file);
-  final File file;
+  final String file;
 }
